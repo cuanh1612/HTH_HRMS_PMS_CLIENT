@@ -1,10 +1,10 @@
 import {
   loginForm,
   logoutForm,
-  registerForm,
+  registerForm
 } from "../type/formTypes.ts/authFormType";
 import { authMutaionResponse } from "../type/mutationResponses";
-import { getData, postData } from "../utils/fetchData";
+import { postData } from "../utils/fetchData";
 
 //-----------------------------------------------------------------
 //Request Mutation

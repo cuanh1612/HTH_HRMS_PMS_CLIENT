@@ -5,7 +5,7 @@ import jwt from "../utils/jwt";
 
 export interface IHomeProps {}
 
-export default function Home(props: IHomeProps) {
+export default function Home() {
   const [loading, setLoading] = useState(true);
   const { checkAuth, isAuthenticated } = useContext(AuthContext);
 

@@ -8,7 +8,7 @@ export default function Register() {
   const [password, setPassword] = React.useState("");
   const [username, setusername] = React.useState("");
 
-  const [mutate, { status, data }] = registerMutation();
+  const [mutate, { status }] = registerMutation();
   React.useEffect(() => {
     switch (status) {
       case "running":

@@ -1,4 +1,4 @@
-import axios, { AxiosError, AxiosRequestHeaders, AxiosResponse } from "axios";
+import axios, { AxiosError, AxiosResponse } from "axios";
 import JWTManager from "./jwt";
 export interface IPropsFetchData {
   url: string;

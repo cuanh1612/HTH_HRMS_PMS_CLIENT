@@ -1,5 +1,5 @@
 import useMutation from "use-mutation";
-import { loginRequest, registerRequest } from "../requests/authRequests";
+import { loginRequest, logoutRequest, registerRequest } from "../requests/authRequests";
 
 export const registerMutation = () => {
   return useMutation(registerRequest, {
@@ -11,6 +11,15 @@ export const registerMutation = () => {
 
 export const loginMutation = () => {
     return useMutation(loginRequest, {
+      onFailure({ error }) {
+        console.log(error.message);
+      },
+    });
+  };
+
+
+  export const logoutServerMutation = () => {
+    return useMutation(logoutRequest, {
       onFailure({ error }) {
         console.log(error.message);
       },

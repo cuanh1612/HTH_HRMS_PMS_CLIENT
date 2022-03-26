@@ -1,10 +1,13 @@
 import * as React from "react";
+import { AuthContext } from "../contexts/AuthContext";
 import { loginMutation } from "../mutations/authMuatations";
 import JWTManager from "../utils/jwt";
 
 export interface ILoginProps {}
 
 export default function Login() {
+  const { setIsAuthenticated } = React.useContext(AuthContext);
+
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
 
@@ -17,7 +20,8 @@ export default function Login() {
         break;
 
       case "success":
-        JWTManager.setToken(data?.accessToken as string)
+        JWTManager.setToken(data?.accessToken as string);
+        setIsAuthenticated(true)
         console.log("stop loading");
         break;
 

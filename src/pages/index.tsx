@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../contexts/AuthContext";
 import { allUsersQuery } from "../queries/userQueries";
+import jwt from "../utils/jwt";
 
 export interface IHomeProps {}
 
@@ -15,17 +16,20 @@ export default function Home(props: IHomeProps) {
     };
 
     authenticate();
-  }, []);
+    console.log(jwt.getToken());
+    
+  }, [checkAuth]);
 
   const { data, error } = allUsersQuery(isAuthenticated);
 
   if (loading) return <h1>Loading ...</h1>;
 
-  if (error) return <div>{JSON.stringify(error.response?.data.message)}</div>;
+  if (error) return <div><div>{jwt.getToken()}</div></div>;
 
   return (
     <>
       <div>Home Page</div>
+      <div>{jwt.getToken()}</div>
       <div>{data && JSON.stringify(data?.users)}</div>
     </>
   );

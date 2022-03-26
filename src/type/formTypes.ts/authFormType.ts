@@ -8,3 +8,7 @@ export type registerForm = {
   password: string;
   username: string;
 };
+
+export type logoutForm = {
+  userId: string;
+};

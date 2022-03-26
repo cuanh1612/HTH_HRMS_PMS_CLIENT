@@ -1,6 +1,14 @@
-import { loginForm, registerForm } from "../type/formTypes.ts/authFormType";
+import {
+  loginForm,
+  logoutForm,
+  registerForm,
+} from "../type/formTypes.ts/authFormType";
 import { authMutaionResponse } from "../type/mutationResponses";
-import { postData } from "../utils/fetchData";
+import { getData, postData } from "../utils/fetchData";
+
+//-----------------------------------------------------------------
+//Request Mutation
+//-----------------------------------------------------------------
 
 //Function handle fetch register
 export async function registerRequest(inputRegister: registerForm) {
@@ -21,3 +29,17 @@ export async function loginRequest(inputLogin: loginForm) {
 
   return resultFetch;
 }
+
+//Function handle fetch logout
+export async function logoutRequest(inputLogout: logoutForm) {
+  const resultFetch = await postData<authMutaionResponse>({
+    url: "http://localhost:4000/api/auth/logout",
+    body: inputLogout,
+  });
+
+  return resultFetch;
+}
+
+//-----------------------------------------------------------------
+//Request for queries
+//-----------------------------------------------------------------

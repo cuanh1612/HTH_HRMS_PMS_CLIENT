@@ -1,4 +1,4 @@
 export interface userType {
-  email: string;
-  username: string;
+	email: string
+	username: string
 }

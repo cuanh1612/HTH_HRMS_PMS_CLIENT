@@ -1,13 +1,12 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse } from 'next/server'
 
 export function middleware(req: NextRequest) {
+	const url = req.url
 
-  const url = req.url;
+	if (url.includes('/login')) {
+		console.log(req.cookies)
+		console.log('Trang login ne')
+	}
 
-  if (url.includes("/login")) {
-    console.log(req.cookies);
-    console.log("Trang login ne");
-  }
-
-  return NextResponse.next();
+	return NextResponse.next()
 }

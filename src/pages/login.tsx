@@ -2,7 +2,6 @@ import { useContext, useEffect, useState } from 'react'
 import { AuthContext } from 'contexts/AuthContext'
 import { loginMutation } from 'mutations/auth'
 import JWTManager from 'utils/jwt'
-import { TToast } from 'type/basicTypes'
 
 // layout
 import { NextLayout } from 'type/element/layout'
@@ -24,9 +23,29 @@ import { LoginValidate } from 'utils/validate'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Input } from 'components/form/Input'
 
+// login with google
+import { useGoogleLogin } from 'react-google-login'
+
 const Login: NextLayout = () => {
 	// set authenticated when login success, set toast
 	const { setIsAuthenticated, setToast } = useContext(AuthContext)
+	
+	// login ------------------------------------------------
+	
+	// loadding button
+	const [googleLoad, setGLoad] = useState(false)
+
+	const { signIn } = useGoogleLogin({
+		onSuccess: (res: any) => {
+			setGLoad(false)
+			console.log(res.tokenId)
+		},
+		onFailure: (error) => {
+			setGLoad(false)
+			console.log(error)
+		},
+		clientId: '345570644203-tleaq4dh709669ch4tmvbese58q9asbb.apps.googleusercontent.com',
+	})
 
 	const [mutate, { status, data }] = loginMutation(setToast)
 
@@ -65,7 +84,7 @@ const Login: NextLayout = () => {
 		if (status == 'success') {
 			setToast({
 				type: 'success',
-				msg: data?.message as string
+				msg: data?.message as string,
 			})
 			JWTManager.setToken(data?.accessToken as string)
 			setIsAuthenticated(true)
@@ -153,6 +172,11 @@ const Login: NextLayout = () => {
 						</Box>
 					</HStack>
 					<Button
+						onClick={() => {
+							setGLoad(true)						
+							signIn()}}
+						isLoading={googleLoad}
+						loadingText={'wait...'}
 						leftIcon={<ImGoogle />}
 						transform={'auto'}
 						_hover={{
@@ -183,30 +207,6 @@ const Login: NextLayout = () => {
 				</VStack>
 			</VStack>
 		</VStack>
-		// <div>
-		// 	<form
-		// 		onSubmit={onLogin}
-		// 		style={{
-		// 			marginTop: '1rem',
-		// 		}}
-		// 	>
-		// 		<input
-		// 			name="email"
-		// 			type="text"
-		// 			placeholder="email"
-		// 			value={email}
-		// 			onChange={(e) => setEmail(e.target.value)}
-		// 		/>
-		// 		<input
-		// 			name="password"
-		// 			type="password"
-		// 			placeholder="password"
-		// 			value={password}
-		// 			onChange={(e) => setPassword(e.target.value)}
-		// 		/>
-		// 		<button type="submit">Login</button>
-		// 	</form>
-		// </div>
 	)
 }
 

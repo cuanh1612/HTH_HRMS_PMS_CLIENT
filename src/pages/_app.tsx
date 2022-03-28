@@ -4,7 +4,7 @@ import theme from '../theme'
 import 'public/css/global.css'
 
 import AuthContextProvider from 'contexts/AuthContext'
-import { AppPropsWithLayout } from 'type/element'
+import { AppPropsWithLayout } from 'type/element/layout'
 import { EmptyLayout } from 'components/layouts'
 
 function MyApp({ Component, pageProps }: AppPropsWithLayout) {

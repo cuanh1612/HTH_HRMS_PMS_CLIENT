@@ -1,4 +1,6 @@
+import { useToast } from '@chakra-ui/react'
 import { createContext, Dispatch, ReactNode, SetStateAction, useCallback, useState } from 'react'
+import { TToast } from 'type/basicTypes'
 import JWTManager from 'utils/jwt'
 
 interface IAuthContext {
@@ -6,6 +8,7 @@ interface IAuthContext {
 	setIsAuthenticated: Dispatch<SetStateAction<boolean>>
 	checkAuth: () => Promise<void>
 	logoutClient: () => void
+	setToast: TToast
 }
 
 const defaultIsAuthenticated = false
@@ -15,9 +18,25 @@ export const AuthContext = createContext<IAuthContext>({
 	setIsAuthenticated: () => {},
 	checkAuth: () => Promise.resolve(),
 	logoutClient: () => {},
+	setToast: ()=> {}
 })
 
 const AuthContextProvider = ({ children }: { children: ReactNode }) => {
+	// use toast
+	const toast = useToast()
+	const setToast: TToast = ({ type, msg }) => {
+		if(type) {
+			toast({
+				position: 'top-right',
+				description: msg,
+				isClosable: true,
+				status: type,
+				duration: 5000,
+				variant: 'subtle'
+			})
+		}
+	}
+
 	const [isAuthenticated, setIsAuthenticated] = useState(defaultIsAuthenticated)
 
 	const logoutClient = () => {
@@ -39,6 +58,7 @@ const AuthContextProvider = ({ children }: { children: ReactNode }) => {
 		checkAuth,
 		setIsAuthenticated,
 		logoutClient,
+		setToast,
 	}
 
 	return <AuthContext.Provider value={authContextData}>{children}</AuthContext.Provider>

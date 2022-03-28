@@ -1,26 +1,36 @@
 import useMutation from 'use-mutation'
 import { loginRequest, logoutRequest, registerRequest } from 'requests/auth'
+import { TToast } from 'type/basicTypes'
 
-export const registerMutation = () => {
+export const registerMutation = (setToast: TToast) => {
 	return useMutation(registerRequest, {
 		onFailure({ error }) {
-			console.log(error.message)
+			setToast({
+				msg: error.message,
+				type: 'error'
+			})
 		},
 	})
 }
 
-export const loginMutation = () => {
+export const loginMutation = (setToast: TToast) => {
 	return useMutation(loginRequest, {
 		onFailure({ error }) {
-			console.log(error.message)
+			setToast({
+				msg: error.message,
+				type: 'error'
+			})
 		},
 	})
 }
 
-export const logoutServerMutation = () => {
+export const logoutServerMutation = (setToast: TToast) => {
 	return useMutation(logoutRequest, {
 		onFailure({ error }) {
-			console.log(error.message)
+			setToast({
+				msg: error.message,
+				type: 'error'
+			})
 		},
 	})
 }

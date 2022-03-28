@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from 'react'
 import { AuthContext } from 'contexts/AuthContext'
 import { loginMutation } from 'mutations/auth'
 import JWTManager from 'utils/jwt'
+import { TToast } from 'type/basicTypes'
 
 // layout
 import { NextLayout } from 'type/element/layout'
@@ -24,12 +25,10 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { Input } from 'components/form/Input'
 
 const Login: NextLayout = () => {
-	const { setIsAuthenticated } = useContext(AuthContext)
+	// set authenticated when login success, set toast
+	const { setIsAuthenticated, setToast } = useContext(AuthContext)
 
-	const [email, setEmail] = useState('')
-	const [password, setPassword] = useState('')
-
-	const [mutate, { status, data }] = loginMutation()
+	const [mutate, { status, data }] = loginMutation(setToast)
 
 	// set color when use darkMode ------------------------------------------
 	// login button
@@ -48,7 +47,7 @@ const Login: NextLayout = () => {
 	// background of text 'or'
 	const orText = useColorModeValue('white', '#1a202c')
 
-	// setForm ----------------------------------------------------------
+	// setForm and submit form ----------------------------------------------------------
 	const formSetting = useForm<loginForm>({
 		defaultValues: {
 			email: '',
@@ -59,37 +58,19 @@ const Login: NextLayout = () => {
 
 	const { handleSubmit } = formSetting
 
-	const onSubmit = (value: loginForm) => {
-		console.log(value)
-	}
+	const onSubmit = (values: loginForm) => mutate(values)
 
 	// useEffect -----------------------------------------------------
 	useEffect(() => {
-		switch (status) {
-			case 'running':
-				console.log('loading')
-				break
-
-			case 'success':
-				JWTManager.setToken(data?.accessToken as string)
-				setIsAuthenticated(true)
-				console.log('stop loading')
-				break
-
-			default:
-				console.log('stop loading')
-				break
+		if (status == 'success') {
+			setToast({
+				type: 'success',
+				msg: data?.message as string
+			})
+			JWTManager.setToken(data?.accessToken as string)
+			setIsAuthenticated(true)
 		}
 	}, [status])
-
-	const onLogin: React.FormEventHandler<HTMLFormElement> = (e) => {
-		e.preventDefault()
-
-		mutate({
-			email,
-			password,
-		})
-	}
 
 	return (
 		<VStack spacing={8} minW={'380px'}>
@@ -120,6 +101,7 @@ const Login: NextLayout = () => {
 			<VStack as={'form'} onSubmit={handleSubmit(onSubmit)} spacing={5} w={'full'}>
 				<VStack spacing={5} w={'full'}>
 					<Input
+						type={'text'}
 						required={true}
 						placeholder="Enter your email"
 						label="Email"
@@ -128,6 +110,7 @@ const Login: NextLayout = () => {
 						icon={<CgMail fontSize={'20px'} color="gray" opacity={0.6} />}
 					/>
 					<Input
+						type={'password'}
 						required={true}
 						placeholder="Enter your password"
 						label="Password"
@@ -138,6 +121,8 @@ const Login: NextLayout = () => {
 				</VStack>
 				<VStack w={'full'} spacing={5}>
 					<Button
+						isLoading={status == 'running' ? true : false}
+						loadingText={'wait...'}
 						type="submit"
 						transform={'auto'}
 						_hover={{

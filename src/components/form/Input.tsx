@@ -10,7 +10,7 @@ import {
 import { Controller, UseFormReturn } from 'react-hook-form'
 import { IInput } from 'type/element/commom'
 
-export const Input = ({ name, label, icon, form, placeholder, required= false }: IInput & { form: UseFormReturn<any, any> }) => {
+export const Input = ({ name, label, icon, form, placeholder, required= false, type= 'text' }: IInput & { form: UseFormReturn<any, any> }) => {
     const errorColor = useColorModeValue('red.400', 'pink.400')
 
 	const {
@@ -33,7 +33,7 @@ export const Input = ({ name, label, icon, form, placeholder, required= false }:
 							background={'#ffffff10'}
 							placeholder={placeholder}
 							id={name}
-							type="password"
+							type={type}
 							{...field}
 						/>
 					</InputGroup>

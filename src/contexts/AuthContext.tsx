@@ -1,60 +1,67 @@
-import {
-  createContext,
-  Dispatch,
-  ReactNode,
-  SetStateAction,
-  useCallback,
-  useState,
-} from "react";
-import JWTManager from "../utils/jwt";
+import { useToast } from '@chakra-ui/react'
+import { createContext, Dispatch, ReactNode, SetStateAction, useCallback, useState } from 'react'
+import { TToast } from 'type/basicTypes'
+import JWTManager from 'utils/jwt'
 
 interface IAuthContext {
-  isAuthenticated: boolean;
-  setIsAuthenticated: Dispatch<SetStateAction<boolean>>;
-  checkAuth: () => Promise<void>;
-  logoutClient: () => void;
+	isAuthenticated: boolean
+	setIsAuthenticated: Dispatch<SetStateAction<boolean>>
+	checkAuth: () => Promise<void>
+	logoutClient: () => void
+	setToast: TToast
 }
 
-const defaultIsAuthenticated = false;
+const defaultIsAuthenticated = false
 
 export const AuthContext = createContext<IAuthContext>({
-  isAuthenticated: defaultIsAuthenticated,
-  setIsAuthenticated: () => {},
-  checkAuth: () => Promise.resolve(),
-  logoutClient: () => {},
-});
+	isAuthenticated: defaultIsAuthenticated,
+	setIsAuthenticated: () => {},
+	checkAuth: () => Promise.resolve(),
+	logoutClient: () => {},
+	setToast: ()=> {}
+})
 
 const AuthContextProvider = ({ children }: { children: ReactNode }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(
-    defaultIsAuthenticated
-  );
+	// use toast
+	const toast = useToast()
+	const setToast: TToast = ({ type, msg }) => {
+		if(type) {
+			toast({
+				position: 'top-right',
+				description: msg,
+				isClosable: true,
+				status: type,
+				duration: 5000,
+				variant: 'subtle'
+			})
+		}
+	}
 
-  const logoutClient = () => {
-    JWTManager.deleteToken();
-    setIsAuthenticated(false);
-  };
+	const [isAuthenticated, setIsAuthenticated] = useState(defaultIsAuthenticated)
 
-  const checkAuth = useCallback(async () => {
-    const token = JWTManager.getToken();
-    if (token) setIsAuthenticated(true);
-    else {
-      const success = await JWTManager.getRefreshToken();
-      if (success) setIsAuthenticated(true);
-    }
-  }, []);
+	const logoutClient = () => {
+		JWTManager.deleteToken()
+		setIsAuthenticated(false)
+	}
 
-  const authContextData = {
-    isAuthenticated,
-    checkAuth,
-    setIsAuthenticated,
-    logoutClient,
-  };
+	const checkAuth = useCallback(async () => {
+		const token = JWTManager.getToken()
+		if (token) setIsAuthenticated(true)
+		else {
+			const success = await JWTManager.getRefreshToken()
+			if (success) setIsAuthenticated(true)
+		}
+	}, [])
 
-  return (
-    <AuthContext.Provider value={authContextData}>
-      {children}
-    </AuthContext.Provider>
-  );
-};
+	const authContextData = {
+		isAuthenticated,
+		checkAuth,
+		setIsAuthenticated,
+		logoutClient,
+		setToast,
+	}
 
-export default AuthContextProvider;
+	return <AuthContext.Provider value={authContextData}>{children}</AuthContext.Provider>
+}
+
+export default AuthContextProvider

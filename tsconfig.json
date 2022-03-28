@@ -19,8 +19,20 @@
     "noImplicitThis": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noImplicitReturns": true
+    "noImplicitReturns": true,
+    "baseUrl": ".",
+    "paths": {
+      "utils/*": ["src/utils/*"],
+      "components/*": ["src/components/*"],
+      "contexts/*": ["src/contexts/*"],
+      "mutations/*": ["src/mutations/*"],
+      "queries/*": ["src/queries/*"],
+      "requests/*": ["src/requests/*"],
+      "type/*": ["src/type/*"],
+      "public/*": ["public/*"]
+
+    }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "src/type/form"],
   "exclude": ["node_modules"]
 }

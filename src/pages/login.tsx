@@ -37,14 +37,12 @@ const Login: NextLayout = () => {
 
 	const { signIn} = useGoogleLogin({
 		onSuccess: (res: any) => {
-			console.log(res.tokenId)
 			mutateLoginG({
 				token: res.tokenId,
 			})
 		},
 		onFailure: (error) => {
 			setGLoad(false)
-			console.log(error)
 		},
     isSignedIn: false,
 		clientId: '345570644203-tleaq4dh709669ch4tmvbese58q9asbb.apps.googleusercontent.com',

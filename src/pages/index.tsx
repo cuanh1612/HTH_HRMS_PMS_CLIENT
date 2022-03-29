@@ -4,14 +4,24 @@ import jwt from 'utils/jwt'
 
 import { AuthContext } from 'contexts/AuthContext'
 import { allUsersQuery } from 'queries/user'
-import { NextLayout } from 'type/element'
+import { NextLayout } from 'type/element/layout'
+import { useRouter } from 'next/router'
 
 export interface IHomeProps {}
 
 const Home: NextLayout = () => {
 	const [loading, setLoading] = useState(true)
-	const { checkAuth, isAuthenticated } = useContext(AuthContext)
+	const { checkAuth, isAuthenticated, handleLoading } = useContext(AuthContext)
 
+	const router = useRouter()
+	useEffect(()=> {
+		if(isAuthenticated) {
+			handleLoading(false)
+		}
+		if(isAuthenticated == false) {
+			router.push('/login')
+		}
+	}, [isAuthenticated])
 	useEffect(() => {
 		const authenticate = async () => {
 			await checkAuth()

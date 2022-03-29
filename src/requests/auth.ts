@@ -1,6 +1,6 @@
 import { loginForm, loginGoogleForm, logoutForm, registerForm } from 'type/form/auth'
 import { authMutaionResponse } from 'type/mutationResponses'
-import { postData } from 'utils/fetchData'
+import { getData, postData } from 'utils/fetchData'
 
 //-----------------------------------------------------------------
 //Request Mutation
@@ -49,3 +49,9 @@ export async function logoutRequest(inputLogout: logoutForm) {
 //-----------------------------------------------------------------
 //Request for queries
 //-----------------------------------------------------------------
+
+export const currentUserRequest = async (url: string) => {
+	return await getData<authMutaionResponse>({
+		url: `http://localhost:4000/api/auth/${url}`,
+	})
+}

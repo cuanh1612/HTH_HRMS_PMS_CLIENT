@@ -17,7 +17,7 @@ const JWTManager = () => {
 		inMemoryToken = accessToken
 
 		//Decode and set countdown to refresh
-		const decoded = jwtDecode<JwtPayload & { userId: number }>(accessToken)
+		const decoded = jwtDecode<JwtPayload & { userId: number, role: string, email: string }>(accessToken)
 		userId = decoded.userId
 		setRefreshTokenTimeout((decoded.exp as number) - (decoded.iat as number))
 		return true

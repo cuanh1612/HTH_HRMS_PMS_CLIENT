@@ -4,7 +4,7 @@ import jwt from 'utils/jwt'
 
 import { AuthContext } from 'contexts/AuthContext'
 import { allUsersQuery } from 'queries/user'
-import { NextLayout } from 'type/element'
+import { NextLayout } from 'type/element/layout'
 
 export interface IHomeProps {}
 

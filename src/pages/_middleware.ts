@@ -6,6 +6,8 @@ export function middleware(req: NextRequest) {
 	const url = req.url
 	const token = req.cookies['jwt-auth-cookie']
 
+	console.log(token)
+
 	//Get role current user
 	const roleCurrentUser = token
 		? jwtDecode<JwtPayload & { userId: number; role: string; email: string }>(token).role
@@ -14,7 +16,7 @@ export function middleware(req: NextRequest) {
 
 	//Check authorization
 	if (url.includes('/login')) {
-		console.log('Trang login ne')
+		return NextResponse.next()
 	}
 
 	return NextResponse.next()

@@ -6,6 +6,7 @@ import { AuthLayout } from 'components/layouts'
 import { AuthContext } from 'contexts/AuthContext'
 import { loginGoogleMutation, loginMutation } from 'mutations/auth'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 import { useContext, useEffect, useState } from 'react'
 // login with google
 import { useGoogleLogin } from 'react-google-login'
@@ -21,14 +22,11 @@ import { loginForm } from 'type/form/auth'
 import JWTManager from 'utils/jwt'
 import { LoginValidate } from 'utils/validate'
 
-
-
-
-
-
 const Login: NextLayout = () => {
 	// set authenticated when login success, set toast
-	const { setIsAuthenticated, setToast } = useContext(AuthContext)
+	const { setIsAuthenticated, setToast, isAuthenticated, handleLoading} = useContext(AuthContext)
+
+	const router = useRouter()
 
 	// login ------------------------------------------------
 
@@ -82,6 +80,8 @@ const Login: NextLayout = () => {
 	const onSubmit = (values: loginForm) => mutate(values)
 
 	// useEffect -----------------------------------------------------
+
+	// alert when login successfully or failed
 	useEffect(() => {
 		if (status == 'success') {
 			setToast({
@@ -93,6 +93,7 @@ const Login: NextLayout = () => {
 		}
 	}, [status])
 
+	// set loading google button 
 	useEffect(() => {
 		switch (statusLoginG) {
 			case 'running':
@@ -113,6 +114,17 @@ const Login: NextLayout = () => {
 				return setGLoad(false)
 		}
 	}, [statusLoginG])
+
+	// check authenticate to redirect to home page
+	useEffect(()=> {
+		if(isAuthenticated) {
+			router.push('/')
+		} else {
+			if(isAuthenticated == false) {
+				handleLoading(false)
+			}
+		}
+	}, [isAuthenticated])
 
 	return (
 		<VStack spacing={8} minW={'380px'}>

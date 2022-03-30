@@ -3,7 +3,7 @@ import useSWR from 'swr'
 import { allUsersRequest } from 'requests/user'
 import { userMutaionResponse } from 'type/mutationResponses'
 
-export const allUsersQuery = (isAuthenticated: boolean) => {
+export const allUsersQuery = (isAuthenticated: boolean | null) => {
 	return useSWR<userMutaionResponse, AxiosError>(
 		isAuthenticated ? 'users' : null,
 		allUsersRequest,

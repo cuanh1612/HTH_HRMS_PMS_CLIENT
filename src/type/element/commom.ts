@@ -32,3 +32,11 @@ export interface ITextarea {
 	placeholder: string
 	required?: boolean
 }
+
+// components/form/ButtonIcon
+export interface IButtonIcon {
+	isDisabled?: boolean
+	handle: any
+	ariaLabel: string
+	icon: any
+}

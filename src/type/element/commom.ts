@@ -7,3 +7,11 @@ export interface IInput {
     required?: boolean
 	type?: string
 }
+
+// components/form/ButtonIcon
+export interface IButtonIcon {
+	isDisabled?: boolean
+	handle: any
+	ariaLabel: string
+	icon: any
+}

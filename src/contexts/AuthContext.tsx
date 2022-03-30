@@ -59,6 +59,9 @@ const AuthContextProvider = ({ children }: { children: ReactNode }) => {
 				status: type,
 				duration: 5000,
 				variant: 'subtle',
+				containerStyle: {
+					zIndex: 101
+				}
 			})
 		}
 	}

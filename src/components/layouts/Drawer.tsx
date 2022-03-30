@@ -18,14 +18,11 @@ export interface IDrawerProps {
 	onClose: () => void
 }
 
-export default function Drawer({isOpen, onOpen, onClose} : IDrawerProps) {
+export default function Drawer({isOpen, onClose} : IDrawerProps) {
 	// const { isOpen, onOpen, onClose } = useDisclosure()
 
 	return (
-		<div>
-			<Button colorScheme="blue" onClick={onOpen}>
-				open
-			</Button>
+		<>
 			<DrawerChakra size={'sm'} placement={'left'} onClose={onClose} isOpen={isOpen}>
 				<DrawerOverlay />
 				<DrawerContent>
@@ -47,6 +44,6 @@ export default function Drawer({isOpen, onOpen, onClose} : IDrawerProps) {
 					</DrawerBody>
 				</DrawerContent>
 			</DrawerChakra>
-		</div>
+		</>
 	)
 }

@@ -17,7 +17,9 @@ const JWTManager = () => {
 		inMemoryToken = accessToken
 
 		//Decode and set countdown to refresh
-		const decoded = jwtDecode<JwtPayload & { userId: number, role: string, email: string }>(accessToken)
+		const decoded = jwtDecode<JwtPayload & { userId: number; role: string; email: string }>(
+			accessToken
+		)
 		userId = decoded.userId
 		setRefreshTokenTimeout((decoded.exp as number) - (decoded.iat as number))
 		return true
@@ -48,12 +50,9 @@ const JWTManager = () => {
 				url: 'http://localhost:4000/api/auth/refresh_token',
 			})
 
-			console.log('accessToken', response.accessToken)
-
 			setToken(response.accessToken)
 			return true
 		} catch (error) {
-			console.log('UNAUTHENTICATION', error)
 			deleteToken()
 			return false
 		}

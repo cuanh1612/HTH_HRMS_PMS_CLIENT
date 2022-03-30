@@ -16,3 +16,22 @@ export type registerForm = {
 export type logoutForm = {
 	userId: string
 }
+
+export type createEmployeeForm = {
+	employeeId: string
+	email: string
+	name: string
+	password: string
+	designation: string
+	department: string
+	joining_date: Date
+	hourly_rate: number
+	can_login: boolean
+	can_receive_email: boolean
+	gender: string
+	date_of_birth?: Date
+	country?: string
+	mobile: string
+	address?: string
+	skills?: string[]
+}

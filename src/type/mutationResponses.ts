@@ -1,4 +1,4 @@
-import { departmentType, designationType, userType } from './basicTypes'
+import { departmentType, designationType, employeeType, userType } from './basicTypes'
 
 export interface authMutaionResponse {
 	code: number
@@ -22,8 +22,8 @@ export interface employeeMutaionResponse {
 	code: number
 	success: boolean
 	message: string
-	user?: userType
-	users?: userType[]
+	employee?: employeeType
+	employees?: employeeType[]
 	[index: string]: any
 }
 

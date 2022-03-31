@@ -1,5 +1,5 @@
 import { Select, Text } from '@chakra-ui/react'
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { UseFormReturn } from 'react-hook-form'
 import countryList from 'react-select-country-list'
 
@@ -22,6 +22,11 @@ export default function CoutrySelector({ name, form }: ICoutrySelectorProps) {
 		//set value form
 		form.setValue(name, e.currentTarget.value)
 	}
+
+	//Set value when change
+	useEffect(() => {
+		setValue(form.getValues(name) ? form.getValues(name) : '')
+	}, [form.getValues(name)])
 
 	return (
 		<>

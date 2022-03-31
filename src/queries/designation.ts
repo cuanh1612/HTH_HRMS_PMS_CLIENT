@@ -1,12 +1,12 @@
 import { AxiosError } from 'axios'
-import { allDepartmentRequest } from 'requests/department'
+import { allDesignationRequest } from 'requests/designation'
 import useSWR from 'swr'
 import { DesignationMutaionResponse } from 'type/mutationResponses'
 
 export const allDesignationsQuery = (isAuthenticated: boolean | null) => {
 	return useSWR<DesignationMutaionResponse, AxiosError>(
 		isAuthenticated ? 'designations' : null,
-		allDepartmentRequest,
+		allDesignationRequest,
 		{
 			errorRetryCount: 2,
 			revalidateOnFocus: false,

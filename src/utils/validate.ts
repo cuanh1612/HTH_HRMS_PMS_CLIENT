@@ -14,3 +14,17 @@ export const CreateEmployeeValidate = yup.object({
     department:  yup.string().required('Please enter employee department'),
     hourly_rate: yup.number().required('Please enter hourly rate')
 }) 
+
+export const UpdateEmployeeValidate = yup.object({
+    employeeId: yup.string(),
+	email: yup.string(),
+    name: yup.string(),
+    password: yup.string(),
+    designation:  yup.string(),
+    department:  yup.string(),
+    hourly_rate: yup.number()
+}) 
+
+export const CreateDepartmentValidate = yup.object({
+    name: yup.string().required('Please enter employee name'),
+}) 

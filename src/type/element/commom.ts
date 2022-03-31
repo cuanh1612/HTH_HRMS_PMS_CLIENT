@@ -24,6 +24,8 @@ export interface ISelect {
 	required: boolean
 	placeholder: string
 	options: IOption[]
+	isModal?: boolean
+	onOpenModal?: () => void
 }
 
 export interface ITextarea {

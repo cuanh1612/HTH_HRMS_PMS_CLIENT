@@ -1,7 +1,9 @@
 import {
+	Button,
 	FormControl,
 	FormHelperText,
 	FormLabel,
+	HStack,
 	Select as SelectChakra,
 	useColorModeValue,
 } from '@chakra-ui/react'
@@ -15,6 +17,8 @@ export const Select = ({
 	required = false,
 	placeholder,
 	options = [],
+	isModal = false,
+	onOpenModal
 }: ISelect & { form: UseFormReturn<any, any> }) => {
 	const errorColor = useColorModeValue('red.400', 'pink.400')
 
@@ -32,18 +36,21 @@ export const Select = ({
 					<FormLabel fontWeight={'normal'} htmlFor={name}>
 						{label}
 					</FormLabel>
-					<SelectChakra
-						background={'#ffffff10'}
-						{...field}
-						id={name}
-						placeholder={placeholder}
-					>
-						{options.map((option) => (
-							<option value={option.value} key={option.value}>
-								{option.lable}
-							</option>
-						))}
-					</SelectChakra>
+					<HStack>
+						<SelectChakra
+							background={'#ffffff10'}
+							{...field}
+							id={name}
+							placeholder={placeholder}
+						>
+							{options.map((option) => (
+								<option value={option.value} key={option.value}>
+									{option.lable}
+								</option>
+							))}
+						</SelectChakra>
+						{isModal && onOpenModal && <Button onClick={onOpenModal}>Add</Button>}
+					</HStack>
 
 					{errors[name] && (
 						<FormHelperText color={errorColor}>{errors[name].message}</FormHelperText>

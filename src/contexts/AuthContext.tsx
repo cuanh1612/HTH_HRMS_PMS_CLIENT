@@ -22,7 +22,6 @@ const override = css`
 	border-color: red;
 `
 
-
 interface IAuthContext {
 	isAuthenticated: boolean | null
 	setIsAuthenticated: Dispatch<SetStateAction<boolean | null>>
@@ -30,8 +29,8 @@ interface IAuthContext {
 	setCurrentUser: Dispatch<SetStateAction<userType | null>>
 	checkAuth: () => Promise<void>
 	logoutClient: () => void
-	setToast: TToast,
-	handleLoading: (isLoading: boolean)=> void
+	setToast: TToast
+	handleLoading: (isLoading: boolean) => void
 }
 
 const defaultIsAuthenticated = null
@@ -44,7 +43,7 @@ export const AuthContext = createContext<IAuthContext>({
 	checkAuth: () => Promise.resolve(),
 	logoutClient: () => {},
 	setToast: () => {},
-	handleLoading: ()=> {}
+	handleLoading: () => {},
 })
 
 const AuthContextProvider = ({ children }: { children: ReactNode }) => {
@@ -60,12 +59,12 @@ const AuthContextProvider = ({ children }: { children: ReactNode }) => {
 				duration: 5000,
 				variant: 'subtle',
 				containerStyle: {
-					zIndex: 101
-				}
+					zIndex: 101,
+				},
 			})
 		}
 	}
-	
+
 	//State
 	const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(defaultIsAuthenticated)
 	const [currentUser, setCurrentUser] = useState<userType | null>(null)
@@ -73,20 +72,20 @@ const AuthContextProvider = ({ children }: { children: ReactNode }) => {
 	// set loading page
 	const [loadingPage, setLoading] = useState(true)
 
-	const handleLoading = (isLoading: boolean)=> {
+	const handleLoading = (isLoading: boolean) => {
 		setLoading(isLoading)
 	}
-	
+
 	//mutation
 	const { data: dataCurrentUser } = currentUserQuery(isAuthenticated)
-	
+
 	//Funtion handle
 	const logoutClient = () => {
 		JWTManager.deleteToken()
 		setIsAuthenticated(false)
 		setCurrentUser(null)
 	}
-	
+
 	const checkAuth = useCallback(async () => {
 		const token = JWTManager.getToken()
 		if (token) setIsAuthenticated(true)
@@ -101,12 +100,12 @@ const AuthContextProvider = ({ children }: { children: ReactNode }) => {
 			}
 		}
 	}, [])
-	
+
 	//Use effect
 	useEffect(() => {
 		checkAuth()
 	}, [])
-	
+
 	const authContextData = {
 		isAuthenticated,
 		checkAuth,
@@ -115,7 +114,7 @@ const AuthContextProvider = ({ children }: { children: ReactNode }) => {
 		setIsAuthenticated,
 		logoutClient,
 		setToast,
-		handleLoading
+		handleLoading,
 	}
 
 	//Set data current user
@@ -130,7 +129,12 @@ const AuthContextProvider = ({ children }: { children: ReactNode }) => {
 	return (
 		<>
 			<AuthContext.Provider value={authContextData}>
-				<Box pos={'relative'} w={'full'} h={loadingPage ? '100vh': 'auto'} overflow={loadingPage ? 'hidden': 'auto'}>
+				<Box
+					pos={'relative'}
+					w={'full'}
+					h={loadingPage ? '100vh' : 'auto'}
+					overflow={loadingPage ? 'hidden' : 'auto'}
+				>
 					{children}
 					{loadingPage && (
 						<Center
@@ -142,7 +146,12 @@ const AuthContextProvider = ({ children }: { children: ReactNode }) => {
 							bg="#FFFFFF"
 							pos="absolute"
 						>
-							<ClipLoader color={'green'} loading={true} css={override} width="200" />
+							<ClipLoader
+								color={'green'}
+								loading={true}
+								css={override}
+								width="200px"
+							/>
 						</Center>
 					)}
 				</Box>

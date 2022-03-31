@@ -1,5 +1,5 @@
 import { Badge, Input, VStack, Text, HStack, Box } from '@chakra-ui/react'
-import * as React from 'react'
+import { useEffect, useState } from 'react'
 import { UseFormReturn } from 'react-hook-form'
 import { TiDeleteOutline } from 'react-icons/ti'
 
@@ -10,7 +10,7 @@ export interface IInputMutipleProps {
 }
 
 export default function InputMutiple({ lable, name, form }: IInputMutipleProps) {
-	const [valueMultiple, setValueMultiple] = React.useState<string[]>(form.getValues(name))
+	const [valueMultiple, setValueMultiple] = useState<string[]>(form.getValues(name))
 
 	//handle press enter
 	const onAddvalue: React.KeyboardEventHandler<HTMLInputElement> = (e) => {
@@ -54,6 +54,11 @@ export default function InputMutiple({ lable, name, form }: IInputMutipleProps) 
 		//Set value state
 		setValueMultiple(oldValues)
 	}
+
+	//Set value when change
+	useEffect(() => {
+		setValueMultiple(form.getValues(name) ? form.getValues(name) : [])
+	}, [form.getValues(name)])
 
 	return (
 		<VStack alignItems={'start'}>

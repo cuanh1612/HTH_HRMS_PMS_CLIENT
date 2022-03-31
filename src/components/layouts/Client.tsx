@@ -1,16 +1,11 @@
-import { Switch, useColorMode } from '@chakra-ui/react'
+import { Box } from '@chakra-ui/react'
+import { Header } from 'components/partials'
 
 export const ClientLayout = ({ children }: { children: JSX.Element }) => {
-	const { toggleColorMode, colorMode } = useColorMode()
-	console.log(colorMode)
 	return (
-		<div>
-			<Switch
-				isChecked={colorMode != 'light' ? true : false}
-				onChange={() => toggleColorMode()}
-				colorScheme={'green'}
-			/>
+		<Box maxW={'1700px'} marginInline={'auto'} as='div'>
+			<Header/>
 			{children}
-		</div>
+		</Box>
 	)
 }

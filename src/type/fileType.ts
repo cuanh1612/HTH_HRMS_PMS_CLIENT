@@ -10,7 +10,7 @@ export interface IImg {
 	options: IImgCrop
 }
 
-export type HandleImg = (data: IImg)=> void 
+export type HandleImg = (data?: IImg )=> void 
 
 export interface ICloudinaryImg {
     url: string

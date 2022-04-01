@@ -29,6 +29,13 @@ export interface ISelect {
 	onOpenModal?: () => void
 }
 
+export interface ICombobox {
+	name: string
+	label: string
+	required: boolean
+	options: IOption[]
+}
+
 export interface ITextarea {
 	name: string
 	label: string

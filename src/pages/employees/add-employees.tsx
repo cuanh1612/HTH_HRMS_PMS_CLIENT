@@ -193,7 +193,7 @@ export default function Employees({ onCloseDrawer }: IEmployeesProps) {
 		<>
 			<Box pos="relative" p={6} as={'form'} h="auto" onSubmit={handleSubmit(onSubmit)}>
 				<Grid templateColumns="repeat(2, 1fr)" gap={6}>
-					<GridItem w="100%">
+					<GridItem w="100%" colSpan={[2, 1]}>
 						<Input
 							name="employeeId"
 							label="Employee ID"
@@ -204,7 +204,7 @@ export default function Employees({ onCloseDrawer }: IEmployeesProps) {
 							required
 						/>
 					</GridItem>
-					<GridItem w="100%">
+					<GridItem w="100%" colSpan={[2, 1]}>
 						<Input
 							name="name"
 							label="Name"
@@ -221,7 +221,7 @@ export default function Employees({ onCloseDrawer }: IEmployeesProps) {
 							required
 						/>
 					</GridItem>
-					<GridItem w="100%">
+					<GridItem w="100%" colSpan={[2, 1]}>
 						<Input
 							name="email"
 							label="Email"
@@ -232,7 +232,7 @@ export default function Employees({ onCloseDrawer }: IEmployeesProps) {
 							required
 						/>
 					</GridItem>
-					<GridItem w="100%">
+					<GridItem w="100%" colSpan={[2, 1]}>
 						<Input
 							name="password"
 							label="Password"
@@ -243,7 +243,7 @@ export default function Employees({ onCloseDrawer }: IEmployeesProps) {
 							required
 						/>
 					</GridItem>
-					<GridItem w="100%">
+					<GridItem w="100%" colSpan={[2, 1]}>
 						<Select
 							name="designation"
 							label="designation"
@@ -255,7 +255,7 @@ export default function Employees({ onCloseDrawer }: IEmployeesProps) {
 							onOpenModal={onOpenDesignation}
 						/>
 					</GridItem>
-					<GridItem w="100%">
+					<GridItem w="100%" colSpan={[2, 1]}>
 						<Select
 							name="department"
 							label="Department"
@@ -267,7 +267,7 @@ export default function Employees({ onCloseDrawer }: IEmployeesProps) {
 							onOpenModal={onOpenDepartment}
 						/>
 					</GridItem>
-					<GridItem w="100%">
+					<GridItem w="100%" colSpan={[2, 1]}>
 						<Input
 							name="joining_date"
 							label="Joining Date"
@@ -278,7 +278,7 @@ export default function Employees({ onCloseDrawer }: IEmployeesProps) {
 							required
 						/>
 					</GridItem>
-					<GridItem w="100%">
+					<GridItem w="100%" colSpan={[2, 1]}>
 						<Input
 							name="date_of_birth"
 							label="Date Of Birth"
@@ -288,7 +288,7 @@ export default function Employees({ onCloseDrawer }: IEmployeesProps) {
 							type="date"
 						/>
 					</GridItem>
-					<GridItem w="100%">
+					<GridItem w="100%" colSpan={[2, 1]}>
 						<InputNumber
 							name="hourly_rate"
 							label="Hourly Rate ($)"
@@ -297,7 +297,7 @@ export default function Employees({ onCloseDrawer }: IEmployeesProps) {
 							min={1}
 						/>
 					</GridItem>
-					<GridItem w="100%">
+					<GridItem w="100%" colSpan={[2, 1]}>
 						<Select
 							name="gender"
 							label="Gender"
@@ -308,11 +308,11 @@ export default function Employees({ onCloseDrawer }: IEmployeesProps) {
 						/>
 					</GridItem>
 
-					<GridItem w="100%">
+					<GridItem w="100%" colSpan={[2, 1]}>
 						<CoutrySelector name="country" form={formSetting} />
 					</GridItem>
 
-					<GridItem w="100%">
+					<GridItem w="100%" colSpan={[2, 1]}>
 						<Input
 							name="mobile"
 							label="Mobile"
@@ -345,7 +345,7 @@ export default function Employees({ onCloseDrawer }: IEmployeesProps) {
 				</Text>
 
 				<Grid templateColumns="repeat(2, 1fr)" gap={6} mt={6}>
-					<GridItem w="100%">
+					<GridItem w="100%" colSpan={[2, 1]}>
 						<VStack alignItems={'start'}>
 							<Checkbox
 								colorScheme={'teal'}
@@ -360,7 +360,7 @@ export default function Employees({ onCloseDrawer }: IEmployeesProps) {
 						</VStack>
 					</GridItem>
 
-					<GridItem w="100%">
+					<GridItem w="100%" colSpan={[2, 1]}>
 						<VStack alignItems={'start'}>
 							<Checkbox
 								name="can_receive_email"

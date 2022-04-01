@@ -34,3 +34,10 @@ export const detailEmployeeRequest = async (url: string) => {
 		url: `http://localhost:4000/api/${url}`,
 	})
 }
+
+//Function handle get all employees
+export const allEmployeesRequest = async (url: string) => {
+	return await getData<employeeMutaionResponse>({
+		url: `http://localhost:4000/api/${url}`,
+	})
+}

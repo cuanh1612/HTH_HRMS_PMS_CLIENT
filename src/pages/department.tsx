@@ -132,6 +132,7 @@ export default function Department(props: IDepartmentProps) {
 			mutateCreDepartment({
 				name,
 			})
+			setName('')
 		}
 	}
 

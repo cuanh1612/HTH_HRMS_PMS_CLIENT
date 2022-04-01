@@ -132,6 +132,7 @@ export default function Designation(props: IDepartmentProps) {
 			mutateCreDesignation({
 				name,
 			})
+			setName('')
 		}
 	}
 

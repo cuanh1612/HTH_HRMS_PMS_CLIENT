@@ -16,7 +16,7 @@ export default function Employees(props: IEmployeesProps) {
 	const router = useRouter()
 
 	//State ---------------------------------------------------------------------
-	const [employeeIdUpdate, setEmployeeUpdate] = useState<number | null>(null)
+	const [employeeIdUpdate, setEmployeeUpdate] = useState<number | null>(30)
 
 	//User effect ---------------------------------------------------------------
 

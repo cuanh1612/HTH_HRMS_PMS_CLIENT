@@ -16,6 +16,7 @@ import InputMutiple from 'components/form/InputMultiple'
 import { InputNumber } from 'components/form/InputNumber'
 import { Select } from 'components/form/Select'
 import { Textarea } from 'components/form/Textarea'
+import UploadAvatar from 'components/form/UploadAvatar'
 import Loading from 'components/Loading'
 import Modal from 'components/Modal'
 import { AuthContext } from 'contexts/AuthContext'
@@ -30,8 +31,10 @@ import { AiOutlineCheck, AiOutlineMail, AiOutlinePhone } from 'react-icons/ai'
 import { BsCalendarDate } from 'react-icons/bs'
 import { MdDriveFileRenameOutline, MdPassword } from 'react-icons/md'
 import { departmentType, designationType, IOption } from 'type/basicTypes'
+import { ICloudinaryImg, IImg } from 'type/fileType'
 import { updateEmployeeForm } from 'type/form/auth'
 import { dataGender } from 'utils/basicData'
+import { uploadFile } from 'utils/uploadFile'
 import { UpdateEmployeeValidate } from 'utils/validate'
 import Department from '../department'
 import Designation from '../designation'
@@ -53,6 +56,8 @@ export default function UpdateEmployees({ onCloseDrawer, employeeId }: IUpdateEm
 		can_login: false,
 		can_receive_email: false,
 	})
+	const [infoImg, setInfoImg] = useState<IImg>() // state data image upload
+	const [loadingImg, setLoadingImg] = useState<boolean>(false) // state loading when image upload
 
 	//Setup modal -------------------------------------------------------------------------------------------
 	const {
@@ -126,6 +131,20 @@ export default function UpdateEmployees({ onCloseDrawer, employeeId }: IUpdateEm
 	}
 
 	//function-------------------------------------------------------------------
+	const handleUploadAvatar = async () => {
+		if (infoImg) {
+			const dataUploadAvatar: Array<ICloudinaryImg> = await uploadFile(
+				infoImg.files,
+				['avatar'],
+				true,
+				undefined,
+				infoImg.options
+			)
+			return dataUploadAvatar[0]
+		}
+
+		return null
+	}
 
 	//User effect ---------------------------------------------------------------
 	useEffect(() => {
@@ -255,6 +274,14 @@ export default function UpdateEmployees({ onCloseDrawer, employeeId }: IUpdateEm
 		<>
 			<Box pos="relative" p={6} as={'form'} h="auto" onSubmit={handleSubmit(onSubmit)}>
 				<Grid templateColumns="repeat(2, 1fr)" gap={6}>
+					<GridItem w="100%" colSpan={2}>
+						<UploadAvatar
+							setInfoImg={(data: IImg) => {
+								setInfoImg(data)
+							}}
+						/>
+					</GridItem>
+
 					<GridItem w="100%" colSpan={[2, 1]}>
 						<Input
 							name="employeeId"

@@ -2,7 +2,7 @@ import UploadAvatar from 'components/form/UploadAvatar'
 import { AuthContext } from 'contexts/AuthContext'
 import { useRouter } from 'next/router'
 import { useContext, useEffect, useState } from 'react'
-import { IImg } from 'type/fileType'
+import { IImg, ICloudinaryImg} from 'type/fileType'
 import { uploadFile } from 'utils/uploadFile'
 
 export default function upload() {
@@ -20,9 +20,11 @@ export default function upload() {
 		}
 	})
 
-	useEffect(() => {
-		if (infoImg) uploadFile(infoImg.files, ['d'], true, undefined, infoImg.options)
-	}, [infoImg])
+	const handleUpload = async() => {
+		if(infoImg){
+			const data: Array<ICloudinaryImg> = await uploadFile(infoImg.files,['f'],true, undefined, infoImg.options)
+		}
+	}
 
 	return (
 		<>

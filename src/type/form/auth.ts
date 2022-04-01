@@ -34,12 +34,17 @@ export type createEmployeeForm = {
 	mobile: string
 	address?: string
 	skills?: string[]
+	avatar?: {
+		name: string
+		public_id: string
+		url: string
+	}
 }
 
 export type createLeaveForm = {
-	employee: string,
-	leave_type: string,
-	status: string,
+employee: string
+	leave_type: string
+	status: string
 	reason: string
 }
 

@@ -4,7 +4,7 @@ export interface authMutaionResponse {
 	code: number
 	success: boolean
 	message: string
-	user?: userType
+	user?: employeeType
 	accessToken?: string
 	[index: string]: any
 }

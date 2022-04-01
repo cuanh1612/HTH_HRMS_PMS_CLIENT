@@ -2,6 +2,7 @@
 import { ChakraProvider } from '@chakra-ui/react'
 import theme from '../theme'
 import 'public/css/global.css'
+import 'react-advanced-cropper/dist/style.css';
 
 import AuthContextProvider from 'contexts/AuthContext'
 import { AppPropsWithLayout } from 'type/element/layout'

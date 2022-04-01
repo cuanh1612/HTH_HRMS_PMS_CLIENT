@@ -9,7 +9,7 @@ import {
 	useEffect,
 	useState,
 } from 'react'
-import { TToast, userType } from 'type/basicTypes'
+import { employeeType, TToast, userType } from 'type/basicTypes'
 import JWTManager from 'utils/jwt'
 
 // custom loading
@@ -25,8 +25,8 @@ const override = css`
 interface IAuthContext {
 	isAuthenticated: boolean | null
 	setIsAuthenticated: Dispatch<SetStateAction<boolean | null>>
-	currentUser: userType | null
-	setCurrentUser: Dispatch<SetStateAction<userType | null>>
+	currentUser: employeeType | null
+	setCurrentUser: Dispatch<SetStateAction<employeeType | null>>
 	checkAuth: () => Promise<void>
 	logoutClient: () => void
 	setToast: TToast
@@ -67,7 +67,7 @@ const AuthContextProvider = ({ children }: { children: ReactNode }) => {
 
 	//State
 	const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(defaultIsAuthenticated)
-	const [currentUser, setCurrentUser] = useState<userType | null>(null)
+	const [currentUser, setCurrentUser] = useState<employeeType | null>(null)
 
 	// set loading page
 	const [loadingPage, setLoading] = useState(true)

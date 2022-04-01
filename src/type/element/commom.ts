@@ -1,3 +1,4 @@
+import { As } from "@chakra-ui/react"
 import { IOption } from "type/basicTypes"
 
 // components/form/input
@@ -41,4 +42,13 @@ export interface IButtonIcon {
 	handle: any
 	ariaLabel: string
 	icon: any
+	hoverBg?: string
+	activeBg?: string
+	bg?: string
+	color?: string
+	hoverColor?: string
+	activeColor?: string
+	radius?: boolean
+	as?: As<any>
+	htmlFor?: string
 }

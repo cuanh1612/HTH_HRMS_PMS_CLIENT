@@ -1,21 +1,23 @@
-import { Avatar, Box, HStack, useColorMode } from '@chakra-ui/react'
+import { Avatar, Box, Heading, HStack, Text, useColorMode } from '@chakra-ui/react'
 import ButtonIcon from 'components/ButtonIcon'
 import { AuthContext } from 'contexts/AuthContext'
 import { useContext, useEffect } from 'react'
 import { BsMoon, BsSun } from 'react-icons/bs'
 
 export const Header = () => {
-
-    // set darkMode
+	// set darkMode
 	const { colorMode, toggleColorMode } = useColorMode()
 
-    // get user
-    const {currentUser} = useContext(AuthContext)
+	// get user
+	const { currentUser } = useContext(AuthContext)
 
 	return (
-		<HStack paddingBlock={4}>
-			<Box flex={1}>s</Box>
-			<HStack>
+		<HStack alignItems={'center'} justify={'space-between'} paddingBlock={4}>
+			<Box>s</Box>
+            <Heading color={'hu-Pink.normal'} size={'lg'} fontFamily={'"Montserrat", sans-serif'}>
+                Huprom
+            </Heading>
+			<HStack spacing={5}>
 				<ButtonIcon
 					icon={
 						colorMode != 'light' ? (
@@ -27,10 +29,14 @@ export const Header = () => {
 					ariaLabel="darkMode"
 					handle={() => toggleColorMode()}
 				/>
-                
-                 
-                    <Avatar name={currentUser?.name} src='h'/>
-                
+				<Avatar
+                    fontFamily={'"Hind Madurai", sans-serif'}
+					w={'40px'}
+					height={'40px'}
+					borderRadius={'full'}
+					name={currentUser?.name}
+					src="/"
+				/>
 			</HStack>
 		</HStack>
 	)

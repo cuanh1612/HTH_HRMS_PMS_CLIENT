@@ -23,6 +23,11 @@ export interface employeeType {
 	joining_date: Date
 	date_of_birth?: Date
 	[index: string]: any
+	avatar?: {
+		url: string,
+		public_id: string,
+		name: string
+	} 
 }
 
 export interface departmentType {

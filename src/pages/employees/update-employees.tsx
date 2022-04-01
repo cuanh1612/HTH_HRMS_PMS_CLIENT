@@ -106,7 +106,40 @@ export default function UpdateEmployees({ onCloseDrawer, employeeId }: IUpdateEm
 
 	const { handleSubmit } = formSetting
 
-	const onSubmit = (values: updateEmployeeForm) => {
+	//function-------------------------------------------------------------------
+	const handleUploadAvatar = async () => {
+		if (infoImg) {
+			setLoadingImg(true)
+			const dataUploadAvatar: Array<ICloudinaryImg> = await uploadFile(
+				infoImg.files,
+				['avatar'],
+				true,
+				undefined,
+				infoImg.options
+			)
+
+			setLoadingImg(false)
+			return dataUploadAvatar[0]
+		}
+
+		return null
+	}
+
+	const onSubmit = async (values: updateEmployeeForm) => {
+		//Upload avatar
+		const dataAvatar: ICloudinaryImg | null = await handleUploadAvatar()
+
+		//Set data avatar if upload avatar success
+		if (dataAvatar) {
+			console.log(dataAvatar)
+
+			values.avatar = {
+				name: dataAvatar.name,
+				public_id: dataAvatar.public_id,
+				url: dataAvatar.url,
+			}
+		}
+
 		//Reset value update
 		values.can_login = advancedInfo.can_login
 		values.can_receive_email = advancedInfo.can_receive_email
@@ -123,27 +156,6 @@ export default function UpdateEmployees({ onCloseDrawer, employeeId }: IUpdateEm
 				employeeId,
 			})
 		}
-
-		mutateUpdateEmployee({
-			inputUpdate: values,
-			employeeId: 22,
-		})
-	}
-
-	//function-------------------------------------------------------------------
-	const handleUploadAvatar = async () => {
-		if (infoImg) {
-			const dataUploadAvatar: Array<ICloudinaryImg> = await uploadFile(
-				infoImg.files,
-				['avatar'],
-				true,
-				undefined,
-				infoImg.options
-			)
-			return dataUploadAvatar[0]
-		}
-
-		return null
 	}
 
 	//User effect ---------------------------------------------------------------
@@ -249,9 +261,6 @@ export default function UpdateEmployees({ onCloseDrawer, employeeId }: IUpdateEm
 					? dataEmployee?.employee.date_of_birth
 					: undefined,
 			})
-
-			console.log(dataEmployee.employee.can_login)
-			console.log(dataEmployee.employee.can_receive_email)
 		}
 	}, [dataEmployee])
 
@@ -276,9 +285,10 @@ export default function UpdateEmployees({ onCloseDrawer, employeeId }: IUpdateEm
 				<Grid templateColumns="repeat(2, 1fr)" gap={6}>
 					<GridItem w="100%" colSpan={2}>
 						<UploadAvatar
-							setInfoImg={(data: IImg) => {
+							setInfoImg={(data?: IImg) => {
 								setInfoImg(data)
 							}}
+							oldImg={dataEmployee?.employee?.avatar?.url}
 						/>
 					</GridItem>
 
@@ -483,7 +493,7 @@ export default function UpdateEmployees({ onCloseDrawer, employeeId }: IUpdateEm
 				>
 					Save
 				</Button>
-				{statusUpdateEmployee == 'running' && <Loading />}
+				{(statusUpdateEmployee === 'running' || loadingImg) && <Loading />}
 			</Box>
 
 			{/* Modal department and designation */}

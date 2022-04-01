@@ -73,4 +73,9 @@ export type updateEmployeeForm = {
 	mobile: string
 	address?: string
 	skills?: string[]
+	avatar?: {
+		url: string,
+		name: string,
+		public_id: string
+	}
 }

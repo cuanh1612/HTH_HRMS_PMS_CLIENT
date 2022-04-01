@@ -32,7 +32,7 @@ import {
 import { HandleImg } from 'type/fileType'
 
 let timeOutImg: NodeJS.Timeout
-export default function UploadAvatar({ setInfoImg }: { setInfoImg: HandleImg }) {
+export default function UploadAvatar({ setInfoImg, oldImg }: { setInfoImg: HandleImg, oldImg?: string }) {
 	const [file, setFile] = useState<FileList | null>(null)
 	const [preImg, setImg] = useState<any>(null)
 
@@ -95,7 +95,7 @@ export default function UploadAvatar({ setInfoImg }: { setInfoImg: HandleImg }) 
 							transitions={transitions}
 						/>
 					) : (
-						<Avatar size={'xl'} />
+						<Avatar size={'xl'} src={oldImg} />
 					)}
 				</Box>
 				<Box bottom={'0'} right={'-10px'} pos={'absolute'} display="block">

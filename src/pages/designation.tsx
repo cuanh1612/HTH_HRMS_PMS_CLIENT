@@ -163,7 +163,7 @@ export default function Designation(props: IDepartmentProps) {
 							<Thead pos={'sticky'} top={'0px'}>
 								<Tr>
 									<Th w={'50px'}>#</Th>
-									<Th>Department</Th>
+									<Th>Designation (click to edit)</Th>
 									<Th isNumeric>Action</Th>
 								</Tr>
 							</Thead>

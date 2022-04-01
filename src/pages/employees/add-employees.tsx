@@ -235,7 +235,7 @@ export default function Employees({ onCloseDrawer }: IEmployeesProps) {
 				<Grid templateColumns="repeat(2, 1fr)" gap={6}>
 					<GridItem w="100%" colSpan={2}>
 						<UploadAvatar
-							setInfoImg={(data: IImg) => {
+							setInfoImg={(data?: IImg) => {
 								setInfoImg(data)
 							}}
 						/>

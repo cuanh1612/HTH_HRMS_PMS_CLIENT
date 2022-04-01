@@ -1,4 +1,4 @@
-// ui component 
+// ui component
 import {
 	Avatar,
 	Box,
@@ -14,12 +14,12 @@ import {
 } from '@chakra-ui/react'
 import ButtonIcon from 'components/ButtonIcon'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 // icon
 import { MdOutlineFileUpload } from 'react-icons/md'
 
-// use this library to crop image 
+// use this library to crop image
 import {
 	CircleStencil,
 	Cropper,
@@ -42,9 +42,11 @@ export default function UploadAvatar({ setInfoImg }: { setInfoImg: HandleImg }) 
 	const [transitions, setTransitions] = useState<CropperTransitions>()
 	const [infoCrop, setInfoCrop] = useState<any>()
 
+	const refInput = useRef<any>()
+
 	const { isOpen, onOpen, onClose } = useDisclosure()
 
-    // give you information of image
+	// give you information of image
 	const onSave = () => {
 		if (file) {
 			const files = Object.values(file)
@@ -60,7 +62,15 @@ export default function UploadAvatar({ setInfoImg }: { setInfoImg: HandleImg }) 
 		}
 	}
 
-    // set pre image and save files to state
+	// remove old image
+	const onRemove = () => {
+		setInfoImg(undefined)
+		setImg(null)
+		setFile(null)
+		refInput.current.value = ''
+	}
+
+	// set pre image and save files to state
 	useEffect(() => {
 		if (file && file.length != 0) {
 			setImg(URL.createObjectURL(file[0]))
@@ -90,6 +100,7 @@ export default function UploadAvatar({ setInfoImg }: { setInfoImg: HandleImg }) 
 				</Box>
 				<Box bottom={'0'} right={'-10px'} pos={'absolute'} display="block">
 					<input
+						ref={refInput}
 						accept="image/*"
 						type={'file'}
 						onChange={(event) => setFile(event.target.files)}
@@ -114,39 +125,61 @@ export default function UploadAvatar({ setInfoImg }: { setInfoImg: HandleImg }) 
 				</Box>
 			</Box>
 
-			<Modal isOpen={isOpen} onClose={onClose}>
+			<Modal
+				onEsc={() => {
+					onRemove()
+				}}
+				onOverlayClick={() => {
+					onRemove()
+				}}
+				isOpen={isOpen}
+				onClose={onClose}
+			>
 				<ModalOverlay />
 				<ModalContent>
 					<ModalHeader>Crop image</ModalHeader>
-					<ModalCloseButton />
+					<ModalCloseButton
+						onClick={() => {
+							onClose()
+							onRemove()
+						}}
+					/>
 					<ModalBody>
-                        <Box borderRadius={10} overflow='hidden'>
-                            <Cropper
-                                onChange={(data) => {
-                                    if (data) {
-                                        setTimeout(() => {
-                                            clearTimeout(timeOutImg)
-                                            timeOutImg = setTimeout(() => {
-                                                setState(data.getState())
-                                                setImage(data.getImage())
-                                                setTransitions(data.getTransitions())
-                                                setInfoCrop(data.getCoordinates())
-                                            }, 300)
-                                        }, 500)
-                                    }
-                                }}
-                                src={preImg}
-                                stencilComponent={CircleStencil}
-                            />
-                        </Box>
+						<Box borderRadius={10} overflow="hidden">
+							<Cropper
+								onChange={(data) => {
+									if (data) {
+										setTimeout(() => {
+											clearTimeout(timeOutImg)
+											timeOutImg = setTimeout(() => {
+												setState(data.getState())
+												setImage(data.getImage())
+												setTransitions(data.getTransitions())
+												setInfoCrop(data.getCoordinates())
+											}, 300)
+										}, 500)
+									}
+								}}
+								src={preImg}
+								stencilComponent={CircleStencil}
+							/>
+						</Box>
 					</ModalBody>
 
 					<ModalFooter>
-						<Button colorScheme="red" mr={3} onClick={onClose}>
+						<Button
+							colorScheme="red"
+                            variant="ghost"
+							mr={3}
+							onClick={() => {
+								onClose()
+								onRemove()
+							}}
+						>
 							Close
 						</Button>
 						<Button
-							variant="ghost"
+                        colorScheme={'teal'}
 							onClick={() => {
 								onClose()
 								onSave()

@@ -29,7 +29,7 @@ export default function upload() {
 	return (
 		<>
 			<UploadAvatar
-				setInfoImg={(data: IImg) => {
+				setInfoImg={(data?: IImg) => {
 					setInfoImg(data)
 				}}
 			/>

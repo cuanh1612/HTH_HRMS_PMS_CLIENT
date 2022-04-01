@@ -1,3 +1,5 @@
+import { ReactNode } from "react"
+
 export interface userType {
 	email: string
 	username: string
@@ -29,6 +31,13 @@ export interface departmentType {
 	[index: string]: any
 }
 
+export interface leaveTypeType {
+	id: number
+	name: string
+	color_code: string
+	[index: string]: any
+}
+
 export interface designationType {
 	id: number
 	name: string
@@ -37,7 +46,7 @@ export interface designationType {
 
 export interface IOption {
 	value: string
-	lable: string
+	lable: string | ReactNode
 }
 
 // toast

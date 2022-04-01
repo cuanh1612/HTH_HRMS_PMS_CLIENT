@@ -15,3 +15,17 @@ export const dataGender: IOption[] = [
     },
      
 ]
+export const dataStatusLeave: IOption[] = [
+    {
+        value: 'Approved',
+        lable: 'Approved'
+    },
+    {
+        value: 'Pending',
+        lable: 'Pending'
+    },
+    {
+        value: 'Rejected',
+        lable: 'Rejected'
+    },
+]

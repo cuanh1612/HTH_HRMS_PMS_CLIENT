@@ -1,4 +1,14 @@
-import { Box, Button, Checkbox, Divider, Grid, GridItem, Text, VStack } from '@chakra-ui/react'
+import {
+	Box,
+	Button,
+	Checkbox,
+	Divider,
+	Grid,
+	GridItem,
+	Text,
+	useDisclosure,
+	VStack,
+} from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
 import CoutrySelector from 'components/form/CountrySelector'
 import { Input } from 'components/form/Input'
@@ -7,6 +17,7 @@ import { InputNumber } from 'components/form/InputNumber'
 import { Select } from 'components/form/Select'
 import { Textarea } from 'components/form/Textarea'
 import Loading from 'components/Loading'
+import Modal from 'components/Modal'
 import { AuthContext } from 'contexts/AuthContext'
 import { updateEmployeeMutation } from 'mutations/employee'
 import { useRouter } from 'next/router'
@@ -22,6 +33,8 @@ import { departmentType, designationType, IOption } from 'type/basicTypes'
 import { updateEmployeeForm } from 'type/form/auth'
 import { dataGender } from 'utils/basicData'
 import { UpdateEmployeeValidate } from 'utils/validate'
+import Department from '../department'
+import Designation from '../designation'
 
 export interface IUpdateEmployeesProps {
 	onCloseDrawer?: () => void
@@ -41,11 +54,27 @@ export default function UpdateEmployees({ onCloseDrawer, employeeId }: IUpdateEm
 		can_receive_email: false,
 	})
 
+	//Setup modal -------------------------------------------------------------------------------------------
+	const {
+		isOpen: isOpenDepartment,
+		onOpen: onOpenDepartment,
+		onClose: onCloseDepartment,
+	} = useDisclosure()
+
+	const {
+		isOpen: isOpenDesignation,
+		onOpen: onOpenDesignation,
+		onClose: onCloseDesignation,
+	} = useDisclosure()
+
 	//Query -------------------------------------------------------------------------------------------------
 	const { data: dataDepartments, error: errorDepartments } = allDepartmentsQuery(isAuthenticated)
 	const { data: dataDesignations, error: errorDesignations } =
 		allDesignationsQuery(isAuthenticated)
-	const { data: dataEmployee, error: errorEmployee } = detailEmployeeQuery(isAuthenticated, employeeId)
+	const { data: dataEmployee, error: errorEmployee } = detailEmployeeQuery(
+		isAuthenticated,
+		employeeId
+	)
 
 	//mutation ----------------------------------------------------------------------------------------------
 	const [mutateUpdateEmployee, { status: statusUpdateEmployee, data: dataUpdateEmployee }] =
@@ -226,7 +255,7 @@ export default function UpdateEmployees({ onCloseDrawer, employeeId }: IUpdateEm
 		<>
 			<Box pos="relative" p={6} as={'form'} h="auto" onSubmit={handleSubmit(onSubmit)}>
 				<Grid templateColumns="repeat(2, 1fr)" gap={6}>
-					<GridItem w="100%">
+					<GridItem w="100%" colSpan={[2, 1]}>
 						<Input
 							name="employeeId"
 							label="Employee ID"
@@ -237,7 +266,7 @@ export default function UpdateEmployees({ onCloseDrawer, employeeId }: IUpdateEm
 							required
 						/>
 					</GridItem>
-					<GridItem w="100%">
+					<GridItem w="100%" colSpan={[2, 1]}>
 						<Input
 							name="name"
 							label="Name"
@@ -254,7 +283,7 @@ export default function UpdateEmployees({ onCloseDrawer, employeeId }: IUpdateEm
 							required
 						/>
 					</GridItem>
-					<GridItem w="100%">
+					<GridItem w="100%" colSpan={[2, 1]}>
 						<Input
 							name="email"
 							label="Email"
@@ -265,7 +294,7 @@ export default function UpdateEmployees({ onCloseDrawer, employeeId }: IUpdateEm
 							required
 						/>
 					</GridItem>
-					<GridItem w="100%">
+					<GridItem w="100%" colSpan={[2, 1]}>
 						<Input
 							name="password"
 							label="Password"
@@ -275,7 +304,7 @@ export default function UpdateEmployees({ onCloseDrawer, employeeId }: IUpdateEm
 							type="password"
 						/>
 					</GridItem>
-					<GridItem w="100%">
+					<GridItem w="100%" colSpan={[2, 1]}>
 						<Select
 							name="designation"
 							label="designation"
@@ -283,9 +312,11 @@ export default function UpdateEmployees({ onCloseDrawer, employeeId }: IUpdateEm
 							form={formSetting}
 							placeholder={'Select designation'}
 							options={optionDesignations}
+							isModal={true}
+							onOpenModal={onOpenDesignation}
 						/>
 					</GridItem>
-					<GridItem w="100%">
+					<GridItem w="100%" colSpan={[2, 1]}>
 						<Select
 							name="department"
 							label="Department"
@@ -293,9 +324,11 @@ export default function UpdateEmployees({ onCloseDrawer, employeeId }: IUpdateEm
 							form={formSetting}
 							placeholder={'Select department'}
 							options={optionDepartments}
+							isModal={true}
+							onOpenModal={onOpenDepartment}
 						/>
 					</GridItem>
-					<GridItem w="100%">
+					<GridItem w="100%" colSpan={[2, 1]}>
 						<Input
 							name="joining_date"
 							label="Joining Date"
@@ -306,7 +339,7 @@ export default function UpdateEmployees({ onCloseDrawer, employeeId }: IUpdateEm
 							required
 						/>
 					</GridItem>
-					<GridItem w="100%">
+					<GridItem w="100%" colSpan={[2, 1]}>
 						<Input
 							name="date_of_birth"
 							label="Date Of Birth"
@@ -316,7 +349,7 @@ export default function UpdateEmployees({ onCloseDrawer, employeeId }: IUpdateEm
 							type="date"
 						/>
 					</GridItem>
-					<GridItem w="100%">
+					<GridItem w="100%" colSpan={[2, 1]}>
 						<InputNumber
 							name="hourly_rate"
 							label="Hourly Rate ($)"
@@ -325,7 +358,7 @@ export default function UpdateEmployees({ onCloseDrawer, employeeId }: IUpdateEm
 							min={1}
 						/>
 					</GridItem>
-					<GridItem w="100%">
+					<GridItem w="100%" colSpan={[2, 1]}>
 						<Select
 							name="gender"
 							label="Gender"
@@ -336,11 +369,11 @@ export default function UpdateEmployees({ onCloseDrawer, employeeId }: IUpdateEm
 						/>
 					</GridItem>
 
-					<GridItem w="100%">
+					<GridItem w="100%" colSpan={[2, 1]}>
 						<CoutrySelector name="country" form={formSetting} />
 					</GridItem>
 
-					<GridItem w="100%">
+					<GridItem w="100%" colSpan={[2, 1]}>
 						<Input
 							name="mobile"
 							label="Mobile"
@@ -373,7 +406,7 @@ export default function UpdateEmployees({ onCloseDrawer, employeeId }: IUpdateEm
 				</Text>
 
 				<Grid templateColumns="repeat(2, 1fr)" gap={6} mt={6}>
-					<GridItem w="100%">
+					<GridItem w="100%" colSpan={[2, 1]}>
 						<VStack alignItems={'start'}>
 							<Checkbox
 								colorScheme={'teal'}
@@ -390,7 +423,7 @@ export default function UpdateEmployees({ onCloseDrawer, employeeId }: IUpdateEm
 						</VStack>
 					</GridItem>
 
-					<GridItem w="100%">
+					<GridItem w="100%" colSpan={[2, 1]}>
 						<VStack alignItems={'start'}>
 							<Checkbox
 								colorScheme={'teal'}
@@ -425,6 +458,31 @@ export default function UpdateEmployees({ onCloseDrawer, employeeId }: IUpdateEm
 				</Button>
 				{statusUpdateEmployee == 'running' && <Loading />}
 			</Box>
+
+			{/* Modal department and designation */}
+			<Modal
+				size="3xl"
+				isOpen={isOpenDepartment}
+				onOpen={onOpenDepartment}
+				onClose={onCloseDepartment}
+				title="Department"
+			>
+				<Text>
+					<Department />
+				</Text>
+			</Modal>
+
+			<Modal
+				size="3xl"
+				isOpen={isOpenDesignation}
+				onOpen={onOpenDesignation}
+				onClose={onCloseDesignation}
+				title="Designation"
+			>
+				<Text>
+					<Designation />
+				</Text>
+			</Modal>
 		</>
 	)
 }

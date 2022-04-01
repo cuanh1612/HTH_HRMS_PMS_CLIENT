@@ -36,6 +36,13 @@ export type createEmployeeForm = {
 	skills?: string[]
 }
 
+export type createLeaveForm = {
+	employee: string,
+	leave_type: string,
+	status: string,
+	reason: string
+}
+
 export type createDepartmentForm = {
 	name: string
 }

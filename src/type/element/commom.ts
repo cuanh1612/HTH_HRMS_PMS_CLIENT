@@ -1,4 +1,5 @@
 import { As } from "@chakra-ui/react"
+import { HTMLInputTypeAttribute } from "react"
 import { IOption } from "type/basicTypes"
 
 // components/form/input
@@ -8,7 +9,7 @@ export interface IInput {
 	icon: any
 	placeholder?: string
 	required?: boolean
-	type?: string
+	type?: HTMLInputTypeAttribute | undefined
 }
 
 export interface IInputNumber {
@@ -27,6 +28,7 @@ export interface ISelect {
 	options: IOption[]
 	isModal?: boolean
 	onOpenModal?: () => void
+	disabled?: boolean
 }
 
 export interface ICombobox {

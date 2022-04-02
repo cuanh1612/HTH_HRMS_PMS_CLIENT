@@ -28,6 +28,7 @@ export interface employeeType {
 		public_id: string,
 		name: string
 	} 
+	id: number
 }
 
 export interface departmentType {
@@ -40,6 +41,18 @@ export interface leaveTypeType {
 	id: number
 	name: string
 	color_code: string
+	[index: string]: any
+}
+
+export interface leaveType {
+	id: number
+	name: string
+	employee: employeeType
+	status: string
+	leave_type: leaveTypeType
+	duration: string
+	reason: string
+	date: Date
 	[index: string]: any
 }
 

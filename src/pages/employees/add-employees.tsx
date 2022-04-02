@@ -321,7 +321,7 @@ export default function Employees({ onCloseDrawer }: IEmployeesProps) {
 							label="Joining Date"
 							icon={<BsCalendarDate fontSize={'20px'} color="gray" opacity={0.6} />}
 							form={formSetting}
-							placeholder="Enter employee department"
+							placeholder="Select Joining Date"
 							type="date"
 							required
 						/>

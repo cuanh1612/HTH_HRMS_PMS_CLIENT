@@ -19,7 +19,8 @@ export const Select = ({
 	placeholder,
 	options = [],
 	isModal = false,
-	onOpenModal
+	onOpenModal,
+	disabled = false,
 }: ISelect & { form: UseFormReturn<any, any> }) => {
 	const errorColor = useColorModeValue('red.400', 'pink.400')
 
@@ -39,6 +40,7 @@ export const Select = ({
 					</FormLabel>
 					<HStack>
 						<SelectChakra
+							disabled={disabled}
 							background={'#ffffff10'}
 							{...field}
 							id={name}

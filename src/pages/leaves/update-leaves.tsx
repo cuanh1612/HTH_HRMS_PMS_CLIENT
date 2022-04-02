@@ -3,7 +3,6 @@ import {
 	Button,
 	Grid,
 	GridItem,
-	Input,
 	Radio,
 	RadioGroup,
 	Stack,
@@ -22,21 +21,24 @@ import { useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { AiOutlineCheck } from 'react-icons/ai'
 import { IOption } from 'type/basicTypes'
-import { createLeaveForm } from 'type/form/auth'
+import { createLeaveForm, updateLeaveForm } from 'type/form/auth'
 import { dataStatusLeave } from 'utils/basicData'
-import { CreateLeaveValidate } from 'utils/validate'
+import { CreateLeaveValidate, UpdateLeaveValidate } from 'utils/validate'
 import { MultiDatePicker } from 'components/form/MultiDatePicker'
 import { BsCalendarDate } from 'react-icons/bs'
-import { createLeaveMutation } from 'mutations/leave'
+import { createLeaveMutation, updateLeaveMutation } from 'mutations/leave'
 import Modal from 'components/Modal'
 import AddLeaveType from '../leave-type'
 import Loading from 'components/Loading'
+import { detailLeaveQuery } from 'queries/leave'
+import { Input } from 'components/form/Input'
 
-export interface IAddLeavesProps {
+export interface IUpdateLeavesProps {
 	onCloseDrawer?: () => void
+	leaveId: number | null
 }
 
-export default function AddLeaves({ onCloseDrawer }: IAddLeavesProps) {
+export default function UpdateLeaves({ onCloseDrawer, leaveId }: IUpdateLeavesProps) {
 	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
 	const router = useRouter()
 
@@ -55,28 +57,39 @@ export default function AddLeaves({ onCloseDrawer }: IAddLeavesProps) {
 	//Query ---------------------------------------------------------------------
 	const { data: dataEmployees } = allEmployeesQuery(isAuthenticated)
 	const { data: dataLeaveTypes } = allLeaveTypesQuery()
+	const { data: dataDetailLeave, error: errorDetailLeave } = detailLeaveQuery(leaveId)
 
 	//mutation ------------------------------------------------------------------
-	const [mutateCreateLeave, { status: statusLeave, data: dataLeave }] =
-		createLeaveMutation(setToast)
+	const [mutateUpLeave, { status: statusUpLeave, data: dataUpLeave }] =
+		updateLeaveMutation(setToast)
 
-	// setForm and submit form create new leave -------------------------------
-	const formSetting = useForm<createLeaveForm>({
+	// setForm and submit form update leave -------------------------------------
+	const formSetting = useForm<updateLeaveForm>({
 		defaultValues: {
 			employee: '',
 			leave_type: '',
 			status: '',
 			reason: '',
-			dates: [],
+			date: undefined,
 		},
-		resolver: yupResolver(CreateLeaveValidate),
+		resolver: yupResolver(UpdateLeaveValidate),
 	})
 
 	const { handleSubmit } = formSetting
 
-	const onSubmit = (values: createLeaveForm) => {
-		values.duration = duration
-		mutateCreateLeave(values)
+	const onSubmit = (values: updateLeaveForm) => {
+		if (!leaveId) {
+			setToast({
+				type: 'error',
+				msg: 'Not found leave to update',
+			})
+		} else {
+			values.duration = duration
+			mutateUpLeave({
+				inputUpdate: values,
+				leaveId,
+			})
+		}
 	}
 
 	//User effect ---------------------------------------------------------------
@@ -91,6 +104,23 @@ export default function AddLeaves({ onCloseDrawer }: IAddLeavesProps) {
 			}
 		}
 	}, [isAuthenticated])
+
+	//Setting form when have data detail leave
+	useEffect(() => {
+		if (dataDetailLeave?.leave) {
+			//Set duration state
+			setDuration(dataDetailLeave.leave.duration)
+
+			//Set data form
+			formSetting.reset({
+				employee: dataDetailLeave.leave.employee.id.toString(),
+				status: dataDetailLeave.leave.status,
+				leave_type: dataDetailLeave.leave.leave_type.id.toString(),
+				reason: dataDetailLeave.leave.reason,
+				date: dataDetailLeave.leave.date,
+			})
+		}
+	}, [dataDetailLeave])
 
 	//Set options select employees
 	useEffect(() => {
@@ -122,7 +152,7 @@ export default function AddLeaves({ onCloseDrawer }: IAddLeavesProps) {
 
 	//Note when request success
 	useEffect(() => {
-		if (statusLeave === 'success') {
+		if (statusUpLeave === 'success') {
 			//Close drawer when using drawer
 			if (onCloseDrawer) {
 				onCloseDrawer()
@@ -130,10 +160,10 @@ export default function AddLeaves({ onCloseDrawer }: IAddLeavesProps) {
 
 			setToast({
 				type: 'success',
-				msg: dataLeave?.message as string,
+				msg: dataUpLeave?.message as string,
 			})
 		}
-	}, [statusLeave])
+	}, [statusUpLeave])
 
 	return (
 		<>
@@ -142,11 +172,12 @@ export default function AddLeaves({ onCloseDrawer }: IAddLeavesProps) {
 					<GridItem w="100%" colSpan={[2, 1]}>
 						<Select
 							name="employee"
-							label="Choose Member"
+							label="Member"
 							required
 							form={formSetting}
 							placeholder={'Select Member'}
 							options={optionEmployees}
+							disabled={true}
 						/>
 					</GridItem>
 
@@ -175,13 +206,14 @@ export default function AddLeaves({ onCloseDrawer }: IAddLeavesProps) {
 					</GridItem>
 
 					<GridItem w="100%" colSpan={[2, 1]}>
-						<MultiDatePicker
-							name="dates"
-							label="Select dates"
-							required
+						<Input
+							name="date"
+							label="Leave Date"
+							icon={<BsCalendarDate fontSize={'20px'} color="gray" opacity={0.6} />}
 							form={formSetting}
-							placeholder={'Select Member'}
-							icon={<BsCalendarDate />}
+							placeholder="Select Leave Date"
+							type="date"
+							required
 						/>
 					</GridItem>
 
@@ -224,7 +256,7 @@ export default function AddLeaves({ onCloseDrawer }: IAddLeavesProps) {
 					Save
 				</Button>
 
-				{statusLeave === 'running' && <Loading />}
+				{statusUpLeave === 'running' && <Loading />}
 			</Box>
 
 			{/* Modal Leave type */}

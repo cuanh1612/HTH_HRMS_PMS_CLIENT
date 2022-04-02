@@ -82,6 +82,7 @@ export default function Designation(props: IDepartmentProps) {
 		}
 	}, [statusCreDesignation])
 
+	//Refetch data designation and notice when delete success
 	useEffect(() => {
 		switch (statusDeleDesignation) {
 			case 'success':
@@ -99,6 +100,7 @@ export default function Designation(props: IDepartmentProps) {
 		}
 	}, [statusDeleDesignation])
 
+	//Refetch data designation and notice when update success
 	useEffect(() => {
 		switch (statusUpDesignation) {
 			case 'success':
@@ -198,8 +200,8 @@ export default function Designation(props: IDepartmentProps) {
 									))}
 							</Tbody>
 						</Table>
-						{statusDeleDesignation === 'running' ||
-							(statusUpDesignation === 'running' && <Loading />)}
+						{(statusDeleDesignation === 'running' ||
+							statusUpDesignation === 'running') && <Loading />}
 					</TableContainer>
 				</Box>
 

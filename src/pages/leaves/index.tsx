@@ -4,16 +4,20 @@ import { AuthContext } from 'contexts/AuthContext'
 import { useRouter } from 'next/router'
 import { useContext, useEffect, useState } from 'react'
 import AddLeave from './add-leaves'
+import UpdateLeave from './update-leaves'
 
 export interface ILeaveProps {}
 
 export default function Leave(props: ILeaveProps) {
-	const { isOpen: isOpenAdd, onOpen: onOpenAdd, onClose: onCloseAdd } = useDisclosure()
 	const { isAuthenticated, handleLoading } = useContext(AuthContext)
 	const router = useRouter()
 
+	//Setup drawer --------------------------------------------------------------
+	const { isOpen: isOpenAdd, onOpen: onOpenAdd, onClose: onCloseAdd } = useDisclosure()
+	const { isOpen: isOpenUpdate, onOpen: onOpenUpdate, onClose: onCloseUpdate } = useDisclosure()
+
 	//State ---------------------------------------------------------------------
-	const [leaveIdUpdate, setLeaveUpdate] = useState<number | null>(null)
+	const [leaveIdUpdate, setLeaveUpdate] = useState<number | null>(29)
 
 	//User effect ---------------------------------------------------------------
 
@@ -33,8 +37,14 @@ export default function Leave(props: ILeaveProps) {
 			<Button colorScheme="blue" onClick={onOpenAdd}>
 				open add leave
 			</Button>
+			<Button colorScheme="blue" onClick={onOpenUpdate}>
+				open update leave
+			</Button>
 			<Drawer size="xl" title="Add Leave" onClose={onCloseAdd} isOpen={isOpenAdd}>
 				<AddLeave onCloseDrawer={onCloseAdd} />
+			</Drawer>
+			<Drawer size="xl" title="Update Leave" onClose={onCloseUpdate} isOpen={isOpenUpdate}>
+				<UpdateLeave leaveId={leaveIdUpdate} onCloseDrawer={onCloseUpdate} />
 			</Drawer>
 		</>
 	)

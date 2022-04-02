@@ -82,6 +82,7 @@ export default function Department(props: IDepartmentProps) {
 		}
 	}, [statusCreDepartment])
 
+	//Refetch data department and notice when delete success
 	useEffect(() => {
 		switch (statusDeleDepartment) {
 			case 'success':
@@ -99,6 +100,7 @@ export default function Department(props: IDepartmentProps) {
 		}
 	}, [statusDeleDepartment])
 
+	//Refetch data department and notice when update success
 	useEffect(() => {
 		switch (statusUpDepartment) {
 			case 'success':
@@ -198,8 +200,8 @@ export default function Department(props: IDepartmentProps) {
 									))}
 							</Tbody>
 						</Table>
-						{statusDeleDepartment === 'running' ||
-							(statusUpDepartment === 'running' && <Loading />)}
+						{(statusDeleDepartment === 'running' ||
+							statusUpDepartment === 'running') && <Loading />}
 					</TableContainer>
 				</Box>
 

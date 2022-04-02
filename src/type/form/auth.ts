@@ -42,10 +42,27 @@ export type createEmployeeForm = {
 }
 
 export type createLeaveForm = {
-employee: string
+	employee: string
 	leave_type: string
 	status: string
 	reason: string
+	dates?: Date[]
+	duration: string
+}
+
+export type updateLeaveForm = {
+	employee: string
+	leave_type: string
+	status: string
+	reason: string
+	date: Date 
+	duration: string
+}
+
+export type createLeaveTypeForm = {
+	name: string
+	color_code: string
+	dates?: Date[]
 }
 
 export type createDepartmentForm = {
@@ -74,8 +91,8 @@ export type updateEmployeeForm = {
 	address?: string
 	skills?: string[]
 	avatar?: {
-		url: string,
-		name: string,
+		url: string
+		name: string
 		public_id: string
 	}
 }

@@ -41,3 +41,15 @@ export const CreateLeaveValidate = yup.object({
 	status: yup.string().required('Please select status'),
 	reason: yup.string().required('Please enter reason absence'),
 })
+
+export const UpdateLeaveValidate = yup.object({
+	employee: yup.string().required('Please select employee'),
+	leave_type: yup.string().required('Please select leave type'),
+	status: yup.string().required('Please select status'),
+	reason: yup.string().required('Please enter reason absence'),
+})
+
+export const CreateLeaveTypeValidate = yup.object({
+	name: yup.string().required('Please enter name leave type'),
+	color_code: yup.string().required('Please enter color code'),
+})

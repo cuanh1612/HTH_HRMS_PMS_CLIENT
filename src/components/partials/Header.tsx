@@ -1,4 +1,4 @@
-import { Avatar, Box, Heading, HStack, Text, useColorMode } from '@chakra-ui/react'
+import { Avatar, Box, Heading, HStack, Text, useColorMode, VStack } from '@chakra-ui/react'
 import ButtonIcon from 'components/ButtonIcon'
 import { AuthContext } from 'contexts/AuthContext'
 import { useContext, useEffect } from 'react'
@@ -13,10 +13,37 @@ export const Header = () => {
 
 	return (
 		<HStack alignItems={'center'} justify={'space-between'} paddingBlock={4}>
-			<Box>s</Box>
-            <Heading color={'hu-Pink.normal'} size={'lg'} fontFamily={'"Montserrat", sans-serif'}>
-                Huprom
-            </Heading>
+			<VStack cursor={'pointer'} role="group" alignItems={'start'} spacing={'6px'}>
+				<Box
+					_groupHover={{
+						w: '25px',
+						scale: 1.1,
+					}}
+					transform={'auto'}
+					as="span"
+					transition={'0.1s linear'}
+					background={colorMode == 'light' ? 'hu-Green.normal' : 'hu-Green.light'}
+					borderRadius="full"
+					h={'4px'}
+					w={'15px'}
+					pos="relative"
+					display={'block'}
+				></Box>
+				<Box
+					_groupHover={{
+						scale: 1.1,
+					}}
+					transform={'auto'}
+					as="span"
+					background={colorMode == 'light' ? 'hu-Green.normalA' : 'hu-Green.lightA'}
+					borderRadius="full"
+					h={'4px'}
+					w={'25px'}
+					pos="relative"
+					display={'block'}
+				></Box>
+			</VStack>
+
 			<HStack spacing={5}>
 				<ButtonIcon
 					icon={
@@ -30,7 +57,6 @@ export const Header = () => {
 					handle={() => toggleColorMode()}
 				/>
 				<Avatar
-                    fontFamily={'"Hind Madurai", sans-serif'}
 					w={'40px'}
 					height={'40px'}
 					borderRadius={'full'}

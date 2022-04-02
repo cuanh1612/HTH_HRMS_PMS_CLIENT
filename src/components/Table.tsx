@@ -8,6 +8,7 @@ import {
 	NumberInput,
 	NumberInputField,
 	NumberInputStepper,
+	useColorMode,
 } from '@chakra-ui/react'
 
 // react
@@ -76,6 +77,9 @@ const IndeterminateCheckbox = forwardRef(
 const Table = ({ columns, data, filter, isSelect = false, selectByColumn, setSelect }: ITable) => {
 	const [isSelected, setIsSelected] = useState(false)
 
+	// darkMode
+	const {colorMode} = useColorMode()
+
 	// use table hook of react table
 	const {
 		getTableBodyProps,
@@ -93,7 +97,7 @@ const Table = ({ columns, data, filter, isSelect = false, selectByColumn, setSel
 		setPageSize,
 		setFilter,
 		selectedFlatRows,
-		toggleAllPageRowsSelected
+		toggleAllPageRowsSelected,
 	}: TUseTable = useTable(
 		{ columns, data },
 		useFlexLayout,
@@ -146,195 +150,197 @@ const Table = ({ columns, data, filter, isSelect = false, selectByColumn, setSel
 			const dataSelect = selectedFlatRows.map((row: Row) => {
 				return row.values[String(selectByColumn)]
 			})
-			setSelect(dataSelect)
+			if (setSelect) setSelect(dataSelect)
 			setIsSelected(false)
 		}
 	}, [isSelected])
 
 	// when data reset
-	useEffect(()=> {
+	useEffect(() => {
 		toggleAllPageRowsSelected(false)
 		setIsSelected(true)
 	}, [data])
 
 	return (
-		<Box userSelect={'none'} as="div" {...getTableProps()}>
-			<Box background={'white'} position={'sticky'} top="0" as="div">
-				{headerGroups.map((headerGroup: any) => (
-					<Box
-						as="div"
-						borderBottomWidth={1}
-						borderColor="hu-Green.light"
-						alignItems={'center'}
-						paddingBlock={'15px'}
-						{...headerGroup.getHeaderGroupProps()}
-					>
-						{headerGroup.headers.map((column: any) => (
-							<Box
-								fontSize={'md'}
-								color="hu-GreenN.darkH"
-								fontFamily={'"Montserrat", sans-serif'}
-								fontWeight={'semibold'}
-								as="div"
-								pos={'relative'}
-								paddingInline={'4'}
-								{...column.getHeaderProps(column.getSortByToggleProps())}
-							>
-								<Box
-									display={'flex'}
-									alignItems={'center'}
-									justifyContent={'space-between'}
-								>
-									{column.render('Header')}
-
-									{column.canSort ? (
-										column.isSorted ? (
-											column.isSortedDesc ? (
-												<FaSortDown />
-											) : (
-												<FaSortUp />
-											)
-										) : (
-											<FaSort color="#83838350" />
-										)
-									) : (
-										''
-									)}
-								</Box>
-								{column.canResize && (
-									<Box
-										_hover={{
-											background: 'hu-Green.normalH',
-										}}
-										_active={{
-											background: 'hu-Green.normalA',
-										}}
-										borderRadius={'4'}
-										pos={'absolute'}
-										top="0"
-										right={'0'}
-										h="full"
-										w={'5px'}
-										background="hu-Green.normal"
-										{...column.getResizerProps()}
-									/>
-								)}
-							</Box>
-						))}
-					</Box>
-				))}
-			</Box>
-			<Box as="div" {...getTableBodyProps()}>
-				{(page as Row<any>[]).map((row: Row) => {
-					prepareRow(row)
-					return (
+		<Box overflow={'auto'}>
+			<Box userSelect={'none'} as="div" {...getTableProps()}>
+				<Box background={colorMode == 'light' ? 'white': '#1a202c'} position={'sticky'} top="0" as="div">
+					{headerGroups.map((headerGroup: any) => (
 						<Box
+							as="div"
 							borderBottomWidth={1}
-							borderColor="hu-Green.light"
+							borderColor= {colorMode == 'light' ? "hu-Green.light": 'gray.400'}
 							alignItems={'center'}
 							paddingBlock={'15px'}
-							as="div"
-							{...row.getRowProps()}
+							{...headerGroup.getHeaderGroupProps()}
 						>
-							{row.cells.map((cell: Cell) => (
-								<Box paddingInline={'4'} as="div" {...cell.getCellProps()}>
-									{cell.render('Cell')}
+							{headerGroup.headers.map((column: any) => (
+								<Box
+									fontSize={'md'}
+									color={colorMode == 'light' ? "hu-GreenN.darkH": '#FFFFFF90'}
+									fontFamily={'"Montserrat", sans-serif'}
+									fontWeight={'semibold'}
+									as="div"
+									pos={'relative'}
+									paddingInline={'4'}
+									{...column.getHeaderProps(column.getSortByToggleProps())}
+								>
+									<Box
+										display={'flex'}
+										alignItems={'center'}
+										justifyContent={'space-between'}
+									>
+										{column.render('Header')}
+
+										{column.canSort ? (
+											column.isSorted ? (
+												column.isSortedDesc ? (
+													<FaSortDown />
+												) : (
+													<FaSortUp />
+												)
+											) : (
+												<FaSort color="#83838350" />
+											)
+										) : (
+											''
+										)}
+									</Box>
+									{column.canResize && (
+										<Box
+											_hover={{
+												background: 'hu-Green.normalH',
+											}}
+											_active={{
+												background: 'hu-Green.normalA',
+											}}
+											borderRadius={'4'}
+											pos={'absolute'}
+											top="0"
+											right={'0'}
+											h="full"
+											w={'5px'}
+											background="hu-Green.normal"
+											{...column.getResizerProps()}
+										/>
+									)}
 								</Box>
 							))}
 						</Box>
-					)
-				})}
-			</Box>
-			<HStack
-				paddingBlock={'15px'}
-				borderBottomWidth={1}
-				borderColor="hu-Green.light"
-				paddingInline={'4'}
-				justifyContent={'flex-end'}
-				alignItems={'center'}
-				spacing={5}
-			>
-				<Box as="span">
-					Page{' '}
-					<Box
-						as="span"
-						fontWeight={'semibold'}
-						color={'hu-Green.normal'}
-						fontSize={'xl'}
-						paddingInline={'2'}
-					>
-						{state.pageIndex + 1}
-					</Box>{' '}
-					of {pageCount}
+					))}
 				</Box>
-				<NumberInput
-					onChange={(value) => {
-						if (Number(value) == 0) return setPageSize(1)
-						setPageSize(Number(value))
-					}}
-					defaultValue={10}
-					min={5}
-					step={5}
-					max={50}
-					maxW={'70px'}
+				<Box as="div" {...getTableBodyProps()}>
+					{(page as Row<any>[]).map((row: Row) => {
+						prepareRow(row)
+						return (
+							<Box
+								borderBottomWidth={1}
+								borderColor= {colorMode == 'light' ? "hu-Green.light": 'gray.400'}
+								alignItems={'center'}
+								paddingBlock={'15px'}
+								as="div"
+								{...row.getRowProps()}
+							>
+								{row.cells.map((cell: Cell) => (
+									<Box paddingInline={'4'} as="div" {...cell.getCellProps()}>
+										{cell.render('Cell')}
+									</Box>
+								))}
+							</Box>
+						)
+					})}
+				</Box>
+				<HStack
+					paddingBlock={'15px'}
+					borderBottomWidth={1}
+					borderColor= {colorMode == 'light' ? "hu-Green.light": 'gray.400'}
+					paddingInline={'4'}
+					justifyContent={'flex-end'}
+					alignItems={'center'}
+					spacing={5}
 				>
-					<NumberInputField readOnly />
-					<NumberInputStepper>
-						<NumberIncrementStepper />
-						<NumberDecrementStepper />
-					</NumberInputStepper>
-				</NumberInput>
-			</HStack>
+					<Box as="span">
+						Page{' '}
+						<Box
+							as="span"
+							fontWeight={'semibold'}
+							color={'hu-Green.normal'}
+							fontSize={'xl'}
+							paddingInline={'2'}
+						>
+							{state.pageIndex + 1}
+						</Box>{' '}
+						of {pageCount}
+					</Box>
+					<NumberInput
+						onChange={(value) => {
+							if (Number(value) == 0) return setPageSize(1)
+							setPageSize(Number(value))
+						}}
+						defaultValue={10}
+						min={5}
+						step={5}
+						max={50}
+						maxW={'70px'}
+					>
+						<NumberInputField readOnly />
+						<NumberInputStepper>
+							<NumberIncrementStepper />
+							<NumberDecrementStepper />
+						</NumberInputStepper>
+					</NumberInput>
+				</HStack>
 
-			<HStack
-				paddingBlock={'15px'}
-				paddingInline={'4'}
-				justifyContent={'flex-end'}
-				alignItems={'center'}
-				spacing={5}
-			>
-				<ButtonIcon
-					isDisabled={!canPreviousPage}
-					handle={() => gotoPage(0)}
-					ariaLabel={'first page'}
-					icon={<MdOutlineArrowBack />}
-				/>
-				<ButtonIcon
-					isDisabled={!canPreviousPage}
-					handle={() => previousPage()}
-					ariaLabel={'previous page'}
-					icon={<MdOutlineNavigateBefore />}
-				/>
-				<ButtonIcon
-					isDisabled={!canNextPage}
-					handle={() => nextPage()}
-					ariaLabel={'next page'}
-					icon={<MdOutlineNavigateNext />}
-				/>
-				<ButtonIcon
-					isDisabled={!canNextPage}
-					handle={() => gotoPage(pageCount - 1)}
-					ariaLabel={'last page'}
-					icon={<MdOutlineArrowForward />}
-				/>
-
-				<NumberInput
-					onChange={(value) => {
-						if (Number(value) == 0) return gotoPage(0)
-						gotoPage(Number(value) - 1)
-					}}
-					defaultValue={1}
-					min={1}
-					max={pageCount}
-					maxW={'70px'}
+				<HStack
+					paddingBlock={'15px'}
+					paddingInline={'4'}
+					justifyContent={'flex-end'}
+					alignItems={'center'}
+					spacing={5}
 				>
-					<NumberInputField />
-					<NumberInputStepper>
-						<NumberIncrementStepper />
-						<NumberDecrementStepper />
-					</NumberInputStepper>
-				</NumberInput>
-			</HStack>
+					<ButtonIcon
+						isDisabled={!canPreviousPage}
+						handle={() => gotoPage(0)}
+						ariaLabel={'first page'}
+						icon={<MdOutlineArrowBack />}
+					/>
+					<ButtonIcon
+						isDisabled={!canPreviousPage}
+						handle={() => previousPage()}
+						ariaLabel={'previous page'}
+						icon={<MdOutlineNavigateBefore />}
+					/>
+					<ButtonIcon
+						isDisabled={!canNextPage}
+						handle={() => nextPage()}
+						ariaLabel={'next page'}
+						icon={<MdOutlineNavigateNext />}
+					/>
+					<ButtonIcon
+						isDisabled={!canNextPage}
+						handle={() => gotoPage(pageCount - 1)}
+						ariaLabel={'last page'}
+						icon={<MdOutlineArrowForward />}
+					/>
+
+					<NumberInput
+						onChange={(value) => {
+							if (Number(value) == 0) return gotoPage(0)
+							gotoPage(Number(value) - 1)
+						}}
+						defaultValue={1}
+						min={1}
+						max={pageCount}
+						maxW={'70px'}
+					>
+						<NumberInputField />
+						<NumberInputStepper>
+							<NumberIncrementStepper />
+							<NumberDecrementStepper />
+						</NumberInputStepper>
+					</NumberInput>
+				</HStack>
+			</Box>
 		</Box>
 	)
 }

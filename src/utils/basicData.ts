@@ -15,6 +15,7 @@ export const dataGender: IOption[] = [
     },
      
 ]
+
 export const dataStatusLeave: IOption[] = [
     {
         value: 'Approved',
@@ -27,5 +28,21 @@ export const dataStatusLeave: IOption[] = [
     {
         value: 'Rejected',
         lable: 'Rejected'
+    },
+]
+
+export const dataRoleEmployee: IOption[] = [
+    {
+        value: 'Admin',
+        lable: 'Admin'
+    },
+    {
+        value: 'Employee',
+        lable: 'Employee'
+    },
+   
+    {
+        value: 'Manager',
+        lable: 'Manager'
     },
 ]

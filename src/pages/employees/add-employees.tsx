@@ -37,6 +37,7 @@ import { uploadFile } from 'utils/uploadFile'
 import { CreateEmployeeValidate } from 'utils/validate'
 import Department from '../department'
 import Designation from '../designation'
+import {mutate} from 'swr'
 
 export interface IEmployeesProps {
 	onCloseDrawer?: () => void
@@ -203,6 +204,8 @@ export default function Employees({ onCloseDrawer }: IEmployeesProps) {
 				onCloseDrawer()
 			}
 
+			// refetch all employees
+			mutate('employees')
 			setToast({
 				type: 'success',
 				msg: dataEmployee?.message as string,

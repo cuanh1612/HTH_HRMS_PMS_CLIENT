@@ -7,3 +7,22 @@ body {
     height: 96px;
     border-radius: 100%;
 }
+
+.listBt, .listOp, .listOps, .listOpActive {
+    width: 100%;
+}
+
+.listBt:focus {
+    outline: none;
+    border: 2px solid #44a5ff;
+    border-radius: 8px;
+    box-sizing: border-box;
+}
+
+.listOps:focus {
+    outline: none;
+}
+
+.listOpActive {
+    background: #2091fe
+}

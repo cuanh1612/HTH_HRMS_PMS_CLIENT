@@ -42,4 +42,8 @@ export interface ITable {
 	isSelect?: boolean
 	selectByColumn?: string
 	setSelect?: any
+	disableIds?: number[] | null
+	isLoading?: boolean
+	disableColumns?: string[]
+	isResetFilter?: boolean
 }

@@ -14,11 +14,12 @@ import { useRef } from 'react'
 interface IDialog {
 	isOpen: boolean
 	onClose: () => void
-    title: string
-    content: string
+	title: string
+	content: string
+	handleDelete: () => void
 }
 
-export default function AlertDialog({ isOpen, onClose, title, content }: IDialog) {
+export default function AlertDialog({ isOpen, onClose, title, content, handleDelete }: IDialog) {
 	const cancelRef = useRef<FocusableElement | null>(null)
 
 	return (
@@ -34,12 +35,17 @@ export default function AlertDialog({ isOpen, onClose, title, content }: IDialog
 			<AlertDialogContent>
 				<AlertDialogHeader>{title}</AlertDialogHeader>
 				<AlertDialogCloseButton />
-				<AlertDialogBody>
-					{content}
-				</AlertDialogBody>
+				<AlertDialogBody>{content}</AlertDialogBody>
 				<AlertDialogFooter>
 					<Button onClick={onClose}>No</Button>
-					<Button colorScheme="red" ml={3}>
+					<Button
+						onClick={() => {
+							handleDelete()
+							onClose()
+						}}
+						colorScheme="red"
+						ml={3}
+					>
 						Yes
 					</Button>
 				</AlertDialogFooter>

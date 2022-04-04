@@ -24,18 +24,13 @@ export const Select = ({
 }: ISelect & { form: UseFormReturn<any, any> }) => {
 	const errorColor = useColorModeValue('red.400', 'pink.400')
 
-	const {
-		control,
-		formState: { errors },
-	} = form
-
 	return (
 		<Controller
-			control={control}
+			control={form?.control}
 			name={name}
 			render={({ field }) => (
 				<FormControl isRequired={required}>
-					<FormLabel fontWeight={'normal'} htmlFor={name}>
+					<FormLabel color={'gray.400'} fontWeight={'normal'} htmlFor={name}>
 						{label}
 					</FormLabel>
 					<HStack>
@@ -55,8 +50,10 @@ export const Select = ({
 						{isModal && onOpenModal && <Button onClick={onOpenModal}>Add</Button>}
 					</HStack>
 
-					{errors[name] && (
-						<FormHelperText color={errorColor}>{errors[name].message}</FormHelperText>
+					{form?.formState?.errors[name] && (
+						<FormHelperText color={errorColor}>
+							{form.formState.errors[name].message}
+						</FormHelperText>
 					)}
 				</FormControl>
 			)}

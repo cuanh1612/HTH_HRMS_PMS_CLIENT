@@ -24,3 +24,4 @@ export const allEmployeesQuery = (isAuthenticated: boolean | null) => {
 		}
 	)
 }
+

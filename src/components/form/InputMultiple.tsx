@@ -63,7 +63,7 @@ export default function InputMutiple({ lable, name, form }: IInputMutipleProps) 
 	return (
 		<VStack alignItems={'start'}>
 			<Text>{lable}</Text>
-			<Input placeholder="Enter skill and press 'Ctrl + Enter'" onKeyDown={onAddvalue} />
+			<Input background={'#ffffff10'} placeholder="Enter skill and press 'Ctrl + Enter'" onKeyDown={onAddvalue} />
 			{valueMultiple && valueMultiple.length > 0 && (
 				<Box display={'flex'} flexWrap={'wrap'}>
 					{valueMultiple.map((value, index) => (

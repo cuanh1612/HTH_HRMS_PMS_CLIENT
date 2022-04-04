@@ -1,85 +1,79 @@
 import { ClientLayout } from 'components/layouts'
-import Table from 'components/Table'
 import { AuthContext } from 'contexts/AuthContext'
-import { useCallback, useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { NextLayout } from 'type/element/layout'
-import { IFilter, TColumn } from 'type/tableTypes'
-import { arrayFilter, textFilter } from 'utils/filters'
+import { Listbox } from '@headlessui/react'
+import { Avatar, HStack, Text, VStack } from '@chakra-ui/react'
 
-const table: NextLayout = ()=> {
+const table: NextLayout = () => {
 	const { handleLoading, isAuthenticated } = useContext(AuthContext)
+
+	const people = [
+		{ id: 1, name: 'Durward Reynolds', unavailable: false },
+		{ id: 2, name: 'Kenton Towne', unavailable: false },
+		{ id: 3, name: 'Therese Wunsch', unavailable: false },
+		{ id: 4, name: 'Benedict Kessler', unavailable: false },
+		{ id: 5, name: 'Katelyn Rohan', unavailable: false },
+	]
+
 	useEffect(() => {
 		if (isAuthenticated) {
 			handleLoading(false)
 		}
 	}, [isAuthenticated])
 
-	// data------------------------------------
-	const [data, setData] = useState([
-		{
-			col1: '2',
-			col2: '1111',
-			col3: '2',
-		},
-		{
-			col1: '4',
-			col2: '1111',
-			col3: '3',
-		},
-	])
-
-	// header ----------------------------------------
-	const columns: TColumn[] = [
-		{
-			Header: 'Table 1',
-
-			columns: [
-				{
-					Header: 'Username',
-					accessor: 'col1',
-					disableSortBy: true,
-					filter: textFilter('col1'),
-					minWidth: 100,
-				},
-				{
-					Header: 'Password',
-					accessor: 'col2',
-				},
-				{
-					Header: 'Username',
-					accessor: 'col3',
-					filter: arrayFilter('col3'),
-				},
-				{
-					Header: 'Password',
-					accessor: 'col4',
-				},
-			],
-		},
-	]
-
-	// set filter
-	const [filter, setFilter] = useState<IFilter>({
-		columnId: '',
-		filterValue: '',
-	})
-
-	// get data select
-	const [dataSelect, setDataSelect] = useState<Array<string>>([])
-
-	const setSelect = useCallback((data: Array<string>) => setDataSelect(data), [])
+	const [selectedPerson, setSelectedPerson] = useState(people[0])
 
 	return (
-		<>
-			<Table
-				filter={filter}
-				data={data}
-				isSelect
-				columns={columns}
-				selectByColumn={'col1'}
-				setSelect={setSelect}
-			/>
-		</>
+		<Listbox value={selectedPerson} onChange={setSelectedPerson}>
+			<Listbox.Button className={'listBt'}>
+				<HStack
+					background={'#ffffff10'}
+					w={'full'}
+					borderWidth={1}
+					spacing={4}
+					borderColor={'gray.400'}
+					h={'40px'}
+					borderRadius={'5px'}
+					padding={'0px 32px 1px 16px'}
+				>
+					<Avatar name={'ffdd'} size={'xs'} />
+					<Text isTruncated>{selectedPerson.name}</Text>
+				</HStack>
+			</Listbox.Button>
+			<Listbox.Options className={'listOps'}>
+				<VStack
+					listStyleType={'none'}
+					alignItems={'start'}
+					borderWidth={2}
+					borderRadius={15}
+					paddingBlock={4}
+				>
+					{people.map((person) => (
+						<Listbox.Option
+							className={({ active }) => (!active ? 'listOp' : 'listOpActive')}
+							key={person.id}
+							value={person}
+						>
+							{({ selected }) => (
+								<HStack
+									w={'full'}
+									spacing={4}
+									h={'40px'}
+									borderRadius={'5px'}
+									padding={'0px 32px 1px 16px'}
+									cursor={'pointer'}
+									background={selected ? '#2091fe' : undefined}
+								>
+									<Avatar name={'ffdd'} size={'xs'} />
+									<Text>{person.name}</Text>
+								</HStack>
+							)}
+						</Listbox.Option>
+					))}
+				</VStack>
+			</Listbox.Options>
+		</Listbox>
 	)
 }
 

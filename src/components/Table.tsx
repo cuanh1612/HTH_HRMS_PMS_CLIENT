@@ -39,13 +39,14 @@ import { FaSort, FaSortDown, FaSortUp } from 'react-icons/fa'
 // button icon
 import ButtonIcon from 'components/ButtonIcon'
 import { ITable, TUseTable } from 'type/tableTypes'
+import Loading from './Loading'
 
 // create timeout variable to await client stop click to set data select
 let selectTimeOut: NodeJS.Timeout
 
 // use checkbox to select all or select one
 const IndeterminateCheckbox = forwardRef(
-	({ indeterminate, checked, handleIsSelected, ...rest }: any, ref: any) => {
+	({ indeterminate, checked, handleIsSelected, disableId, ...rest }: any, ref: any) => {
 		const defaultRef = useRef()
 		const resolvedRef = ref || defaultRef
 
@@ -74,11 +75,22 @@ const IndeterminateCheckbox = forwardRef(
 	}
 )
 
-const Table = ({ columns, data, filter, isSelect = false, selectByColumn, setSelect }: ITable) => {
+const Table = ({
+	columns,
+	data,
+	filter,
+	isSelect = false,
+	selectByColumn,
+	setSelect,
+	disableIds,
+	isLoading = true,
+	disableColumns,
+	isResetFilter = false
+}: ITable) => {
 	const [isSelected, setIsSelected] = useState(false)
 
 	// darkMode
-	const {colorMode} = useColorMode()
+	const { colorMode } = useColorMode()
 
 	// use table hook of react table
 	const {
@@ -98,8 +110,11 @@ const Table = ({ columns, data, filter, isSelect = false, selectByColumn, setSel
 		setFilter,
 		selectedFlatRows,
 		toggleAllPageRowsSelected,
+		setAllFilters
 	}: TUseTable = useTable(
-		{ columns, data },
+		{ columns, data, initialState: {
+			hiddenColumns: disableColumns ? disableColumns : []
+		} },
 		useFlexLayout,
 		useResizeColumns,
 		useFilters,
@@ -120,12 +135,17 @@ const Table = ({ columns, data, filter, isSelect = false, selectByColumn, setSel
 								handleIsSelected={() => setIsSelected(true)}
 							/>
 						),
-						Cell: ({ row }: any) => (
-							<IndeterminateCheckbox
-								{...row.getToggleRowSelectedProps()}
-								handleIsSelected={() => setIsSelected(true)}
-							/>
-						),
+						Cell: ({ row }: any) => {
+							if (disableIds?.includes(row.values['id'])) {
+								return <Checkbox disabled />
+							}
+							return (
+								<IndeterminateCheckbox
+									{...row.getToggleRowSelectedProps()}
+									handleIsSelected={() => setIsSelected(true)}
+								/>
+							)
+						},
 					},
 					...columns,
 				])
@@ -147,9 +167,17 @@ const Table = ({ columns, data, filter, isSelect = false, selectByColumn, setSel
 	// get all data when select
 	useEffect(() => {
 		if (isSelected) {
-			const dataSelect = selectedFlatRows.map((row: Row) => {
+			let dataSelect = selectedFlatRows.filter((row: Row) => {
+				if (!disableIds?.includes(row.values[String(selectByColumn)])) {
+					return true
+				}
+				return false
+			})
+
+			dataSelect = dataSelect.map((row: Row) => {
 				return row.values[String(selectByColumn)]
 			})
+
 			if (setSelect) setSelect(dataSelect)
 			setIsSelected(false)
 		}
@@ -161,15 +189,27 @@ const Table = ({ columns, data, filter, isSelect = false, selectByColumn, setSel
 		setIsSelected(true)
 	}, [data])
 
+	// reset filter
+	useEffect(()=> {
+		if(isResetFilter) {
+			setAllFilters([])
+		}
+	}, [isResetFilter])
+
 	return (
-		<Box overflow={'auto'}>
+		<Box overflow={'auto'} pos="relative">
 			<Box userSelect={'none'} as="div" {...getTableProps()}>
-				<Box background={colorMode == 'light' ? 'white': '#1a202c'} position={'sticky'} top="0" as="div">
+				<Box
+					background={colorMode == 'light' ? 'white' : '#1a202c'}
+					position={'sticky'}
+					top="0"
+					as="div"
+				>
 					{headerGroups.map((headerGroup: any) => (
 						<Box
 							as="div"
 							borderBottomWidth={1}
-							borderColor= {colorMode == 'light' ? "hu-Green.light": 'gray.400'}
+							borderColor={colorMode == 'light' ? 'hu-Green.light' : 'gray.400'}
 							alignItems={'center'}
 							paddingBlock={'15px'}
 							{...headerGroup.getHeaderGroupProps()}
@@ -177,7 +217,7 @@ const Table = ({ columns, data, filter, isSelect = false, selectByColumn, setSel
 							{headerGroup.headers.map((column: any) => (
 								<Box
 									fontSize={'md'}
-									color={colorMode == 'light' ? "hu-GreenN.darkH": '#FFFFFF90'}
+									color={colorMode == 'light' ? 'hu-GreenN.darkH' : '#FFFFFF90'}
 									fontFamily={'"Montserrat", sans-serif'}
 									fontWeight={'semibold'}
 									as="div"
@@ -235,7 +275,7 @@ const Table = ({ columns, data, filter, isSelect = false, selectByColumn, setSel
 						return (
 							<Box
 								borderBottomWidth={1}
-								borderColor= {colorMode == 'light' ? "hu-Green.light": 'gray.400'}
+								borderColor={colorMode == 'light' ? 'hu-Green.light' : 'gray.400'}
 								alignItems={'center'}
 								paddingBlock={'15px'}
 								as="div"
@@ -253,7 +293,7 @@ const Table = ({ columns, data, filter, isSelect = false, selectByColumn, setSel
 				<HStack
 					paddingBlock={'15px'}
 					borderBottomWidth={1}
-					borderColor= {colorMode == 'light' ? "hu-Green.light": 'gray.400'}
+					borderColor={colorMode == 'light' ? 'hu-Green.light' : 'gray.400'}
 					paddingInline={'4'}
 					justifyContent={'flex-end'}
 					alignItems={'center'}
@@ -341,6 +381,7 @@ const Table = ({ columns, data, filter, isSelect = false, selectByColumn, setSel
 					</NumberInput>
 				</HStack>
 			</Box>
+			{isLoading && <Loading />}
 		</Box>
 	)
 }

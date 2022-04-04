@@ -10,6 +10,7 @@ export interface IInput {
 	placeholder?: string
 	required?: boolean
 	type?: HTMLInputTypeAttribute | undefined
+	[index: string]: any
 }
 
 export interface IInputNumber {
@@ -25,10 +26,11 @@ export interface ISelect {
 	label: string
 	required: boolean
 	placeholder: string
-	options: IOption[]
+	options?: IOption[]
 	isModal?: boolean
 	onOpenModal?: () => void
 	disabled?: boolean
+	[index: string]: any
 }
 
 export interface ICombobox {
@@ -60,4 +62,10 @@ export interface IButtonIcon {
 	radius?: boolean
 	as?: As<any>
 	htmlFor?: string
+}
+
+export interface IPeople {
+	id: number | string
+	name: string
+	avatar: string | undefined
 }

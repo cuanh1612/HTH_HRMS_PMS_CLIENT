@@ -53,3 +53,12 @@ export const CreateLeaveTypeValidate = yup.object({
 	name: yup.string().required('Please enter name leave type'),
 	color_code: yup.string().required('Please enter color code'),
 })
+
+export const CreateClientValidate = yup.object({
+	email: yup
+		.string()
+		.required('Please enter email')
+		.email('Please, Enter the correct email format'),
+	name: yup.string().required('Please enter client name'),
+	password: yup.string().required('Please enter client password'),
+})

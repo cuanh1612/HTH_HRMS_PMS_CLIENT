@@ -55,7 +55,7 @@ export type updateLeaveForm = {
 	leave_type: string
 	status: string
 	reason: string
-	date: Date 
+	date: Date
 	duration: string
 }
 
@@ -95,4 +95,23 @@ export type updateEmployeeForm = {
 		name: string
 		public_id: string
 	}
+}
+
+export type createClientForm = {
+	salutation: string
+	name: string
+	email: string
+	password: string
+	mobile: string
+	country: string
+	gender: string
+	company_name: string
+	official_website: string
+	gst_vat_number: string
+	office_phone_number: string
+	city: string
+	state: string
+	postal_code: string
+	company_address: string
+	shipping_address: string
 }

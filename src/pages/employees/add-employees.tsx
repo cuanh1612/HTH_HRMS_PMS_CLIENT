@@ -354,7 +354,7 @@ export default function Employees({ onCloseDrawer }: IEmployeesProps) {
 							label="Gender"
 							required
 							form={formSetting}
-							placeholder={'Select department'}
+							placeholder={'Select Gender'}
 							options={dataGender}
 						/>
 					</GridItem>

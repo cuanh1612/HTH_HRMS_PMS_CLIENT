@@ -62,9 +62,21 @@ export interface designationType {
 	[index: string]: any
 }
 
+export interface clientCategoryType {
+	id: number
+	name: string
+	[index: string]: any
+}
+
+export interface clientSubCategoryType {
+	id: number
+	name: string
+	[index: string]: any
+}
+
 export interface IOption {
 	value: string
-	lable: string | ReactNode
+	lable: string
 }
 
 // toast

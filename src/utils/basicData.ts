@@ -46,3 +46,34 @@ export const dataRoleEmployee: IOption[] = [
         lable: 'Manager'
     },
 ]
+
+export const dataSalutation: IOption[] = [
+    {
+        value: 'Mr',
+        lable: 'Mr'
+    },
+    {
+        value: 'Mrs',
+        lable: 'Mrs'
+    },
+   
+    {
+        value: 'Miss',
+        lable: 'Miss'
+    },
+
+    {
+        value: 'Dr',
+        lable: 'Dr'
+    },
+
+    {
+        value: 'Sir',
+        lable: 'Sir'
+    },
+
+    {
+        value: 'Madam',
+        lable: 'Madam'
+    },
+]

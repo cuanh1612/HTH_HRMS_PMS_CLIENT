@@ -1,6 +1,7 @@
 import { Button, useDisclosure } from '@chakra-ui/react'
 import Drawer from 'components/Drawer'
 import { AuthContext } from 'contexts/AuthContext'
+import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useContext, useEffect, useState } from 'react'
 import AddLeave from './add-leaves'

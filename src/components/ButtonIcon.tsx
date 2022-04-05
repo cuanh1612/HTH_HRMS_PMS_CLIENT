@@ -16,12 +16,13 @@ export default function ButtonIcon({
 	radius = false,
 	htmlFor,
 	as,
-
-	
 }: IButtonIcon) {
 	return (
-		<IconButton as={'label'} htmlFor={htmlFor}
-			borderRadius={radius ? 'full': undefined}
+		<IconButton
+			cursor={'pointer'}
+			as={'label'}
+			htmlFor={htmlFor}
+			borderRadius={radius ? 'full' : undefined}
 			color={color}
 			disabled={isDisabled}
 			bg={bg}

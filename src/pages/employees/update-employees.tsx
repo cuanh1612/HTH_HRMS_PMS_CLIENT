@@ -241,10 +241,10 @@ export default function UpdateEmployees({ onCloseDrawer, employeeId }: IUpdateEm
 				email: dataEmployee?.employee.email ? dataEmployee.employee.email : '',
 				name: dataEmployee?.employee.name ? dataEmployee.employee.name : '',
 				password: dataEmployee?.employee.password ? dataEmployee.employee.password : '',
-				designation: (dataEmployee?.employee?.designation as designationType).id
+				designation: (dataEmployee?.employee?.designation as designationType)?.id
 					? (dataEmployee.employee.designation as designationType).id.toString()
 					: '',
-				department: (dataEmployee?.employee.department as departmentType).id
+				department: (dataEmployee?.employee.department as departmentType)?.id
 					? (dataEmployee.employee.department as departmentType).id.toString()
 					: '',
 				hourly_rate: dataEmployee?.employee.hourly_rate

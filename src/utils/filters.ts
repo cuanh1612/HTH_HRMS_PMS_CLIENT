@@ -3,7 +3,9 @@ import { Row } from 'react-table'
 const getData = (columns: string[], row: Row)=> {
 	let data = Object(row.original)
 	columns.map(item=> {
-		data = data[item]
+		if(data[item]) {
+			data = data[item]
+		}
 	})
 	return data
 }

@@ -2,7 +2,7 @@ import { Button, useDisclosure } from '@chakra-ui/react'
 import Drawer from 'components/Drawer'
 import { AuthContext } from 'contexts/AuthContext'
 import { useRouter } from 'next/router'
-import { useContext, useEffect } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import AddClient from './add-client'
 
 export interface IClientsProps {}
@@ -11,6 +11,9 @@ export default function Clients(props: IClientsProps) {
 	const { isOpen: isOpenAdd, onOpen: onOpenAdd, onClose: onCloseAdd } = useDisclosure()
 	const { isAuthenticated, handleLoading, currentUser } = useContext(AuthContext)
 	const router = useRouter()
+
+	//State ---------------------------------------------------------------------
+	const [clientIdUpdate, setClientUpdate] = useState<number | null>(null)
 
 	//User effect ---------------------------------------------------------------
 

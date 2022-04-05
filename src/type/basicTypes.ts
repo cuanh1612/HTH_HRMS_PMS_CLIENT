@@ -71,7 +71,37 @@ export interface clientCategoryType {
 export interface clientSubCategoryType {
 	id: number
 	name: string
+	client_category: clientCategoryType
 	[index: string]: any
+}
+
+export interface clientType {
+	salutation?: string
+	name: string
+	email: string
+	password: string
+	mobile?: string
+	country?: string
+	gender?: string
+	company_name?: string
+	official_website?: string
+	gst_vat_number?: string
+	office_phone_number?: string
+	city?: string
+	state?: string
+	postal_code?: string
+	company_address?: string
+	shipping_address?: string
+	client_category?: clientCategoryType
+	client_sub_category?: clientSubCategoryType
+	can_login: boolean
+	can_receive_email: boolean
+	avatar?: {
+		url: string
+		name: string
+		public_id: string
+	}
+	id: number
 }
 
 export interface IOption {

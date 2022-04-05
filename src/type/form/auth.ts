@@ -73,6 +73,15 @@ export type createDesignationForm = {
 	name: string
 }
 
+export type createCategoryForm = {
+	name: string
+}
+
+export type createSubCategoryForm = {
+	name: string,
+	client_category: number
+}
+
 export type updateEmployeeForm = {
 	employeeId: string
 	email: string
@@ -114,4 +123,13 @@ export type createClientForm = {
 	postal_code: string
 	company_address: string
 	shipping_address: string
+	client_category: string
+	client_sub_category: string
+	can_login: boolean
+	can_receive_email: boolean
+	avatar?: {
+		url: string
+		name: string
+		public_id: string
+	}
 }

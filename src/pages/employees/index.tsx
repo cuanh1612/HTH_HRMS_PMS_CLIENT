@@ -266,16 +266,21 @@ const Employees: NextLayout = () => {
 					Cell: ({ value, row }) => {
 						return (
 							<HStack w={'full'} spacing={5}>
-								<Avatar flex={'none'}
+								<Avatar
+									flex={'none'}
 									size={'sm'}
 									name={row.values['name']}
 									src={row.original.avatar?.url}
 								/>
-								<VStack  w={'70%'}  alignItems={'start'}>
+								<VStack w={'70%'} alignItems={'start'}>
 									<Text isTruncated w={'full'}>
 										{value}
 										{currentUser?.email == row.values['email'] && (
-											<Badge marginLeft={'5'} color={'white'} background={'gray.500'}>
+											<Badge
+												marginLeft={'5'}
+												color={'white'}
+												background={'gray.500'}
+											>
 												It's you
 											</Badge>
 										)}
@@ -501,18 +506,23 @@ const Employees: NextLayout = () => {
 					</Button>
 				</HStack>
 			</Collapse>
-			<Table
-				data={allEmployees?.employees || []}
-				columns={columns}
-				isLoading={isLoading}
-				isSelect
-				selectByColumn="id"
-				setSelect={(data: Array<number>) => setDataSl(data)}
-				disableIds={currentUser && [currentUser.id]}
-				filter={filter}
-				disableColumns={['department', 'designation']}
-				isResetFilter={isResetFilter}
-			/>
+			{currentUser && (
+				<Table
+					data={allEmployees?.employees || []}
+					columns={columns}
+					isLoading={isLoading}
+					isSelect
+					selectByColumn="id"
+					setSelect={(data: Array<number>) => setDataSl(data)}
+					disableRows={{
+						column: 'email',
+						values: [currentUser.email],
+					}}
+					filter={filter}
+					disableColumns={['department', 'designation']}
+					isResetFilter={isResetFilter}
+				/>
+			)}
 
 			{/* alert dialog when delete one */}
 			<AlertDialog

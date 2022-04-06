@@ -54,22 +54,20 @@ import { NextLayout } from 'type/element/layout'
 // fucs, component to setup table
 import Table from 'components/Table'
 import { IFilter, TColumn } from 'type/tableTypes'
-import { dataRoleEmployee } from 'utils/basicData'
 
 // filter of column
 import { selectFilter, textFilter } from 'utils/filters'
 
 // page add and update employee
 import AddClient from './add-client'
-// import UpdateEmployees from './update-employees'
 
-import { allDepartmentsQuery } from 'queries/department'
+import UpdateEmployees from './update-employees'
+
+
 import { IOption } from 'type/basicTypes'
-import { allDesignationsQuery } from 'queries/designation'
-import { Select } from 'components/filter/Select'
 import { Input } from 'components/filter/Input'
 import { IPeople } from 'type/element/commom'
-import SelectUser from 'components/filter/SelectUser'
+import { allClientsQuery } from 'queries/client'
 
 const Employees: NextLayout = () => {
 	const { isAuthenticated, handleLoading, currentUser, setToast } = useContext(AuthContext)
@@ -129,15 +127,7 @@ const Employees: NextLayout = () => {
 
 	// query and mutation -=------------------------------------------------------
 	// get all employees
-	const { data: allEmployees, mutate: refetchAllEmpl } = allEmployeesQuery(isAuthenticated)
-
-	// get all department
-	const { data: allDepartments, mutate: refetchAllDepartments } =
-		allDepartmentsQuery(isAuthenticated)
-
-	// get all Designations
-	const { data: allDesignations, mutate: refetchDesignations } =
-		allDesignationsQuery(isAuthenticated)
+	const { data: allClients, mutate: refetchAllClients } = allClientsQuery(isAuthenticated)
 
 	// delete employee
 	const [mutateDeleteEmpl, { status: statusDl }] = deleteEmployeeMutation(setToast)
@@ -167,7 +157,7 @@ const Employees: NextLayout = () => {
 				msg: 'Delete employee successfully',
 				type: 'success',
 			})
-			refetchAllEmpl()
+			refetchAllClients()
 		}
 	}, [statusDl])
 
@@ -179,7 +169,7 @@ const Employees: NextLayout = () => {
 				type: 'success',
 			})
 			setDataSl(null)
-			refetchAllEmpl()
+			refetchAllClients()
 		}
 	}, [statusDlMany])
 
@@ -190,14 +180,14 @@ const Employees: NextLayout = () => {
 				msg: 'Change role success',
 				type: 'success',
 			})
-			refetchAllEmpl()
+			refetchAllClients()
 		}
 	}, [statusChangeRole])
 
-	// set loading == false when get all employees successfully
+	// set loading == false when get all clients successfully
 	useEffect(() => {
-		if (allEmployees) {
-			const users = allEmployees.employees?.map((item): IPeople => {
+		if (allClients) {
+			const users = allClients.clients?.map((item): IPeople => {
 				return {
 					id: item.id,
 					name: item.name,
@@ -207,38 +197,15 @@ const Employees: NextLayout = () => {
 			setAllusersSl(users || [])
 			setIsloading(false)
 		}
-	}, [allEmployees])
+	}, [allClients])
 
-	// set all departments
-	useEffect(() => {
-		if (allDepartments) {
-			const data = allDepartments.departments?.map((item): IOption => {
-				return {
-					value: String(item.id),
-					lable: item.name,
-				}
-			})
-			setDepartments(data)
-		}
-	}, [allDepartments])
 
-	// set all designations
-	useEffect(() => {
-		if (allDesignations) {
-			const data = allDesignations.designations?.map((item): IOption => {
-				return {
-					value: String(item.id),
-					lable: item.name,
-				}
-			})
-			setDesignations(data)
-		}
-	}, [allDesignations])
+
 
 	// header ----------------------------------------
 	const columns: TColumn[] = [
 		{
-			Header: 'Employees',
+			Header: 'Clients',
 
 			columns: [
 				{
@@ -253,36 +220,43 @@ const Employees: NextLayout = () => {
 					},
 				},
 				{
-					Header: 'Employee Id',
-					accessor: 'employeeId',
-					minWidth: 180,
-					width: 180,
-					disableResizing: true,
-				},
-				{
 					Header: 'Name',
 					accessor: 'name',
 					minWidth: 250,
 					Cell: ({ value, row }) => {
 						return (
 							<HStack w={'full'} spacing={5}>
-								<Avatar flex={'none'}
+								<Avatar
+									flex={'none'}
 									size={'sm'}
 									name={row.values['name']}
 									src={row.original.avatar?.url}
 								/>
-								<VStack  w={'70%'}  alignItems={'start'}>
+								<VStack w={'70%'} alignItems={'start'}>
 									<Text isTruncated w={'full'}>
-										{value}
+										{row.original.salutation
+											? `${row.original.salutation}. ${value}`
+											: value}
 										{currentUser?.email == row.values['email'] && (
-											<Badge marginLeft={'5'} color={'white'} background={'gray.500'}>
+											<Badge
+												marginLeft={'5'}
+												color={'white'}
+												background={'gray.500'}
+											>
 												It's you
 											</Badge>
 										)}
 									</Text>
-									<Text isTruncated w={'full'} fontSize={'sm'} color={'gray.400'}>
-										Junior
-									</Text>
+									{row.original.company_name && (
+										<Text
+											isTruncated
+											w={'full'}
+											fontSize={'sm'}
+											color={'gray.400'}
+										>
+											{row.original.company_name}
+										</Text>
+									)}
 								</VStack>
 							</HStack>
 						)
@@ -297,47 +271,7 @@ const Employees: NextLayout = () => {
 						return <Text isTruncated>{value}</Text>
 					},
 				},
-				{
-					Header: 'User role',
-					accessor: 'role',
-					minWidth: 160,
-					filter: selectFilter(['role']),
-					Cell: ({ value, row }) => {
-						if (row.values['email'] == currentUser?.email)
-							return (
-								<CSelect
-									defaultValue={value}
-									onChange={(event) => {
-										setIsloading(true)
-										mutateChangeRole({
-											employeeId: Number(row.values['id']),
-											role: event.target.value,
-										})
-									}}
-								>
-									<option value={'Admin'}>Admin</option>
-								</CSelect>
-							)
-						return (
-							<CSelect
-								defaultValue={value}
-								onChange={(event) => {
-									setIsloading(true)
-									mutateChangeRole({
-										employeeId: Number(row.values['id']),
-										role: event.target.value,
-									})
-								}}
-							>
-								{dataRoleEmployee.map((item) => (
-									<option value={item.value} key={item.value}>
-										{item.lable}
-									</option>
-								))}
-							</CSelect>
-						)
-					},
-				},
+
 				{
 					Header: 'Status',
 					accessor: 'status',
@@ -354,6 +288,15 @@ const Employees: NextLayout = () => {
 								<Text>Active</Text>
 							</HStack>
 						)
+					},
+				},
+				{
+					Header: 'Created',
+					accessor: 'createdAt',
+					minWidth: 150,
+					Cell: ({ value }) => {
+						const createdDate = new Date(value).toLocaleDateString()
+						return <Text isTruncated>{createdDate}</Text>
 					},
 				},
 				{
@@ -501,18 +444,24 @@ const Employees: NextLayout = () => {
 					</Button>
 				</HStack>
 			</Collapse>
-			<Table
-				data={allEmployees?.employees || []}
-				columns={columns}
-				isLoading={isLoading}
-				isSelect
-				selectByColumn="id"
-				setSelect={(data: Array<number>) => setDataSl(data)}
-				disableIds={currentUser && [currentUser.id]}
-				filter={filter}
-				disableColumns={['department', 'designation']}
-				isResetFilter={isResetFilter}
-			/>
+
+			{currentUser && (
+				<Table
+					data={allClients?.clients || []}
+					columns={columns}
+					isLoading={isLoading}
+					isSelect
+					selectByColumn="id"
+					setSelect={(data: Array<number>) => setDataSl(data)}
+					disableRows={{
+						column: 'email',
+						values: [currentUser.email]
+					}}
+					filter={filter}
+					disableColumns={['department', 'designation']}
+					isResetFilter={isResetFilter}
+				/>
+			)}
 
 			{/* alert dialog when delete one */}
 			<AlertDialog
@@ -540,13 +489,13 @@ const Employees: NextLayout = () => {
 				onClose={onCloseDlMany}
 			/>
 
-			{/* drawer to add employee */}
+			{/* drawer to add client */}
 			<Drawer size="xl" title="Add Employee" onClose={onCloseAdd} isOpen={isOpenAdd}>
 				<AddClient onCloseDrawer={onCloseAdd} />
 			</Drawer>
 
-			{/* drawer to update employee */}
-			{/* <Drawer size="xl" title="Update Employee" onClose={onCloseUpdate} isOpen={isOpenUpdate}>
+			{/* drawer to update client */}
+			{/* <Drawer size="xl" title="Update client" onClose={onCloseUpdate} isOpen={isOpenUpdate}>
 				<UpdateEmployees onCloseDrawer={onCloseUpdate} employeeId={employeeIdUpdate} />
 			</Drawer> */}
 
@@ -570,48 +519,6 @@ const Employees: NextLayout = () => {
 									<AiOutlineSearch fontSize={'20px'} color="gray" opacity={0.6} />
 								}
 								type={'text'}
-							/>
-
-							<Select
-								options={departments}
-								handleSearch={(data: IFilter) => {
-									setFilter(data)
-								}}
-								columnId={'department'}
-								label="Department"
-								placeholder="Select department"
-								required={false}
-							/>
-
-							<Select
-								options={designations}
-								handleSearch={(data: IFilter) => {
-									setFilter(data)
-								}}
-								columnId={'designation'}
-								label="Designation"
-								placeholder="Select designation"
-								required={false}
-							/>
-
-							<Select
-								options={dataRoleEmployee}
-								handleSearch={(data: IFilter) => {
-									setFilter(data)
-								}}
-								columnId={'role'}
-								label="Role"
-								placeholder="Select role"
-								required={false}
-							/>
-							<SelectUser
-								handleSearch={(data: IFilter) => {
-									setFilter(data)
-								}}
-								columnId={'id'}
-								required={false}
-								label={'Employee'}
-								peoples={dataUsersSl}
 							/>
 						</VStack>
 					</DrawerBody>

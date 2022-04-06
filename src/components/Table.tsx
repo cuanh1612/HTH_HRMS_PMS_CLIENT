@@ -82,10 +82,10 @@ const Table = ({
 	isSelect = false,
 	selectByColumn,
 	setSelect,
-	disableIds,
+	disableRows,
 	isLoading = true,
 	disableColumns,
-	isResetFilter = false
+	isResetFilter = false,
 }: ITable) => {
 	const [isSelected, setIsSelected] = useState(false)
 
@@ -110,11 +110,15 @@ const Table = ({
 		setFilter,
 		selectedFlatRows,
 		toggleAllPageRowsSelected,
-		setAllFilters
+		setAllFilters,
 	}: TUseTable = useTable(
-		{ columns, data, initialState: {
-			hiddenColumns: disableColumns ? disableColumns : []
-		} },
+		{
+			columns,
+			data,
+			initialState: {
+				hiddenColumns: disableColumns ? disableColumns : [],
+			},
+		},
 		useFlexLayout,
 		useResizeColumns,
 		useFilters,
@@ -136,7 +140,7 @@ const Table = ({
 							/>
 						),
 						Cell: ({ row }: any) => {
-							if (disableIds?.includes(row.values['id'])) {
+							if (disableRows?.values.includes(row.values[disableRows.column])) {
 								return <Checkbox disabled />
 							}
 							return (
@@ -168,7 +172,7 @@ const Table = ({
 	useEffect(() => {
 		if (isSelected) {
 			let dataSelect = selectedFlatRows.filter((row: Row) => {
-				if (!disableIds?.includes(row.values[String(selectByColumn)])) {
+				if (!disableRows?.values?.includes(row.values[disableRows.column])) {
 					return true
 				}
 				return false
@@ -177,8 +181,10 @@ const Table = ({
 			dataSelect = dataSelect.map((row: Row) => {
 				return row.values[String(selectByColumn)]
 			})
+			console.log(dataSelect)
 
 			if (setSelect) setSelect(dataSelect)
+
 			setIsSelected(false)
 		}
 	}, [isSelected])
@@ -190,8 +196,8 @@ const Table = ({
 	}, [data])
 
 	// reset filter
-	useEffect(()=> {
-		if(isResetFilter) {
+	useEffect(() => {
+		if (isResetFilter) {
 			setAllFilters([])
 		}
 	}, [isResetFilter])
@@ -199,12 +205,7 @@ const Table = ({
 	return (
 		<Box overflow={'auto'} pos="relative">
 			<Box userSelect={'none'} as="div" {...getTableProps()}>
-				<Box
-					background={colorMode == 'light' ? 'white' : '#1a202c'}
-					position={'sticky'}
-					top="0"
-					as="div"
-				>
+				<Box position={'sticky'} top="0" as="div">
 					{headerGroups.map((headerGroup: any) => (
 						<Box
 							as="div"

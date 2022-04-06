@@ -46,6 +46,7 @@ import ClientSubCategory from '../client-sub-categories'
 //CSS
 import 'react-quill/dist/quill.bubble.css'
 import 'react-quill/dist/quill.snow.css'
+import { mutate } from 'swr'
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
 
@@ -55,6 +56,7 @@ export interface IAddClientProps {
 }
 
 export default function UpdateClient({ onCloseDrawer, clientUpdateId }: IAddClientProps) {
+	console.log(clientUpdateId)
 	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
 	const router = useRouter()
 
@@ -87,7 +89,7 @@ export default function UpdateClient({ onCloseDrawer, clientUpdateId }: IAddClie
 	const { data: dataSubCategories } = allClientSubCategoriesQuery()
 	const { data: dataDetailClient, error: errorDetailClient } = detailClientQuery(
 		isAuthenticated,
-		8
+		clientUpdateId
 	)
 
 	//mutation ----------------------------------------------------------------
@@ -276,6 +278,7 @@ export default function UpdateClient({ onCloseDrawer, clientUpdateId }: IAddClie
 	//Note when request success
 	useEffect(() => {
 		if (statusUpClient === 'success') {
+			mutate('clients')
 			//Inform notice success
 			if (dataUpClient) {
 				setToast({
@@ -284,7 +287,7 @@ export default function UpdateClient({ onCloseDrawer, clientUpdateId }: IAddClie
 				})
 			}
 
-			//Close drawer when using drawer
+			//Close drawer when using drawer 
 			if (onCloseDrawer) {
 				onCloseDrawer()
 			}

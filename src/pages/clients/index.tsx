@@ -61,7 +61,7 @@ import { selectFilter, textFilter } from 'utils/filters'
 // page add and update employee
 import AddClient from './add-client'
 
-import UpdateEmployees from './update-employees'
+import UpdateClient from './update-client'
 
 
 import { IOption } from 'type/basicTypes'
@@ -111,7 +111,7 @@ const Employees: NextLayout = () => {
 	// data select to delete all
 	const [dataSl, setDataSl] = useState<Array<number> | null>()
 
-	const [employeeIdUpdate, setEmployeeUpdate] = useState<number | null>(30)
+	const [clientIdUpdate, setClientIdUpdate] = useState<number | null>(30)
 
 	// all departments
 	const [departments, setDepartments] = useState<IOption[]>()
@@ -327,7 +327,7 @@ const Employees: NextLayout = () => {
 								<MenuItem icon={<IoEyeOutline fontSize={'15px'} />}>View</MenuItem>
 								<MenuItem
 									onClick={() => {
-										setEmployeeUpdate(row.values['id'])
+										setClientIdUpdate(row.values['id'])
 										onOpenUpdate()
 									}}
 									icon={<RiPencilLine fontSize={'15px'} />}
@@ -495,9 +495,9 @@ const Employees: NextLayout = () => {
 			</Drawer>
 
 			{/* drawer to update client */}
-			{/* <Drawer size="xl" title="Update client" onClose={onCloseUpdate} isOpen={isOpenUpdate}>
-				<UpdateEmployees onCloseDrawer={onCloseUpdate} employeeId={employeeIdUpdate} />
-			</Drawer> */}
+			<Drawer size="xl" title="Update client" onClose={onCloseUpdate} isOpen={isOpenUpdate}>
+				<UpdateClient onCloseDrawer={onCloseUpdate} clientUpdateId={clientIdUpdate} />
+			</Drawer>
 
 			<CDrawer isOpen={isOpenFilter} placement="right" onClose={onCloseFilter}>
 				<DrawerOverlay />

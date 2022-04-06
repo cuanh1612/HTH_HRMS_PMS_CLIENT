@@ -18,8 +18,10 @@ import UploadAvatar from 'components/form/UploadAvatar'
 import Loading from 'components/Loading'
 import Modal from 'components/Modal'
 import { AuthContext } from 'contexts/AuthContext'
-import { createClientMutation } from 'mutations/client'
+import { createClientMutation, updateClientMutation } from 'mutations/client'
+import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
+import { detailClientQuery } from 'queries/client'
 import { allClientCategoriesQuery } from 'queries/clientCategory'
 import { allClientSubCategoriesQuery } from 'queries/clientSubCategory'
 import { useContext, useEffect, useState } from 'react'
@@ -35,19 +37,24 @@ import {
 import { SiCurl } from 'react-icons/si'
 import { IOption } from 'type/basicTypes'
 import { ICloudinaryImg, IImg } from 'type/fileType'
-import { createClientForm } from 'type/form/auth'
+import { createClientForm, updateClientForm } from 'type/form/auth'
 import { dataGender, dataSalutation } from 'utils/basicData'
 import { uploadFile } from 'utils/uploadFile'
-import { CreateClientValidate } from 'utils/validate'
+import { CreateClientValidate, UpdateClientValidate } from 'utils/validate'
 import ClientCategory from '../client-categories'
 import ClientSubCategory from '../client-sub-categories'
+//CSS
+import 'react-quill/dist/quill.bubble.css'
+import 'react-quill/dist/quill.snow.css'
+
+const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
 
 export interface IAddClientProps {
 	onCloseDrawer?: () => void
 	clientUpdateId: number | null
 }
 
-export default function UpdateClient({ onCloseDrawer }: IAddClientProps) {
+export default function UpdateClient({ onCloseDrawer, clientUpdateId }: IAddClientProps) {
 	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
 	const router = useRouter()
 
@@ -60,6 +67,7 @@ export default function UpdateClient({ onCloseDrawer }: IAddClientProps) {
 	})
 	const [infoImg, setInfoImg] = useState<IImg>() // state data image upload
 	const [loadingImg, setLoadingImg] = useState<boolean>(false) // state loading when image upload
+	const [note, setNote] = useState('')
 
 	//Setup modal -------------------------------------------------------------
 	const {
@@ -77,12 +85,21 @@ export default function UpdateClient({ onCloseDrawer }: IAddClientProps) {
 	//Query -------------------------------------------------------------------
 	const { data: dataCategories } = allClientCategoriesQuery()
 	const { data: dataSubCategories } = allClientSubCategoriesQuery()
+	const { data: dataDetailClient, error: errorDetailClient } = detailClientQuery(
+		isAuthenticated,
+		8
+	)
 
 	//mutation ----------------------------------------------------------------
-	const [mutateCreClient, { status: statusCreClient, data: dataCreClient }] =
-		createClientMutation(setToast)
+	const [mutateUpClient, { status: statusUpClient, data: dataUpClient }] =
+		updateClientMutation(setToast)
 
 	//Funcion -----------------------------------------------------------------
+	//Handle change content editor
+	const handleChangeNote = (value: any) => {
+		setNote(value)
+	}
+
 	const handleUploadAvatar = async () => {
 		if (infoImg) {
 			setLoadingImg(true)
@@ -104,7 +121,7 @@ export default function UpdateClient({ onCloseDrawer }: IAddClientProps) {
 	}
 
 	// setForm and submit form create new leave -------------------------------
-	const formSetting = useForm<createClientForm>({
+	const formSetting = useForm<updateClientForm>({
 		defaultValues: {
 			salutation: '',
 			name: '',
@@ -125,30 +142,42 @@ export default function UpdateClient({ onCloseDrawer }: IAddClientProps) {
 			client_category: '',
 			client_sub_category: '',
 		},
-		resolver: yupResolver(CreateClientValidate),
+		resolver: yupResolver(UpdateClientValidate),
 	})
 
 	const { handleSubmit } = formSetting
 
-	//Handle crete client
-	const onSubmit = async (values: createClientForm) => {
-		values.can_login = advancedInfo.can_login
-		values.can_receive_email = advancedInfo.can_receive_email
+	//Handle update client
+	const onSubmit = async (values: updateClientForm) => {
+		//Check client update id
+		if (!clientUpdateId) {
+			setToast({
+				type: 'error',
+				msg: 'Not found client to update',
+			})
+		} else {
+			values.can_login = advancedInfo.can_login
+			values.can_receive_email = advancedInfo.can_receive_email
+			values.note = note
 
-		//Upload avatar
-		const dataUploadAvattar: ICloudinaryImg | null = await handleUploadAvatar()
+			//Upload avatar
+			const dataUploadAvattar: ICloudinaryImg | null = await handleUploadAvatar()
 
-		//Check upload avatar success
-		if (dataUploadAvattar) {
-			values.avatar = {
-				name: dataUploadAvattar.name,
-				url: dataUploadAvattar.url,
-				public_id: dataUploadAvattar.public_id,
+			//Check upload avatar success
+			if (dataUploadAvattar) {
+				values.avatar = {
+					name: dataUploadAvattar.name,
+					url: dataUploadAvattar.url,
+					public_id: dataUploadAvattar.public_id,
+				}
 			}
-		}
 
-		//create new client
-		mutateCreClient(values)
+			//update client
+			mutateUpClient({
+				clientId: clientUpdateId,
+				inputeUpdate: values,
+			})
+		}
 	}
 
 	//User effect ---------------------------------------------------------------
@@ -163,6 +192,70 @@ export default function UpdateClient({ onCloseDrawer }: IAddClientProps) {
 			}
 		}
 	}, [isAuthenticated])
+
+	//Setting form when have data detail client
+	useEffect(() => {
+		if (dataDetailClient?.client) {
+			//Set data advanced
+			setAdvancedInfo({
+				can_login: dataDetailClient.client.can_login,
+				can_receive_email: dataDetailClient.client.can_receive_email,
+			})
+
+			//Set data note
+			setNote(dataDetailClient.client.note ? dataDetailClient.client.note : '')
+
+			//Set data form
+			formSetting.reset({
+				salutation: dataDetailClient.client.salutation || '',
+				name: dataDetailClient.client.name || '',
+				email: dataDetailClient.client.email || '',
+				password: dataDetailClient.client.password || '',
+				mobile: dataDetailClient.client.mobile || '',
+				country: dataDetailClient.client.country || '',
+				gender: dataDetailClient.client.gender || '',
+				company_name: dataDetailClient.client.company_name || '',
+				official_website: dataDetailClient.client.official_website || '',
+				gst_vat_number: dataDetailClient.client.gst_vat_number || '',
+				office_phone_number: dataDetailClient.client.office_phone_number || '',
+				city: dataDetailClient.client.city || '',
+				state: dataDetailClient.client.state || '',
+				postal_code: dataDetailClient.client.postal_code || '',
+				company_address: dataDetailClient.client.company_address || '',
+				shipping_address: dataDetailClient.client.shipping_address || '',
+				client_category: dataDetailClient.client.client_category?.id.toString() || '',
+				client_sub_category:
+					dataDetailClient.client.client_sub_category?.id.toString() || '',
+			})
+
+			//Set option sub category
+			if (
+				dataDetailClient.client.client_category &&
+				dataDetailClient.client.client_sub_category
+			) {
+				let newOptionSubCategories: IOption[] = []
+
+				//Check if client category is exist
+				if (dataSubCategories?.clientSubCategories) {
+					dataSubCategories.clientSubCategories.map((subCategory) => {
+						if (
+							subCategory.client_category.id.toString() ===
+							dataDetailClient.client?.client_category?.id.toString()
+						) {
+							const newOption: IOption = {
+								value: subCategory.id.toString(),
+								lable: subCategory.name,
+							}
+							newOptionSubCategories.push(newOption)
+						}
+					})
+				}
+
+				setOptionSubCategories(newOptionSubCategories)
+			}
+			console.log(dataDetailClient.client)
+		}
+	}, [dataDetailClient])
 
 	//Set option client catetgory
 	useEffect(() => {
@@ -182,12 +275,12 @@ export default function UpdateClient({ onCloseDrawer }: IAddClientProps) {
 
 	//Note when request success
 	useEffect(() => {
-		if (statusCreClient === 'success') {
+		if (statusUpClient === 'success') {
 			//Inform notice success
-			if (dataCreClient) {
+			if (dataUpClient) {
 				setToast({
 					type: 'success',
-					msg: dataCreClient?.message,
+					msg: dataUpClient?.message,
 				})
 			}
 
@@ -195,30 +288,8 @@ export default function UpdateClient({ onCloseDrawer }: IAddClientProps) {
 			if (onCloseDrawer) {
 				onCloseDrawer()
 			}
-
-			//Reset data form
-			formSetting.reset({
-				salutation: '',
-				name: '',
-				email: '',
-				password: '',
-				mobile: '',
-				country: '',
-				gender: '',
-				company_name: '',
-				official_website: '',
-				gst_vat_number: '',
-				office_phone_number: '',
-				city: '',
-				state: '',
-				postal_code: '',
-				company_address: '',
-				shipping_address: '',
-				client_category: '',
-				client_sub_category: '',
-			})
 		}
-	}, [statusCreClient])
+	}, [statusUpClient])
 
 	//Set data option sub category when parent client category change
 	useEffect(() => {
@@ -244,13 +315,14 @@ export default function UpdateClient({ onCloseDrawer }: IAddClientProps) {
 						})
 					}
 
+					formSetting.setValue('client_sub_category', '')
 					setOptionSubCategories(newOptionSubCategories)
 				}
 			}
 		})
 
 		return () => subscription.unsubscribe()
-	}, [formSetting.watch])
+	}, [formSetting.watch, dataDetailClient])
 
 	return (
 		<>
@@ -261,6 +333,7 @@ export default function UpdateClient({ onCloseDrawer }: IAddClientProps) {
 							setInfoImg={(data?: IImg) => {
 								setInfoImg(data)
 							}}
+							oldImg={dataDetailClient?.client?.avatar?.url}
 						/>
 					</GridItem>
 
@@ -313,7 +386,6 @@ export default function UpdateClient({ onCloseDrawer }: IAddClientProps) {
 							form={formSetting}
 							placeholder="Enter employee password"
 							type="password"
-							required
 						/>
 					</GridItem>
 
@@ -524,6 +596,37 @@ export default function UpdateClient({ onCloseDrawer }: IAddClientProps) {
 							form={formSetting}
 						/>
 					</GridItem>
+
+					<GridItem w="100%" colSpan={2}>
+						<Box>
+							<ReactQuill
+								placeholder="Enter you text"
+								modules={{
+									toolbar: [
+										['bold', 'italic', 'underline', 'strike'], // toggled buttons
+										['blockquote', 'code-block'],
+
+										[{ header: 1 }, { header: 2 }], // custom button values
+										[{ list: 'ordered' }, { list: 'bullet' }],
+										[{ script: 'sub' }, { script: 'super' }], // superscript/subscript
+										[{ indent: '-1' }, { indent: '+1' }], // outdent/indent
+										[{ direction: 'rtl' }], // text direction
+
+										[{ size: ['small', false, 'large', 'huge'] }], // custom dropdown
+										[{ header: [1, 2, 3, 4, 5, 6, false] }],
+
+										[{ color: [] }, { background: [] }], // dropdown with defaults from theme
+										[{ font: [] }],
+										[{ align: [] }],
+
+										['clean'], // remove formatting button
+									],
+								}}
+								value={note}
+								onChange={handleChangeNote}
+							/>
+						</Box>
+					</GridItem>
 				</Grid>
 
 				<Button
@@ -541,7 +644,7 @@ export default function UpdateClient({ onCloseDrawer }: IAddClientProps) {
 				>
 					Save
 				</Button>
-				{(statusCreClient === 'running' || loadingImg) && <Loading />}
+				{(statusUpClient === 'running' || loadingImg) && <Loading />}
 			</Box>
 
 			{/* Modal client category and client sub category */}

@@ -1,12 +1,28 @@
-import { createClientForm } from 'type/form/auth'
+import { createClientForm, updateClientForm } from 'type/form/auth'
 import { clientMutaionResponse } from 'type/mutationResponses'
-import { getData, postData } from 'utils/fetchData'
+import { getData, postData, putData } from 'utils/fetchData'
 
 //Function handle create client
 export async function createClientRequest(inputCreate: createClientForm) {
 	const resultFetch = await postData<clientMutaionResponse>({
 		url: 'http://localhost:4000/api/clients',
 		body: inputCreate,
+	})
+
+	return resultFetch
+}
+
+//Function handle update client
+export async function updateClientRequest({
+	inputeUpdate,
+	clientId,
+}: {
+	inputeUpdate: updateClientForm
+	clientId: number
+}) {
+	const resultFetch = await putData<clientMutaionResponse>({
+		url: `http://localhost:4000/api/clients/${clientId}`,
+		body: inputeUpdate,
 	})
 
 	return resultFetch

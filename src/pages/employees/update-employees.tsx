@@ -127,24 +127,6 @@ export default function UpdateEmployees({ onCloseDrawer, employeeId }: IUpdateEm
 	}
 
 	const onSubmit = async (values: updateEmployeeForm) => {
-		//Upload avatar
-		const dataAvatar: ICloudinaryImg | null = await handleUploadAvatar()
-
-		//Set data avatar if upload avatar success
-		if (dataAvatar) {
-			console.log(dataAvatar)
-
-			values.avatar = {
-				name: dataAvatar.name,
-				public_id: dataAvatar.public_id,
-				url: dataAvatar.url,
-			}
-		}
-
-		//Reset value update
-		values.can_login = advancedInfo.can_login
-		values.can_receive_email = advancedInfo.can_receive_email
-
 		// mutateCreateEmployee(values)
 		if (!employeeId) {
 			setToast({
@@ -152,6 +134,24 @@ export default function UpdateEmployees({ onCloseDrawer, employeeId }: IUpdateEm
 				msg: 'Not found employee to update',
 			})
 		} else {
+			//Upload avatar
+			const dataAvatar: ICloudinaryImg | null = await handleUploadAvatar()
+
+			//Set data avatar if upload avatar success
+			if (dataAvatar) {
+				console.log(dataAvatar)
+
+				values.avatar = {
+					name: dataAvatar.name,
+					public_id: dataAvatar.public_id,
+					url: dataAvatar.url,
+				}
+			}
+
+			//Reset value update
+			values.can_login = advancedInfo.can_login
+			values.can_receive_email = advancedInfo.can_receive_email
+
 			mutateUpdateEmployee({
 				inputUpdate: values,
 				employeeId,

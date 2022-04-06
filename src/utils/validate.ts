@@ -62,3 +62,11 @@ export const CreateClientValidate = yup.object({
 	name: yup.string().required('Please enter client name'),
 	password: yup.string().required('Please enter client password'),
 })
+
+export const UpdateClientValidate = yup.object({
+	email: yup
+		.string()
+		.required('Please enter email')
+		.email('Please, Enter the correct email format'),
+	name: yup.string().required('Please enter client name'),
+})

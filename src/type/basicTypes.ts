@@ -102,6 +102,7 @@ export interface clientType {
 		public_id: string
 	}
 	id: number
+	note?: string
 }
 
 export interface IOption {

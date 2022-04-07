@@ -59,9 +59,9 @@ import { IFilter, TColumn } from 'type/tableTypes'
 import { selectFilter, textFilter } from 'utils/filters'
 
 // page add and update employee
-import AddClient from './add-client'
+import AddClient from './add-clients'
 
-import UpdateClient from './update-client'
+import UpdateClient from './update-clients'
 
 
 import { IOption } from 'type/basicTypes'

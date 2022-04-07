@@ -33,6 +33,7 @@ import {
 	MdPassword,
 } from 'react-icons/md'
 import { SiCurl } from 'react-icons/si'
+import { mutate } from 'swr'
 import { IOption } from 'type/basicTypes'
 import { ICloudinaryImg, IImg } from 'type/fileType'
 import { createClientForm } from 'type/form/auth'
@@ -182,6 +183,7 @@ export default function AddClient({ onCloseDrawer }: IAddClientProps) {
 	//Note when request success
 	useEffect(() => {
 		if (statusCreClient === 'success') {
+			mutate('clients')
 			//Inform notice success
 			if (dataCreClient) {
 				setToast({

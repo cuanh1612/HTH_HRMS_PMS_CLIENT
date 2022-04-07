@@ -1,3 +1,66 @@
+:root {
+    --rdp-cell-size: 45px !important;
+    --rdp-accent-color: #FFF2F2 !important;
+    --rdp-background-color: #FFF2F2 !important;
+    /* Switch to dark colors for dark themes */
+    --rdp-accent-color-dark: white !important;
+    --rdp-background-color-dark: transparent !important;
+    /* Outline border for focused elements */
+    --rdp-outline: 0px solid var(--rdp-accent-color) !important;
+    /* Outline border for focused and selected elements */
+    --rdp-outline-selected: 0px solid rgba(0, 0, 0, 0.75) !important;
+}
+
+.rdp {
+    font-family: 'Hind Madurai', sans-serif !important;
+}
+
+.rdp-caption_label {
+    font-weight: normal !important;
+    font-size: 18px !important;
+    letter-spacing: 1px;
+}
+
+.rdp-button_reset.rdp-button.rdp-nav_button{
+    border-radius: 5px !important;
+    padding: 0px !important;
+    width: 30px !important;
+    height: 30px !important;
+    transition: 0.2s;
+}
+
+.rdp-button_reset.rdp-button.rdp-nav_button:hover{
+    border-radius: 5px !important;
+    padding: 0px !important;
+    width: 30px !important;
+    height: 30px !important;
+}
+
+
+.rdp-nav_icon {
+    transform: scale(0.7);
+}
+
+.rdp-button:not([disabled]):hover {
+    transition: 0.2s;
+    
+}
+
+.rdp-head_cell {
+    color: rgb(187, 187, 187) !important;
+    font-weight: normal !important;
+    font-size: 14px !important;
+}
+
+.rdp-day_selected:not([disabled]),
+.rdp-day_selected:focus:not([disabled]),
+.rdp-day_selected:active:not([disabled]),
+.rdp-day_selected:hover:not([disabled]) {
+    color: #f76161 !important;
+    font-weight: bold;
+    border-radius: 5px !important;
+}
+
 body {
     font-family: 'Hind Madurai', sans-serif;
 }
@@ -8,7 +71,10 @@ body {
     border-radius: 100%;
 }
 
-.listBt, .listOp, .listOps, .listOpActive {
+.listBt,
+.listOp,
+.listOps,
+.listOpActive {
     width: 100%;
 }
 

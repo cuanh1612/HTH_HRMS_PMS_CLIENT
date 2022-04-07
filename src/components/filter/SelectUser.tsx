@@ -1,5 +1,5 @@
 import { Listbox } from '@headlessui/react'
-import { Avatar, Box, FormControl, FormLabel, HStack, Text, VStack } from '@chakra-ui/react'
+import { Avatar, Box, FormControl, FormLabel, HStack, Text, useColorMode, VStack } from '@chakra-ui/react'
 import { useState } from 'react'
 import { IPeople } from 'type/element/commom'
 import { BiChevronDown } from 'react-icons/bi'
@@ -16,6 +16,7 @@ const SelectUser = ({
 	label: string
 	[index: string]: any
 }) => {
+	const {colorMode} = useColorMode()
 	const [users] = useState<IPeople[]>([
 		{
 			id: '',
@@ -47,7 +48,10 @@ const SelectUser = ({
 							background={'#ffffff10'}
 							w={'full'}
 							borderWidth={1}
-							borderColor={'gray.600'}
+							borderColor={colorMode == 'light' ? 'gray.200': 'gray.600'}
+							_active={{
+								border: 'none'
+							}}
 							h={'40px'}
 							borderRadius={'8px'}
 							padding={'0px 10px 1px 16px'}
@@ -64,7 +68,7 @@ const SelectUser = ({
 								<Text isTruncated>{selectedPerson.name}</Text>
 							</HStack>
 
-							<BiChevronDown fontSize={'20px'} color="white" />
+							<BiChevronDown fontSize={'20px'}/>
 						</HStack>
 					</Listbox.Button>
 					<Listbox.Options className={'listOps'}>
@@ -74,6 +78,8 @@ const SelectUser = ({
 							borderWidth={1}
 							borderRadius={15}
 							paddingBlock={4}
+							maxHeight={'250px'}
+							overflow={'auto'}
 						>
 							{users.map((person) => (
 								<Listbox.Option

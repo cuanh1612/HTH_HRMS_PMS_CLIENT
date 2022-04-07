@@ -249,7 +249,7 @@ export default function AddClient({ onCloseDrawer }: IAddClientProps) {
 		})
 
 		return () => subscription.unsubscribe()
-	}, [formSetting.watch])
+	}, [formSetting.watch, dataSubCategories])
 
 	return (
 		<>

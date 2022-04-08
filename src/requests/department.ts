@@ -1,4 +1,4 @@
-import { createDepartmentForm } from 'type/form/auth'
+import { createDepartmentForm } from 'type/form/basicFormType'
 import { DepartmentMutaionResponse } from 'type/mutationResponses'
 import { deleteData, getData, postData, putData } from 'utils/fetchData'
 

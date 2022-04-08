@@ -1,4 +1,4 @@
-import { createLeaveForm, updateLeaveForm } from 'type/form/auth'
+import { createLeaveForm, updateLeaveForm } from 'type/form/basicFormType'
 import { leaveMutaionResponse } from 'type/mutationResponses'
 import { getData, postData, putData } from 'utils/fetchData'
 

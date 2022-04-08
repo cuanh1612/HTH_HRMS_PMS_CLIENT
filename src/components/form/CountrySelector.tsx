@@ -30,7 +30,7 @@ export default function CoutrySelector({ name, form }: ICoutrySelectorProps) {
 
 	return (
 		<>
-			<Text mb={2}>Country</Text>
+			<Text mb={2} color={"gray.400"}>Country</Text>
 			<Select
 				name={name}
 				placeholder="Select option"

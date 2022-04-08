@@ -24,7 +24,7 @@ export const Textarea = ({
 			name={name}
 			render={({ field }) => (
 				<FormControl isRequired={required}>
-					<FormLabel fontWeight={'normal'} htmlFor={name}>
+					<FormLabel fontWeight={'normal'} htmlFor={name} color={"gray.400"}>
 						{label}
 					</FormLabel>
 					<TextareaChakra

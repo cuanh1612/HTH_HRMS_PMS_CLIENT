@@ -15,12 +15,17 @@ import JWTManager from 'utils/jwt'
 // custom loading
 import ClipLoader from 'react-spinners/BarLoader'
 import { css } from '@emotion/react'
+import io, { Socket } from 'socket.io-client'
 
 const override = css`
 	display: block;
 	margin: 0 auto;
 	border-color: red;
 `
+
+interface DefaultEventsMap {
+	[event: string]: (...args: any[]) => void
+}
 
 interface IAuthContext {
 	isAuthenticated: boolean | null
@@ -31,6 +36,7 @@ interface IAuthContext {
 	logoutClient: () => void
 	setToast: TToast
 	handleLoading: (isLoading: boolean) => void
+	socket: Socket<DefaultEventsMap, DefaultEventsMap> | null
 }
 
 const defaultIsAuthenticated = null
@@ -44,6 +50,7 @@ export const AuthContext = createContext<IAuthContext>({
 	logoutClient: () => {},
 	setToast: () => {},
 	handleLoading: () => {},
+	socket: null,
 })
 
 const AuthContextProvider = ({ children }: { children: ReactNode }) => {
@@ -68,6 +75,7 @@ const AuthContextProvider = ({ children }: { children: ReactNode }) => {
 	//State
 	const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(defaultIsAuthenticated)
 	const [currentUser, setCurrentUser] = useState<employeeType | null>(null)
+	const [socket, setSocket] = useState<Socket<DefaultEventsMap, DefaultEventsMap> | null>(null)
 
 	// set loading page
 	const [loadingPage, setLoading] = useState(true)
@@ -106,6 +114,35 @@ const AuthContextProvider = ({ children }: { children: ReactNode }) => {
 		checkAuth()
 	}, [])
 
+	//Set data current user
+	useEffect(() => {
+		if (dataCurrentUser && dataCurrentUser.user) {
+			setCurrentUser(dataCurrentUser.user)
+		} else {
+			setCurrentUser(null)
+		}
+	}, [dataCurrentUser])
+
+	//Setting socket
+	useEffect(() => {
+		const socketIo = io(process.env.NEXT_PUBLIC_API_URL as string)
+		setSocket(socketIo)
+		socketIo.emit('connection')
+
+		//Clean socket
+		function cleanup() {
+			socketIo.disconnect()
+		}
+		return cleanup
+	}, [])
+
+	//Add new user socket
+	useEffect(() => {
+		if(socket && currentUser){
+			socket.emit('newUser', currentUser.email)
+		}
+	}, [socket, currentUser])
+
 	const authContextData = {
 		isAuthenticated,
 		checkAuth,
@@ -115,16 +152,8 @@ const AuthContextProvider = ({ children }: { children: ReactNode }) => {
 		logoutClient,
 		setToast,
 		handleLoading,
+		socket,
 	}
-
-	//Set data current user
-	useEffect(() => {
-		if (dataCurrentUser && dataCurrentUser.user) {
-			setCurrentUser(dataCurrentUser.user)
-		} else {
-			setCurrentUser(null)
-		}
-	}, [dataCurrentUser])
 
 	return (
 		<>

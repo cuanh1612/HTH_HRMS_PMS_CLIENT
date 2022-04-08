@@ -77,3 +77,29 @@ export const dataSalutation: IOption[] = [
         lable: 'Madam'
     },
 ]
+
+export const dataCurrency: IOption[] = [
+    {
+        value: 'USD',
+        lable: 'USD'
+    },
+    {
+        value: 'GBP',
+        lable: 'GBP'
+    },
+   
+    {
+        value: 'EUR',
+        lable: 'EUR'
+    },
+
+    {
+        value: 'INR',
+        lable: 'INR'
+    },
+
+    {
+        value: 'VND',
+        lable: 'VND'
+    },
+]

@@ -105,6 +105,49 @@ export interface clientType {
 	note?: string
 }
 
+export interface holidayType {
+	id: number
+	holiday_date: Date
+	occasion: string
+	[index: string]: any
+}
+
+export interface contractType {
+	id: number
+	subject: string
+	description?: string
+	start_date: Date
+	end_date?: Date
+	contract_value: number
+	currency: string
+	client: clientType
+	cell?: string
+	office_phone_number?: string
+	city?: string
+	state?: string
+	country?: string
+	postal_code?: string
+	alternate_address?: string
+	notes?: string
+	company_logo?: {
+		url: string
+		name: string
+		public_id: string
+	}
+	sign?: {
+		url: string
+		name: string
+		public_id: string
+	}
+	contract_type?: contractTypeType
+}
+
+export interface contractTypeType {
+	id: number
+	name: string
+	[index: string]: any
+}
+
 export interface IOption {
 	value: string
 	lable: string

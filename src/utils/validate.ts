@@ -70,3 +70,19 @@ export const UpdateClientValidate = yup.object({
 		.email('Please, Enter the correct email format'),
 	name: yup.string().required('Please enter client name'),
 })
+
+export const CreateContractValidate = yup.object({
+	subject:  yup.string().required('Please enter field subject'),
+	start_date: yup.date().required('Please select start date'),
+	contract_value: yup.number().required('Please enter field subject conctract value'),
+	currency: yup.string().required('Please select currency'),
+	client: yup.string().required('Please select client')
+})
+
+export const UpdateContractValidate = yup.object({
+	subject:  yup.string().required('Please enter field subject'),
+	start_date: yup.date().required('Please select start date'),
+	contract_value: yup.number().required('Please enter field subject conctract value'),
+	currency: yup.string().required('Please select currency'),
+	client: yup.string().required('Please select client')
+})

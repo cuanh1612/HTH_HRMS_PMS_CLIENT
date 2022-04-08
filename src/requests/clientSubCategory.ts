@@ -1,4 +1,4 @@
-import { createSubCategoryForm } from 'type/form/auth'
+import { createSubCategoryForm } from 'type/form/basicFormType'
 import { ClientSubCategoryMutaionResponse } from 'type/mutationResponses'
 import { deleteData, getData, postData, putData } from 'utils/fetchData'
 

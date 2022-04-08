@@ -1,4 +1,4 @@
-import { loginForm, loginGoogleForm, logoutForm, registerForm } from 'type/form/auth'
+import { loginForm, loginGoogleForm, logoutForm, registerForm } from 'type/form/basicFormType'
 import { authMutaionResponse } from 'type/mutationResponses'
 import { getData, postData } from 'utils/fetchData'
 

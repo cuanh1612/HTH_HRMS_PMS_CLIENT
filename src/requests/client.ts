@@ -1,4 +1,4 @@
-import { createClientForm, updateClientForm } from 'type/form/auth'
+import { createClientForm, updateClientForm } from 'type/form/basicFormType'
 import { clientMutaionResponse } from 'type/mutationResponses'
 import { getData, postData, putData } from 'utils/fetchData'
 

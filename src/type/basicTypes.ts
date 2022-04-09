@@ -29,6 +29,7 @@ export interface employeeType {
 		name: string
 	} 
 	id: number
+	role: string
 }
 
 export interface departmentType {

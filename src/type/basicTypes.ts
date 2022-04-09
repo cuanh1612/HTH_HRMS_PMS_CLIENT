@@ -107,7 +107,7 @@ export interface clientType {
 
 export interface IOption {
 	value: string
-	lable: string
+	label: string
 }
 
 // toast

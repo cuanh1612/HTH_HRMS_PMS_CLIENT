@@ -1,3 +1,12 @@
+// get all country
+import countryList from 'react-select-country-list'
+
+// query and mutation
+import { allClientsQuery } from 'queries/client'
+import { deleteClientMutation, deleteClientsMutation } from 'mutations/client'
+import { allClientCategoriesQuery } from 'queries/clientCategory'
+import { allClientSubCategoriesQuery } from 'queries/clientSubCategory'
+
 // components
 import {
 	Avatar,
@@ -9,7 +18,6 @@ import {
 	MenuButton,
 	MenuItem,
 	MenuList,
-	Select as CSelect,
 	Text,
 	Button,
 	useDisclosure,
@@ -31,7 +39,7 @@ import { AuthContext } from 'contexts/AuthContext'
 
 import { useRouter } from 'next/router'
 
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useMemo, useState } from 'react'
 
 // icons
 import { AiOutlineCaretDown, AiOutlineCaretUp, AiOutlineSearch } from 'react-icons/ai'
@@ -47,23 +55,27 @@ import Table from 'components/Table'
 import { IFilter, TColumn } from 'type/tableTypes'
 
 // filter of column
-import { selectFilter, textFilter } from 'utils/filters'
+import { dateFilter, selectFilter, textFilter } from 'utils/filters'
 
-// page add and update client
-import AddClient from './add-client'
-import UpdateClient from './update-client'
+// page add and update employee
+import AddClient from './add-clients'
 
+import UpdateClient from './update-clients'
+
+// component to filter
 import { Input } from 'components/filter/Input'
-import { IPeople } from 'type/element/commom'
-import { allClientsQuery } from 'queries/client'
-import { deleteClientMutation, deleteClientsMutation } from 'mutations/client'
-import { allClientCategoriesQuery } from 'queries/clientCategory'
-import { IOption } from 'type/basicTypes'
+import SelectUser from 'components/filter/SelectUser'
+import DateRange from 'components/date/DateRange'
 import { Select } from 'components/filter/Select'
+
+import { IPeople } from 'type/element/commom'
+import { IOption } from 'type/basicTypes'
 
 const Clients: NextLayout = () => {
 	const { isAuthenticated, handleLoading, currentUser, setToast } = useContext(AuthContext)
 	const router = useRouter()
+
+	const options = useMemo(() => countryList().getData(), [])
 
 	// set filter
 	const [filter, setFilter] = useState<IFilter>({
@@ -102,9 +114,6 @@ const Clients: NextLayout = () => {
 
 	// data select to delete all
 	const [dataSl, setDataSl] = useState<Array<number> | null>()
-	useEffect(() => {
-		console.log(dataSl)
-	}, [dataSl])
 
 	const [clientIdUpdate, setClientIdUpdate] = useState<number | null>(30)
 
@@ -117,12 +126,18 @@ const Clients: NextLayout = () => {
 	// all categories
 	const [categories, setCts] = useState<IOption[]>()
 
+	// all sub categories
+	const [subCategories, setSubCts] = useState<IOption[]>()
+
 	// query and mutation -=------------------------------------------------------
 	// get all clients
 	const { data: allClients, mutate: refetchAllClients } = allClientsQuery(isAuthenticated)
 
 	// get all categories
 	const { data: allCategories, mutate: refetchAllCts } = allClientCategoriesQuery()
+
+	// get all sub categories
+	const { data: allSubCategories, mutate: refetchAllSubCts } = allClientSubCategoriesQuery()
 
 	// delete client
 	const [mutateDeleteClient, { status: statusDl }] = deleteClientMutation(setToast)
@@ -185,13 +200,26 @@ const Clients: NextLayout = () => {
 		if (allCategories) {
 			const data = allCategories.clientCategories?.map(
 				(item): IOption => ({
-					lable: item.name,
+					label: item.name,
 					value: String(item.id),
 				})
 			)
 			setCts(data)
 		}
 	}, [allCategories])
+
+	// set all sub categories to select
+	useEffect(() => {
+		if (allSubCategories) {
+			const data = allSubCategories.clientSubCategories?.map(
+				(item): IOption => ({
+					label: item.name,
+					value: String(item.id),
+				})
+			)
+			setSubCts(data)
+		}
+	}, [allSubCategories])
 
 	// header ----------------------------------------
 	const columns: TColumn[] = [
@@ -285,8 +313,9 @@ const Clients: NextLayout = () => {
 					Header: 'Created',
 					accessor: 'createdAt',
 					minWidth: 150,
+					filter: dateFilter(['createdAt']),
 					Cell: ({ value }) => {
-						const createdDate = new Date(value).toLocaleDateString()
+						const createdDate = new Date(value).toLocaleDateString('en-GB')
 						return <Text isTruncated>{createdDate}</Text>
 					},
 				},
@@ -294,7 +323,16 @@ const Clients: NextLayout = () => {
 					Header: 'Category',
 					accessor: 'category',
 					filter: selectFilter(['client_category', 'id']),
-
+				},
+				{
+					Header: 'Subcategory',
+					accessor: 'subcategory',
+					filter: selectFilter(['client_sub_category', 'id']),
+				},
+				{
+					Header: 'Country',
+					accessor: 'country',
+					filter: selectFilter(['country']),
 				},
 				{
 					Header: 'Action',
@@ -443,7 +481,7 @@ const Clients: NextLayout = () => {
 						values: [currentUser.email],
 					}}
 					filter={filter}
-					disableColumns={['category']}
+					disableColumns={['category', 'subcategory', 'country']}
 					isResetFilter={isResetFilter}
 				/>
 			)}
@@ -515,6 +553,48 @@ const Clients: NextLayout = () => {
 								label="Category"
 								placeholder="Select category"
 								required={false}
+							/>
+
+							<Select
+								options={subCategories}
+								handleSearch={(data: IFilter) => {
+									setFilter(data)
+								}}
+								columnId={'subcategory'}
+								label="Sub category"
+								placeholder="Select sub category"
+								required={false}
+							/>
+
+							<Select
+								options={options}
+								handleSearch={(data: IFilter) => {
+									setFilter(data)
+								}}
+								columnId={'country'}
+								label="Country"
+								placeholder="Select country"
+								required={false}
+							/>
+
+							<DateRange handleSelect={(date: {
+								from: Date,
+								to: Date
+								
+							})=> {
+								setFilter({
+									columnId: 'createdAt',
+									filterValue: date
+								})
+							}} label="Select date" />
+							<SelectUser
+								handleSearch={(data: IFilter) => {
+									setFilter(data)
+								}}
+								columnId={'id'}
+								required={false}
+								label={'Client'}
+								peoples={dataUsersSl}
 							/>
 						</VStack>
 					</DrawerBody>

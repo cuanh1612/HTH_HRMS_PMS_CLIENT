@@ -246,7 +246,7 @@ export default function UpdateClient({ onCloseDrawer, clientUpdateId }: IAddClie
 						) {
 							const newOption: IOption = {
 								value: subCategory.id.toString(),
-								lable: subCategory.name,
+								label: subCategory.name,
 							}
 							newOptionSubCategories.push(newOption)
 						}
@@ -266,7 +266,7 @@ export default function UpdateClient({ onCloseDrawer, clientUpdateId }: IAddClie
 				(category) => {
 					return {
 						value: category.id.toString(),
-						lable: category.name,
+						label: category.name,
 					}
 				}
 			)
@@ -311,7 +311,7 @@ export default function UpdateClient({ onCloseDrawer, clientUpdateId }: IAddClie
 							) {
 								const newOption: IOption = {
 									value: subCategory.id.toString(),
-									lable: subCategory.name,
+									label: subCategory.name,
 								}
 								newOptionSubCategories.push(newOption)
 							}

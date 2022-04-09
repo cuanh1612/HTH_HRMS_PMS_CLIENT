@@ -15,7 +15,6 @@ export const Select = ({
 	handleSearch,
 	columnId,
 }: Partial<ISelect>) => {
-
 	return (
 		<FormControl isRequired={required}>
 			<FormLabel color={'gray.400'} fontWeight={'normal'}>
@@ -36,7 +35,7 @@ export const Select = ({
 					{options &&
 						options.map((option) => (
 							<option value={option.value} key={option.value}>
-								{option.lable}
+									{option.label}
 							</option>
 						))}
 				</SelectChakra>

@@ -215,7 +215,7 @@ const Employees: NextLayout = () => {
 			const data = allDepartments.departments?.map((item): IOption => {
 				return {
 					value: String(item.id),
-					lable: item.name,
+					label: item.name,
 				}
 			})
 			setDepartments(data)
@@ -228,7 +228,7 @@ const Employees: NextLayout = () => {
 			const data = allDesignations.designations?.map((item): IOption => {
 				return {
 					value: String(item.id),
-					lable: item.name,
+					label: item.name,
 				}
 			})
 			setDesignations(data)
@@ -336,7 +336,7 @@ const Employees: NextLayout = () => {
 							>
 								{dataRoleEmployee.map((item) => (
 									<option value={item.value} key={item.value}>
-										{item.lable}
+										{item.label}
 									</option>
 								))}
 							</CSelect>

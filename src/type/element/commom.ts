@@ -2,6 +2,7 @@ import { As } from "@chakra-ui/react"
 import { HTMLInputTypeAttribute } from "react"
 import { IOption } from "type/basicTypes"
 
+
 // components/form/input
 export interface IInput {
 	name: string

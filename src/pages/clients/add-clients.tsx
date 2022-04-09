@@ -171,7 +171,7 @@ export default function AddClient({ onCloseDrawer }: IAddClientProps) {
 				(category) => {
 					return {
 						value: category.id.toString(),
-						lable: category.name,
+						label: category.name,
 					}
 				}
 			)
@@ -238,7 +238,7 @@ export default function AddClient({ onCloseDrawer }: IAddClientProps) {
 							) {
 								const newOption: IOption = {
 									value: subCategory.id.toString(),
-									lable: subCategory.name,
+									label: subCategory.name,
 								}
 								newOptionSubCategories.push(newOption)
 							}
@@ -251,7 +251,7 @@ export default function AddClient({ onCloseDrawer }: IAddClientProps) {
 		})
 
 		return () => subscription.unsubscribe()
-	}, [formSetting.watch])
+	}, [formSetting.watch, dataSubCategories])
 
 	return (
 		<>
@@ -334,7 +334,7 @@ export default function AddClient({ onCloseDrawer }: IAddClientProps) {
 						<Select
 							name="gender"
 							label="Gender"
-							required={false}
+							required={true}
 							form={formSetting}
 							placeholder={'Select Gender'}
 							options={dataGender}

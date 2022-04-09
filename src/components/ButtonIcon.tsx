@@ -15,7 +15,6 @@ export default function ButtonIcon({
 	hoverBg,
 	radius = false,
 	htmlFor,
-	as,
 }: IButtonIcon) {
 	return (
 		<IconButton

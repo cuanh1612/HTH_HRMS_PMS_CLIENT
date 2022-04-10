@@ -1,4 +1,4 @@
-import { createLeaveRequest, updateLeaveRequest, updateStatusRequest } from 'requests/leave'
+import { createLeaveRequest, deleteLeaveRequest, deleteLeavesRequest, updateLeaveRequest, updateStatusRequest } from 'requests/leave'
 import { TToast } from 'type/basicTypes'
 import useMutation from 'use-mutation'
 
@@ -37,4 +37,30 @@ export const updateStatusMutation = (setToast: TToast) => {
 		},
 	})
 }
+
+// delete one
+export const deleteLeaveMutation = (setToast: TToast) => {
+	return useMutation(deleteLeaveRequest, {
+		onFailure({ error }) {
+			setToast({
+				msg: error.message,
+				type: 'error',
+			})
+		},
+	})
+}
+
+
+// delete many
+export const deleteLeavesMutation = (setToast: TToast) => {
+	return useMutation(deleteLeavesRequest, {
+		onFailure({ error }) {
+			setToast({
+				msg: error.message,
+				type: 'error',
+			})
+		},
+	})
+}
+
 

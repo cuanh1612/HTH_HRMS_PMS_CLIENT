@@ -80,3 +80,18 @@ export const dateFilter = (columns: string[]) => {
 		})
 	}
 }
+
+export const yearFilter = (columns: string[]) => {
+	return (rows: Row[], id: string, filterValue: number) => {
+		if (!filterValue) {
+			return rows
+		}
+		return rows.filter((row) => {
+			const data = getData(columns, row)
+			const year = new Date(data).getFullYear()
+			if (filterValue == year) return true
+
+			return false
+		})
+	}
+}

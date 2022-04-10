@@ -1,6 +1,6 @@
 import { createLeaveForm, updateLeaveForm } from 'type/form/basicFormType'
 import { leaveMutaionResponse } from 'type/mutationResponses'
-import { getData, postData, putData } from 'utils/fetchData'
+import { deleteData, getData, postData, putData } from 'utils/fetchData'
 
 //Function handle create leave
 export async function createLeaveRequest(inputCreate: createLeaveForm) {
@@ -60,3 +60,23 @@ export const updateStatusRequest = async ({
 		}
 	})
 }
+
+
+//Handle to delete leave
+export const deleteLeaveRequest = async (id: string) => {
+	return await deleteData<leaveMutaionResponse>({
+		url: `http://localhost:4000/api/leaves/${id}`,
+	})
+}
+
+
+// Handle to delete many employees
+export const deleteLeavesRequest = async (ids: number[]) => {
+	return await postData<leaveMutaionResponse>({
+		url: `http://localhost:4000/api/leaves/delete-many`,
+		body: {
+			leaves: ids,
+		},
+	})
+}
+

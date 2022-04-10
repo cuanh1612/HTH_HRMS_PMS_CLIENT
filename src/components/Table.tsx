@@ -203,7 +203,7 @@ const Table = ({
 	}, [isResetFilter])
 
 	return (
-		<Box overflow={'auto'} pos="relative">
+		<Box overflow={'auto'} pos="relative" minH={'400px'}>
 			<Box userSelect={'none'} as="div" {...getTableProps()}>
 				<Box position={'sticky'} top="0" as="div">
 					{headerGroups.map((headerGroup: any) => (

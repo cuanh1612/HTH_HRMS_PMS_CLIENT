@@ -1,13 +1,8 @@
-// get all country
-import countryList from 'react-select-country-list'
-
 // query and mutation
 import { allLeaveQuery } from 'queries/leave'
-import { deleteClientMutation, deleteClientsMutation } from 'mutations/client'
-import {updateStatusMutation} from 'mutations/leave'
-
-
-import {IoMdClose} from 'react-icons/io'
+import { deleteLeaveMutation, deleteLeavesMutation } from 'mutations/leave'
+import { updateStatusMutation } from 'mutations/leave'
+import { allLeaveTypesQuery } from 'queries/leaveType'
 
 // components
 import {
@@ -42,7 +37,7 @@ import { AuthContext } from 'contexts/AuthContext'
 
 import { useRouter } from 'next/router'
 
-import { useContext, useEffect, useMemo, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 // icons
 import { AiOutlineCaretDown, AiOutlineCaretUp, AiOutlineSearch } from 'react-icons/ai'
@@ -50,6 +45,7 @@ import { BiExport, BiImport } from 'react-icons/bi'
 import { IoAdd, IoEyeOutline } from 'react-icons/io5'
 import { MdOutlineDeleteOutline, MdOutlineMoreVert } from 'react-icons/md'
 import { RiPencilLine } from 'react-icons/ri'
+import { IoMdClose } from 'react-icons/io'
 
 import { NextLayout } from 'type/element/layout'
 
@@ -58,7 +54,7 @@ import Table from 'components/Table'
 import { IFilter, TColumn } from 'type/tableTypes'
 
 // filter of column
-import { dateFilter, selectFilter, textFilter } from 'utils/filters'
+import { dateFilter, selectFilter, textFilter, yearFilter } from 'utils/filters'
 
 // page add and update employee
 import AddLeave from './add-leaves'
@@ -75,11 +71,12 @@ import { IPeople } from 'type/element/commom'
 import { IOption } from 'type/basicTypes'
 import { BsCheck2 } from 'react-icons/bs'
 
-const Clients: NextLayout = () => {
+// get current year
+const year = new Date().getFullYear()
+
+const Leaves: NextLayout = () => {
 	const { isAuthenticated, handleLoading, currentUser, setToast } = useContext(AuthContext)
 	const router = useRouter()
-
-	const options = useMemo(() => countryList().getData(), [])
 
 	// set filter
 	const [filter, setFilter] = useState<IFilter>({
@@ -110,8 +107,8 @@ const Clients: NextLayout = () => {
 	})
 
 	//State ---------------------------------------------------------------------
-	// get id to delete client
-	const [idDeleteClient, setIdDeleteClient] = useState<number>()
+	// get id to delete leave
+	const [idDeleteLeave, setIdDeleteLeave] = useState<number>()
 
 	// set loading table
 	const [isLoading, setIsloading] = useState(true)
@@ -119,7 +116,7 @@ const Clients: NextLayout = () => {
 	// data select to delete all
 	const [dataSl, setDataSl] = useState<Array<number> | null>()
 
-	const [clientIdUpdate, setClientIdUpdate] = useState<number | null>(30)
+	const [leaveIdUpdate, setLeaveIdUpdate] = useState<number | null>(30)
 
 	// data all users to select
 	const [dataUsersSl, setAllusersSl] = useState<IPeople[]>([])
@@ -133,18 +130,24 @@ const Clients: NextLayout = () => {
 	// all sub categories
 	const [subCategories, setSubCts] = useState<IOption[]>()
 
+	// all leave type
+	const [leaveTypes, setLeaveTypes] = useState<IOption[]>()
+
 	// query and mutation -=------------------------------------------------------
 	// get all leaves
 	const { data: allLeaves, mutate: refetchAllLeaves } = allLeaveQuery(isAuthenticated)
 
+	// get all leave type
+	const { data: allLeaveType, mutate: refetchLeaveType } = allLeaveTypesQuery()
+
 	// update status of leave
-	const [mutateUpdateStatus, { status: statusUpStatus }]= updateStatusMutation(setToast)
+	const [mutateUpdateStatus, { status: statusUpStatus }] = updateStatusMutation(setToast)
 
-	// delete client
-	const [mutateDeleteClient, { status: statusDl }] = deleteClientMutation(setToast)
+	// delete leave
+	const [mutateDeleteLeave, { status: statusDl }] = deleteLeaveMutation(setToast)
 
-	// delete all clients
-	const [mutateDeleteClients, { status: statusDlMany }] = deleteClientsMutation(setToast)
+	// delete all leaves
+	const [mutateDeleteLeaves, { status: statusDlMany }] = deleteLeavesMutation(setToast)
 
 	//User effect ---------------------------------------------------------------
 	// check authenticate in
@@ -162,7 +165,7 @@ const Clients: NextLayout = () => {
 	useEffect(() => {
 		if (statusDl == 'success') {
 			setToast({
-				msg: 'Delete client successfully',
+				msg: 'Delete leave successfully',
 				type: 'success',
 			})
 			refetchAllLeaves()
@@ -173,7 +176,7 @@ const Clients: NextLayout = () => {
 	useEffect(() => {
 		if (statusDlMany == 'success') {
 			setToast({
-				msg: 'Delete clients successfully',
+				msg: 'Delete leaves successfully',
 				type: 'success',
 			})
 			setDataSl(null)
@@ -181,14 +184,14 @@ const Clients: NextLayout = () => {
 		}
 	}, [statusDlMany])
 
-	// set loading == false when get all clients successfully
+	// set loading == false when get all leaves successfully
 	useEffect(() => {
 		if (allLeaves) {
 			const users = allLeaves.leaves?.map((item): IPeople => {
 				return {
 					id: item.id,
-					name: item.name,
-					avatar: item.avatar?.url,
+					name: item.employee.name,
+					avatar: item.employee.avatar?.url,
 				}
 			})
 			setAllusersSl(users || [])
@@ -196,12 +199,25 @@ const Clients: NextLayout = () => {
 		}
 	}, [allLeaves])
 
+	// set leavetypes when get all successfully
+	useEffect(() => {
+		if (allLeaveType) {
+			const types = allLeaveType.leaveTypes?.map((item): IOption => {
+				return {
+					label: item.name,
+					value: String(item.id),
+				}
+			})
+			setLeaveTypes(types)
+		}
+	}, [allLeaveType])
+
 	// alert when update status success
 	useEffect(() => {
 		if (statusUpStatus == 'success') {
 			setToast({
 				type: 'success',
-				msg: 'Update status successfully'
+				msg: 'Update status successfully',
 			})
 			refetchAllLeaves()
 			setIsloading(false)
@@ -211,7 +227,7 @@ const Clients: NextLayout = () => {
 	// header ----------------------------------------
 	const columns: TColumn[] = [
 		{
-			Header: 'Clients',
+			Header: 'Leaves',
 
 			columns: [
 				{
@@ -271,7 +287,7 @@ const Clients: NextLayout = () => {
 					Header: 'Email',
 					accessor: 'email',
 					minWidth: 150,
-					filter: textFilter(['email']),
+					filter: textFilter(['employee', 'email']),
 					Cell: ({ row }) => {
 						return <Text isTruncated>{row.original.employee.email}</Text>
 					},
@@ -280,17 +296,22 @@ const Clients: NextLayout = () => {
 				{
 					Header: 'Leave date',
 					accessor: 'date',
+					filter: dateFilter(['date']),
 					minWidth: 150,
 					Cell: ({ value }) => {
 						return <Text>{new Date(value).toLocaleDateString('en-GB')}</Text>
 					},
 				},
 				{
+					Header: 'year',
+					accessor: 'year',
+					filter: yearFilter(['date']),
+				},
+				{
 					Header: 'Leave status',
 					accessor: 'status',
 					minWidth: 150,
-					filter: dateFilter(['createdAt']),
-
+					filter: selectFilter(['status']),
 					Cell: ({ value }) => {
 						return (
 							<HStack alignItems={'center'}>
@@ -315,21 +336,14 @@ const Clients: NextLayout = () => {
 					Header: 'Leave type',
 					accessor: 'leave_type',
 					minWidth: 150,
-					filter: dateFilter(['createdAt']),
+					filter: selectFilter(['leave_type', 'id']),
 					Cell: ({ value }) => {
-						console.log(value)
 						return (
 							<Tag bg={`${value.color_code}30`} color={value.color_code} isTruncated>
 								{value.name}
 							</Tag>
 						)
 					},
-				},
-
-				{
-					Header: 'Country',
-					accessor: 'country',
-					filter: selectFilter(['country']),
 				},
 				{
 					Header: 'Action',
@@ -352,7 +366,7 @@ const Clients: NextLayout = () => {
 												setIsloading(true)
 												mutateUpdateStatus({
 													status: 'Approved',
-													leaveId: row.values['id']
+													leaveId: row.values['id'],
 												})
 											}}
 											icon={<BsCheck2 fontSize={'15px'} />}
@@ -364,7 +378,7 @@ const Clients: NextLayout = () => {
 												setIsloading(true)
 												mutateUpdateStatus({
 													status: 'Rejected',
-													leaveId: row.values['id']
+													leaveId: row.values['id'],
 												})
 											}}
 											icon={<IoMdClose fontSize={'15px'} />}
@@ -373,7 +387,7 @@ const Clients: NextLayout = () => {
 										</MenuItem>
 										<MenuItem
 											onClick={() => {
-												setClientIdUpdate(row.values['id'])
+												setLeaveIdUpdate(row.values['id'])
 												onOpenUpdate()
 											}}
 											icon={<RiPencilLine fontSize={'15px'} />}
@@ -385,7 +399,7 @@ const Clients: NextLayout = () => {
 
 								<MenuItem
 									onClick={() => {
-										setIdDeleteClient(row.values['id'])
+										setIdDeleteLeave(row.values['id'])
 										onOpenDl()
 									}}
 									icon={<MdOutlineDeleteOutline fontSize={'15px'} />}
@@ -442,7 +456,7 @@ const Clients: NextLayout = () => {
 						color={'hu-Pink.dark'}
 						variant={'outline'}
 					>
-						Invite Client
+						Invite Leave
 					</Button>
 					<Button
 						transform={'auto'}
@@ -500,12 +514,8 @@ const Clients: NextLayout = () => {
 					isSelect
 					selectByColumn="id"
 					setSelect={(data: Array<number>) => setDataSl(data)}
-					disableRows={{
-						column: 'email',
-						values: [currentUser.email],
-					}}
 					filter={filter}
-					disableColumns={['category', 'subcategory', 'country']}
+					disableColumns={['year']}
 					isResetFilter={isResetFilter}
 				/>
 			)}
@@ -514,7 +524,7 @@ const Clients: NextLayout = () => {
 			<AlertDialog
 				handleDelete={() => {
 					setIsloading(true)
-					mutateDeleteClient(String(idDeleteClient))
+					mutateDeleteLeave(String(idDeleteLeave))
 				}}
 				title="Are you sure?"
 				content="You will not be able to recover the deleted record!"
@@ -527,7 +537,7 @@ const Clients: NextLayout = () => {
 				handleDelete={() => {
 					if (dataSl) {
 						setIsloading(true)
-						mutateDeleteClients(dataSl)
+						mutateDeleteLeaves(dataSl)
 					}
 				}}
 				title="Are you sure to delete all?"
@@ -537,13 +547,13 @@ const Clients: NextLayout = () => {
 			/>
 
 			{/* drawer to add leave */}
-			<Drawer size="xl" title="Add client" onClose={onCloseAdd} isOpen={isOpenAdd}>
+			<Drawer size="xl" title="Add leave" onClose={onCloseAdd} isOpen={isOpenAdd}>
 				<AddLeave onCloseDrawer={onCloseAdd} />
 			</Drawer>
 
 			{/* drawer to update leave */}
-			<Drawer size="xl" title="Update client" onClose={onCloseUpdate} isOpen={isOpenUpdate}>
-				<UpdateLeave onCloseDrawer={onCloseUpdate} leaveId={clientIdUpdate} />
+			<Drawer size="xl" title="Update leave" onClose={onCloseUpdate} isOpen={isOpenUpdate}>
+				<UpdateLeave onCloseDrawer={onCloseUpdate} leaveId={leaveIdUpdate} />
 			</Drawer>
 
 			<CDrawer isOpen={isOpenFilter} placement="right" onClose={onCloseFilter}>
@@ -569,42 +579,71 @@ const Clients: NextLayout = () => {
 							/>
 
 							<Select
-								options={categories}
+								options={[
+									{
+										label: 'Pending',
+										value: 'Pending',
+									},
+									{
+										label: 'Rejected',
+										value: 'Rejected',
+									},
+									{
+										label: 'Approved',
+										value: 'Approved',
+									},
+								]}
 								handleSearch={(data: IFilter) => {
 									setFilter(data)
 								}}
-								columnId={'category'}
-								label="Category"
-								placeholder="Select category"
+								columnId={'status'}
+								label="Leave status"
+								placeholder="Select status"
+								required={false}
+							/>
+							<Select
+								options={[
+									{
+										label: String(year - 2),
+										value: String(year - 2),
+									},
+									{
+										label: String(year - 1),
+										value: String(year - 1),
+									},
+									{
+										label: String(year),
+										value: String(year),
+									},
+									{
+										label: String(year + 1),
+										value: String(year + 1),
+									},
+								]}
+								handleSearch={(data: IFilter) => {
+									setFilter(data)
+								}}
+								columnId={'year'}
+								label="Year"
+								placeholder="Select year"
 								required={false}
 							/>
 
 							<Select
-								options={subCategories}
+								options={leaveTypes}
 								handleSearch={(data: IFilter) => {
 									setFilter(data)
 								}}
-								columnId={'subcategory'}
-								label="Sub category"
-								placeholder="Select sub category"
-								required={false}
-							/>
-
-							<Select
-								options={options}
-								handleSearch={(data: IFilter) => {
-									setFilter(data)
-								}}
-								columnId={'country'}
-								label="Country"
-								placeholder="Select country"
+								columnId={'leave_type'}
+								label="Leave type"
+								placeholder="Select type"
 								required={false}
 							/>
 
 							<DateRange
 								handleSelect={(date: { from: Date; to: Date }) => {
 									setFilter({
-										columnId: 'createdAt',
+										columnId: 'date',
 										filterValue: date,
 									})
 								}}
@@ -616,7 +655,7 @@ const Clients: NextLayout = () => {
 								}}
 								columnId={'id'}
 								required={false}
-								label={'Client'}
+								label={'User'}
 								peoples={dataUsersSl}
 							/>
 						</VStack>
@@ -627,6 +666,6 @@ const Clients: NextLayout = () => {
 	)
 }
 
-Clients.getLayout = ClientLayout
+Leaves.getLayout = ClientLayout
 
-export default Clients
+export default Leaves

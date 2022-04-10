@@ -27,10 +27,10 @@ import { useForm } from 'react-hook-form'
 import { AiOutlineCheck } from 'react-icons/ai'
 import { BsCalendarDate } from 'react-icons/bs'
 import { IOption } from 'type/basicTypes'
-import { updateLeaveForm } from 'type/form/auth'
+import { updateLeaveForm } from 'type/form/basicFormType'
 import { dataStatusLeave } from 'utils/basicData'
 import { UpdateLeaveValidate } from 'utils/validate'
-import AddLeaveType from '../leave-type'
+import AddLeaveType from '../leave-types'
 
 export interface IUpdateLeavesProps {
 	onCloseDrawer?: () => void

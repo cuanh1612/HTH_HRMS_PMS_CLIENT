@@ -37,7 +37,7 @@ import {
 import { SiCurl } from 'react-icons/si'
 import { IOption } from 'type/basicTypes'
 import { ICloudinaryImg, IImg } from 'type/fileType'
-import { createClientForm, updateClientForm } from 'type/form/auth'
+import { createClientForm, updateClientForm } from 'type/form/basicFormType'
 import { dataGender, dataSalutation } from 'utils/basicData'
 import { uploadFile } from 'utils/uploadFile'
 import { CreateClientValidate, UpdateClientValidate } from 'utils/validate'

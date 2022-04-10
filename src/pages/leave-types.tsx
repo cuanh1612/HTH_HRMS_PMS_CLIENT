@@ -10,7 +10,7 @@ import { useForm } from 'react-hook-form'
 import { AiOutlineBgColors, AiOutlineCheck } from 'react-icons/ai'
 import { MdOutlineDriveFileRenameOutline } from 'react-icons/md'
 import { useSWRConfig } from 'swr'
-import { createLeaveTypeForm } from 'type/form/auth'
+import { createLeaveTypeForm } from 'type/form/basicFormType'
 import { CreateLeaveTypeValidate } from 'utils/validate'
 
 export interface ILeaveTypeProps {}

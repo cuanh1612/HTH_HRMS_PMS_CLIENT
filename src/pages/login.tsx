@@ -18,7 +18,7 @@ import { CgMail } from 'react-icons/cg'
 import { ImGoogle } from 'react-icons/im'
 // layout
 import { NextLayout } from 'type/element/layout'
-import { loginForm } from 'type/form/auth'
+import { loginForm } from 'type/form/basicFormType'
 import JWTManager from 'utils/jwt'
 import { LoginValidate } from 'utils/validate'
 

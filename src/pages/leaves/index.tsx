@@ -2,10 +2,12 @@
 import countryList from 'react-select-country-list'
 
 // query and mutation
-import { allClientsQuery } from 'queries/client'
+import { allLeaveQuery } from 'queries/leave'
 import { deleteClientMutation, deleteClientsMutation } from 'mutations/client'
-import { allClientCategoriesQuery } from 'queries/clientCategory'
-import { allClientSubCategoriesQuery } from 'queries/clientSubCategory'
+import {updateStatusMutation} from 'mutations/leave'
+
+
+import {IoMdClose} from 'react-icons/io'
 
 // components
 import {
@@ -28,6 +30,7 @@ import {
 	DrawerBody,
 	DrawerCloseButton,
 	VStack,
+	Tag,
 } from '@chakra-ui/react'
 import AlertDialog from 'components/AlertDialog'
 import Drawer from 'components/Drawer'
@@ -70,6 +73,7 @@ import { Select } from 'components/filter/Select'
 
 import { IPeople } from 'type/element/commom'
 import { IOption } from 'type/basicTypes'
+import { BsCheck2 } from 'react-icons/bs'
 
 const Clients: NextLayout = () => {
 	const { isAuthenticated, handleLoading, currentUser, setToast } = useContext(AuthContext)
@@ -130,14 +134,11 @@ const Clients: NextLayout = () => {
 	const [subCategories, setSubCts] = useState<IOption[]>()
 
 	// query and mutation -=------------------------------------------------------
-	// get all clients
-	const { data: allClients, mutate: refetchAllClients } = allClientsQuery(isAuthenticated)
+	// get all leaves
+	const { data: allLeaves, mutate: refetchAllLeaves } = allLeaveQuery(isAuthenticated)
 
-	// get all categories
-	const { data: allCategories, mutate: refetchAllCts } = allClientCategoriesQuery()
-
-	// get all sub categories
-	const { data: allSubCategories, mutate: refetchAllSubCts } = allClientSubCategoriesQuery()
+	// update status of leave
+	const [mutateUpdateStatus, { status: statusUpStatus }]= updateStatusMutation(setToast)
 
 	// delete client
 	const [mutateDeleteClient, { status: statusDl }] = deleteClientMutation(setToast)
@@ -164,7 +165,7 @@ const Clients: NextLayout = () => {
 				msg: 'Delete client successfully',
 				type: 'success',
 			})
-			refetchAllClients()
+			refetchAllLeaves()
 		}
 	}, [statusDl])
 
@@ -176,14 +177,14 @@ const Clients: NextLayout = () => {
 				type: 'success',
 			})
 			setDataSl(null)
-			refetchAllClients()
+			refetchAllLeaves()
 		}
 	}, [statusDlMany])
 
 	// set loading == false when get all clients successfully
 	useEffect(() => {
-		if (allClients) {
-			const users = allClients.clients?.map((item): IPeople => {
+		if (allLeaves) {
+			const users = allLeaves.leaves?.map((item): IPeople => {
 				return {
 					id: item.id,
 					name: item.name,
@@ -193,33 +194,19 @@ const Clients: NextLayout = () => {
 			setAllusersSl(users || [])
 			setIsloading(false)
 		}
-	}, [allClients])
+	}, [allLeaves])
 
-	// set all categories to select
+	// alert when update status success
 	useEffect(() => {
-		if (allCategories) {
-			const data = allCategories.clientCategories?.map(
-				(item): IOption => ({
-					label: item.name,
-					value: String(item.id),
-				})
-			)
-			setCts(data)
+		if (statusUpStatus == 'success') {
+			setToast({
+				type: 'success',
+				msg: 'Update status successfully'
+			})
+			refetchAllLeaves()
+			setIsloading(false)
 		}
-	}, [allCategories])
-
-	// set all sub categories to select
-	useEffect(() => {
-		if (allSubCategories) {
-			const data = allSubCategories.clientSubCategories?.map(
-				(item): IOption => ({
-					label: item.name,
-					value: String(item.id),
-				})
-			)
-			setSubCts(data)
-		}
-	}, [allSubCategories])
+	}, [statusUpStatus])
 
 	// header ----------------------------------------
 	const columns: TColumn[] = [
@@ -243,20 +230,19 @@ const Clients: NextLayout = () => {
 					accessor: 'name',
 					minWidth: 250,
 					Cell: ({ value, row }) => {
+						const people = row.original.employee
 						return (
 							<HStack w={'full'} spacing={5}>
 								<Avatar
 									flex={'none'}
 									size={'sm'}
-									name={row.values['name']}
-									src={row.original.avatar?.url}
+									name={people.name}
+									src={people.avatar?.url}
 								/>
 								<VStack w={'70%'} alignItems={'start'}>
 									<Text isTruncated w={'full'}>
-										{row.original.salutation
-											? `${row.original.salutation}. ${value}`
-											: value}
-										{currentUser?.email == row.values['email'] && (
+										{people.name}
+										{currentUser?.email == people['email'] && (
 											<Badge
 												marginLeft={'5'}
 												color={'white'}
@@ -266,14 +252,14 @@ const Clients: NextLayout = () => {
 											</Badge>
 										)}
 									</Text>
-									{row.original.company_name && (
+									{people.designation && (
 										<Text
 											isTruncated
 											w={'full'}
 											fontSize={'sm'}
 											color={'gray.400'}
 										>
-											{row.original.company_name}
+											{people.designation.name}
 										</Text>
 									)}
 								</VStack>
@@ -286,49 +272,60 @@ const Clients: NextLayout = () => {
 					accessor: 'email',
 					minWidth: 150,
 					filter: textFilter(['email']),
-					Cell: ({ value }) => {
-						return <Text isTruncated>{value}</Text>
+					Cell: ({ row }) => {
+						return <Text isTruncated>{row.original.employee.email}</Text>
 					},
 				},
 
 				{
-					Header: 'Status',
+					Header: 'Leave date',
+					accessor: 'date',
+					minWidth: 150,
+					Cell: ({ value }) => {
+						return <Text>{new Date(value).toLocaleDateString('en-GB')}</Text>
+					},
+				},
+				{
+					Header: 'Leave status',
 					accessor: 'status',
 					minWidth: 150,
-					Cell: () => {
+					filter: dateFilter(['createdAt']),
+
+					Cell: ({ value }) => {
 						return (
 							<HStack alignItems={'center'}>
 								<Box
-									background={'hu-Green.normal'}
+									background={
+										value == 'Pending'
+											? 'yellow.200'
+											: value == 'Approved'
+											? 'hu-Green.normal'
+											: 'red'
+									}
 									w={'3'}
 									borderRadius={'full'}
 									h={'3'}
 								/>
-								<Text>Active</Text>
+								<Text>{value}</Text>
 							</HStack>
 						)
 					},
 				},
 				{
-					Header: 'Created',
-					accessor: 'createdAt',
+					Header: 'Leave type',
+					accessor: 'leave_type',
 					minWidth: 150,
 					filter: dateFilter(['createdAt']),
 					Cell: ({ value }) => {
-						const createdDate = new Date(value).toLocaleDateString('en-GB')
-						return <Text isTruncated>{createdDate}</Text>
+						console.log(value)
+						return (
+							<Tag bg={`${value.color_code}30`} color={value.color_code} isTruncated>
+								{value.name}
+							</Tag>
+						)
 					},
 				},
-				{
-					Header: 'Category',
-					accessor: 'category',
-					filter: selectFilter(['client_category', 'id']),
-				},
-				{
-					Header: 'Subcategory',
-					accessor: 'subcategory',
-					filter: selectFilter(['client_sub_category', 'id']),
-				},
+
 				{
 					Header: 'Country',
 					accessor: 'country',
@@ -348,26 +345,53 @@ const Clients: NextLayout = () => {
 							</MenuButton>
 							<MenuList>
 								<MenuItem icon={<IoEyeOutline fontSize={'15px'} />}>View</MenuItem>
+								{row.values.status == 'Pending' && (
+									<>
+										<MenuItem
+											onClick={() => {
+												setIsloading(true)
+												mutateUpdateStatus({
+													status: 'Approved',
+													leaveId: row.values['id']
+												})
+											}}
+											icon={<BsCheck2 fontSize={'15px'} />}
+										>
+											Approve
+										</MenuItem>
+										<MenuItem
+											onClick={() => {
+												setIsloading(true)
+												mutateUpdateStatus({
+													status: 'Rejected',
+													leaveId: row.values['id']
+												})
+											}}
+											icon={<IoMdClose fontSize={'15px'} />}
+										>
+											Reject
+										</MenuItem>
+										<MenuItem
+											onClick={() => {
+												setClientIdUpdate(row.values['id'])
+												onOpenUpdate()
+											}}
+											icon={<RiPencilLine fontSize={'15px'} />}
+										>
+											Edit
+										</MenuItem>
+									</>
+								)}
+
 								<MenuItem
 									onClick={() => {
-										setClientIdUpdate(row.values['id'])
-										onOpenUpdate()
+										setIdDeleteClient(row.values['id'])
+										onOpenDl()
 									}}
-									icon={<RiPencilLine fontSize={'15px'} />}
+									icon={<MdOutlineDeleteOutline fontSize={'15px'} />}
 								>
-									Edit
+									Delete
 								</MenuItem>
-								{currentUser?.email != row.values['email'] && (
-									<MenuItem
-										onClick={() => {
-											setIdDeleteClient(row.values['id'])
-											onOpenDl()
-										}}
-										icon={<MdOutlineDeleteOutline fontSize={'15px'} />}
-									>
-										Delete
-									</MenuItem>
-								)}
 							</MenuList>
 						</Menu>
 					),
@@ -404,7 +428,7 @@ const Clients: NextLayout = () => {
 						color={'hu-Green.normal'}
 						leftIcon={<IoAdd />}
 					>
-						Add clients
+						Add leaves
 					</Button>
 					<Button
 						transform={'auto'}
@@ -470,7 +494,7 @@ const Clients: NextLayout = () => {
 
 			{currentUser && (
 				<Table
-					data={allClients?.clients || []}
+					data={allLeaves?.leaves || []}
 					columns={columns}
 					isLoading={isLoading}
 					isSelect
@@ -577,16 +601,15 @@ const Clients: NextLayout = () => {
 								required={false}
 							/>
 
-							<DateRange handleSelect={(date: {
-								from: Date,
-								to: Date
-								
-							})=> {
-								setFilter({
-									columnId: 'createdAt',
-									filterValue: date
-								})
-							}} label="Select date" />
+							<DateRange
+								handleSelect={(date: { from: Date; to: Date }) => {
+									setFilter({
+										columnId: 'createdAt',
+										filterValue: date,
+									})
+								}}
+								label="Select date"
+							/>
 							<SelectUser
 								handleSearch={(data: IFilter) => {
 									setFilter(data)

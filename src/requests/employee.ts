@@ -1,4 +1,4 @@
-import { createEmployeeForm, updateEmployeeForm } from 'type/form/auth'
+import { createEmployeeForm, updateEmployeeForm } from 'type/form/basicFormType'
 import { employeeMutaionResponse } from 'type/mutationResponses'
 import { deleteData, getData, postData, putData } from 'utils/fetchData'
 

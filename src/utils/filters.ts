@@ -12,7 +12,7 @@ const getData = (columns: string[], row: Row)=> {
 }
 
 export const textFilter = (columns: string[]) => {
-	return (rows: Row[], id: string, filterValue: string) => {
+	return (rows: Row[], _: string, filterValue: string) => {
 		if (!filterValue) {
 			return rows
 		}
@@ -28,7 +28,7 @@ export const textFilter = (columns: string[]) => {
 }
 
 export const selectFilter = (columns: string[]) => {
-	return (rows: Row[], id: string, filterValue: string) => {
+	return (rows: Row[], _: string, filterValue: string) => {
 		if (!filterValue) {
 			return rows
 		}
@@ -40,7 +40,7 @@ export const selectFilter = (columns: string[]) => {
 }
 
 export const arrayFilter = (columns: string[]) => {
-	return (rows: Row[], id: string, filterValue: Array<any>) => {
+	return (rows: Row[], _: string, filterValue: Array<any>) => {
 		if (!filterValue) {
 			return rows
 		}

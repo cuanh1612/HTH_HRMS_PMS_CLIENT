@@ -33,7 +33,7 @@ import { MdDeleteOutline } from 'react-icons/md'
 
 export interface IClientCategoryProps {}
 
-export default function ClientCategory(props: IClientCategoryProps) {
+export default function ClientCategory({}: IClientCategoryProps) {
 	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
 	const router = useRouter()
 

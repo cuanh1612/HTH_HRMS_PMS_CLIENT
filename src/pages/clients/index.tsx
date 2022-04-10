@@ -2,24 +2,14 @@
 import {
 	Avatar,
 	Badge,
-	Box,
-	Collapse,
-	HStack,
+	Box, Button, Collapse, Drawer as CDrawer,
+	DrawerBody,
+	DrawerCloseButton, DrawerContent,
+	DrawerHeader, DrawerOverlay, HStack,
 	Menu,
 	MenuButton,
 	MenuItem,
-	MenuList,
-	Select as CSelect,
-	Text,
-	Button,
-	useDisclosure,
-	DrawerOverlay,
-	DrawerContent,
-	DrawerHeader,
-	Drawer as CDrawer,
-	DrawerBody,
-	DrawerCloseButton,
-	VStack,
+	MenuList, Text, useDisclosure, VStack
 } from '@chakra-ui/react'
 import AlertDialog from 'components/AlertDialog'
 import Drawer from 'components/Drawer'
@@ -33,12 +23,11 @@ import { AuthContext } from 'contexts/AuthContext'
 import {
 	changeRoleMutation,
 	deleteEmployeeMutation,
-	deleteEmployeesMutation,
+	deleteEmployeesMutation
 } from 'mutations/employee'
 import { useRouter } from 'next/router'
 
 // get all employees
-import { allEmployeesQuery } from 'queries/employee'
 
 import { useContext, useEffect, useState } from 'react'
 
@@ -64,10 +53,9 @@ import AddClient from './add-clients'
 import UpdateClient from './update-clients'
 
 
-import { IOption } from 'type/basicTypes'
 import { Input } from 'components/filter/Input'
-import { IPeople } from 'type/element/commom'
 import { allClientsQuery } from 'queries/client'
+import { IPeople } from 'type/element/commom'
 
 const Employees: NextLayout = () => {
 	const { isAuthenticated, handleLoading, currentUser, setToast } = useContext(AuthContext)
@@ -113,15 +101,10 @@ const Employees: NextLayout = () => {
 
 	const [clientIdUpdate, setClientIdUpdate] = useState<number | null>(30)
 
-	// all departments
-	const [departments, setDepartments] = useState<IOption[]>()
-
-	// all departments
-	const [designations, setDesignations] = useState<IOption[]>()
-
 	// data all users to select
 	const [dataUsersSl, setAllusersSl] = useState<IPeople[]>([])
-
+	console.log(dataUsersSl);
+	
 	// is reset table
 	const [isResetFilter, setIsReset] = useState(false)
 
@@ -137,6 +120,8 @@ const Employees: NextLayout = () => {
 
 	// change role
 	const [mutateChangeRole, { status: statusChangeRole }] = changeRoleMutation(setToast)
+	console.log(mutateChangeRole);
+
 
 	//User effect ---------------------------------------------------------------
 	// check authenticate in

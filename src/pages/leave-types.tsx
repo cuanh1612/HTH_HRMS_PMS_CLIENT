@@ -15,7 +15,7 @@ import { CreateLeaveTypeValidate } from 'utils/validate'
 
 export interface ILeaveTypeProps {}
 
-export default function LeaveType(props: ILeaveTypeProps) {
+export default function LeaveType({}: ILeaveTypeProps) {
 	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
 	const router = useRouter()
 	const { mutate } = useSWRConfig()

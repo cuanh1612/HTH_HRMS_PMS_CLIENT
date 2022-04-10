@@ -11,7 +11,7 @@ import { useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { AiOutlineCheck, AiOutlinePhone } from 'react-icons/ai'
 import { MdOutlineDriveFileRenameOutline, MdSubject } from 'react-icons/md'
-import { createContractForm, updateContractForm } from 'type/form/basicFormType'
+import { updateContractForm } from 'type/form/basicFormType'
 import { dataCurrency } from 'utils/basicData'
 import { UpdateContractValidate } from 'utils/validate'
 //CSS

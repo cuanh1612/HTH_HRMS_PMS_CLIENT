@@ -6,12 +6,10 @@ import {
 	AccordionPanel,
 	Box,
 	Button,
-	VStack,
+	VStack
 } from '@chakra-ui/react'
 import Link from 'next/link'
-import * as React from 'react'
 import { IconType } from 'react-icons'
-import { AiOutlineUsergroupAdd } from 'react-icons/ai'
 
 export interface IDrawerListItemProps {
 	title: string

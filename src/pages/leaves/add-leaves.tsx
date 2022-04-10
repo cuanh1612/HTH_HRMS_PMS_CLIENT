@@ -2,35 +2,33 @@ import {
 	Box,
 	Button,
 	Grid,
-	GridItem,
-	Input,
-	Radio,
+	GridItem, Radio,
 	RadioGroup,
 	Stack,
 	Text,
 	useDisclosure,
-	VStack,
+	VStack
 } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { MultiDatePicker } from 'components/form/MultiDatePicker'
 import { Select } from 'components/form/Select'
 import { Textarea } from 'components/form/Textarea'
+import Loading from 'components/Loading'
+import Modal from 'components/Modal'
 import { AuthContext } from 'contexts/AuthContext'
+import { createLeaveMutation } from 'mutations/leave'
 import { useRouter } from 'next/router'
 import { allEmployeesQuery } from 'queries/employee'
 import { allLeaveTypesQuery } from 'queries/leaveType'
 import { useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { AiOutlineCheck } from 'react-icons/ai'
+import { BsCalendarDate } from 'react-icons/bs'
 import { IOption } from 'type/basicTypes'
 import { createLeaveForm } from 'type/form/basicFormType'
 import { dataStatusLeave } from 'utils/basicData'
 import { CreateLeaveValidate } from 'utils/validate'
-import { MultiDatePicker } from 'components/form/MultiDatePicker'
-import { BsCalendarDate } from 'react-icons/bs'
-import { createLeaveMutation } from 'mutations/leave'
-import Modal from 'components/Modal'
 import AddLeaveType from '../leave-types'
-import Loading from 'components/Loading'
 
 export interface IAddLeavesProps {
 	onCloseDrawer?: () => void

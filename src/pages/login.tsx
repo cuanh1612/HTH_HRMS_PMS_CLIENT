@@ -39,7 +39,7 @@ const Login: NextLayout = () => {
 				token: res.tokenId,
 			})
 		},
-		onFailure: (error) => {
+		onFailure: () => {
 			setGLoad(false)
 		},
     isSignedIn: false,

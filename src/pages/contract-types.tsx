@@ -33,7 +33,7 @@ import { MdDeleteOutline } from 'react-icons/md'
 
 export interface IDepartmentProps {}
 
-export default function ContractTypes(props: IDepartmentProps) {
+export default function ContractTypes({}: IDepartmentProps) {
 	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
 	const router = useRouter()
 

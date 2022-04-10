@@ -8,13 +8,14 @@ import UpdateContract from './update-contracts'
 
 export interface ILeaveProps {}
 
-export default function Leave(props: ILeaveProps) {
+export default function Leave({}: ILeaveProps) {
 	const { isAuthenticated, handleLoading } = useContext(AuthContext)
 	const router = useRouter()
 
 	//State ---------------------------------------------------------------------
 	// is reset table
 	const [contractIdUpdate, setContractIdUpdate] = useState<number | null>(6)
+	console.log(setContractIdUpdate);
 
 	//Setup drawer --------------------------------------------------------------
 	const { isOpen: isOpenAdd, onOpen: onOpenAdd, onClose: onCloseAdd } = useDisclosure()

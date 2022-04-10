@@ -7,14 +7,14 @@ import {
 	SetStateAction,
 	useCallback,
 	useEffect,
-	useState,
+	useState
 } from 'react'
-import { employeeType, TToast, userType } from 'type/basicTypes'
+import { employeeType, TToast } from 'type/basicTypes'
 import JWTManager from 'utils/jwt'
 
 // custom loading
-import ClipLoader from 'react-spinners/BarLoader'
 import { css } from '@emotion/react'
+import ClipLoader from 'react-spinners/BarLoader'
 import io, { Socket } from 'socket.io-client'
 
 const override = css`

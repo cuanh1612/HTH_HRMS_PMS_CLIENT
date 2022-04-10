@@ -1,7 +1,6 @@
 import { Button, useDisclosure } from '@chakra-ui/react'
 import Drawer from 'components/Drawer'
 import { AuthContext } from 'contexts/AuthContext'
-import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useContext, useEffect, useState } from 'react'
 import AddLeave from './add-leaves'
@@ -9,7 +8,7 @@ import UpdateLeave from './update-leaves'
 
 export interface ILeaveProps {}
 
-export default function Leave(props: ILeaveProps) {
+export default function Leave({}: ILeaveProps) {
 	const { isAuthenticated, handleLoading } = useContext(AuthContext)
 	const router = useRouter()
 
@@ -19,6 +18,8 @@ export default function Leave(props: ILeaveProps) {
 
 	//State ---------------------------------------------------------------------
 	const [leaveIdUpdate, setLeaveUpdate] = useState<number | null>(29)
+	console.log(setLeaveUpdate);
+	
 
 	//User effect ---------------------------------------------------------------
 

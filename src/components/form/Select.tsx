@@ -1,12 +1,11 @@
 import {
-	Box,
 	Button,
 	FormControl,
 	FormHelperText,
 	FormLabel,
 	HStack,
 	Select as SelectChakra,
-	useColorModeValue,
+	useColorModeValue
 } from '@chakra-ui/react'
 import { Controller, UseFormReturn } from 'react-hook-form'
 import { ISelect } from 'type/element/commom'

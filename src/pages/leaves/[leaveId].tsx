@@ -1,13 +1,14 @@
 import { Avatar, Badge, Box, Divider, Grid, GridItem, HStack, Text, VStack } from '@chakra-ui/react'
 import { AuthContext } from 'contexts/AuthContext'
+import { GetStaticPaths, GetStaticProps } from 'next'
 import { useRouter } from 'next/router'
 import { detailLeaveQuery } from 'queries/leave'
 import { useContext, useEffect } from 'react'
 
 export interface IDetailLeaveProps {}
 
-export default function DetailLeave(props: IDetailLeaveProps) {
-	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
+export default function DetailLeave({}: IDetailLeaveProps) {
+	const { isAuthenticated, handleLoading } = useContext(AuthContext)
 	const router = useRouter()
 	const { leaveId } = router.query
 
@@ -114,4 +115,29 @@ export default function DetailLeave(props: IDetailLeaveProps) {
 			</VStack>
 		</>
 	)
+}
+
+export const getStaticProps: GetStaticProps = async () => {
+	return {
+		props: {},
+		// Next.js will attempt to re-generate the page:
+		// - When a request comes in
+		// - At most once every 10 seconds
+		revalidate: 10, // In seconds
+	}
+}
+
+export const getStaticPaths: GetStaticPaths = async () => {
+	const res = await fetch('http://localhost:4000/api/leaves').then((result) => result.json())
+	const leaves = res.leaves
+
+	// Get the paths we want to pre-render based on leave
+	const paths = leaves.map((leave: any) => ({
+		params: { leaveId: String(leave.id) },
+	}))
+
+	// We'll pre-render only these paths at build time.
+	// { fallback: blocking } will server-render pages
+	// on-demand if the path doesn't exist.
+	return { paths, fallback: false }
 }

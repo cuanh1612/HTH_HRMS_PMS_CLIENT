@@ -31,6 +31,7 @@ import { createLeaveMutation } from 'mutations/leave'
 import Modal from 'components/Modal'
 import AddLeaveType from '../leave-types'
 import Loading from 'components/Loading'
+import { mutate } from 'swr'
 
 export interface IAddLeavesProps {
 	onCloseDrawer?: () => void
@@ -126,6 +127,7 @@ export default function AddLeaves({ onCloseDrawer }: IAddLeavesProps) {
 			//Close drawer when using drawer
 			if (onCloseDrawer) {
 				onCloseDrawer()
+				mutate('leaves')
 			}
 
 			setToast({

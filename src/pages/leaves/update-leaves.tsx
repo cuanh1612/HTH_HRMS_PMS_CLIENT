@@ -26,6 +26,7 @@ import { useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { AiOutlineCheck } from 'react-icons/ai'
 import { BsCalendarDate } from 'react-icons/bs'
+import { mutate } from 'swr'
 import { IOption } from 'type/basicTypes'
 import { updateLeaveForm } from 'type/form/basicFormType'
 import { dataStatusLeave } from 'utils/basicData'
@@ -127,7 +128,7 @@ export default function UpdateLeaves({ onCloseDrawer, leaveId }: IUpdateLeavesPr
 			const newOptionEmployees: IOption[] = dataEmployees.employees.map((employee) => {
 				return {
 					value: employee.id.toString(),
-					lable: employee.email,
+					label: employee.email,
 				}
 			})
 
@@ -141,7 +142,7 @@ export default function UpdateLeaves({ onCloseDrawer, leaveId }: IUpdateLeavesPr
 			const newOptionLeaveTypes: IOption[] = dataLeaveTypes.leaveTypes.map((leaveType) => {
 				return {
 					value: leaveType.id.toString(),
-					lable: leaveType.name,
+					label: leaveType.name,
 				}
 			})
 
@@ -155,6 +156,7 @@ export default function UpdateLeaves({ onCloseDrawer, leaveId }: IUpdateLeavesPr
 			//Close drawer when using drawer
 			if (onCloseDrawer) {
 				onCloseDrawer()
+				mutate('leaves')
 			}
 
 			setToast({

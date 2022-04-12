@@ -56,6 +56,15 @@ export interface leaveType {
 	[index: string]: any
 }
 
+export interface signType {
+	id: number
+	first_name: string
+	last_name: string
+	email: string
+	url: string
+	public_id: string
+}
+
 export interface designationType {
 	id: number
 	name: string
@@ -150,7 +159,7 @@ export interface contractTypeType {
 
 export interface IOption {
 	value: string
-	lable: string
+	label: string
 }
 
 // toast

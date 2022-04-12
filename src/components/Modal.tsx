@@ -27,7 +27,6 @@ export default function Modal({ isOpen, onClose, children, size, title }: IModal
 				<ModalContent>
 					<ModalHeader>{title}</ModalHeader>
 					<ModalCloseButton />
-					<ModalBody pb={6}></ModalBody>
 					{children}
 					<ModalFooter>
 						<Button onClick={onClose}>Cancel</Button>

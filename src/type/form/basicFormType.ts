@@ -242,5 +242,13 @@ export type updateContractForm = {
 		name: string
 		public_id: string
 	}
-	
+}
+
+export interface createSignatureForm {
+	first_name: string
+	last_name: string
+	email: string
+	url: string
+	public_id: string
+	contract: number
 }

@@ -1,4 +1,4 @@
-import { createClientRequest, updateClientRequest } from 'requests/client'
+import { createClientRequest, deleteClientRequest, deleteClientsRequest, updateClientRequest } from 'requests/client'
 import { TToast } from 'type/basicTypes'
 import useMutation from 'use-mutation'
 
@@ -25,3 +25,28 @@ export const updateClientMutation = (setToast: TToast) => {
 		},
 	})
 }
+
+// delete one
+export const deleteClientMutation = (setToast: TToast) => {
+	return useMutation(deleteClientRequest, {
+		onFailure({ error }) {
+			setToast({
+				msg: error.message,
+				type: 'error',
+			})
+		},
+	})
+}
+
+// delete many
+export const deleteClientsMutation = (setToast: TToast) => {
+	return useMutation(deleteClientsRequest, {
+		onFailure({ error }) {
+			setToast({
+				msg: error.message,
+				type: 'error',
+			})
+		},
+	})
+}
+

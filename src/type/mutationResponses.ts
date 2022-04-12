@@ -1,4 +1,4 @@
-import { clientCategoryType, clientSubCategoryType, clientType, contractType, contractTypeType, departmentType, designationType, employeeType, holidayType, leaveType, leaveTypeType, userType } from './basicTypes'
+import { clientCategoryType, clientSubCategoryType, clientType, contractType, contractTypeType, departmentType, designationType, employeeType, holidayType, leaveType, leaveTypeType, signType, userType } from './basicTypes'
 
 export interface authMutaionResponse {
 	code: number
@@ -42,6 +42,15 @@ export interface leaveMutaionResponse {
 	message: string
 	leave?: leaveType
 	leaves?: leaveType[]
+	[index: string]: any
+}
+
+export interface signMutationResponse {
+	code: number
+	success: boolean
+	message: string
+	sign?: signType
+	signs?: signType[]
 	[index: string]: any
 }
 

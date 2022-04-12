@@ -166,7 +166,7 @@ export default function UpdateEmployees({ onCloseDrawer, employeeId }: IUpdateEm
 				(department) => {
 					return {
 						value: department.id.toString(),
-						lable: department.name,
+						label: department.name,
 					}
 				}
 			)
@@ -181,7 +181,7 @@ export default function UpdateEmployees({ onCloseDrawer, employeeId }: IUpdateEm
 				(designation) => {
 					return {
 						value: designation.id.toString(),
-						lable: designation.name,
+						label: designation.name,
 					}
 				}
 			)

@@ -1,105 +1,107 @@
-import { IOption } from "type/basicTypes";
+import { IOption } from 'type/basicTypes'
 
 export const dataGender: IOption[] = [
-    {
-        value: 'Male',
-        lable: 'Male'
-    },
-    {
-        value: 'Female',
-        lable: 'Female'
-    },
-    {
-        value: 'Others',
-        lable: 'Others'
-    },
-     
+	{
+		value: 'Male',
+		label: 'Male',
+	},
+	{
+		value: 'Female',
+		label: 'Female',
+	},
+	{
+		value: 'Others',
+		label: 'Others',
+	},
 ]
 
 export const dataStatusLeave: IOption[] = [
-    {
-        value: 'Approved',
-        lable: 'Approved'
-    },
-    {
-        value: 'Pending',
-        lable: 'Pending'
-    },
-    {
-        value: 'Rejected',
-        lable: 'Rejected'
-    },
+	{
+		value: 'Approved',
+		label: 'Approved',
+	},
+	{
+		value: 'Pending',
+		label: 'Pending',
+	},
+	{
+		value: 'Rejected',
+		label: 'Rejected',
+	},
 ]
 
 export const dataRoleEmployee: IOption[] = [
-    {
-        value: 'Admin',
-        lable: 'Admin'
-    },
-    {
-        value: 'Employee',
-        lable: 'Employee'
-    },
-   
-    {
-        value: 'Manager',
-        lable: 'Manager'
-    },
+	{
+		value: 'Admin',
+		label: 'Admin',
+	},
+	{
+		value: 'Employee',
+		label: 'Employee',
+	},
+
+	{
+		value: 'Manager',
+		label: 'Manager',
+	},
 ]
 
 export const dataSalutation: IOption[] = [
-    {
-        value: 'Mr',
-        lable: 'Mr'
-    },
-    {
-        value: 'Mrs',
-        lable: 'Mrs'
-    },
-   
-    {
-        value: 'Miss',
-        lable: 'Miss'
-    },
+	{
+		value: 'Mr',
+		label: 'Mr',
+	},
+	{
+		value: 'Mrs',
+		label: 'Mrs',
+	},
 
-    {
-        value: 'Dr',
-        lable: 'Dr'
-    },
+	{
+		value: 'Miss',
+		label: 'Miss',
+	},
 
-    {
-        value: 'Sir',
-        lable: 'Sir'
-    },
+	{
+		value: 'Dr',
+		label: 'Dr',
+	},
 
-    {
-        value: 'Madam',
-        lable: 'Madam'
-    },
+	{
+		value: 'Sir',
+		label: 'Sir',
+	},
+
+	{
+		value: 'Madam',
+		label: 'Madam',
+	},
 ]
 
 export const dataCurrency: IOption[] = [
-    {
-        value: 'USD',
-        lable: 'USD'
-    },
-    {
-        value: 'GBP',
-        lable: 'GBP'
-    },
-   
-    {
-        value: 'EUR',
-        lable: 'EUR'
-    },
+	{
+		value: 'USD',
+		label: 'USD',
+	},
+	{
+		value: 'GBP',
+		label: 'GBP',
+	},
 
-    {
-        value: 'INR',
-        lable: 'INR'
-    },
+	{
+		value: 'EUR',
+		label: 'EUR',
+	},
 
-    {
-        value: 'VND',
-        lable: 'VND'
-    },
+	{
+		value: 'INR',
+		label: 'INR',
+	},
+
+	{
+		value: 'VND',
+		label: 'VND',
+	},
 ]
+
+export const signBase64Empaty =
+	'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASwAAACWCAYAAABkW7XSAAAAAXNSR0IArs4c6QAABGhJREFUeF7t1IEJADAMAsF2/6EtdIuHywRyBu+2HUeAAIGAwDVYgZZEJEDgCxgsj0CAQEbAYGWqEpQAAYPlBwgQyAgYrExVghIgYLD8AAECGQGDlalKUAIEDJYfIEAgI2CwMlUJSoCAwfIDBAhkBAxWpipBCRAwWH6AAIGMgMHKVCUoAQIGyw8QIJARMFiZqgQlQMBg+QECBDICBitTlaAECBgsP0CAQEbAYGWqEpQAAYPlBwgQyAgYrExVghIgYLD8AAECGQGDlalKUAIEDJYfIEAgI2CwMlUJSoCAwfIDBAhkBAxWpipBCRAwWH6AAIGMgMHKVCUoAQIGyw8QIJARMFiZqgQlQMBg+QECBDICBitTlaAECBgsP0CAQEbAYGWqEpQAAYPlBwgQyAgYrExVghIgYLD8AAECGQGDlalKUAIEDJYfIEAgI2CwMlUJSoCAwfIDBAhkBAxWpipBCRAwWH6AAIGMgMHKVCUoAQIGyw8QIJARMFiZqgQlQMBg+QECBDICBitTlaAECBgsP0CAQEbAYGWqEpQAAYPlBwgQyAgYrExVghIgYLD8AAECGQGDlalKUAIEDJYfIEAgI2CwMlUJSoCAwfIDBAhkBAxWpipBCRAwWH6AAIGMgMHKVCUoAQIGyw8QIJARMFiZqgQlQMBg+QECBDICBitTlaAECBgsP0CAQEbAYGWqEpQAAYPlBwgQyAgYrExVghIgYLD8AAECGQGDlalKUAIEDJYfIEAgI2CwMlUJSoCAwfIDBAhkBAxWpipBCRAwWH6AAIGMgMHKVCUoAQIGyw8QIJARMFiZqgQlQMBg+QECBDICBitTlaAECBgsP0CAQEbAYGWqEpQAAYPlBwgQyAgYrExVghIgYLD8AAECGQGDlalKUAIEDJYfIEAgI2CwMlUJSoCAwfIDBAhkBAxWpipBCRAwWH6AAIGMgMHKVCUoAQIGyw8QIJARMFiZqgQlQMBg+QECBDICBitTlaAECBgsP0CAQEbAYGWqEpQAAYPlBwgQyAgYrExVghIgYLD8AAECGQGDlalKUAIEDJYfIEAgI2CwMlUJSoCAwfIDBAhkBAxWpipBCRAwWH6AAIGMgMHKVCUoAQIGyw8QIJARMFiZqgQlQMBg+QECBDICBitTlaAECBgsP0CAQEbAYGWqEpQAAYPlBwgQyAgYrExVghIgYLD8AAECGQGDlalKUAIEDJYfIEAgI2CwMlUJSoCAwfIDBAhkBAxWpipBCRAwWH6AAIGMgMHKVCUoAQIGyw8QIJARMFiZqgQlQMBg+QECBDICBitTlaAECBgsP0CAQEbAYGWqEpQAAYPlBwgQyAgYrExVghIgYLD8AAECGQGDlalKUAIEDJYfIEAgI2CwMlUJSoCAwfIDBAhkBAxWpipBCRAwWH6AAIGMgMHKVCUoAQIGyw8QIJARMFiZqgQlQMBg+QECBDICBitTlaAECBgsP0CAQEbAYGWqEpQAAYPlBwgQyAgYrExVghIg8ACBlFZdWYR+vQAAAABJRU5ErkJggg=='

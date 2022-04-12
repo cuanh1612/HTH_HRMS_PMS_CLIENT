@@ -1,15 +1,33 @@
+// get all country
+import countryList from 'react-select-country-list'
+
+// query and mutation
+import { allClientsQuery } from 'queries/client'
+import { deleteClientMutation, deleteClientsMutation } from 'mutations/client'
+import { allClientCategoriesQuery } from 'queries/clientCategory'
+import { allClientSubCategoriesQuery } from 'queries/clientSubCategory'
+
 // components
 import {
 	Avatar,
 	Badge,
-	Box, Button, Collapse, Drawer as CDrawer,
+	Box,
+	Collapse,
+	Drawer as CDrawer,
 	DrawerBody,
-	DrawerCloseButton, DrawerContent,
-	DrawerHeader, DrawerOverlay, HStack,
+	DrawerCloseButton,
+	DrawerContent,
+	DrawerHeader,
+	DrawerOverlay,
+	HStack,
 	Menu,
 	MenuButton,
 	MenuItem,
-	MenuList, Text, useDisclosure, VStack
+	MenuList,
+	Text,
+	Button,
+	useDisclosure,
+	VStack,
 } from '@chakra-ui/react'
 import AlertDialog from 'components/AlertDialog'
 import Drawer from 'components/Drawer'
@@ -19,17 +37,9 @@ import { ClientLayout } from 'components/layouts'
 
 import { AuthContext } from 'contexts/AuthContext'
 
-// mutation
-import {
-	changeRoleMutation,
-	deleteEmployeeMutation,
-	deleteEmployeesMutation
-} from 'mutations/employee'
 import { useRouter } from 'next/router'
 
-// get all employees
-
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useMemo, useState } from 'react'
 
 // icons
 import { AiOutlineCaretDown, AiOutlineCaretUp, AiOutlineSearch } from 'react-icons/ai'
@@ -45,21 +55,27 @@ import Table from 'components/Table'
 import { IFilter, TColumn } from 'type/tableTypes'
 
 // filter of column
-import { selectFilter, textFilter } from 'utils/filters'
+import { dateFilter, selectFilter, textFilter } from 'utils/filters'
 
 // page add and update employee
 import AddClient from './add-clients'
 
 import UpdateClient from './update-clients'
 
-
+// component to filter
 import { Input } from 'components/filter/Input'
-import { allClientsQuery } from 'queries/client'
-import { IPeople } from 'type/element/commom'
+import SelectUser from 'components/filter/SelectUser'
+import DateRange from 'components/date/DateRange'
+import { Select } from 'components/filter/Select'
 
-const Employees: NextLayout = () => {
+import { IPeople } from 'type/element/commom'
+import { IOption } from 'type/basicTypes'
+
+const Clients: NextLayout = () => {
 	const { isAuthenticated, handleLoading, currentUser, setToast } = useContext(AuthContext)
 	const router = useRouter()
+
+	const options = useMemo(() => countryList().getData(), [])
 
 	// set filter
 	const [filter, setFilter] = useState<IFilter>({
@@ -90,8 +106,8 @@ const Employees: NextLayout = () => {
 	})
 
 	//State ---------------------------------------------------------------------
-	// get id to delete employee
-	const [idDeleteEmpl, setIdDeleteEmpl] = useState<number>()
+	// get id to delete client
+	const [idDeleteClient, setIdDeleteClient] = useState<number>()
 
 	// set loading table
 	const [isLoading, setIsloading] = useState(true)
@@ -103,25 +119,32 @@ const Employees: NextLayout = () => {
 
 	// data all users to select
 	const [dataUsersSl, setAllusersSl] = useState<IPeople[]>([])
-	console.log(dataUsersSl);
-	
+	console.log(dataUsersSl)
+
 	// is reset table
 	const [isResetFilter, setIsReset] = useState(false)
 
+	// all categories
+	const [categories, setCts] = useState<IOption[]>()
+
+	// all sub categories
+	const [subCategories, setSubCts] = useState<IOption[]>()
+
 	// query and mutation -=------------------------------------------------------
-	// get all employees
+	// get all clients
 	const { data: allClients, mutate: refetchAllClients } = allClientsQuery(isAuthenticated)
 
-	// delete employee
-	const [mutateDeleteEmpl, { status: statusDl }] = deleteEmployeeMutation(setToast)
+	// get all categories
+	const { data: allCategories, mutate: refetchAllCts } = allClientCategoriesQuery()
 
-	// delete all employees
-	const [mutateDeleteEmpls, { status: statusDlMany }] = deleteEmployeesMutation(setToast)
+	// get all sub categories
+	const { data: allSubCategories, mutate: refetchAllSubCts } = allClientSubCategoriesQuery()
 
-	// change role
-	const [mutateChangeRole, { status: statusChangeRole }] = changeRoleMutation(setToast)
-	console.log(mutateChangeRole);
+	// delete client
+	const [mutateDeleteClient, { status: statusDl }] = deleteClientMutation(setToast)
 
+	// delete all clients
+	const [mutateDeleteClients, { status: statusDlMany }] = deleteClientsMutation(setToast)
 
 	//User effect ---------------------------------------------------------------
 	// check authenticate in
@@ -139,7 +162,7 @@ const Employees: NextLayout = () => {
 	useEffect(() => {
 		if (statusDl == 'success') {
 			setToast({
-				msg: 'Delete employee successfully',
+				msg: 'Delete client successfully',
 				type: 'success',
 			})
 			refetchAllClients()
@@ -150,24 +173,13 @@ const Employees: NextLayout = () => {
 	useEffect(() => {
 		if (statusDlMany == 'success') {
 			setToast({
-				msg: 'Delete employees successfully',
+				msg: 'Delete clients successfully',
 				type: 'success',
 			})
 			setDataSl(null)
 			refetchAllClients()
 		}
 	}, [statusDlMany])
-
-	// check is successfully when change role
-	useEffect(() => {
-		if (statusChangeRole == 'success') {
-			setToast({
-				msg: 'Change role success',
-				type: 'success',
-			})
-			refetchAllClients()
-		}
-	}, [statusChangeRole])
 
 	// set loading == false when get all clients successfully
 	useEffect(() => {
@@ -184,8 +196,31 @@ const Employees: NextLayout = () => {
 		}
 	}, [allClients])
 
+	// set all categories to select
+	useEffect(() => {
+		if (allCategories) {
+			const data = allCategories.clientCategories?.map(
+				(item): IOption => ({
+					label: item.name,
+					value: String(item.id),
+				})
+			)
+			setCts(data)
+		}
+	}, [allCategories])
 
-
+	// set all sub categories to select
+	useEffect(() => {
+		if (allSubCategories) {
+			const data = allSubCategories.clientSubCategories?.map(
+				(item): IOption => ({
+					label: item.name,
+					value: String(item.id),
+				})
+			)
+			setSubCts(data)
+		}
+	}, [allSubCategories])
 
 	// header ----------------------------------------
 	const columns: TColumn[] = [
@@ -279,22 +314,26 @@ const Employees: NextLayout = () => {
 					Header: 'Created',
 					accessor: 'createdAt',
 					minWidth: 150,
+					filter: dateFilter(['createdAt']),
 					Cell: ({ value }) => {
-						const createdDate = new Date(value).toLocaleDateString()
+						const createdDate = new Date(value).toLocaleDateString('en-GB')
 						return <Text isTruncated>{createdDate}</Text>
 					},
 				},
 				{
-					Header: 'Department',
-					accessor: 'department',
-					filter: selectFilter(['department', 'id']),
-					Cell: () => '',
+					Header: 'Category',
+					accessor: 'category',
+					filter: selectFilter(['client_category', 'id']),
 				},
 				{
-					Header: 'Designation',
-					accessor: 'designation',
-					filter: selectFilter(['designation', 'id']),
-					Cell: () => '',
+					Header: 'Subcategory',
+					accessor: 'subcategory',
+					filter: selectFilter(['client_sub_category', 'id']),
+				},
+				{
+					Header: 'Country',
+					accessor: 'country',
+					filter: selectFilter(['country']),
 				},
 				{
 					Header: 'Action',
@@ -322,7 +361,7 @@ const Employees: NextLayout = () => {
 								{currentUser?.email != row.values['email'] && (
 									<MenuItem
 										onClick={() => {
-											setIdDeleteEmpl(row.values['id'])
+											setIdDeleteClient(row.values['id'])
 											onOpenDl()
 										}}
 										icon={<MdOutlineDeleteOutline fontSize={'15px'} />}
@@ -366,7 +405,7 @@ const Employees: NextLayout = () => {
 						color={'hu-Green.normal'}
 						leftIcon={<IoAdd />}
 					>
-						Add employees
+						Add clients
 					</Button>
 					<Button
 						transform={'auto'}
@@ -380,7 +419,7 @@ const Employees: NextLayout = () => {
 						color={'hu-Pink.dark'}
 						variant={'outline'}
 					>
-						Invite Employee
+						Invite Client
 					</Button>
 					<Button
 						transform={'auto'}
@@ -440,10 +479,10 @@ const Employees: NextLayout = () => {
 					setSelect={(data: Array<number>) => setDataSl(data)}
 					disableRows={{
 						column: 'email',
-						values: [currentUser.email]
+						values: [currentUser.email],
 					}}
 					filter={filter}
-					disableColumns={['department', 'designation']}
+					disableColumns={['category', 'subcategory', 'country']}
 					isResetFilter={isResetFilter}
 				/>
 			)}
@@ -452,7 +491,7 @@ const Employees: NextLayout = () => {
 			<AlertDialog
 				handleDelete={() => {
 					setIsloading(true)
-					mutateDeleteEmpl(String(idDeleteEmpl))
+					mutateDeleteClient(String(idDeleteClient))
 				}}
 				title="Are you sure?"
 				content="You will not be able to recover the deleted record!"
@@ -465,7 +504,7 @@ const Employees: NextLayout = () => {
 				handleDelete={() => {
 					if (dataSl) {
 						setIsloading(true)
-						mutateDeleteEmpls(dataSl)
+						mutateDeleteClients(dataSl)
 					}
 				}}
 				title="Are you sure to delete all?"
@@ -475,7 +514,7 @@ const Employees: NextLayout = () => {
 			/>
 
 			{/* drawer to add client */}
-			<Drawer size="xl" title="Add Employee" onClose={onCloseAdd} isOpen={isOpenAdd}>
+			<Drawer size="xl" title="Add client" onClose={onCloseAdd} isOpen={isOpenAdd}>
 				<AddClient onCloseDrawer={onCloseAdd} />
 			</Drawer>
 
@@ -505,6 +544,58 @@ const Employees: NextLayout = () => {
 								}
 								type={'text'}
 							/>
+
+							<Select
+								options={categories}
+								handleSearch={(data: IFilter) => {
+									setFilter(data)
+								}}
+								columnId={'category'}
+								label="Category"
+								placeholder="Select category"
+								required={false}
+							/>
+
+							<Select
+								options={subCategories}
+								handleSearch={(data: IFilter) => {
+									setFilter(data)
+								}}
+								columnId={'subcategory'}
+								label="Sub category"
+								placeholder="Select sub category"
+								required={false}
+							/>
+
+							<Select
+								options={options}
+								handleSearch={(data: IFilter) => {
+									setFilter(data)
+								}}
+								columnId={'country'}
+								label="Country"
+								placeholder="Select country"
+								required={false}
+							/>
+
+							<DateRange
+								handleSelect={(date: { from: Date; to: Date }) => {
+									setFilter({
+										columnId: 'createdAt',
+										filterValue: date,
+									})
+								}}
+								label="Select date"
+							/>
+							<SelectUser
+								handleSearch={(data: IFilter) => {
+									setFilter(data)
+								}}
+								columnId={'id'}
+								required={false}
+								label={'Client'}
+								peoples={dataUsersSl}
+							/>
 						</VStack>
 					</DrawerBody>
 				</DrawerContent>
@@ -513,6 +604,6 @@ const Employees: NextLayout = () => {
 	)
 }
 
-Employees.getLayout = ClientLayout
+Clients.getLayout = ClientLayout
 
-export default Employees
+export default Clients

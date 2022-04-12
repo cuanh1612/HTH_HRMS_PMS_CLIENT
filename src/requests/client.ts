@@ -1,6 +1,6 @@
 import { createClientForm, updateClientForm } from 'type/form/basicFormType'
 import { clientMutaionResponse } from 'type/mutationResponses'
-import { getData, postData, putData } from 'utils/fetchData'
+import { deleteData, getData, postData, putData } from 'utils/fetchData'
 
 //Function handle create client
 export async function createClientRequest(inputCreate: createClientForm) {
@@ -45,3 +45,22 @@ export async function detailClientRequest(url: string) {
 
 	return resultFetch
 }
+
+
+//Handle to delete client
+export const deleteClientRequest = async (id: string) => {
+	return await deleteData<clientMutaionResponse>({
+		url: `http://localhost:4000/api/clients/${id}`,
+	})
+}
+
+// Handle to delete many clients
+export const deleteClientsRequest = async (ids: number[]) => {
+	return await postData<clientMutaionResponse>({
+		url: `http://localhost:4000/api/clients/delete-many`,
+		body: {
+			clients: ids,
+		},
+	})
+}
+

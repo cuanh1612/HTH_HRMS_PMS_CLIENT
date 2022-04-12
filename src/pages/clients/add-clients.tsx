@@ -33,6 +33,7 @@ import {
 	MdPassword,
 } from 'react-icons/md'
 import { SiCurl } from 'react-icons/si'
+import { mutate } from 'swr'
 import { IOption } from 'type/basicTypes'
 import { ICloudinaryImg, IImg } from 'type/fileType'
 import { createClientForm } from 'type/form/basicFormType'
@@ -170,7 +171,7 @@ export default function AddClient({ onCloseDrawer }: IAddClientProps) {
 				(category) => {
 					return {
 						value: category.id.toString(),
-						lable: category.name,
+						label: category.name,
 					}
 				}
 			)
@@ -182,6 +183,7 @@ export default function AddClient({ onCloseDrawer }: IAddClientProps) {
 	//Note when request success
 	useEffect(() => {
 		if (statusCreClient === 'success') {
+			mutate('clients')
 			//Inform notice success
 			if (dataCreClient) {
 				setToast({
@@ -236,7 +238,7 @@ export default function AddClient({ onCloseDrawer }: IAddClientProps) {
 							) {
 								const newOption: IOption = {
 									value: subCategory.id.toString(),
-									lable: subCategory.name,
+									label: subCategory.name,
 								}
 								newOptionSubCategories.push(newOption)
 							}
@@ -332,7 +334,7 @@ export default function AddClient({ onCloseDrawer }: IAddClientProps) {
 						<Select
 							name="gender"
 							label="Gender"
-							required={false}
+							required={true}
 							form={formSetting}
 							placeholder={'Select Gender'}
 							options={dataGender}

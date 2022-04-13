@@ -92,3 +92,7 @@ export const CreateSignatureValidate = yup.object({
 	last_name: yup.string().required('Please enter field last name'),
 	email: yup.string().required('Please enter field email'),
 })
+
+export const createConversationValidate = yup.object({
+	user_two: yup.string().required('Please select other employee to create conversation'),
+})

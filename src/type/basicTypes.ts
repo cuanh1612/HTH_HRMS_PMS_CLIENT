@@ -1,4 +1,3 @@
-
 export interface userType {
 	email: string
 	username: string
@@ -23,10 +22,10 @@ export interface employeeType {
 	date_of_birth?: Date
 	[index: string]: any
 	avatar?: {
-		url: string,
-		public_id: string,
+		url: string
+		public_id: string
 		name: string
-	} 
+	}
 	id: number
 	role: string
 }
@@ -34,6 +33,13 @@ export interface employeeType {
 export interface departmentType {
 	id: number
 	name: string
+	[index: string]: any
+}
+
+export interface conversationType {
+	id: number
+	user_one: employeeType
+	user_two: employeeType
 	[index: string]: any
 }
 

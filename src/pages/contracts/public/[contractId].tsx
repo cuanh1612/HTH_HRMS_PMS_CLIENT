@@ -233,7 +233,6 @@ export default function PublickContract({ detailContract }: IPublickContractProp
 				onClose={onCloseSignature}
 				title="Contract Type"
 			>
-				<Divider />
 				<Box pos="relative" p={6} as={'form'} h="auto" onSubmit={handleSubmit(onSubmit)}>
 					<Grid templateColumns="repeat(3, 1fr)" gap={6}>
 						<GridItem w="100%" colSpan={[3, 1]}>
@@ -317,7 +316,6 @@ export default function PublickContract({ detailContract }: IPublickContractProp
 
 					{/* {(statusCreContract === 'running' || loadingImg) && <Loading />} */}
 				</Box>
-				<Divider />
 			</Modal>
 		</Box>
 	)

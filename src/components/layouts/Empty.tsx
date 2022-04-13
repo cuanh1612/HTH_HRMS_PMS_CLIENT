@@ -1,7 +1,8 @@
+import { Box } from '@chakra-ui/react'
 import { ReactElement } from 'react'
 
 export const EmptyLayout = ({ children }: { children: ReactElement }) => (
-	<div>
+	<Box height={"100vh"}>
 		{children}
-	</div>
+	</Box>
 )

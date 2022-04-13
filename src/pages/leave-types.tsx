@@ -83,7 +83,6 @@ export default function LeaveType({}: ILeaveTypeProps) {
 	return (
 		<Box>
 			<VStack align={'start'}>
-				<Divider />
 				<Box
 					as={'form'}
 					w="full"
@@ -147,7 +146,6 @@ export default function LeaveType({}: ILeaveTypeProps) {
 					</VStack>
 					{statusCreLeaveType === 'running' && <Loading />}
 				</Box>
-				<Divider />
 			</VStack>
 		</Box>
 	)

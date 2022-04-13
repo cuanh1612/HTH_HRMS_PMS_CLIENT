@@ -42,7 +42,7 @@ export const Select = ({
 						>
 							{options.map((option) => (
 								<option value={option.value} key={option.value}>
-									{option.lable}
+									{option.label}
 								</option>
 							))}
 						</SelectChakra>

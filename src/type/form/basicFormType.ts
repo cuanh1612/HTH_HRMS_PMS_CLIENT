@@ -59,6 +59,11 @@ export type updateLeaveForm = {
 	duration: string
 }
 
+export type createConversationForm = {
+	user_one: string
+	user_two: string
+}
+
 export type createLeaveTypeForm = {
 	name: string
 	color_code: string

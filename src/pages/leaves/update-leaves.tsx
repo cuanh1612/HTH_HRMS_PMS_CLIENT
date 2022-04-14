@@ -128,7 +128,7 @@ export default function UpdateLeaves({ onCloseDrawer, leaveId }: IUpdateLeavesPr
 			const newOptionEmployees: IOption[] = dataEmployees.employees.map((employee) => {
 				return {
 					value: employee.id.toString(),
-					lable: employee.email,
+					label: employee.email,
 				}
 			})
 
@@ -142,7 +142,7 @@ export default function UpdateLeaves({ onCloseDrawer, leaveId }: IUpdateLeavesPr
 			const newOptionLeaveTypes: IOption[] = dataLeaveTypes.leaveTypes.map((leaveType) => {
 				return {
 					value: leaveType.id.toString(),
-					lable: leaveType.name,
+					label: leaveType.name,
 				}
 			})
 

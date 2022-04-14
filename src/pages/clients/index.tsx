@@ -55,7 +55,7 @@ import Table from 'components/Table'
 import { IFilter, TColumn } from 'type/tableTypes'
 
 // filter of column
-import { dateFilter, selectFilter, textFilter } from 'utils/filters'
+import { dateFilter, selectFilter, textFilter } from 'utils/tableFilters'
 
 // page add and update employee
 import AddClient from './add-clients'

@@ -133,6 +133,16 @@ body {
     color: #00A991;
 }
 
+.dayHeader--dark {
+    background-color: #D9F2EF;
+    font-family: 'Hind Madurai', sans-serif;
+    font-size: 20px;
+    font-weight: normal;
+    padding-block: 10px!important;
+    border: none!important;
+    color: black;
+}
+
 .fc-toolbar-title {
     font-size: 20px !important;
     font-weight: bold;
@@ -145,7 +155,8 @@ body {
 }
 
 .fc-scrollgrid.fc-scrollgrid-liquid {
-    border: 2px solid #D9F2EF!important
+    border: 2px solid #D9F2EF!important;
+    overflow: hidden;
 }
 
 .moreLink {

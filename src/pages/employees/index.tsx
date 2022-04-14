@@ -57,7 +57,7 @@ import { IFilter, TColumn } from 'type/tableTypes'
 import { dataRoleEmployee } from 'utils/basicData'
 
 // filter of column
-import { selectFilter, textFilter } from 'utils/filters'
+import { selectFilter, textFilter } from 'utils/tableFilters'
 
 // page add and update employee
 import AddEmployees from './add-employees'

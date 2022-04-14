@@ -38,8 +38,15 @@ export interface departmentType {
 
 export interface conversationType {
 	id: number
-	user_one: employeeType
-	user_two: employeeType
+	employees: employeeType[]
+	[index: string]: any
+}
+
+export interface conversationReplyType {
+	id: number
+	user: employeeType
+	coversation: conversationType
+	rely: string
 	[index: string]: any
 }
 

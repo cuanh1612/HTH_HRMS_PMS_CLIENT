@@ -1,4 +1,4 @@
-import { clientCategoryType, clientSubCategoryType, clientType, contractType, contractTypeType, conversationType, departmentType, designationType, employeeType, holidayType, leaveType, leaveTypeType, signType, userType } from './basicTypes'
+import { clientCategoryType, clientSubCategoryType, clientType, contractType, contractTypeType, conversationReplyType, conversationType, departmentType, designationType, employeeType, holidayType, leaveType, leaveTypeType, signType, userType } from './basicTypes'
 
 export interface authMutaionResponse {
 	code: number
@@ -70,6 +70,15 @@ export interface ConversationMutationResponse {
 	message: string
 	conversation?: conversationType
 	conversations?: conversationType[]
+	[index: string]: any
+}
+
+export interface ConversationReplyMutationResponse {
+	code: number
+	success: boolean
+	message: string
+	reply?: conversationReplyType
+	replies: conversationReplyType[]
 	[index: string]: any
 }
 

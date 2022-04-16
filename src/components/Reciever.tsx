@@ -1,5 +1,6 @@
 import { Avatar, Box, HStack, Text, VStack } from '@chakra-ui/react'
 import * as React from 'react'
+import { MdOutlineRemoveCircleOutline } from 'react-icons/md'
 import { conversationType, employeeType } from 'type/basicTypes'
 
 export interface IReceiverProps {
@@ -7,6 +8,7 @@ export interface IReceiverProps {
 	conversation: conversationType
 	onChangeReceiver: (conversation: conversationType, employee: employeeType) => void
 	isActive: boolean
+	onDeleteConversation: (conversationId: number) => void
 }
 
 export default function Receiver({
@@ -14,6 +16,7 @@ export default function Receiver({
 	onChangeReceiver,
 	isActive,
 	conversation,
+	onDeleteConversation,
 }: IReceiverProps) {
 	return (
 		<Box
@@ -27,14 +30,20 @@ export default function Receiver({
 				bgColor: '#e8eef3',
 			}}
 		>
-			<HStack>
-				<Avatar size={'sm'} name={employee.name} src={employee.avatar?.url} />
-				<VStack align={'start'}>
-					<Text>{employee.name}</Text>
-					<Text fontSize={12} color={'gray.400'}>
-						{employee.email}
-					</Text>
-				</VStack>
+			<HStack justify={'space-between'} align={'start'}>
+				<HStack>
+					<Avatar size={'sm'} name={employee.name} src={employee.avatar?.url} />
+					<VStack align={'start'}>
+						<Text>{employee.name}</Text>
+						<Text fontSize={12} color={'gray.400'}>
+							{employee.email}
+						</Text>
+					</VStack>
+				</HStack>
+				<MdOutlineRemoveCircleOutline
+					color="red"
+					onClick={() => onDeleteConversation(conversation.id)}
+				/>
 			</HStack>
 		</Box>
 	)

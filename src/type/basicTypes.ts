@@ -47,6 +47,7 @@ export interface conversationReplyType {
 	user: employeeType
 	coversation: conversationType
 	rely: string
+	createdAt: Date
 	[index: string]: any
 }
 
@@ -82,6 +83,14 @@ export interface designationType {
 	id: number
 	name: string
 	[index: string]: any
+}
+
+export interface discussionType {
+	id: number
+	employee?: employeeType
+	client?: clientType
+	content: string
+	contract: contractType
 }
 
 export interface clientCategoryType {

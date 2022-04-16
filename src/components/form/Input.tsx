@@ -19,6 +19,7 @@ export const Input = ({
 	placeholder,
 	required = false,
 	type = 'text',
+	autoComplete
 }: IInput & { form: UseFormReturn<any, any> }) => {
 	const errorColor = useColorModeValue('red.400', 'pink.400')
 	const { colorMode } = useColorMode()
@@ -42,6 +43,7 @@ export const Input = ({
 							placeholder={placeholder}
 							id={name}
 							type={type}
+							autoComplete={autoComplete ? autoComplete : undefined}
 							{...field}
 						/>
 					</InputGroup>

@@ -14,8 +14,10 @@ import { mutate } from 'swr'
 import { conversationType, employeeType } from 'type/basicTypes'
 import { createConversationReplyForm } from 'type/form/basicFormType'
 import AddConversations from './add-conversations'
-import { AiOutlineSend } from 'react-icons/ai'
+import { AiOutlineMenu, AiOutlineSend } from 'react-icons/ai'
 import Loading from 'components/Loading'
+import Drawer from 'components/Drawer'
+import { deleteConversationMutation } from 'mutations/conversation'
 
 export interface IMessagesProps {}
 
@@ -31,6 +33,13 @@ export default function Messages(props: IMessagesProps) {
 		onClose: onCloseCreConversation,
 	} = useDisclosure()
 
+	//Setup drawer -------------------------------------------------------
+	const {
+		isOpen: isOpenManageMessages,
+		onOpen: onOpenManageMessages,
+		onClose: onCloseManageMessages,
+	} = useDisclosure()
+
 	//State -------------------------------------------------------------
 	const [currentReceiver, setCurrentReceiver] = useState<{
 		converstion: number
@@ -39,7 +48,7 @@ export default function Messages(props: IMessagesProps) {
 	} | null>(null)
 
 	//Query -------------------------------------------------------------
-	const { data: dataConversations } = allConversationsByUserQuery(
+	const { data: dataConversations, mutate: refetchConversations } = allConversationsByUserQuery(
 		isAuthenticated,
 		currentUser?.id
 	)
@@ -53,6 +62,11 @@ export default function Messages(props: IMessagesProps) {
 		mutateCreConversationReply,
 		{ status: statusCreConversationReply, data: dataCreConversationReply },
 	] = createConversationReplyMutation(setToast)
+
+	const [
+		mutateDeleteConversation,
+		{ status: statusDeleteConversation, data: dataDeleteConversation },
+	] = deleteConversationMutation(setToast)
 
 	// setForm and submit form create repliy -----------------------------
 	const formSetting = useForm<createConversationReplyForm>({
@@ -96,6 +110,20 @@ export default function Messages(props: IMessagesProps) {
 			email: employee.email,
 			name: employee.name,
 		})
+
+		onCloseManageMessages()
+	}
+
+	//Handle delet conversation
+	const onDeleteConversation = (conversationId: number) => {
+		if (!currentUser?.id) {
+			setToast({
+				type: 'warning',
+				msg: 'You must login first',
+			})
+		} else {
+			mutateDeleteConversation({ conversationId, userId: currentUser.id })
+		}
 	}
 
 	//Useeffect ---------------------------------------------------------
@@ -131,6 +159,28 @@ export default function Messages(props: IMessagesProps) {
 		}
 	}, [statusCreConversationReply])
 
+	//Note when request delete success
+	useEffect(() => {
+		if (statusDeleteConversation === 'success') {
+			//Notice success
+			if (dataDeleteConversation) {
+				setToast({
+					msg: dataDeleteConversation?.message,
+					type: 'success',
+				})
+			}
+
+			//Set current receiver
+			setCurrentReceiver(null)
+
+			//Refetch all conversation by user
+			refetchConversations()
+
+			//Refetch replies of current conversation
+			refetchReplies()
+		}
+	}, [statusDeleteConversation])
+
 	useEffect(() => {
 		//Join room
 		if (socket) {
@@ -158,6 +208,9 @@ export default function Messages(props: IMessagesProps) {
 					colSpan={[0, 2, 2, 2, 1]}
 					border={'1px'}
 					borderColor={'gray.200'}
+					display={['none', 'none', 'none', 'block']}
+					minHeight={'80%'}
+					overflow={'auto'}
 				>
 					{dataConversations?.conversations &&
 						dataConversations.conversations.map((conversation) => (
@@ -171,6 +224,7 @@ export default function Messages(props: IMessagesProps) {
 												conversation={conversation}
 												onChangeReceiver={onChangeReceiver}
 												isActive={currentReceiver?.email === employee.email}
+												onDeleteConversation={onDeleteConversation}
 											/>
 										)
 									} else {
@@ -184,7 +238,7 @@ export default function Messages(props: IMessagesProps) {
 				<GridItem
 					w="100%"
 					height={'100%'}
-					colSpan={[6, 4, 4, 4, 5]}
+					colSpan={[6, 6, 6, 4, 5]}
 					border={'1px'}
 					borderColor={'gray.200'}
 					position={'relative'}
@@ -192,7 +246,19 @@ export default function Messages(props: IMessagesProps) {
 					<Box w={'full'} borderBottom={'1px'} borderColor={'gray.200'} p={4}>
 						<HStack justify={'space-between'}>
 							<Text fontWeight={'semibold'}>{currentReceiver?.name}</Text>
-							<Button onClick={onOpenCreConversation}>New Conversation</Button>
+							<Button
+								onClick={onOpenCreConversation}
+								display={['none', 'none', 'none', 'block']}
+							>
+								New Conversation
+							</Button>
+							<Box
+								display={['block', 'block', 'block', 'none']}
+								cursor={'pointer'}
+								onClick={onOpenManageMessages}
+							>
+								<AiOutlineMenu />
+							</Box>
 						</HStack>
 					</Box>
 
@@ -220,7 +286,7 @@ export default function Messages(props: IMessagesProps) {
 										name={conversationReply.user.name}
 										avatarUrl={conversationReply.user.avatar?.url}
 										text={conversationReply.reply}
-										createAt={new Date()}
+										createAt={conversationReply.createdAt}
 									/>
 								)
 							})}
@@ -241,6 +307,7 @@ export default function Messages(props: IMessagesProps) {
 								name={'reply'}
 								placeholder={'Enter reply'}
 								type={'text'}
+								autoComplete={"off"}
 							/>
 							<Button
 								type="submit"
@@ -266,6 +333,48 @@ export default function Messages(props: IMessagesProps) {
 			>
 				<AddConversations />
 			</Modal>
+
+			<Drawer
+				size="sm"
+				title="Manage Messages"
+				onClose={onCloseManageMessages}
+				isOpen={isOpenManageMessages}
+			>
+				<Box>
+					<Text p={6}>
+						<Button onClick={onOpenCreConversation} w={'full'}>
+							New Conversation
+						</Button>
+
+						<Box w={'full'} mt={2}>
+							{dataConversations?.conversations &&
+								dataConversations.conversations.map((conversation) => (
+									<Box key={conversation.id}>
+										{conversation.employees.map((employee) => {
+											if (employee.email !== currentUser?.email) {
+												return (
+													<Receiver
+														key={employee.email}
+														employee={employee}
+														conversation={conversation}
+														onChangeReceiver={onChangeReceiver}
+														isActive={
+															currentReceiver?.email ===
+															employee.email
+														}
+														onDeleteConversation={onDeleteConversation}
+													/>
+												)
+											} else {
+												return
+											}
+										})}
+									</Box>
+								))}
+						</Box>
+					</Text>
+				</Box>
+			</Drawer>
 		</Box>
 	)
 }

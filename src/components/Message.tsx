@@ -17,7 +17,7 @@ export default function Message({ name, avatarUrl, text, placement }: IMessagePr
 			paddingLeft={placement === 'right' ? 16 : undefined}
 		>
 			<HStack align={'start'} justify={placement === 'right' ? 'end' : undefined} spacing={4}>
-				{placement === 'left' && <Avatar name={name} src={avatarUrl} />}
+				{placement === 'left' && <Avatar name={name} src={avatarUrl}/>}
 				<VStack align={placement === 'left' ? 'start' : 'end'}>
 					<Text fontWeight={'semibold'}>{name}</Text>
 					<Text fontSize={12} color={'gray.400'}>

@@ -84,6 +84,13 @@ export type createDesignationForm = {
 	name: string
 }
 
+export type createDiscussionForm = {
+	contract: number
+    employee?: number
+    client?: number
+	content: string
+}
+
 export type createContractTypeForm = {
 	name: string
 }

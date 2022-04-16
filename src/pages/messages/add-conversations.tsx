@@ -77,8 +77,6 @@ export default function AddConversations(props: IAddConversationsProps) {
 				}
 			})
 
-			console.log(newOptionEmployees)
-
 			setOptionEmployees(newOptionEmployees)
 		}
 	}, [dataEmployees])

@@ -11,6 +11,7 @@ export interface IInput {
 	placeholder?: string
 	required?: boolean
 	type?: HTMLInputTypeAttribute | undefined
+	autoComplete?: "off"
 	[index: string]: any
 }
 

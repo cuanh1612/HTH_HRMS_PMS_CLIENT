@@ -1,6 +1,6 @@
 import { createConversationForm } from 'type/form/basicFormType'
 import { ConversationMutationResponse } from 'type/mutationResponses'
-import { getData, postData } from 'utils/fetchData'
+import { deleteData, getData, postData } from 'utils/fetchData'
 
 //Function handle create conversation
 export async function createConversationRequest(inputCreate: createConversationForm) {
@@ -16,5 +16,18 @@ export async function createConversationRequest(inputCreate: createConversationF
 export const allCoversationsByUserRequest = async (url: string) => {
 	return await getData<ConversationMutationResponse>({
 		url: `http://localhost:4000/api/${url}`,
+	})
+}
+
+//Function handle delete coversation
+export const deleteCoversationRequest = async ({
+	conversationId,
+	userId,
+}: {
+	conversationId: number
+	userId: number
+}) => {
+	return await deleteData<ConversationMutationResponse>({
+		url: `http://localhost:4000/api/conversations/${conversationId}/user/${userId}`,
 	})
 }

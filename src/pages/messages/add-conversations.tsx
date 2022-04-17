@@ -9,6 +9,7 @@ import { allEmployeesQuery } from 'queries/employee'
 import { useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { AiOutlineCheck } from 'react-icons/ai'
+import { mutate } from 'swr'
 import { IOption } from 'type/basicTypes'
 import { createConversationForm } from 'type/form/basicFormType'
 import { createConversationValidate } from 'utils/validate'
@@ -76,8 +77,6 @@ export default function AddConversations(props: IAddConversationsProps) {
 				}
 			})
 
-			console.log(newOptionEmployees)
-
 			setOptionEmployees(newOptionEmployees)
 		}
 	}, [dataEmployees])
@@ -85,6 +84,8 @@ export default function AddConversations(props: IAddConversationsProps) {
 	//Note when request success
 	useEffect(() => {
 		if (statusCreConversation === 'success') {
+			mutate(`conversations/user/${currentUser?.id}`)
+
 			setToast({
 				type: 'success',
 				msg: dataCreConversation?.message as string,

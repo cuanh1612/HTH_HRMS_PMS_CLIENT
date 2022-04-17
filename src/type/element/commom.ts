@@ -6,11 +6,12 @@ import { IOption } from "type/basicTypes"
 // components/form/input
 export interface IInput {
 	name: string
-	label: string
-	icon: any
+	label?: string
+	icon?: any
 	placeholder?: string
 	required?: boolean
 	type?: HTMLInputTypeAttribute | undefined
+	autoComplete?: "off"
 	[index: string]: any
 }
 

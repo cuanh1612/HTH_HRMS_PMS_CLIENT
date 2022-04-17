@@ -1,8 +1,8 @@
 import {
 	Button,
 	Divider,
+	HStack,
 	Modal as ModalChkra,
-	ModalBody,
 	ModalCloseButton,
 	ModalContent,
 	ModalFooter,
@@ -10,6 +10,7 @@ import {
 	ModalOverlay,
 } from '@chakra-ui/react'
 import { ReactNode } from 'react'
+import { AiOutlineCheck } from 'react-icons/ai'
 
 export interface IModalProps {
 	isOpen: boolean
@@ -18,9 +19,10 @@ export interface IModalProps {
 	children: ReactNode
 	size: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' | '5xl' | '6xl' | 'full'
 	title: string
+	onOk?: () => void
 }
 
-export default function Modal({ isOpen, onClose, children, size, title }: IModalProps) {
+export default function Modal({ isOpen, onClose, children, size, title, onOk }: IModalProps) {
 	return (
 		<>
 			<ModalChkra size={size} isOpen={isOpen} onClose={onClose}>
@@ -36,7 +38,21 @@ export default function Modal({ isOpen, onClose, children, size, title }: IModal
 					<Divider />
 
 					<ModalFooter>
-						<Button onClick={onClose}>Cancel</Button>
+						<HStack>
+							<Button onClick={onClose}>Cancel</Button>
+							{onOk && (
+								<Button
+									onClick={() => {
+										onOk()
+										onClose()
+									}}
+									colorScheme={'teal'}
+									leftIcon={<AiOutlineCheck />}
+								>
+									Save
+								</Button>
+							)}
+						</HStack>
 					</ModalFooter>
 				</ModalContent>
 			</ModalChkra>

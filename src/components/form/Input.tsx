@@ -19,28 +19,31 @@ export const Input = ({
 	placeholder,
 	required = false,
 	type = 'text',
+	autoComplete
 }: IInput & { form: UseFormReturn<any, any> }) => {
 	const errorColor = useColorModeValue('red.400', 'pink.400')
-	const {colorMode} = useColorMode()
+	const { colorMode } = useColorMode()
 
 	return (
 		<Controller
-
 			control={form?.control}
 			name={name}
 			render={({ field }) => (
 				<FormControl color={'gray.400'} isRequired={required}>
-					<FormLabel fontWeight={'normal'} htmlFor={name}>
-						{label}
-					</FormLabel>
+					{label && (
+						<FormLabel fontWeight={'normal'} htmlFor={name}>
+							{label}
+						</FormLabel>
+					)}
 					<InputGroup>
-						<InputLeftElement pointerEvents="none" children={icon} />
+						{icon && <InputLeftElement pointerEvents="none" children={icon} />}
 						<CInput
 							background={'#ffffff10'}
-							color={colorMode == 'light' ? undefined: 'white'}
+							color={colorMode == 'light' ? undefined : 'white'}
 							placeholder={placeholder}
 							id={name}
 							type={type}
+							autoComplete={autoComplete ? autoComplete : undefined}
 							{...field}
 						/>
 					</InputGroup>

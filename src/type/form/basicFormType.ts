@@ -64,6 +64,12 @@ export type createConversationForm = {
 	user_two: string
 }
 
+export type createConversationReplyForm = {
+	user: number
+	conversation: number
+	reply: string
+}
+
 export type createLeaveTypeForm = {
 	name: string
 	color_code: string
@@ -76,6 +82,19 @@ export type createDepartmentForm = {
 
 export type createDesignationForm = {
 	name: string
+}
+
+export type createDiscussionForm = {
+	contract: number
+	employee?: number
+	client?: number
+	content: string
+}
+
+export type updateDiscussionForm = {
+	discussionId: number
+	email_author: string
+	content: string
 }
 
 export type createContractTypeForm = {

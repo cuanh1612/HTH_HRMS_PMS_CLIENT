@@ -37,7 +37,6 @@ import SignaturePad from 'react-signature-canvas'
 import { createSignatureForm } from 'type/form/basicFormType'
 import { contractMutaionResponse } from 'type/mutationResponses'
 import { CreateSignatureValidate } from 'utils/validate'
-import { convert } from 'html-to-text'
 import { createSignMutation } from 'mutations/sign'
 import { signBase64Empaty } from 'utils/basicData'
 
@@ -59,8 +58,8 @@ export default function PublickContract({ detailContract }: IPublickContractProp
 	let signPad: any = useRef({})
 
 	//mutation ---------------------------------------------------------
-	const [mutateCreSign, { status: statusCreSign, data: dataCreSign }] =
-		createSignMutation(setToast)
+	// const [mutateCreSign, { status: statusCreSign, data: dataCreSign }] =
+	// 	createSignMutation(setToast)
 
 	// setForm and submit form create new sign -------------------------
 	const formSetting = useForm<createSignatureForm>({
@@ -178,13 +177,13 @@ export default function PublickContract({ detailContract }: IPublickContractProp
 						<GridItem w="100%" colSpan={2}>
 							<VStack align={'start'}>
 								<Text fontWeight={'semibold'}>Description</Text>
-								<Box>
-									{detailContract.contract?.description
-										? convert(detailContract.contract.description, {
-												wordwrap: 130,
-										  })
-										: ''}
-								</Box>
+								<div
+									dangerouslySetInnerHTML={{
+										__html: detailContract.contract?.description
+											? detailContract.contract.description
+											: '',
+									}}
+								/>
 							</VStack>
 						</GridItem>
 					</Grid>

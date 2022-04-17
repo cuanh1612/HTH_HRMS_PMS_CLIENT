@@ -1,4 +1,4 @@
-import { createHolidaysForm, createUpdateForm, updateHolidayForm } from 'type/form/basicFormType'
+import { createHolidaysForm, updateHolidayForm } from 'type/form/basicFormType'
 import { holidayMutaionResponse } from 'type/mutationResponses'
 import { getData, postData, putData } from 'utils/fetchData'
 

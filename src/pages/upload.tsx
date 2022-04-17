@@ -1,91 +1,39 @@
-import UploadAvatar from 'components/form/UploadAvatar'
 import { AuthContext } from 'contexts/AuthContext'
-import { useRouter } from 'next/router'
-import { useContext, useEffect, useState } from 'react'
-import { IImg, ICloudinaryImg} from 'type/fileType'
-import { uploadFile } from 'utils/uploadFile'
+import React, { useContext, useEffect, useRef, useState } from 'react'
+import { uploadBase64 } from 'utils/uploadFile'
 
 export default function upload() {
-	const { handleLoading, isAuthenticated } = useContext(AuthContext)
-	const router = useRouter()
-	const [isUpload, setIsUpload] = useState(false)
+	const { isAuthenticated, handleLoading } = useContext(AuthContext)
+	const [base64, setBase64] = useState<any>(null)
 
 	useEffect(() => {
 		if (isAuthenticated) {
 			handleLoading(false)
-		} else {
-			if (isAuthenticated == false) {
-				router.push('/login')
-			}
 		}
-	})
+	}, [isAuthenticated])
 
-	useEffect(()=> {
-		if(isUpload) {
-			import { ICloudinaryImg, IImgCrop } from 'type/fileType'
+	useEffect(() => {
+		if(base64) {
+			uploadBase64(`data:image/png;base64,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`, ['huafsf'])
+		}
+	}, [base64])
 
-export const uploadFile = async (
-	files: File[],
-	tags: String[],
-	avatar: boolean,
-	folder?: string,
-	options?: IImgCrop
-) => {
-	let data: any = []
-	await Promise.all(
-	
-				const formData = new FormData()
-				formData.append('file', file)
-				if (avatar) {
-					formData.append(
-						'upload_preset',
-						`${process.env.NEXT_PUBLIC_UPLOAD_PRESET_AVATAR}`
-					)
-				} else {
-					formData.append('upload_preset', `${process.env.NEXT_PUBLIC_UPLOAD_PRESET}`)
-					formData.set('public_id', `${folder}/${file.name}`)
-				}
-				formData.append('api_key', `${process.env.NEXT_PUBLIC_API_KEY}`)
-				formData.append('cloud_name', `${process.env.NEXT_PUBLIC_API_CLOUD_NAME}`)
-
-				tags.map((tag: any) => {
-					formData.append('tags[]', tag)
-				})
-
-				const result = await fetch(
-					avatar
-						? String(process.env.NEXT_PUBLIC_API_URL_IMG)
-						: String(process.env.NEXT_PUBLIC_API_RAW),
-					{
-						method: 'POST',
-						body: formData,
-					}
-				).then((e) => e.json())
-				data.push({
-					public_id: result.public_id,
-					url: result.secure_url,
-					name: file.name,
-				})
-				resolve(result)
-			})
-		})
-	)
-	if (avatar && options) {
-		data = data.map((item: ICloudinaryImg) => {
-			item.url = item.url.replace(
-				'upload',
-				`upload/c_crop,h_${options.height},w_${options.width},x_${options.x},y_${options.y}`
-			)
-			return item
-		})
-		return data
-	}
-	}, [isUpload])
-
-	
 	return (
-		<>
-			ssssss
-		</>
+		<div>
+			<input
+				onChange={(e) => {
+					const data = e.target.files as FileList
+					var reader = new FileReader()
+					reader.readAsDataURL(data[0])
+					reader.onload = function () {
+						setBase64(reader.result)
+					}
+					reader.onerror = function (error) {
+						console.log('Error: ', error)
+					}
+				}}
+				type={'file'}
+			/>
+		</div>
 	)
 }

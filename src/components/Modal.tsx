@@ -1,5 +1,6 @@
 import {
 	Button,
+	Divider,
 	Modal as ModalChkra,
 	ModalBody,
 	ModalCloseButton,
@@ -15,8 +16,8 @@ export interface IModalProps {
 	onOpen: () => void
 	onClose: () => void
 	children: ReactNode
-    size: "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "5xl" | "6xl" | "full",
-    title: string
+	size: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' | '5xl' | '6xl' | 'full'
+	title: string
 }
 
 export default function Modal({ isOpen, onClose, children, size, title }: IModalProps) {
@@ -27,8 +28,13 @@ export default function Modal({ isOpen, onClose, children, size, title }: IModal
 				<ModalContent>
 					<ModalHeader>{title}</ModalHeader>
 					<ModalCloseButton />
-					<ModalBody pb={6}></ModalBody>
+
+					<Divider />
+					<br />
 					{children}
+					<br />
+					<Divider />
+
 					<ModalFooter>
 						<Button onClick={onClose}>Cancel</Button>
 					</ModalFooter>

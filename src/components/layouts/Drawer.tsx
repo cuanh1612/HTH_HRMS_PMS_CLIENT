@@ -1,12 +1,10 @@
 import {
-    Button,
-    Drawer as DrawerChakra,
-    DrawerBody,
-    DrawerCloseButton,
-    DrawerContent,
-    DrawerHeader,
-    DrawerOverlay,
-    useDisclosure
+	Drawer as DrawerChakra,
+	DrawerBody,
+	DrawerCloseButton,
+	DrawerContent,
+	DrawerHeader,
+	DrawerOverlay
 } from '@chakra-ui/react'
 import DrawerItem from 'components/DrawerItem'
 import DrawerListItem from 'components/DrawerListItem'

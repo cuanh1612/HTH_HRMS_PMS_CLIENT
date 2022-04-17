@@ -11,7 +11,7 @@ import { useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { AiOutlineCheck, AiOutlinePhone } from 'react-icons/ai'
 import { MdOutlineDriveFileRenameOutline, MdSubject } from 'react-icons/md'
-import { createContractForm, updateContractForm } from 'type/form/basicFormType'
+import { updateContractForm } from 'type/form/basicFormType'
 import { dataCurrency } from 'utils/basicData'
 import { UpdateContractValidate } from 'utils/validate'
 //CSS
@@ -21,7 +21,7 @@ import { Textarea } from 'components/form/Textarea'
 import UploadAvatar from 'components/form/UploadAvatar'
 import Modal from 'components/Modal'
 import { allClientsQuery } from 'queries/client'
-import { detailContracttQuery } from 'queries/contract'
+import { detailContractQuery } from 'queries/contract'
 import { allContractTypesQuery } from 'queries/contractType'
 import { BsCalendarDate } from 'react-icons/bs'
 import { FaCity } from 'react-icons/fa'
@@ -63,7 +63,7 @@ export default function UpdateContract({ onCloseDrawer, contractIdUpdate }: IUpd
 	//Query ----------------------------------------------------------------------
 	const { data: dataClients } = allClientsQuery(isAuthenticated)
 	const { data: dataContractTypes } = allContractTypesQuery()
-	const { data: dataDetailContract } = detailContracttQuery(contractIdUpdate)
+	const { data: dataDetailContract } = detailContractQuery(contractIdUpdate)
 
 	//mutation -------------------------------------------------------------------
 	const [mutateUpContract, { status: statusUpContract, data: dataUpContract }] =
@@ -178,7 +178,7 @@ export default function UpdateContract({ onCloseDrawer, contractIdUpdate }: IUpd
 			const newOptionClients: IOption[] = dataClients.clients.map((client) => {
 				return {
 					value: client.id.toString(),
-					lable: client.email,
+					label: client.email,
 				}
 			})
 
@@ -193,7 +193,7 @@ export default function UpdateContract({ onCloseDrawer, contractIdUpdate }: IUpd
 				(contractType) => {
 					return {
 						value: contractType.id.toString(),
-						lable: contractType.name,
+						label: contractType.name
 					}
 				}
 			)
@@ -450,7 +450,7 @@ export default function UpdateContract({ onCloseDrawer, contractIdUpdate }: IUpd
 									setInfoImg={(data?: IImg) => {
 										setInfoImg(data)
 									}}
-                                    oldImg={dataDetailContract?.contract?.company_logo?.url}
+									oldImg={dataDetailContract?.contract?.company_logo?.url}
 								/>
 							</VStack>
 						</VStack>

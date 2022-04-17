@@ -1,17 +1,25 @@
-import { ReactNode } from "react"
-
 export interface userType {
 	email: string
 	username: string
+}
+
+export interface attendanceType {
+	id: number
+	working_from: string
+	clock_in_time: string
+	clock_out_time: string
+	date: Date
+	late: boolean
+	half_day: boolean
+	[index: string]: any
 }
 
 export interface employeeType {
 	employeeId: number
 	email: string
 	name: string
-	password: string
-	designation?: number | designationType
-	department?: number | departmentType
+	designation?: designationType
+	department?: departmentType
 	hourly_rate: number
 	can_login: boolean
 	can_receive_email: boolean
@@ -24,17 +32,25 @@ export interface employeeType {
 	date_of_birth?: Date
 	[index: string]: any
 	avatar?: {
-		url: string,
-		public_id: string,
+		url: string
+		public_id: string
 		name: string
-	} 
+	}
 	id: number
 	role: string
+	attendances: attendanceType[]
 }
 
 export interface departmentType {
 	id: number
 	name: string
+	[index: string]: any
+}
+
+export interface conversationType {
+	id: number
+	user_one: employeeType
+	user_two: employeeType
 	[index: string]: any
 }
 
@@ -57,6 +73,15 @@ export interface leaveType {
 	[index: string]: any
 }
 
+export interface signType {
+	id: number
+	first_name: string
+	last_name: string
+	email: string
+	url: string
+	public_id: string
+}
+
 export interface designationType {
 	id: number
 	name: string
@@ -76,7 +101,7 @@ export interface clientSubCategoryType {
 	[index: string]: any
 }
 
-export interface clientType {
+export interface  clientType {
 	salutation?: string
 	name: string
 	email: string
@@ -156,3 +181,9 @@ export interface IOption {
 
 // toast
 export type TToast = ({ type, msg }: { type: 'error' | 'success' | 'warning'; msg: string }) => void
+
+export interface leaveDate {
+	id: number
+	id_employee: number
+	date: number
+}

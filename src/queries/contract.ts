@@ -3,7 +3,7 @@ import { detailContractRequest } from 'requests/contract'
 import useSWR from 'swr'
 import { contractMutaionResponse } from 'type/mutationResponses'
 
-export const detailContracttQuery = (contractId: number | null) => {
+export const detailContractQuery = (contractId: number | null) => {
 	return useSWR<contractMutaionResponse, AxiosError>(
 		contractId ? `contracts/${contractId}` : null,
 		detailContractRequest,

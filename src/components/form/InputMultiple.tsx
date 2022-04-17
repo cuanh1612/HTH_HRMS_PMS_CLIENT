@@ -1,4 +1,4 @@
-import { Badge, Input, VStack, Text, HStack, Box } from '@chakra-ui/react'
+import { Box, HStack, Input, Text, VStack } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
 import { UseFormReturn } from 'react-hook-form'
 import { TiDeleteOutline } from 'react-icons/ti'

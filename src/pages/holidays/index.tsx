@@ -8,7 +8,7 @@ import UpdateHoliday from './update-holidays'
 
 export interface IHolidayProps {}
 
-export default function Holiday(props: IHolidayProps) {
+export default function Holiday({}: IHolidayProps) {
 	const { isAuthenticated, handleLoading } = useContext(AuthContext)
 	const router = useRouter()
 
@@ -18,6 +18,8 @@ export default function Holiday(props: IHolidayProps) {
 
 	//State ---------------------------------------------------------------------
 	const [holidayIdUpdate, setHolidayIdUpdate] = useState<number | null>(1)
+	console.log(setHolidayIdUpdate);
+	
 
 	//User effect ---------------------------------------------------------------
 

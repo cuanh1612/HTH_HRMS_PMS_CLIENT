@@ -6,9 +6,7 @@ import {
 	EditableInput,
 	EditablePreview,
 	Grid,
-	GridItem,
-	HStack,
-	Input,
+	GridItem, Input,
 	Select,
 	Stack,
 	Table,
@@ -19,7 +17,7 @@ import {
 	Th,
 	Thead,
 	Tr,
-	VStack,
+	VStack
 } from '@chakra-ui/react'
 import ButtonIcon from 'components/ButtonIcon'
 import Loading from 'components/Loading'
@@ -27,7 +25,7 @@ import { AuthContext } from 'contexts/AuthContext'
 import {
 	createSubCategoryMutation,
 	deleteSubCategoryMutation,
-	updateSubCategoryMutation,
+	updateSubCategoryMutation
 } from 'mutations/clientSubCategory'
 import { useRouter } from 'next/router'
 import { allClientCategoriesQuery } from 'queries/clientCategory'
@@ -38,7 +36,7 @@ import { MdDeleteOutline } from 'react-icons/md'
 
 export interface IClientCategoryProps {}
 
-export default function ClientSubCategory(props: IClientCategoryProps) {
+export default function ClientSubCategory({}: IClientCategoryProps) {
 	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
 	const router = useRouter()
 
@@ -167,7 +165,6 @@ export default function ClientSubCategory(props: IClientCategoryProps) {
 	return (
 		<Box>
 			<VStack align={'start'}>
-				<Divider />
 				<Box maxHeight={'400px'} overflow="auto" w={'full'}>
 					<TableContainer w="full" paddingInline={6} pos={'relative'}>
 						<Table variant="simple">
@@ -284,7 +281,6 @@ export default function ClientSubCategory(props: IClientCategoryProps) {
 						</VStack>
 					</VStack>
 				</Box>
-				<Divider />
 			</VStack>
 		</Box>
 	)

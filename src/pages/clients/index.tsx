@@ -13,6 +13,12 @@ import {
 	Badge,
 	Box,
 	Collapse,
+	Drawer as CDrawer,
+	DrawerBody,
+	DrawerCloseButton,
+	DrawerContent,
+	DrawerHeader,
+	DrawerOverlay,
 	HStack,
 	Menu,
 	MenuButton,
@@ -21,12 +27,6 @@ import {
 	Text,
 	Button,
 	useDisclosure,
-	DrawerOverlay,
-	DrawerContent,
-	DrawerHeader,
-	Drawer as CDrawer,
-	DrawerBody,
-	DrawerCloseButton,
 	VStack,
 } from '@chakra-ui/react'
 import AlertDialog from 'components/AlertDialog'
@@ -119,6 +119,7 @@ const Clients: NextLayout = () => {
 
 	// data all users to select
 	const [dataUsersSl, setAllusersSl] = useState<IPeople[]>([])
+	console.log(dataUsersSl)
 
 	// is reset table
 	const [isResetFilter, setIsReset] = useState(false)
@@ -577,16 +578,15 @@ const Clients: NextLayout = () => {
 								required={false}
 							/>
 
-							<DateRange handleSelect={(date: {
-								from: Date,
-								to: Date
-								
-							})=> {
-								setFilter({
-									columnId: 'createdAt',
-									filterValue: date
-								})
-							}} label="Select date" />
+							<DateRange
+								handleSelect={(date: { from: Date; to: Date }) => {
+									setFilter({
+										columnId: 'createdAt',
+										filterValue: date,
+									})
+								}}
+								label="Select date"
+							/>
 							<SelectUser
 								handleSearch={(data: IFilter) => {
 									setFilter(data)

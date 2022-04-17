@@ -32,7 +32,7 @@ export const uploadFile = async (
 				const result = await fetch(
 					avatar
 						? String(process.env.NEXT_PUBLIC_API_URL_IMG)
-						: String(process.env.NEXT_PUBLIC_API_RAW),
+						: String(process.env.NEXT_PUBLIC_API_URL_RAW),
 					{
 						method: 'POST',
 						body: formData,
@@ -58,4 +58,26 @@ export const uploadFile = async (
 		return data
 	}
 	return data
+}
+
+export const uploadBase64 = async (file: string, tags: String[]) => {
+	const formData = new FormData()
+	formData.append('file', file)
+	
+	formData.append('upload_preset', `${process.env.NEXT_PUBLIC_UPLOAD_PRESET_SIGN}`)
+	
+	formData.append('api_key', `${process.env.NEXT_PUBLIC_API_KEY}`)
+	formData.append('cloud_name', `${process.env.NEXT_PUBLIC_API_CLOUD_NAME}`)
+	
+	tags.map((tag: any) => {
+		formData.append('tags[]', tag)
+	})
+
+	const result = await fetch(String(process.env.NEXT_PUBLIC_API_URL_IMG), {
+		method: 'POST',
+		body: formData,
+	}).then((e) => e.json())
+	console.log('thanh cong')
+
+	return result
 }

@@ -70,3 +70,10 @@ export interface IPeople {
 	name: string
 	avatar: string | undefined
 }
+
+export interface ICheckAttendace {
+	date: number
+	handle?: any
+	id?: number
+	id_Employee?: number
+}

@@ -72,17 +72,27 @@ export const UpdateClientValidate = yup.object({
 })
 
 export const CreateContractValidate = yup.object({
-	subject:  yup.string().required('Please enter field subject'),
+	subject: yup.string().required('Please enter field subject'),
 	start_date: yup.date().required('Please select start date'),
 	contract_value: yup.number().required('Please enter field subject conctract value'),
 	currency: yup.string().required('Please select currency'),
-	client: yup.string().required('Please select client')
+	client: yup.string().required('Please select client'),
 })
 
 export const UpdateContractValidate = yup.object({
-	subject:  yup.string().required('Please enter field subject'),
+	subject: yup.string().required('Please enter field subject'),
 	start_date: yup.date().required('Please select start date'),
 	contract_value: yup.number().required('Please enter field subject conctract value'),
 	currency: yup.string().required('Please select currency'),
-	client: yup.string().required('Please select client')
+	client: yup.string().required('Please select client'),
+})
+
+export const CreateSignatureValidate = yup.object({
+	first_name: yup.string().required('Please enter field first name'),
+	last_name: yup.string().required('Please enter field last name'),
+	email: yup.string().required('Please enter field email'),
+})
+
+export const createConversationValidate = yup.object({
+	user_two: yup.string().required('Please select other employee to create conversation'),
 })

@@ -33,7 +33,7 @@ import { MdDeleteOutline } from 'react-icons/md'
 
 export interface IClientCategoryProps {}
 
-export default function ClientCategory(props: IClientCategoryProps) {
+export default function ClientCategory({}: IClientCategoryProps) {
 	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
 	const router = useRouter()
 
@@ -158,7 +158,6 @@ export default function ClientCategory(props: IClientCategoryProps) {
 	return (
 		<Box>
 			<VStack align={'start'}>
-				<Divider />
 				<Box maxHeight={'400px'} overflow="auto" w={'full'}>
 					<TableContainer w="full" paddingInline={6} pos={'relative'}>
 						<Table variant="simple">
@@ -238,7 +237,6 @@ export default function ClientCategory(props: IClientCategoryProps) {
 						</HStack>
 					</VStack>
 				</Box>
-				<Divider />
 			</VStack>
 		</Box>
 	)

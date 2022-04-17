@@ -7,7 +7,7 @@ import {
 	GridItem,
 	Text,
 	useDisclosure,
-	VStack,
+	VStack
 } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
 import CoutrySelector from 'components/form/CountrySelector'
@@ -18,7 +18,7 @@ import UploadAvatar from 'components/form/UploadAvatar'
 import Loading from 'components/Loading'
 import Modal from 'components/Modal'
 import { AuthContext } from 'contexts/AuthContext'
-import { createClientMutation, updateClientMutation } from 'mutations/client'
+import { updateClientMutation } from 'mutations/client'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 import { detailClientQuery } from 'queries/client'
@@ -32,15 +32,15 @@ import { GiMatterStates } from 'react-icons/gi'
 import {
 	MdDriveFileRenameOutline,
 	MdOutlineDriveFileRenameOutline,
-	MdPassword,
+	MdPassword
 } from 'react-icons/md'
 import { SiCurl } from 'react-icons/si'
 import { IOption } from 'type/basicTypes'
 import { ICloudinaryImg, IImg } from 'type/fileType'
-import { createClientForm, updateClientForm } from 'type/form/basicFormType'
+import { updateClientForm } from 'type/form/basicFormType'
 import { dataGender, dataSalutation } from 'utils/basicData'
 import { uploadFile } from 'utils/uploadFile'
-import { CreateClientValidate, UpdateClientValidate } from 'utils/validate'
+import { UpdateClientValidate } from 'utils/validate'
 import ClientCategory from '../client-categories'
 import ClientSubCategory from '../client-sub-categories'
 //CSS
@@ -87,7 +87,7 @@ export default function UpdateClient({ onCloseDrawer, clientUpdateId }: IAddClie
 	//Query -------------------------------------------------------------------
 	const { data: dataCategories } = allClientCategoriesQuery()
 	const { data: dataSubCategories } = allClientSubCategoriesQuery()
-	const { data: dataDetailClient, error: errorDetailClient } = detailClientQuery(
+	const { data: dataDetailClient } = detailClientQuery(
 		isAuthenticated,
 		clientUpdateId
 	)

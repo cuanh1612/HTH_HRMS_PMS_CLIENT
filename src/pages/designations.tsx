@@ -33,7 +33,7 @@ import { MdDeleteOutline } from 'react-icons/md'
 
 export interface IDepartmentProps {}
 
-export default function Designation(props: IDepartmentProps) {
+export default function Designation({}: IDepartmentProps) {
 	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
 	const router = useRouter()
 
@@ -158,7 +158,6 @@ export default function Designation(props: IDepartmentProps) {
 	return (
 		<Box>
 			<VStack align={'start'}>
-				<Divider />
 				<Box maxHeight={'400px'} overflow="auto" w={'full'}>
 					<TableContainer w="full" paddingInline={6} pos={'relative'}>
 						<Table variant="simple">
@@ -237,8 +236,6 @@ export default function Designation(props: IDepartmentProps) {
 						</HStack>
 					</VStack>
 				</Box>
-
-				<Divider />
 			</VStack>
 		</Box>
 	)

@@ -1,7 +1,7 @@
-import { Avatar, Box, Heading, HStack, Text, useColorMode, VStack } from '@chakra-ui/react'
+import { Avatar, Box, HStack, useColorMode, VStack } from '@chakra-ui/react'
 import ButtonIcon from 'components/ButtonIcon'
 import { AuthContext } from 'contexts/AuthContext'
-import { useContext, useEffect } from 'react'
+import { useContext } from 'react'
 import { BsMoon, BsSun } from 'react-icons/bs'
 
 export const Header = () => {

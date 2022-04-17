@@ -15,7 +15,7 @@ import { CreateLeaveTypeValidate } from 'utils/validate'
 
 export interface ILeaveTypeProps {}
 
-export default function LeaveType(props: ILeaveTypeProps) {
+export default function LeaveType({}: ILeaveTypeProps) {
 	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
 	const router = useRouter()
 	const { mutate } = useSWRConfig()
@@ -83,7 +83,6 @@ export default function LeaveType(props: ILeaveTypeProps) {
 	return (
 		<Box>
 			<VStack align={'start'}>
-				<Divider />
 				<Box
 					as={'form'}
 					w="full"
@@ -147,7 +146,6 @@ export default function LeaveType(props: ILeaveTypeProps) {
 					</VStack>
 					{statusCreLeaveType === 'running' && <Loading />}
 				</Box>
-				<Divider />
 			</VStack>
 		</Box>
 	)

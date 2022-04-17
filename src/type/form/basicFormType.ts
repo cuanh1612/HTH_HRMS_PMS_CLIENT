@@ -59,6 +59,11 @@ export type updateLeaveForm = {
 	duration: string
 }
 
+export type createConversationForm = {
+	user_one: string
+	user_two: string
+}
+
 export type createLeaveTypeForm = {
 	name: string
 	color_code: string
@@ -242,5 +247,13 @@ export type updateContractForm = {
 		name: string
 		public_id: string
 	}
-	
+}
+
+export interface createSignatureForm {
+	first_name: string
+	last_name: string
+	email: string
+	url: string
+	public_id: string
+	contract: number
 }

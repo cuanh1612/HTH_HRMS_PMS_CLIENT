@@ -57,7 +57,7 @@ export default function UpdateLeaves({ onCloseDrawer, leaveId }: IUpdateLeavesPr
 	//Query ---------------------------------------------------------------------
 	const { data: dataEmployees } = allEmployeesQuery(isAuthenticated)
 	const { data: dataLeaveTypes } = allLeaveTypesQuery()
-	const { data: dataDetailLeave, error: errorDetailLeave } = detailLeaveQuery(leaveId)
+	const { data: dataDetailLeave } = detailLeaveQuery(leaveId)
 
 	//mutation ------------------------------------------------------------------
 	const [mutateUpLeave, { status: statusUpLeave, data: dataUpLeave }] =

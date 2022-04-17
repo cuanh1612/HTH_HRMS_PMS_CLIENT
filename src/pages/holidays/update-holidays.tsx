@@ -22,7 +22,7 @@ export default function UpdateHoliday({ onCloseDrawer, holidayId }: IUpdateHolid
 	const router = useRouter()
 
 	//Query ---------------------------------------------------------------------
-	const { data: dataDetailHoliday, error: errorDetailHoliday } = detailHolidayQuery(holidayId)
+	const { data: dataDetailHoliday } = detailHolidayQuery(holidayId)
 
 	//mutation ------------------------------------------------------------------
 	const [mutateUpHoliday, { status: statusUpHoliday, data: dataUpHoliday }] =

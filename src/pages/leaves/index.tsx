@@ -34,7 +34,6 @@ import Drawer from 'components/Drawer'
 import { ClientLayout } from 'components/layouts'
 
 import { AuthContext } from 'contexts/AuthContext'
-
 import { useRouter } from 'next/router'
 
 import { useContext, useEffect, useState } from 'react'

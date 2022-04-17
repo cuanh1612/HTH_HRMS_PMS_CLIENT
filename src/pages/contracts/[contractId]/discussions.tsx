@@ -1,15 +1,22 @@
 export interface IDiscussionProps {}
 
-import { Avatar, Box, Button, HStack, Image, Text, useDisclosure, VStack } from '@chakra-ui/react'
+import { Avatar, Box, Button, HStack, Text, useDisclosure, VStack } from '@chakra-ui/react'
+import DiscussionItem from 'components/Discussion'
 import Loading from 'components/Loading'
 import { AuthContext } from 'contexts/AuthContext'
-import { createDiscussionMutation } from 'mutations/discussion'
+import {
+	createDiscussionMutation,
+	deleteDiscussionMutation,
+	updateDiscussionMutation,
+} from 'mutations/discussion'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
+import { allDiscussionsQuery } from 'queries/discussion'
 import { useContext, useEffect, useState } from 'react'
 import { AiOutlinePlusCircle, AiOutlineSend } from 'react-icons/ai'
 import 'react-quill/dist/quill.bubble.css'
 import 'react-quill/dist/quill.snow.css'
+import { updateDiscussionForm } from 'type/form/basicFormType'
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
 
@@ -24,9 +31,22 @@ export default function Discussion(props: IDiscussionProps) {
 	//Setup disclosure -----------------------------------------------------------
 	const { isOpen: isOpenAdd, onOpen: onOpenAdd, onClose: onCloseAdd } = useDisclosure()
 
+	//Query ----------------------------------------------------------------------
+	const { data: dataAllDiscussion, mutate: refetchAllDiscussions } = allDiscussionsQuery(
+		isAuthenticated,
+		Number(contractId)
+	)
+	console.log(dataAllDiscussion)
+
 	//mutation -------------------------------------------------------------------
 	const [mutateCreDiscussion, { status: statusCreDiscussion, data: dataCreDiscussion }] =
 		createDiscussionMutation(setToast)
+
+	const [mutateDeleteDiscussion, { status: statusDeleteDiscussion, data: dataDeleteDiscussion }] =
+		deleteDiscussionMutation(setToast)
+
+	const [mutateUpDiscussion, { status: statusUpDiscussion, data: dataUpDiscussion }] =
+		updateDiscussionMutation(setToast)
 
 	//User effect ---------------------------------------------------------------
 	//Handle check loged in
@@ -49,8 +69,34 @@ export default function Discussion(props: IDiscussionProps) {
 			})
 
 			setContent('')
+
+			refetchAllDiscussions()
 		}
 	}, [statusCreDiscussion])
+
+	//Note when request delete success
+	useEffect(() => {
+		if (statusDeleteDiscussion === 'success') {
+			setToast({
+				type: 'success',
+				msg: dataDeleteDiscussion?.message as string,
+			})
+
+			refetchAllDiscussions()
+		}
+	}, [statusDeleteDiscussion])
+
+	//Note when request update success
+	useEffect(() => {
+		if (statusUpDiscussion === 'success') {
+			setToast({
+				type: 'success',
+				msg: dataUpDiscussion?.message as string,
+			})
+
+			refetchAllDiscussions()
+		}
+	}, [statusUpDiscussion])
 
 	//function ------------------------------------------------------------------
 	const onChangeContent = (value: string) => {
@@ -84,14 +130,35 @@ export default function Discussion(props: IDiscussionProps) {
 		}
 	}
 
+	//Handle delete discussion
+	const onDeleteDiscussion = (discussionId: string) => {
+		mutateDeleteDiscussion({ discussionId })
+	}
+
+	//Handle update discussion
+	const onUpdateDiscussion = ({ content, discussionId, email_author }: updateDiscussionForm) => {
+		if (!content) {
+			setToast({
+				msg: 'Pleser enter field content',
+				type: 'warning',
+			})
+		} else {
+			mutateUpDiscussion({
+				content,
+				discussionId,
+				email_author,
+			})
+		}
+	}
+
 	return (
-		<Box p={10} bgColor={'#f2f4f7'} height={'100vh'}>
+		<Box p={10} bgColor={'#f2f4f7'} height={'100%'}>
 			<VStack align={'start'} w="full" bgColor={'white'} p={5} borderRadius={5} spacing={5}>
 				<Text fontSize={18} fontWeight={'semibold'}>
 					Discussion
 				</Text>
 
-				<Box position={"relative"} p={2}>
+				<Box position={'relative'} p={2} w={'full'}>
 					{isOpenAdd ? (
 						<VStack w={'full'} spacing={5} position={'relative'}>
 							<HStack w={'full'} align={'start'}>
@@ -156,11 +223,24 @@ export default function Discussion(props: IDiscussionProps) {
 						</Button>
 					)}
 
-					{
-						statusCreDiscussion === "running" && <Loading/>
-					}
+					{statusCreDiscussion === 'running' && <Loading />}
 				</Box>
 
+				<VStack paddingX={2} paddingY={5} align={'start'} spacing={5} position={'relative'} w={"full"}>
+					{dataAllDiscussion?.discussions &&
+						currentUser &&
+						dataAllDiscussion.discussions.map((discussion) => (
+							<DiscussionItem
+								currentUser={currentUser}
+								discussion={discussion}
+								onDeleteDiscussion={onDeleteDiscussion}
+								onUpdateDiscussion={onUpdateDiscussion}
+							/>
+						))}
+
+					{(statusUpDiscussion === 'running' ||
+						statusDeleteDiscussion === 'running') && <Loading />}
+				</VStack>
 			</VStack>
 		</Box>
 	)

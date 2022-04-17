@@ -66,7 +66,7 @@ export type createConversationForm = {
 
 export type createConversationReplyForm = {
 	user: number
-	conversation: number,
+	conversation: number
 	reply: string
 }
 
@@ -86,8 +86,14 @@ export type createDesignationForm = {
 
 export type createDiscussionForm = {
 	contract: number
-    employee?: number
-    client?: number
+	employee?: number
+	client?: number
+	content: string
+}
+
+export type updateDiscussionForm = {
+	discussionId: number
+	email_author: string
 	content: string
 }
 

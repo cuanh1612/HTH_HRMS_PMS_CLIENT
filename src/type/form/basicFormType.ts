@@ -276,3 +276,12 @@ export interface createSignatureForm {
 	public_id: string
 	contract: number
 }
+
+export type createContractFileForm = {
+	files: {
+		name: string
+		public_id: string
+		url: string
+	}[]
+	contract: number
+}

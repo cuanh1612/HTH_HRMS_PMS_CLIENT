@@ -1,4 +1,4 @@
-import { clientCategoryType, clientSubCategoryType, clientType, contractType, contractTypeType, conversationReplyType, conversationType, departmentType, designationType, discussionType, employeeType, holidayType, leaveType, leaveTypeType, signType, userType } from './basicTypes'
+import { clientCategoryType, clientSubCategoryType, clientType, contractFileType, contractType, contractTypeType, conversationReplyType, conversationType, departmentType, designationType, discussionType, employeeType, holidayType, leaveType, leaveTypeType, signType, userType } from './basicTypes'
 
 export interface authMutaionResponse {
 	code: number
@@ -159,5 +159,14 @@ export interface contractTypeMutaionResponse {
 	message: string
 	contractType?: contractTypeType
 	contractTypes?: contractTypeType[]
+	[index: string]: any
+}
+
+export interface contractFileMutaionResponse {
+	code: number
+	success: boolean
+	message: string
+	contractFile?: contractFileType
+	contractFiles?: contractFileType[]
 	[index: string]: any
 }

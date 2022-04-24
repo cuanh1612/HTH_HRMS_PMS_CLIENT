@@ -18,6 +18,7 @@ import 'react-quill/dist/quill.snow.css'
 import { discussionType, employeeType } from 'type/basicTypes'
 import { updateDiscussionForm } from 'type/form/basicFormType'
 import Modal from './Modal'
+import moment from 'moment'
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
 
@@ -68,7 +69,7 @@ export default function Discussion({
 						<Text fontWeight={'semibold'}>
 							{discussion.client?.name || discussion.employee?.name}
 						</Text>
-						<Text>12:12 AM</Text>
+						<Text>{moment(discussion.createdAt).fromNow()}</Text>
 					</HStack>
 					<div dangerouslySetInnerHTML={{ __html: discussion.content }} />
 				</VStack>

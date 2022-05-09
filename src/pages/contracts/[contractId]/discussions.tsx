@@ -17,11 +17,14 @@ import { AiOutlinePlusCircle, AiOutlineSend } from 'react-icons/ai'
 import 'react-quill/dist/quill.bubble.css'
 import 'react-quill/dist/quill.snow.css'
 import { updateDiscussionForm } from 'type/form/basicFormType'
+import moment from 'moment'
+import { GetStaticPaths, GetStaticProps } from 'next'
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
 
 export default function Discussion(props: IDiscussionProps) {
-	const { isAuthenticated, handleLoading, setToast, currentUser } = useContext(AuthContext)
+	const { isAuthenticated, handleLoading, setToast, currentUser, socket } =
+		useContext(AuthContext)
 	const router = useRouter()
 	const { contractId } = router.query
 
@@ -49,6 +52,27 @@ export default function Discussion(props: IDiscussionProps) {
 		updateDiscussionMutation(setToast)
 
 	//User effect ---------------------------------------------------------------
+	//Join room socket
+	useEffect(() => {
+		//Join room
+		if (socket && contractId) {
+			socket.emit('joinRoomDiscussionContract', contractId)
+
+			socket.on('getNewDiscussion', () => {
+				refetchAllDiscussions()
+			})
+		}
+
+		//Leave room
+		function leaveRoom() {
+			if (socket && contractId) {
+				socket.emit('leaveRoomDiscussionContract', contractId)
+			}
+		}
+
+		return leaveRoom
+	}, [socket, contractId])
+
 	//Handle check loged in
 	useEffect(() => {
 		if (isAuthenticated) {
@@ -71,6 +95,11 @@ export default function Discussion(props: IDiscussionProps) {
 			setContent('')
 
 			refetchAllDiscussions()
+
+			//Emit to other user join room
+			if (socket && contractId) {
+				socket.emit('newDiscussion', contractId)
+			}
 		}
 	}, [statusCreDiscussion])
 
@@ -83,6 +112,11 @@ export default function Discussion(props: IDiscussionProps) {
 			})
 
 			refetchAllDiscussions()
+
+			//Emit to other user join room
+			if (socket && contractId) {
+				socket.emit('newDiscussion', contractId)
+			}
 		}
 	}, [statusDeleteDiscussion])
 
@@ -95,6 +129,11 @@ export default function Discussion(props: IDiscussionProps) {
 			})
 
 			refetchAllDiscussions()
+
+			//Emit to other user join room
+			if (socket && contractId) {
+				socket.emit('newDiscussion', contractId)
+			}
 		}
 	}, [statusUpDiscussion])
 
@@ -152,7 +191,7 @@ export default function Discussion(props: IDiscussionProps) {
 	}
 
 	return (
-		<Box p={10} bgColor={'#f2f4f7'} height={'100%'}>
+		<Box p={10} bgColor={'#f2f4f7'} minHeight={'100vh'}>
 			<VStack align={'start'} w="full" bgColor={'white'} p={5} borderRadius={5} spacing={5}>
 				<Text fontSize={18} fontWeight={'semibold'}>
 					Discussion
@@ -226,7 +265,14 @@ export default function Discussion(props: IDiscussionProps) {
 					{statusCreDiscussion === 'running' && <Loading />}
 				</Box>
 
-				<VStack paddingX={2} paddingY={5} align={'start'} spacing={5} position={'relative'} w={"full"}>
+				<VStack
+					paddingX={2}
+					paddingY={5}
+					align={'start'}
+					spacing={5}
+					position={'relative'}
+					w={'full'}
+				>
 					{dataAllDiscussion?.discussions &&
 						currentUser &&
 						dataAllDiscussion.discussions.map((discussion) => (
@@ -238,10 +284,36 @@ export default function Discussion(props: IDiscussionProps) {
 							/>
 						))}
 
-					{(statusUpDiscussion === 'running' ||
-						statusDeleteDiscussion === 'running') && <Loading />}
+					{(statusUpDiscussion === 'running' || statusDeleteDiscussion === 'running') && (
+						<Loading />
+					)}
 				</VStack>
 			</VStack>
 		</Box>
 	)
+}
+
+export const getStaticProps: GetStaticProps = async (contexts) => {
+	return {
+		props: {},
+		// Next.js will attempt to re-generate the page:
+		// - When a request comes in
+		// - At most once every 10 seconds
+		revalidate: 10, // In seconds
+	}
+}
+
+export const getStaticPaths: GetStaticPaths = async () => {
+	const res = await fetch('http://localhost:4000/api/contracts').then((result) => result.json())
+	const contracts = res.contracts
+
+	// Get the paths we want to pre-render based on leave
+	const paths = contracts.map((contract: any) => ({
+		params: { contractId: String(contract.id) },
+	}))
+
+	// We'll pre-render only these paths at build time.
+	// { fallback: blocking } will server-render pages
+	// on-demand if the path doesn't exist.
+	return { paths, fallback: false }
 }

@@ -19,7 +19,12 @@ export const uploadFile = async (
 						`${process.env.NEXT_PUBLIC_UPLOAD_PRESET_AVATAR}`
 					)
 				} else {
-					formData.append('upload_preset', `${process.env.NEXT_PUBLIC_UPLOAD_PRESET}`)
+					formData.append(
+						'upload_preset',
+						`${process.env.NEXT_PUBLIC_UPLOAD_PRESET_CONTRACT}`
+					)
+				}
+				if (folder) {
 					formData.set('public_id', `${folder}/${file.name}`)
 				}
 				formData.append('api_key', `${process.env.NEXT_PUBLIC_API_KEY}`)
@@ -60,18 +65,19 @@ export const uploadFile = async (
 	return data
 }
 
-export const uploadBase64 = async (file: string, tags: String[]) => {
+export const uploadBase64 = async (file: string, tags?: String[]) => {
 	const formData = new FormData()
 	formData.append('file', file)
-	
+
 	formData.append('upload_preset', `${process.env.NEXT_PUBLIC_UPLOAD_PRESET_SIGN}`)
-	
+
 	formData.append('api_key', `${process.env.NEXT_PUBLIC_API_KEY}`)
 	formData.append('cloud_name', `${process.env.NEXT_PUBLIC_API_CLOUD_NAME}`)
-	
-	tags.map((tag: any) => {
-		formData.append('tags[]', tag)
-	})
+
+	tags &&
+		tags.map((tag: any) => {
+			formData.append('tags[]', tag)
+		})
 
 	const result = await fetch(String(process.env.NEXT_PUBLIC_API_URL_IMG), {
 		method: 'POST',
@@ -79,5 +85,28 @@ export const uploadBase64 = async (file: string, tags: String[]) => {
 	}).then((e) => e.json())
 	console.log('thanh cong')
 
-	return result
+	return {
+		public_id: result.public_id,
+		url: result.secure_url,
+	}
+}
+
+//Base64 url image
+async function parseURI(d: Blob) {
+	var reader = new FileReader()
+	reader.readAsDataURL(d)
+	return new Promise((res, rej) => {
+		reader.onload = (e) => {
+			if (e.target) {
+				res(e.target.result)
+			}
+		}
+	})
+}
+
+export async function getDataBlob(url: string) {
+	var res = await fetch(url)
+	var blob = await res.blob()
+	var uri = await parseURI(blob)
+	return uri
 }

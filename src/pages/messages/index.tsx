@@ -201,7 +201,7 @@ export default function Messages(props: IMessagesProps) {
 	})
 
 	return (
-		<Box pos="relative" height={'100%'} p={6}>
+		<Box pos="relative" height={'100vh'} p={6}>
 			<Grid templateColumns="repeat(6, 1fr)" gap={0} height={'100%'}>
 				<GridItem
 					w="100%"

@@ -1,5 +1,6 @@
 import { Avatar, Box, HStack, Text, VStack } from '@chakra-ui/react'
 import * as React from 'react'
+import moment from 'moment'
 
 export interface IMessageProps {
 	name: string
@@ -9,7 +10,7 @@ export interface IMessageProps {
 	placement: 'left' | 'right'
 }
 
-export default function Message({ name, avatarUrl, text, placement }: IMessageProps) {
+export default function Message({ name, avatarUrl, text, placement, createAt }: IMessageProps) {
 	return (
 		<Box
 			w={'full'}
@@ -17,11 +18,11 @@ export default function Message({ name, avatarUrl, text, placement }: IMessagePr
 			paddingLeft={placement === 'right' ? 16 : undefined}
 		>
 			<HStack align={'start'} justify={placement === 'right' ? 'end' : undefined} spacing={4}>
-				{placement === 'left' && <Avatar name={name} src={avatarUrl}/>}
+				{placement === 'left' && <Avatar name={name} src={avatarUrl} />}
 				<VStack align={placement === 'left' ? 'start' : 'end'}>
 					<Text fontWeight={'semibold'}>{name}</Text>
 					<Text fontSize={12} color={'gray.400'}>
-						9:21 AM
+						{moment(createAt).fromNow()}
 					</Text>
 					<Box
 						p={2}

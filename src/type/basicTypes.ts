@@ -102,6 +102,7 @@ export interface discussionType {
 	client?: clientType
 	content: string
 	contract: contractType
+	createdAt: Date
 }
 
 export interface clientCategoryType {
@@ -117,7 +118,7 @@ export interface clientSubCategoryType {
 	[index: string]: any
 }
 
-export interface  clientType {
+export interface clientType {
 	salutation?: string
 	name: string
 	email: string
@@ -178,7 +179,8 @@ export interface contractType {
 	}
 	sign?: {
 		url: string
-		name: string
+		first_name: string
+		last_name: string
 		public_id: string
 	}
 	contract_type?: contractTypeType
@@ -188,6 +190,15 @@ export interface contractTypeType {
 	id: number
 	name: string
 	[index: string]: any
+}
+
+export interface contractFileType {
+	id: number
+	url: string
+	name: string
+	public_id: string
+	contract: contractType
+	createdAt: Date
 }
 
 export interface IOption {

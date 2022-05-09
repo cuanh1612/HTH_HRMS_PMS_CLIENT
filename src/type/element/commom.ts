@@ -72,8 +72,8 @@ export interface IPeople {
 	avatar: string | undefined
 }
 
-export interface ICheckAttendace {
-	date: number
+export interface IAttendance {
+	date: Date
 	handle?: any
 	id?: number
 	id_Employee?: number

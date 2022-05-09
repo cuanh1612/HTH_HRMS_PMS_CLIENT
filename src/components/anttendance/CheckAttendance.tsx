@@ -1,95 +1,86 @@
-import { Box, HStack, IconButton } from '@chakra-ui/react'
+import { HStack, IconButton } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
 import { BiCheck } from 'react-icons/bi'
 import { BsDash } from 'react-icons/bs'
 import { IoMdClose } from 'react-icons/io'
 import { IoAirplaneOutline } from 'react-icons/io5'
-import { leaveDate } from 'type/basicTypes'
-import { ICheckAttendace } from 'type/element/commom'
+import { leaveType } from 'type/basicTypes'
+import { IAttendance } from 'type/element/commom'
 
 interface ICheckAttendance {
-	count: number
-	attendances?: ICheckAttendace[]
-	leaveDates: leaveDate[]
+	// số ngày
+	countDate: number
+	// ngày attendance
+	attendances?: IAttendance[]
+	// ngày nghỉ
+	leaveDates?: leaveType[]
+	// khi tạo ngày nghỉ thì làm gì
+	createHandle: any
+	// lọc theo tháng, năm
+	dateFilter: Date
 }
 
-export default function CheckAttendance({ count, attendances, leaveDates}: ICheckAttendance) {
+export default function CheckAttendance({
+	countDate,
+	attendances,
+	leaveDates,
+	createHandle,
+	dateFilter,
+}: ICheckAttendance) {
 	const [dates, setDates] = useState<number[]>([])
-	const [now, setNow] = useState<number>(new Date().getDate())
+	const [now, setNow] = useState<Date>(new Date())
 
 	useEffect(() => {
-		if (count) {
+		if (countDate) {
 			const data = []
-			for (let index = 1; index <= count; index++) {
+			for (let index = 1; index <= countDate; index++) {
 				data.push(index)
 			}
 			setDates(data)
 		}
-	}, [count])
+	}, [countDate])
 
-	if (!attendances || attendances.length == 0) {
-		return (
-			<>
-				{dates.map((date) => {
-					if (date <= now) {
-						return (
-							<IconButton
-								key={date}
-								h={'30px'}
-								minW={'30px'}
-								bg={'gray.200'}
-								color={'gray.500'}
-								icon={<IoMdClose />}
-								aria-label="Search database"
-							/>
-						)
-					}
-					return (
-						<IconButton
-							key={date}
-							h={'30px'}
-							minW={'30px'}
-							variant={'link'}
-							icon={<BsDash />}
-							aria-label="Search database"
-							disabled
-						/>
-					)
-				})}
-			</>
-		)
-	}
 	return (
 		<>
 			{dates.map((date) => {
-				const checkAttendance = attendances.find((attendance) => {
-					if (attendance.date == date) return attendance
-				}) as ICheckAttendace
+				const checkAttendance = attendances?.find((attendance) => {
+					return new Date(attendance.date).getDate() == date
+				}) as IAttendance
 
-				const checkLeave = leaveDates.some( function (value){
-					return date == value.date 
-				})
+				const checkLeave = leaveDates
+					? leaveDates.some(function (value) {
+							const leaveDate = new Date(value.date)
+							return date == leaveDate.getDate() &&
+										   leaveDate.getMonth() == dateFilter.getMonth() &&
+										   leaveDate.getFullYear() == dateFilter.getFullYear()
+					  })
+					: []
+				
+				// leave
 
 				if (checkLeave) {
 					return (
 						<HStack
+							key={date}
 							h={'30px'}
 							minW={'30px'}
 							bg={'hu-Pink.lightA'}
-                            userSelect={'all'}
+							userSelect={'all'}
 							color={'hu-Pink.normalA'}
 							aria-label="Search database"
-                            borderRadius={'5px'}
-                            justifyContent={'center'}
+							borderRadius={'5px'}
+							justifyContent={'center'}
 						>
-                            <IoAirplaneOutline />
-                        </HStack>
+							<IoAirplaneOutline />
+						</HStack>
 					)
 				}
 
+				// users attended
 				if (checkAttendance) {
 					return (
 						<IconButton
+							onClick={checkAttendance.handle}
 							key={date}
 							h={'30px'}
 							minW={'30px'}
@@ -100,9 +91,24 @@ export default function CheckAttendance({ count, attendances, leaveDates}: IChec
 						/>
 					)
 				}
-				if (date <= now)
+
+				// not attendance
+				if (
+					dateFilter.getFullYear() <= now.getFullYear() &&
+					dateFilter.getMonth() < now.getMonth()
+				) {
 					return (
 						<IconButton
+							key={date}
+							onClick={() => {
+								createHandle(
+									new Date().setFullYear(
+										dateFilter.getFullYear(),
+										dateFilter.getMonth(),
+										date
+									)
+								)
+							}}
 							h={'30px'}
 							minW={'30px'}
 							bg={'gray.200'}
@@ -111,8 +117,38 @@ export default function CheckAttendance({ count, attendances, leaveDates}: IChec
 							aria-label="Search database"
 						/>
 					)
+				}
+
+				// now
+				if (
+					date <= now.getDate() &&
+					dateFilter.getFullYear() <= now.getFullYear() &&
+					dateFilter.getMonth() <= now.getMonth()
+				)
+					return (
+						<IconButton
+							key={date}
+							onClick={() => {
+								createHandle(
+									new Date().setFullYear(
+										dateFilter.getFullYear(),
+										dateFilter.getMonth(),
+										date
+									)
+								)
+							}}
+							h={'30px'}
+							minW={'30px'}
+							bg={'gray.200'}
+							color={'gray.500'}
+							icon={<IoMdClose />}
+							aria-label="Search database"
+						/>
+					)
+
 				return (
 					<IconButton
+						key={date}
 						h={'30px'}
 						minW={'30px'}
 						variant={'link'}

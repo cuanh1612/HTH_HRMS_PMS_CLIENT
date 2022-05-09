@@ -96,3 +96,11 @@ export const CreateSignatureValidate = yup.object({
 export const createConversationValidate = yup.object({
 	user_two: yup.string().required('Please select other employee to create conversation'),
 })
+
+export const createEventValidate = yup.object({
+	name: yup.string().required('Please enter field name event'),
+	color: yup.string().required('Please enter field color'),
+	where: yup.string().required('Please enter field where'),
+	// starts_on_date: yup.date().required('Please sele3ct start on date event'),
+	// ends_on_date: yup.string().required('Please enter field end on date event'),
+})

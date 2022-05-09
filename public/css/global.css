@@ -219,3 +219,9 @@ td.fc-day-today {
     overflow:hidden;
     text-overflow:ellipsis;
 }
+
+/* css for select many */
+.css-1s2u09g-control{
+    border: 1px solid #E2E8F0!important;
+    min-height: 2.5rem!important;
+}

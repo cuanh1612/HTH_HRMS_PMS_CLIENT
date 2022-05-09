@@ -72,6 +72,7 @@ export default function PublickContract({}: IPublickContractProps) {
 
 	//Query ------------------------------------------------------------
 	const { data: dataDetailContract, mutate: refetchDetailContract } = detailContractQuery(
+		isAuthenticated,
 		Number(contractId)
 	)
 

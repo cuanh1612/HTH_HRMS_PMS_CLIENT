@@ -285,3 +285,18 @@ export type createContractFileForm = {
 	}[]
 	contract: number
 }
+
+export type createEventForm = {
+	clientEmails: string[],
+	employeeEmails: string[],
+	repeatEvery?: number,
+	typeRepeat: "Day" | "Week" | "Month" | "Year",
+	cycles?: number,
+	isRepeat: boolean,
+	starts_on_date: Date,
+	ends_on_date: Date,
+	name: string,
+	color: string,
+	where: string,
+	description: string
+}

@@ -2,7 +2,7 @@ import { attendanceMutaionResponse, clientMutaionResponse } from "type/mutationR
 import { getData } from "utils/fetchData"
 
 //Function handle get all attendance
-export async function allAttendancesRequest(url: string) {
+export async function allAttendancesRequest(url: any) {
 	const resultFetch = await getData<attendanceMutaionResponse>({
 		url: `http://localhost:4000/api/${url}`,
 	})

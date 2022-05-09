@@ -96,3 +96,8 @@ export const CreateSignatureValidate = yup.object({
 export const createConversationValidate = yup.object({
 	user_two: yup.string().required('Please select other employee to create conversation'),
 })
+
+export const AttendanceValidate = yup.object({
+	clockIn: yup.string().required('Please, enter clock in'),
+	clockOut: yup.string().required('Please, enter clock out'),
+})

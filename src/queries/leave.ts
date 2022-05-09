@@ -14,9 +14,9 @@ export const detailLeaveQuery = (leaveId: number | string | null | undefined) =>
 	)
 }
 
-export const allLeaveQuery = (isAuthenticated: boolean | null) => {
+export const allLeaveQuery = (isAuthenticated: boolean | null, date?: Date) => {
 	return useSWR<leaveMutaionResponse, AxiosError>(
-		isAuthenticated ? `leaves` : null,
+		isAuthenticated ? (date ?  `leaves?date=${date.toLocaleString()}`: 'leaves') : null,
 		allLeavesRequest,
 		{
 			errorRetryCount: 2,

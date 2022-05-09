@@ -276,3 +276,19 @@ export interface createSignatureForm {
 	public_id: string
 	contract: number
 }
+
+export interface ITimePicker {
+	required: boolean
+	name: string
+	placeholder: string
+	now?: boolean
+	label: string
+}
+
+export type AttendanceForm = {
+	clockIn: string
+	clockOut: string
+	late: boolean
+	halfDay: boolean
+	workingFrom: string
+}

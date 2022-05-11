@@ -14,6 +14,7 @@ import { Input } from 'components/form/Input'
 import { InputNumber } from 'components/form/InputNumber'
 import { Select } from 'components/form/Select'
 import SelectMany from 'components/form/SelectMany'
+import TimePicker from 'components/form/TimePicker'
 import Loading from 'components/Loading'
 import { AuthContext } from 'contexts/AuthContext'
 import { createEventMutation } from 'mutations/event'
@@ -150,6 +151,8 @@ export default function AddEvent({ onCloseDrawer }: IAddEventProps) {
 			repeatEvery: 1,
 			cycles: 1,
 			typeRepeat: undefined,
+			starts_on_time: '',
+			ends_on_time: '',
 		},
 		resolver: yupResolver(createEventValidate),
 	})
@@ -280,7 +283,12 @@ export default function AddEvent({ onCloseDrawer }: IAddEventProps) {
 					</GridItem>
 
 					<GridItem w="100%" colSpan={[2, 1]}>
-
+						<TimePicker
+							form={formSetting}
+							name={'starts_on_time'}
+							label={'Starts On Time'}
+							required
+						/>
 					</GridItem>
 
 					<GridItem w="100%" colSpan={[2, 1]}>
@@ -290,6 +298,15 @@ export default function AddEvent({ onCloseDrawer }: IAddEventProps) {
 							icon={<BsCalendarDate fontSize={'20px'} color="gray" opacity={0.6} />}
 							form={formSetting}
 							type="date"
+							required
+						/>
+					</GridItem>
+
+					<GridItem w="100%" colSpan={[2, 1]}>
+						<TimePicker
+							form={formSetting}
+							name={'ends_on_time'}
+							label={'Ends On Time'}
 							required
 						/>
 					</GridItem>

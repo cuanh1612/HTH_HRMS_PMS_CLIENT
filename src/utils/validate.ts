@@ -101,8 +101,8 @@ export const createEventValidate = yup.object({
 	name: yup.string().required('Please enter field name event'),
 	color: yup.string().required('Please enter field color'),
 	where: yup.string().required('Please enter field where'),
-	// starts_on_date: yup.date().required('Please sele3ct start on date event'),
-	// ends_on_date: yup.string().required('Please enter field end on date event'),
+	starts_on_date: yup.date().required('Please sele3ct start on date event'),
+	ends_on_date: yup.string().required('Please enter field end on date event'),
 })
 
 export const AttendanceValidate = yup.object({

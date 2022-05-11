@@ -7,13 +7,14 @@ import {
 	GridItem,
 	HStack,
 	Text,
-	VStack,
+	VStack
 } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Input } from 'components/form/Input'
 import { InputNumber } from 'components/form/InputNumber'
 import { Select } from 'components/form/Select'
 import SelectMany from 'components/form/SelectMany'
+import Loading from 'components/Loading'
 import { AuthContext } from 'contexts/AuthContext'
 import { createEventMutation } from 'mutations/event'
 import dynamic from 'next/dynamic'
@@ -23,6 +24,7 @@ import { allEmployeesQuery } from 'queries/employee'
 import { useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { AiOutlineBgColors, AiOutlineCheck } from 'react-icons/ai'
+import { BsCalendarDate } from 'react-icons/bs'
 import { MdOutlineDriveFileRenameOutline, MdPlace } from 'react-icons/md'
 import 'react-quill/dist/quill.bubble.css'
 import 'react-quill/dist/quill.snow.css'
@@ -141,8 +143,8 @@ export default function AddEvent({ onCloseDrawer }: IAddEventProps) {
 			name: '',
 			color: '#FF0000',
 			where: '',
-			// starts_on_date: undefined,
-			// ends_on_date: undefined,
+			starts_on_date: undefined,
+			ends_on_date: undefined,
 			employeeEmails: [],
 			clientEmails: [],
 			repeatEvery: 1,
@@ -166,9 +168,12 @@ export default function AddEvent({ onCloseDrawer }: IAddEventProps) {
 			if (!isRepeatEvent) {
 				values.repeatEvery = undefined
 				values.cycles = undefined
+			} else if (values.repeatEvery && values.cycles) {
+				values.repeatEvery = Number(values.repeatEvery)
+				values.cycles = Number(values.cycles)
 			}
 
-			console.log(values)
+			mutateCreEvent(values)
 		}
 	}
 
@@ -263,6 +268,32 @@ export default function AddEvent({ onCloseDrawer }: IAddEventProps) {
 						</VStack>
 					</GridItem>
 
+					<GridItem w="100%" colSpan={[2, 1]}>
+						<Input
+							name="starts_on_date"
+							label="Start On Date"
+							icon={<BsCalendarDate fontSize={'20px'} color="gray" opacity={0.6} />}
+							form={formSetting}
+							type="date"
+							required
+						/>
+					</GridItem>
+
+					<GridItem w="100%" colSpan={[2, 1]}>
+
+					</GridItem>
+
+					<GridItem w="100%" colSpan={[2, 1]}>
+						<Input
+							name="ends_on_date"
+							label="Ends On Date"
+							icon={<BsCalendarDate fontSize={'20px'} color="gray" opacity={0.6} />}
+							form={formSetting}
+							type="date"
+							required
+						/>
+					</GridItem>
+
 					<GridItem w="100%" colSpan={[2]}>
 						<SelectMany
 							form={formSetting}
@@ -341,6 +372,8 @@ export default function AddEvent({ onCloseDrawer }: IAddEventProps) {
 				>
 					Save
 				</Button>
+
+				{statusCreEvent === 'running' && <Loading />}
 			</Box>
 		</>
 	)

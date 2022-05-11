@@ -319,3 +319,20 @@ export type createEventForm = {
 	starts_on_time: string,
 	ends_on_time: string
 }
+
+export type updateEventForm = {
+	clientEmails: string[],
+	employeeEmails: string[],
+	repeatEvery?: number,
+	typeRepeat: "Day" | "Week" | "Month" | "Year",
+	cycles?: number,
+	isRepeat: boolean,
+	starts_on_date: Date,
+	ends_on_date: Date,
+	name: string,
+	color: string,
+	where: string,
+	description: string,
+	starts_on_time: string,
+	ends_on_time: string
+}

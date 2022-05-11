@@ -356,20 +356,7 @@ const attendance: NextLayout = () => {
 					</ModalContent>
 				</Modal>
 
-				<Modal isOpen={!isOpenDetail} onClose={onCloseDetail}>
-					<ModalOverlay />
-					<ModalContent>
-						<ModalHeader>Check attendance</ModalHeader>
-						<ModalCloseButton />
-						<ModalBody></ModalBody>
-						<ModalFooter>
-							<Button colorScheme="red" variant={'ghost'} mr={3} onClick={onCloseDetail}>
-								Close
-							</Button>
-							<Button variant="ghost">Secondary Action</Button>
-						</ModalFooter>
-					</ModalContent>
-				</Modal>
+				
 			</VStack>
 		</>
 	)

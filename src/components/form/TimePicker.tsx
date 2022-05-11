@@ -68,6 +68,7 @@ const TimePicker = ({
 			let timeChange = new Date(
 				new Date().setHours(hours.valueAsNumber, minutes.valueAsNumber, 0, 0)
 			).toLocaleTimeString()
+			timeChange = timeChange.split(' ')[1] ? timeChange : timeChange +" AM"
 			timeChange = timeChange.replace('AM', MorE)
 			timeChange = timeChange.replace('PM', MorE)
 			console.log(timeChange)

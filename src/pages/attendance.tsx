@@ -31,51 +31,89 @@ import { IAttendance } from 'type/element/commom'
 import { NextLayout } from 'type/element/layout'
 import { AttendanceForm } from 'type/form/basicFormType'
 import { AttendanceValidate } from 'utils/validate'
+import { compareTime } from 'utils/time'
+import { createAttendanceMutation } from 'mutations/attendance'
 
 const attendance: NextLayout = () => {
-	// setForm and submit form ----------------------------------------------------------
-	const formSetting = useForm<AttendanceForm>({
-		defaultValues: {
-			late: false,
-			halfDay: false,
-			workingFrom: '',
-			clockIn: '',
-			clockOut: ''
-		},
-		resolver: yupResolver(AttendanceValidate),
-	})
-
-	const { handleSubmit } = formSetting
-
-	const onSubmit = (values: AttendanceForm) => {
-		console.log(values)
-	}
-
 	const router = useRouter()
 
 	// get date to filter
 	const [dateFilter, setDateFilter] = useState(new Date())
-	
-	const { isAuthenticated, handleLoading } = useContext(AuthContext)
+
+	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
 	// get all attendance
-	const { data: allAttendances } = allAttendancesQuery(isAuthenticated, dateFilter)
+	const { data: allAttendances, mutate: refetchAttendances } = allAttendancesQuery(
+		isAuthenticated,
+		dateFilter
+	)
 	// get all leaves
 	const { data: allLeaves } = allLeaveQuery(isAuthenticated, dateFilter)
 	// get last day
 	const [lastDate, setLastDate] = useState(0)
+	const [inClockInit, setInClockInit] = useState<Date | null>(null)
+	const [outClockInit, setOutClockInit] = useState<Date | null>(null)
 
 	// set open modal to check attendance
-	const { isOpen, onOpen, onClose } = useDisclosure()
-	
+	const { isOpen: isOpenInsert, onOpen: onOpenInsert, onClose: onCloseInsert } = useDisclosure()
+
+	// set open modal to check attendance
+	const { isOpen: isOpenDetail, onOpen: onOpenDetail, onClose: onCloseDetail } = useDisclosure()
+
 	// get info user to check attendance
 	const [user, setUser] = useState<{
 		id: number
 		name: string
 		avatar: string
 		designation: string
-		date: number
+		date: Date
 	}>()
 
+	// setForm and submit form ----------------------------------------------------------
+	const formSetting = useForm<AttendanceForm>({
+		defaultValues: {
+			late: false,
+			half_day: false,
+			working_from: '',
+			clock_in_time: '',
+			clock_out_time: '',
+		},
+		resolver: yupResolver(AttendanceValidate),
+	})
+
+	const { handleSubmit } = formSetting
+
+	// add or update attendance
+	const [mutateCorUAttendance, { status, data: dataAttendance }] =
+		createAttendanceMutation(setToast)
+
+	const onSubmit = (values: AttendanceForm) => {
+		const isOutLessInClock = compareTime(values.clock_in_time, values.clock_out_time)
+		if (isOutLessInClock) {
+			setToast({
+				type: 'error',
+				msg: 'Clock-out time cannot be less than clock-in time',
+			})
+		}
+
+		const data: AttendanceForm = {
+			...values,
+			date: user?.date,
+			employee: user?.id,
+		}
+
+		mutateCorUAttendance(data)
+	}
+
+	useEffect(() => {
+		if (status == 'success') {
+			setToast({
+				type: 'success',
+				msg: String(dataAttendance?.message),
+			})
+			refetchAttendances()
+			onCloseInsert()
+		}
+	}, [status])
 	// check authenticate
 	useEffect(() => {
 		if (isAuthenticated) {
@@ -97,13 +135,17 @@ const attendance: NextLayout = () => {
 
 	return (
 		<>
-			<select onChange={(event)=> {
-				if(Number(event.target.value) == 0) {
-					setDateFilter(new Date())
-				} else {
-					setDateFilter(date => new Date(date.setMonth(Number(event.target.value) - 1 )))
-				}
-			}}>
+			<select
+				onChange={(event) => {
+					if (Number(event.target.value) == 0) {
+						setDateFilter(new Date())
+					} else {
+						setDateFilter(
+							(date) => new Date(date.setMonth(Number(event.target.value) - 1))
+						)
+					}
+				}}
+			>
 				<option value={0}>now</option>
 				<option value={1}>1</option>
 				<option value={2}>2</option>
@@ -118,6 +160,23 @@ const attendance: NextLayout = () => {
 				<option value={11}>11</option>
 				<option value={12}>12</option>
 			</select>
+			<select
+				onChange={(event) => {
+					if (Number(event.target.value) == 0) {
+						setDateFilter(new Date())
+					} else {
+						setDateFilter(
+							(date) => new Date(date.setFullYear(Number(event.target.value)))
+						)
+					}
+				}}
+			>
+				<option value={new Date().getFullYear()}>{new Date().getFullYear()}</option>
+				<option value={new Date().getFullYear() - 1}>{new Date().getFullYear() - 1}</option>
+				<option value={new Date().getFullYear() - 2}>{new Date().getFullYear() - 2}</option>
+				<option value={new Date().getFullYear() - 3}>{new Date().getFullYear() - 3}</option>
+				<option value={new Date().getFullYear() - 4}>{new Date().getFullYear() - 4}</option>
+			</select>
 			<VStack paddingBottom={'25px'} spacing={5} alignItems={'start'} overflow={'auto'}>
 				<HStack spacing={10} alignItems="center" justifyContent={'space-between'}>
 					<HStack spacing={10}>
@@ -131,7 +190,7 @@ const attendance: NextLayout = () => {
 							Employees
 						</Text>
 						<HStack spacing={5}>
-							<Dates countDate ={lastDate} />
+							<Dates countDate={lastDate} />
 						</HStack>
 					</HStack>
 					<Text
@@ -151,7 +210,8 @@ const attendance: NextLayout = () => {
 							id: attendance.id,
 							date: attendance.date,
 							handle: () => {
-								alert('nguyen quang hoang')
+								console.log(attendance.clock_in_time)
+								console.log(attendance.clock_out_time)
 							},
 							id_Employee: employee.id,
 						})
@@ -181,7 +241,7 @@ const attendance: NextLayout = () => {
 								</HStack>
 								<HStack spacing={5}>
 									<CheckAttendance
-										createHandle={(date: number) => {
+										createHandle={(date: Date) => {
 											setUser({
 												id: employee.id,
 												avatar: employee.avatar?.url as string,
@@ -189,7 +249,7 @@ const attendance: NextLayout = () => {
 												name: employee.name,
 												date,
 											})
-											onOpen()
+											onOpenInsert()
 										}}
 										countDate={lastDate}
 										attendances={attendances}
@@ -216,10 +276,16 @@ const attendance: NextLayout = () => {
 					)
 				})}
 
-				<Modal isOpen={isOpen} onClose={onClose}>
+				{/* open modal to add or update attendance */}
+				<Modal isOpen={isOpenInsert} onClose={onCloseInsert}>
 					<ModalOverlay />
 					<ModalContent>
-						<ModalHeader>Check attendance</ModalHeader>
+						<ModalHeader>
+							Check attendance{' '}
+							<Text as="span" fontWeight={'normal'}>
+								{user && new Date(user.date).toLocaleDateString()}
+							</Text>
+						</ModalHeader>
 						<ModalCloseButton />
 						<ModalBody>
 							<VStack
@@ -231,10 +297,14 @@ const attendance: NextLayout = () => {
 							>
 								{user && (
 									<>
-										<HStack minW={'200px'} spacing={3}>
+										<HStack
+											minW={'200px'}
+											alignItems={'flex-start'}
+											spacing={3}
+										>
 											<Avatar name={user.name} src={user.avatar} />
 											<Box w={'full'}>
-												<Text>{user.name}</Text>
+												<Text fontWeight={'semibold'}>{user.name}</Text>
 												<Text color={'gray'} fontSize={'14px'}>
 													{user.designation}
 												</Text>
@@ -244,16 +314,14 @@ const attendance: NextLayout = () => {
 											<TimePicker
 												form={formSetting}
 												label="Clock in"
-												name={'clockIn'}
+												name={'clock_in_time'}
 												required={true}
-												date={user.date}
 											/>
 											<TimePicker
 												form={formSetting}
 												label="Clock out"
-												name={'clockOut'}
+												name={'clock_out_time'}
 												required={true}
-												date={user.date}
 											/>
 										</HStack>
 									</>
@@ -262,23 +330,43 @@ const attendance: NextLayout = () => {
 								<Input
 									placeholder="e.g. Office, Home, etc."
 									label={'Working from'}
-									name={'workingFrom'}
+									name={'working_from'}
 									form={formSetting}
 								/>
 								<HStack spacing={5}>
 									<Switch form={formSetting} name="late" label="Late" />
-									<Switch form={formSetting} name="halfDay" label="Half day" />
+									<Switch form={formSetting} name="half_day" label="Half day" />
 								</HStack>
 							</VStack>
 						</ModalBody>
 
 						<ModalFooter>
-							<Button colorScheme="red" variant={'ghost'} mr={3} onClick={onClose}>
+							<Button
+								colorScheme="red"
+								variant={'ghost'}
+								mr={3}
+								onClick={onCloseInsert}
+							>
 								Close
 							</Button>
 							<Button form="attendance" type="submit" colorScheme={'green'}>
 								Save
 							</Button>
+						</ModalFooter>
+					</ModalContent>
+				</Modal>
+
+				<Modal isOpen={!isOpenDetail} onClose={onCloseDetail}>
+					<ModalOverlay />
+					<ModalContent>
+						<ModalHeader>Check attendance</ModalHeader>
+						<ModalCloseButton />
+						<ModalBody></ModalBody>
+						<ModalFooter>
+							<Button colorScheme="red" variant={'ghost'} mr={3} onClick={onCloseDetail}>
+								Close
+							</Button>
+							<Button variant="ghost">Secondary Action</Button>
 						</ModalFooter>
 					</ModalContent>
 				</Modal>

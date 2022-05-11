@@ -277,7 +277,6 @@ export interface createSignatureForm {
 	contract: number
 }
 
-<<<<<<< HEAD
 export interface ITimePicker {
 	required: boolean
 	name: string
@@ -287,12 +286,14 @@ export interface ITimePicker {
 }
 
 export type AttendanceForm = {
-	clockIn: string
-	clockOut: string
+	clock_in_time: string
+	clock_out_time: string
 	late: boolean
-	halfDay: boolean
-	workingFrom: string
-=======
+	half_day: boolean
+	working_from: string
+	[index: string]: any
+}
+
 export type createContractFileForm = {
 	files: {
 		name: string
@@ -300,5 +301,4 @@ export type createContractFileForm = {
 		url: string
 	}[]
 	contract: number
->>>>>>> dc5aea6828ba1cfe35f7815babc881a17c4f1772
 }

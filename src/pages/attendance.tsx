@@ -356,7 +356,34 @@ const attendance: NextLayout = () => {
 					</ModalContent>
 				</Modal>
 
-				
+				<Modal isOpen={!isOpenDetail} onClose={onCloseDetail}>
+					<ModalOverlay />
+					<ModalContent>
+						<ModalHeader>
+							Detail{' '}
+							<Text as="span" fontWeight={'normal'}>
+								{user && new Date(user.date).toLocaleDateString()}
+							</Text>{' '}
+						</ModalHeader>
+						<ModalCloseButton />
+						<ModalBody>
+							
+						</ModalBody>
+						<ModalFooter>
+							<Button
+								colorScheme="red"
+								variant={'ghost'}
+								mr={3}
+								onClick={onCloseDetail}
+							>
+								Close
+							</Button>
+							<Button bg={'hu-Green.normal'} color={'white'}>
+								Update
+							</Button>
+						</ModalFooter>
+					</ModalContent>
+				</Modal>
 			</VStack>
 		</>
 	)

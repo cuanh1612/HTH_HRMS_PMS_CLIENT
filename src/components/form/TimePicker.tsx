@@ -70,6 +70,7 @@ const TimePicker = ({
 			).toLocaleTimeString()
 			timeChange = timeChange.replace('AM', MorE)
 			timeChange = timeChange.replace('PM', MorE)
+			console.log(timeChange)
 			form.setValue(name, timeChange)
 		}
 	}, [hours, minutes, MorE])

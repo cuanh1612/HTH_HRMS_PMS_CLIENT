@@ -106,6 +106,6 @@ export const createEventValidate = yup.object({
 })
 
 export const AttendanceValidate = yup.object({
-	clockIn: yup.string().required('Please, enter clock in'),
-	clockOut: yup.string().required('Please, enter clock out'),
+	clock_in_time: yup.string().required('Please, enter clock in'),
+	clock_out_time: yup.string().required('Please, enter clock out'),
 })

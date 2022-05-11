@@ -50,12 +50,14 @@ export default function CheckAttendance({
 				const checkLeave = leaveDates
 					? leaveDates.some(function (value) {
 							const leaveDate = new Date(value.date)
-							return date == leaveDate.getDate() &&
-										   leaveDate.getMonth() == dateFilter.getMonth() &&
-										   leaveDate.getFullYear() == dateFilter.getFullYear()
+							return (
+								date == leaveDate.getDate() &&
+								leaveDate.getMonth() == dateFilter.getMonth() &&
+								leaveDate.getFullYear() == dateFilter.getFullYear()
+							)
 					  })
 					: []
-				
+
 				// leave
 
 				if (checkLeave) {
@@ -80,7 +82,16 @@ export default function CheckAttendance({
 				if (checkAttendance) {
 					return (
 						<IconButton
-							onClick={checkAttendance.handle}
+							onClick={() => {
+								createHandle(
+									new Date().setFullYear(
+										dateFilter.getFullYear(),
+										dateFilter.getMonth(),
+										date
+									)
+								)
+								checkAttendance.handle()
+							}}
 							key={date}
 							h={'30px'}
 							minW={'30px'}
@@ -121,9 +132,11 @@ export default function CheckAttendance({
 
 				// now
 				if (
-					date <= now.getDate() &&
-					dateFilter.getFullYear() <= now.getFullYear() &&
-					dateFilter.getMonth() <= now.getMonth()
+					(date <= now.getDate() &&
+						dateFilter.getFullYear() <= now.getFullYear() &&
+						dateFilter.getMonth() <= now.getMonth()) ||
+					(dateFilter.getFullYear() < now.getFullYear() &&
+						dateFilter.getMonth() <= now.getMonth())
 				)
 					return (
 						<IconButton

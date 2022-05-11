@@ -1,173 +1,129 @@
+<<<<<<< HEAD
+import {
+	clientCategoryType,
+	clientSubCategoryType,
+	clientType,
+	contractFileType,
+	contractType,
+	contractTypeType,
+	conversationReplyType,
+	conversationType,
+	departmentType,
+	designationType,
+	discussionType,
+	employeeType,
+	holidayType,
+	leaveType,
+	leaveTypeType,
+	signType,
+	userType,
+} from './basicTypes'
+=======
 import { clientCategoryType, clientSubCategoryType, clientType, contractFileType, contractType, contractTypeType, conversationReplyType, conversationType, departmentType, designationType, discussionType, employeeType, eventType, holidayType, leaveType, leaveTypeType, signType, userType } from './basicTypes'
+>>>>>>> bc4da05639d3732adcaccc153fd9ee2995fd9f2f
 
-export interface authMutaionResponse {
+export interface commonResponse {
 	code: number
 	success: boolean
 	message: string
+	[index: string]: any
+}
+
+export interface authMutaionResponse extends commonResponse {
 	user?: employeeType
 	accessToken?: string
-	[index: string]: any
 }
 
-export interface userMutaionResponse {
-	code: number
-	success: boolean
-	message: string
+export interface userMutaionResponse extends commonResponse {
 	user?: userType
 	users?: userType[]
-	[index: string]: any
 }
 
-export interface employeeMutaionResponse {
-	code: number
-	success: boolean
-	message: string
+export interface employeeMutaionResponse extends commonResponse {
 	employee?: employeeType
 	employees?: employeeType[]
-	[index: string]: any
 }
 
-export interface leaveTypeMutaionResponse {
-	code: number
-	success: boolean
-	message: string
+export interface leaveTypeMutaionResponse extends commonResponse {
 	leaveType?: leaveTypeType
 	leaveTypes?: leaveTypeType[]
-	[index: string]: any
 }
 
-export interface leaveMutaionResponse {
-	code: number
-	success: boolean
-	message: string
+export interface leaveMutaionResponse extends commonResponse {
 	leave?: leaveType
 	leaves?: leaveType[]
-	[index: string]: any
 }
 
-export interface signMutationResponse {
-	code: number
-	success: boolean
-	message: string
+export interface signMutationResponse extends commonResponse {
 	sign?: signType
 	signs?: signType[]
-	[index: string]: any
 }
 
-
-export interface DepartmentMutaionResponse {
-	code: number
-	success: boolean
-	message: string
+export interface DepartmentMutaionResponse extends commonResponse {
 	department?: departmentType
 	departments?: departmentType[]
-	[index: string]: any
 }
 
-export interface ConversationMutationResponse {
-	code: number
-	success: boolean
-	message: string
+export interface ConversationMutationResponse extends commonResponse {
 	conversation?: conversationType
 	conversations?: conversationType[]
-	[index: string]: any
 }
 
-export interface ConversationReplyMutationResponse {
-	code: number
-	success: boolean
-	message: string
+export interface ConversationReplyMutationResponse extends commonResponse {
 	reply?: conversationReplyType
 	replies: conversationReplyType[]
-	[index: string]: any
 }
 
-export interface DesignationMutaionResponse {
-	code: number
-	success: boolean
-	message: string
+export interface DesignationMutaionResponse extends commonResponse {
 	designation?: designationType
 	designations?: designationType[]
-	[index: string]: any
 }
 
-export interface DiscussionMutationResponse {
-	code: number
-	success: boolean
-	message: string
+export interface DiscussionMutationResponse extends commonResponse {
 	discussion?: discussionType
 	discussions?: discussionType[]
-	[index: string]: any
 }
 
-export interface ClientCategoryMutaionResponse {
-	code: number
-	success: boolean
-	message: string
+export interface ClientCategoryMutaionResponse extends commonResponse {
 	clientCategory?: clientCategoryType
 	clientCategories?: clientCategoryType[]
-	[index: string]: any
 }
 
-export interface ClientSubCategoryMutaionResponse {
-	code: number
-	success: boolean
-	message: string
+export interface ClientSubCategoryMutaionResponse extends commonResponse {
 	clientSubCategory?: clientSubCategoryType
 	clientSubCategories?: clientSubCategoryType[]
-	[index: string]: any
 }
 
 export interface attendanceMutaionResponse {
-	code: number
-	success: boolean
-	message: string
 	data: employeeType[]
-	[index: string]: any
 }
 
-export interface clientMutaionResponse {
-	code: number
-	success: boolean
-	message: string
+export interface clientMutaionResponse extends commonResponse {
 	client?: clientType
 	clients?: clientType[]
-	[index: string]: any
 }
 
-export interface holidayMutaionResponse {
-	code: number
-	success: boolean
-	message: string
+export interface holidayMutaionResponse extends commonResponse {
 	holiday?: holidayType
 	holidays?: holidayType[]
-	[index: string]: any
 }
 
-export interface contractMutaionResponse {
-	code: number
-	success: boolean
-	message: string
+export interface contractMutaionResponse extends commonResponse {
 	contract?: contractType
 	contracts?: contractType[]
-	[index: string]: any
 }
 
-export interface contractTypeMutaionResponse {
-	code: number
-	success: boolean
-	message: string
+export interface contractTypeMutaionResponse extends commonResponse {
 	contractType?: contractTypeType
 	contractTypes?: contractTypeType[]
-	[index: string]: any
 }
 
-export interface contractFileMutaionResponse {
-	code: number
-	success: boolean
-	message: string
+export interface contractFileMutaionResponse extends commonResponse {
 	contractFile?: contractFileType
 	contractFiles?: contractFileType[]
+<<<<<<< HEAD
+}
+=======
 	[index: string]: any
 }
 
@@ -179,3 +135,4 @@ export interface eventMutaionResponse {
 	events?: eventType[]
 	[index: string]: any
 }
+>>>>>>> bc4da05639d3732adcaccc153fd9ee2995fd9f2f

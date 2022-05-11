@@ -277,6 +277,26 @@ export interface createSignatureForm {
 	contract: number
 }
 
+<<<<<<< HEAD
+export interface ITimePicker {
+	required: boolean
+	name: string
+	placeholder: string
+	now?: boolean
+	label: string
+}
+
+export type AttendanceForm = {
+	clock_in_time: string
+	clock_out_time: string
+	late: boolean
+	half_day: boolean
+	working_from: string
+	[index: string]: any
+}
+
+=======
+>>>>>>> bc4da05639d3732adcaccc153fd9ee2995fd9f2f
 export type createContractFileForm = {
 	files: {
 		name: string
@@ -284,6 +304,8 @@ export type createContractFileForm = {
 		url: string
 	}[]
 	contract: number
+<<<<<<< HEAD
+=======
 }
 
 export type createEventForm = {
@@ -299,4 +321,5 @@ export type createEventForm = {
 	color: string,
 	where: string,
 	description: string
+>>>>>>> bc4da05639d3732adcaccc153fd9ee2995fd9f2f
 }

@@ -1,3 +1,5 @@
+import { ReactNode } from "react"
+
 export interface userType {
 	email: string
 	username: string
@@ -203,7 +205,7 @@ export interface contractFileType {
 
 export interface IOption {
 	value: string
-	label: string
+	label: string | ReactNode
 }
 
 // toast
@@ -213,4 +215,16 @@ export interface leaveDate {
 	id: number
 	id_employee: number
 	date: number
+}
+
+export interface eventType {
+	id: number
+	clients: clientType[]
+	employees: employeeType[]
+	starts_on_date: Date
+	ends_on_date: Date
+	name: string
+	color: string
+	where: string
+	description: string
 }

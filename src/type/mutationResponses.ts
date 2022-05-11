@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import {
 	clientCategoryType,
 	clientSubCategoryType,
@@ -17,6 +18,9 @@ import {
 	signType,
 	userType,
 } from './basicTypes'
+=======
+import { clientCategoryType, clientSubCategoryType, clientType, contractFileType, contractType, contractTypeType, conversationReplyType, conversationType, departmentType, designationType, discussionType, employeeType, eventType, holidayType, leaveType, leaveTypeType, signType, userType } from './basicTypes'
+>>>>>>> bc4da05639d3732adcaccc153fd9ee2995fd9f2f
 
 export interface commonResponse {
 	code: number
@@ -117,4 +121,18 @@ export interface contractTypeMutaionResponse extends commonResponse {
 export interface contractFileMutaionResponse extends commonResponse {
 	contractFile?: contractFileType
 	contractFiles?: contractFileType[]
+<<<<<<< HEAD
 }
+=======
+	[index: string]: any
+}
+
+export interface eventMutaionResponse {
+	code: number
+	success: boolean
+	message: string
+	event?: eventType
+	events?: eventType[]
+	[index: string]: any
+}
+>>>>>>> bc4da05639d3732adcaccc153fd9ee2995fd9f2f

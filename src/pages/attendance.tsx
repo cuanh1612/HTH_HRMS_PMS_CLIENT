@@ -52,8 +52,6 @@ const attendance: NextLayout = () => {
 	const { data: allLeaves } = allLeaveQuery(isAuthenticated, dateFilter)
 	// get last day
 	const [lastDate, setLastDate] = useState(0)
-	const [inClockInit, setInClockInit] = useState<ITime>()
-	const [outClockInit, setOutClockInit] = useState<ITime>()
 
 	// set open modal to check attendance
 	const { isOpen: isOpenInsert, onOpen: onOpenInsert, onClose: onCloseInsert } = useDisclosure()
@@ -222,10 +220,13 @@ const attendance: NextLayout = () => {
 							id: attendance.id,
 							date: attendance.date,
 							handle: (date: Date) => {
-								const inClock = setTime(attendance.clock_in_time)
-								const outClock = setTime(attendance.clock_out_time)
-								setInClockInit(inClock)
-								setOutClockInit(outClock)
+								formSetting.reset({
+									clock_in_time: attendance.clock_in_time,
+									clock_out_time: attendance.clock_out_time,
+									half_day: attendance.half_day,
+									working_from: attendance.working_from,
+								})
+
 								setUserHandle(date, employee)
 								onOpenDetail()
 							},
@@ -331,14 +332,14 @@ const attendance: NextLayout = () => {
 												label="Clock in"
 												name={'clock_in_time'}
 												required={true}
-												timeInit={inClockInit}
+												timeInit={formSetting.getValues()['clock_in_time']}
 											/>
 											<TimePicker
 												form={formSetting}
 												label="Clock out"
 												name={'clock_out_time'}
 												required={true}
-												timeInit={outClockInit}
+												timeInit={formSetting.getValues()['clock_out_time']}
 											/>
 										</HStack>
 									</>
@@ -400,11 +401,11 @@ const attendance: NextLayout = () => {
 									</Box>
 								</HStack>
 								<HStack spacing={5}>
-									<CInput readOnly value={inClockInit ? inClockInit.time : ''} />
+									{/* <CInput readOnly value={inClockInit ? inClockInit.time : ''} />
 									<CInput
 										readOnly
 										value={outClockInit ? outClockInit.time : ''}
-									/>
+									/> */}
 								</HStack>
 							</VStack>
 						</ModalBody>
@@ -417,10 +418,14 @@ const attendance: NextLayout = () => {
 							>
 								Close
 							</Button>
-							<Button bg={'hu-Green.normal'} onClick={()=> {
-								onCloseDetail()
-								onOpenInsert()
-							}} color={'white'}>
+							<Button
+								bg={'hu-Green.normal'}
+								onClick={() => {
+									onCloseDetail()
+									onOpenInsert()
+								}}
+								color={'white'}
+							>
 								Update
 							</Button>
 						</ModalFooter>

@@ -2,7 +2,6 @@ import {
 	HStack,
 	IconButton,
 	VStack,
-	useNumberInput,
 	Input,
 	Box,
 	FormControl,
@@ -29,8 +28,17 @@ const TimePicker = ({
 	timeInit,
 }: IInput & { form: UseFormReturn<any, any>; timeInit?: string }) => {
 	const errorColor = useColorModeValue('red.400', 'pink.400')
-
-	const [isSetInit, setIsSetInit] = useState(false)
+	const [timeInitCurrent, setTimeInitCurrent] = useState<string>()
+	const [hours, setHours] = useState({
+		value: 0,
+		min: 0,
+		max: 12,
+	})
+	const [minutes, setMinutes] = useState({
+		value: 0,
+		min: 0,
+		max: 59,
+	})
 
 	// create time
 	const [time, setTime] = useState<string>()
@@ -43,48 +51,82 @@ const TimePicker = ({
 		return setMorE('AM')
 	}
 
-	const hours = useNumberInput({
-		step: 1,
-		defaultValue: timeInit ? setTimeInit(timeInit).hours : 0,
-		max: 12,
-		min: 0,
-	})
+	useEffect(() => {
+		{
+			const result = `${hours.value >= 10 ? hours.value : '0' + hours.value}:${
+				minutes.value >= 10 ? minutes.value : '0' + minutes.value
+			} ${MorE}`
+			setTime(result)
+			if (hours && minutes) {
+				let timeChange = new Date(
+					new Date().setHours(hours.value, minutes.value, 0, 0)
+				).toLocaleTimeString()
+				timeChange = timeChange.split(' ')[1] ? timeChange : timeChange + ' AM'
+				timeChange = timeChange.replace('AM', MorE)
+				timeChange = timeChange.replace('PM', MorE)
 
-	const incHours = hours.getIncrementButtonProps()
-	const decHours = hours.getDecrementButtonProps()
-	const inputHours = hours.getInputProps()
-
-	const minutes = useNumberInput({
-		step: 1,
-		defaultValue: timeInit ? setTimeInit(timeInit).minutes : 0,
-		max: 59,
-		min: 0,
-	})
-	const incMinutes = minutes.getIncrementButtonProps()
-	const decMinutes = minutes.getDecrementButtonProps()
-	const inputMinutes = minutes.getInputProps()
+				form.setValue(name, timeChange)
+			}
+		}
+	}, [hours, minutes, MorE])
 
 	useEffect(() => {
-		const result = `${hours.valueAsNumber >= 10 ? hours.value : '0' + hours.value}:${
-			minutes.valueAsNumber >= 10 ? minutes.value : '0' + minutes.value
-		} ${MorE}`
-		isSetInit && timeInit ? setTime(setTimeInit(timeInit).time) : setTime(result)
-		if (hours && minutes) {
-			let timeChange = new Date(
-				new Date().setHours(hours.valueAsNumber, minutes.valueAsNumber, 0, 0)
-			).toLocaleTimeString()
-			timeChange = timeChange.split(' ')[1] ? timeChange : timeChange + ' AM'
-			timeChange = timeChange.replace('AM', MorE)
-			timeChange = timeChange.replace('PM', MorE)
+		const checkTimeInit = timeInit?.split(' ').find((e) => {
+			return e == ('AM' || 'PM')
+		})
+		if (!checkTimeInit) {
+			setTimeInitCurrent(timeInit)
+		}
+	}, [timeInit])
 
-			form.setValue(name, isSetInit && timeInit ? setTimeInit(timeInit).time : timeChange)
+	useEffect(() => {
+		if (timeInitCurrent) {
+			const infoTimeInit = setTimeInit(timeInitCurrent)
+			setHours((state) => ({
+				...state,
+				value: infoTimeInit.hours,
+			}))
+
+			setMinutes((state) => ({
+				...state,
+				value: infoTimeInit.minutes,
+			}))
+
+			setMorE(infoTimeInit.AMOrPM)
 		}
-		if (isSetInit && timeInit) {
-			setMorE(setTimeInit(timeInit).AMOrPM)
-		}
-	}, [hours, minutes, MorE, form.getValues()[name]])
+	}, [timeInitCurrent])
 
 	const { onToggle, onOpen, isOpen, onClose } = useDisclosure()
+
+	const getVlFutureHorM = (status: number, time: any) => {
+		if (status == 1) {
+			if (time.value < time.max) {
+				return time.value + 1
+			}
+		} else {
+			if (time.value > time.min) {
+				return time.value - 1
+			}
+		}
+	}
+
+	const setHoursHandle = (value?: number) => {
+		if (value) {
+			setHours((state) => ({
+				...state,
+				value,
+			}))
+		}
+	}
+
+	const setMinutesHandle = (value?: number) => {
+		if (value) {
+			setMinutes((state) => ({
+				...state,
+				value,
+			}))
+		}
+	}
 
 	return (
 		<Controller
@@ -123,13 +165,26 @@ const TimePicker = ({
 						>
 							<VStack>
 								<IconButton
-									{...incHours}
+									onClick={() => {
+										const value = getVlFutureHorM(1, hours)
+										setHoursHandle(value)
+									}}
+									disabled={hours.value == hours.max}
 									aria-label="tang"
 									icon={<MdOutlineExpandLess />}
 								/>
-								<Input {...inputHours} maxW={'40px'} p={0} textAlign={'center'} />
+								<Input
+									value={hours.value}
+									maxW={'40px'}
+									p={0}
+									textAlign={'center'}
+								/>
 								<IconButton
-									{...decHours}
+								disabled={hours.value == hours.min}
+									onClick={() => {
+										const value = getVlFutureHorM(-1, hours)
+										setHoursHandle(value)
+									}}
 									aria-label="tang"
 									icon={<MdOutlineExpandMore />}
 								/>
@@ -137,13 +192,26 @@ const TimePicker = ({
 							<Box>:</Box>
 							<VStack>
 								<IconButton
-									{...incMinutes}
 									aria-label="tang"
+									onClick={() => {
+										const value = getVlFutureHorM(1, minutes)
+										setMinutesHandle(value)
+									}}
+									disabled={minutes.value == minutes.max}
 									icon={<MdOutlineExpandLess />}
 								/>
-								<Input {...inputMinutes} maxW={'40px'} p={0} textAlign={'center'} />
+								<Input
+									value={minutes.value}
+									maxW={'40px'}
+									p={0}
+									textAlign={'center'}
+								/>
 								<IconButton
-									{...decMinutes}
+								    disabled={minutes.value == minutes.min}
+									onClick={() => {
+										const value = getVlFutureHorM(-1, minutes)
+										setMinutesHandle(value)
+									}}
 									aria-label="tang"
 									icon={<MdOutlineExpandMore />}
 								/>

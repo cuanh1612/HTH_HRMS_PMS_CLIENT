@@ -14,11 +14,13 @@ export default function SelectMany({
 	form,
 	required = false,
 	options,
+	selectedOptions
 }: ISelect & { form: UseFormReturn<any, any> }) {
 	const errorColor = useColorModeValue('red.400', 'pink.400')
 
 	//Sate
 	const [optionSelects, setOptionSelects] = useState<string[]>([])
+	const [selectedOptionsState, setSelectedOptionsState] = useState<IOption[]>([])
 
 	//handle change select
 	const onChangeSelect = (options: IOption[]) => {
@@ -30,11 +32,19 @@ export default function SelectMany({
 		}
 
 		//Set state
+		setSelectedOptionsState(options)
 		setOptionSelects(newOptionSelects)
 
 		//Set value form select many
 		form.setValue(name, newOptionSelects)
 	}
+
+	//Set again sate when have data selected options select
+	useEffect(() => {
+		if(selectedOptions){
+			setSelectedOptionsState(selectedOptions)
+		}
+	}, [selectedOptions])
 
 	//Set value when change
 	useEffect(() => {
@@ -50,6 +60,7 @@ export default function SelectMany({
 
 				<Select
 					options={options}
+					value={selectedOptionsState}
 					closeMenuOnSelect={false}
 					components={animatedComponents}
 					isMulti

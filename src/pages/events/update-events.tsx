@@ -1,27 +1,15 @@
-import {
-	Avatar,
-	Box,
-	Button,
-	Checkbox,
-	Grid,
-	GridItem,
-	HStack,
-	Text,
-	VStack
-} from '@chakra-ui/react'
+import { Avatar, Box, Button, Grid, GridItem, HStack, Text, VStack } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Input } from 'components/form/Input'
-import { InputNumber } from 'components/form/InputNumber'
-import { Select } from 'components/form/Select'
 import SelectMany from 'components/form/SelectMany'
 import TimePicker from 'components/form/TimePicker'
 import Loading from 'components/Loading'
 import { AuthContext } from 'contexts/AuthContext'
-import { createEventMutation } from 'mutations/event'
+import { updateEventMutation } from 'mutations/event'
 import dynamic from 'next/dynamic'
-import { useRouter } from 'next/router'
 import { allClientsQuery } from 'queries/client'
 import { allEmployeesQuery } from 'queries/employee'
+import { detailEventQuery } from 'queries/event'
 import { useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { AiOutlineBgColors, AiOutlineCheck } from 'react-icons/ai'
@@ -29,29 +17,31 @@ import { BsCalendarDate } from 'react-icons/bs'
 import { MdOutlineDriveFileRenameOutline, MdPlace } from 'react-icons/md'
 import 'react-quill/dist/quill.bubble.css'
 import 'react-quill/dist/quill.snow.css'
-import { IOption } from 'type/basicTypes'
-import { createEventForm } from 'type/form/basicFormType'
-import { dataTypeRepeat } from 'utils/basicData'
-import { compareDateTime } from 'utils/time'
-import { createEventValidate } from 'utils/validate'
+import { IOption, ITime } from 'type/basicTypes'
+import { updateEventForm } from 'type/form/basicFormType'
+import { setTime } from 'utils/time'
+import { updateEventValidate } from 'utils/validate'
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
 
-export interface IAddEventProps {
-	onCloseDrawer: () => void
+export interface IUpdateEventProps {
+	onCloseDrawer?: () => void
+	eventIdUpdate: number | null
 }
 
-export default function AddEvent({ onCloseDrawer }: IAddEventProps) {
+export default function UpdateEvent({ onCloseDrawer, eventIdUpdate }: IUpdateEventProps) {
 	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
-	const router = useRouter()
 
 	//State ----------------------------------------------------------------------
 	const [description, setDescription] = useState<string>('')
 	const [optionEmployees, setOptionEmployees] = useState<IOption[]>([])
 	const [optionClients, setOptionClients] = useState<IOption[]>([])
-	const [isRepeatEvent, setIsRepeatEvent] = useState<boolean>(false)
+	const [selectedOptionEmployees, setSelectedOptionEmployees] = useState<IOption[]>([])
+	const [selectedOptionClients, setSelectedOptionClients] = useState<IOption[]>([])
 
-	//query ----------------------------------------------------------------------
+	//Query ----------------------------------------------------------------------
+	const { data: dataDetailEvent } = detailEventQuery(isAuthenticated, eventIdUpdate)
+
 	// get all employees
 	const { data: allEmployees } = allEmployeesQuery(isAuthenticated)
 
@@ -59,20 +49,50 @@ export default function AddEvent({ onCloseDrawer }: IAddEventProps) {
 	const { data: allClients } = allClientsQuery(isAuthenticated)
 
 	//mutation -------------------------------------------------------------------
-	const [mutateCreEvent, { status: statusCreEvent, data: dataCreEvent }] =
-		createEventMutation(setToast)
+	const [mutateUpEvent, { status: statusUpEvent, data: dataUpEvent }] =
+		updateEventMutation(setToast)
 
-	//User effect ---------------------------------------------------------------
-	//Handle check loged in
-	useEffect(() => {
-		if (isAuthenticated) {
-			handleLoading(false)
+	// setForm and submit form create new contract -------------------------------
+	const formSetting = useForm<updateEventForm>({
+		defaultValues: {
+			name: '',
+			color: '#FF0000',
+			where: '',
+			starts_on_date: undefined,
+			ends_on_date: undefined,
+			employeeEmails: [],
+			clientEmails: [],
+			typeRepeat: undefined,
+			starts_on_time: '',
+			ends_on_time: '',
+		},
+		resolver: yupResolver(updateEventValidate),
+	})
+
+	const { handleSubmit } = formSetting
+
+
+	//Onsubmit handle update event
+	const onSubmit = async (values: updateEventForm) => {
+		if (!description) {
+			setToast({
+				msg: 'Please enter field description',
+				type: 'warning',
+			})
 		} else {
-			if (isAuthenticated === false) {
-				router.push('/login')
+			if (eventIdUpdate) {
+				mutateUpEvent({
+					eventId: eventIdUpdate,
+					inputUpdate: values,
+				})
+			} else {
+				setToast({
+					msg: 'Not found event to update',
+					type: 'warning',
+				})
 			}
 		}
-	}, [isAuthenticated])
+	}
 
 	//Set data option employees state
 	useEffect(() => {
@@ -126,7 +146,7 @@ export default function AddEvent({ onCloseDrawer }: IAddEventProps) {
 
 	//Note when request success
 	useEffect(() => {
-		if (statusCreEvent === 'success') {
+		if (statusUpEvent === 'success') {
 			//Close drawer when using drawer
 			if (onCloseDrawer) {
 				onCloseDrawer()
@@ -134,77 +154,106 @@ export default function AddEvent({ onCloseDrawer }: IAddEventProps) {
 
 			setToast({
 				type: 'success',
-				msg: dataCreEvent?.message as string,
+				msg: dataUpEvent?.message as string,
 			})
 		}
-	}, [statusCreEvent])
+	}, [statusUpEvent])
 
-	// setForm and submit form create new contract -------------------------------
-	const formSetting = useForm<createEventForm>({
-		defaultValues: {
-			name: '',
-			color: '#FF0000',
-			where: '',
-			starts_on_date: undefined,
-			ends_on_date: undefined,
-			employeeEmails: [],
-			clientEmails: [],
-			repeatEvery: 1,
-			cycles: 1,
-			typeRepeat: undefined,
-			starts_on_time: '',
-			ends_on_time: '',
-		},
-		resolver: yupResolver(createEventValidate),
-	})
+	//Chane data form when have data detail event
+	useEffect(() => {
+		if (dataDetailEvent && dataDetailEvent.event) {
+			//Set data selected option employee
+			if (dataDetailEvent.event.employees) {
+				let newSelectedOptionEmployees: IOption[] = []
 
-	const { handleSubmit } = formSetting
-
-	const onSubmit = async (values: createEventForm) => {
-		if (!description) {
-			setToast({
-				msg: 'Please enter field description',
-				type: 'warning',
-			})
-		} else {
-			//Check time valid create event
-			const isValidTime = compareDateTime(
-				values.starts_on_date,
-				values.ends_on_date,
-				values.starts_on_time,
-				values.ends_on_time
-			)
-
-			if (isValidTime) {
-				return setToast({
-					msg: 'Ends on time cannot be less than starts on time',
-					type: 'warning',
+				dataDetailEvent.event.employees.map((employee) => {
+					newSelectedOptionEmployees.push({
+						label: (
+							<>
+								<HStack>
+									<Avatar size={'xs'} name={employee.name} src={employee.avatar?.url} />
+									<Text>{employee.email}</Text>
+								</HStack>
+							</>
+						),
+						value: employee.email,
+					})
 				})
+
+				setSelectedOptionEmployees(newSelectedOptionEmployees)
 			}
 
-			//Set value submit
-			values.description = description
-			values.isRepeat = isRepeatEvent
-			if (!isRepeatEvent) {
-				values.repeatEvery = undefined
-				values.cycles = undefined
-			} else if (values.repeatEvery && values.cycles) {
-				values.repeatEvery = Number(values.repeatEvery)
-				values.cycles = Number(values.cycles)
+			//Set data selected option clients
+			if (dataDetailEvent.event.clients) {
+				let newSelectedOptionClients: IOption[] = []
+
+				dataDetailEvent.event.clients.map((client) => {
+					newSelectedOptionClients.push({
+						label: (
+							<>
+								<HStack>
+									<Avatar size={'xs'} name={client.name} src={client.avatar?.url} />
+									<Text>{client.email}</Text>
+								</HStack>
+							</>
+						),
+						value: client.email,
+					})
+				})
+
+				setSelectedOptionClients(newSelectedOptionClients)
 			}
 
-			mutateCreEvent(values)
+			if (allClients && allClients.clients) {
+				let newOptionClients: IOption[] = []
+
+				allClients.clients.map((client) => {
+					newOptionClients.push({
+						label: (
+							<>
+								<HStack>
+									<Avatar
+										size={'xs'}
+										name={client.name}
+										src={client.avatar?.url}
+									/>
+									<Text>{client.email}</Text>
+								</HStack>
+							</>
+						),
+						value: client.email,
+					})
+				})
+
+				setOptionClients(newOptionClients)
+			}
+
+			//Set date description
+			setDescription(dataDetailEvent.event.description)
+		
+			//set data form
+			formSetting.reset({
+				name: dataDetailEvent.event.name,
+				color: dataDetailEvent.event.color,
+				where: dataDetailEvent.event.where,
+				starts_on_date: dataDetailEvent.event.starts_on_date,
+				ends_on_date: dataDetailEvent.event.ends_on_date,
+				employeeEmails:
+					dataDetailEvent.event.employees?.map((employee) => employee.email) || [],
+				clientEmails: dataDetailEvent.event.clients?.map((client) => client.email) || [],
+				starts_on_time: dataDetailEvent.event.starts_on_time,
+				ends_on_time: dataDetailEvent.event.ends_on_time,
+			})
 		}
-	}
+	}, [dataDetailEvent])
+
+	useEffect(()=> {
+		console.log(formSetting.getValues())
+	}, [formSetting])
 
 	//Funtion -------------------------------------------------------------------
 	const onChangeDescription = (value: string) => {
 		setDescription(value)
-	}
-
-	//Handle change is repeat
-	const onChangeIsRepeat = () => {
-		setIsRepeatEvent(!isRepeatEvent)
 	}
 
 	return (
@@ -305,6 +354,7 @@ export default function AddEvent({ onCloseDrawer }: IAddEventProps) {
 							name={'starts_on_time'}
 							label={'Starts On Time'}
 							required
+							timeInit={formSetting.getValues()['starts_on_time']}
 						/>
 					</GridItem>
 
@@ -325,6 +375,7 @@ export default function AddEvent({ onCloseDrawer }: IAddEventProps) {
 							name={'ends_on_time'}
 							label={'Ends On Time'}
 							required
+							timeInit={formSetting.getValues()['ends_on_time']}
 						/>
 					</GridItem>
 
@@ -335,6 +386,8 @@ export default function AddEvent({ onCloseDrawer }: IAddEventProps) {
 							name={'employeeEmails'}
 							required={true}
 							options={optionEmployees}
+							defaultValues={formSetting.getValues('employeeEmails')}
+							selectedOptions={selectedOptionEmployees}
 						/>
 					</GridItem>
 
@@ -345,50 +398,9 @@ export default function AddEvent({ onCloseDrawer }: IAddEventProps) {
 							name={'clientEmails'}
 							required={true}
 							options={optionClients}
+							selectedOptions={selectedOptionClients}
 						/>
 					</GridItem>
-
-					<GridItem w="100%" colSpan={[2]}>
-						<HStack>
-							<Checkbox isChecked={isRepeatEvent} onChange={onChangeIsRepeat} />
-							<Text>Repeat</Text>
-						</HStack>
-					</GridItem>
-
-					{isRepeatEvent && (
-						<>
-							<GridItem w="100%" colSpan={[2, 1]}>
-								<InputNumber
-									name="repeatEvery"
-									label="Repeat every"
-									form={formSetting}
-									required
-									min={1}
-								/>
-							</GridItem>
-
-							<GridItem w="100%" colSpan={[2, 1]}>
-								<Select
-									form={formSetting}
-									label={'Repeat Type'}
-									required={true}
-									name={'typeRepeat'}
-									placeholder={'Select type repeat'}
-									options={dataTypeRepeat}
-								/>
-							</GridItem>
-
-							<GridItem w="100%" colSpan={[2, 1]}>
-								<InputNumber
-									name="cycles"
-									label="Cycles"
-									form={formSetting}
-									required
-									min={1}
-								/>
-							</GridItem>
-						</>
-					)}
 				</Grid>
 
 				<Button
@@ -407,7 +419,7 @@ export default function AddEvent({ onCloseDrawer }: IAddEventProps) {
 					Save
 				</Button>
 
-				{statusCreEvent === 'running' && <Loading />}
+				{statusUpEvent === 'running' && <Loading />}
 			</Box>
 		</>
 	)

@@ -28,7 +28,8 @@ export interface ISelect {
 	label: string
 	required: boolean
 	placeholder?: string
-	options?: IOption[]
+	options: IOption[]
+	selectedOptions?: IOption[]
 	isModal?: boolean
 	onOpenModal?: () => void
 	disabled?: boolean

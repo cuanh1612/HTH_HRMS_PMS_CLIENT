@@ -4,6 +4,7 @@ import { AuthContext } from 'contexts/AuthContext'
 import { useRouter } from 'next/router'
 import { useContext, useEffect, useState } from 'react'
 import AddEvent from './add-events'
+import UpdateEvent from './update-events'
 
 export interface IEventProps {}
 
@@ -12,9 +13,7 @@ export default function Event({}: IEventProps) {
 	const router = useRouter()
 
 	//State ---------------------------------------------------------------------
-	// is reset table
-	const [contractIdUpdate, setContractIdUpdate] = useState<number | null>(6)
-	console.log(setContractIdUpdate);
+	const [eventIdUpdate, setEventIdUpdate] = useState<number | null>(1)
 
 	//Setup drawer --------------------------------------------------------------
 	const { isOpen: isOpenAdd, onOpen: onOpenAdd, onClose: onCloseAdd } = useDisclosure()
@@ -42,7 +41,10 @@ export default function Event({}: IEventProps) {
 				open update event
 			</Button>
 			<Drawer size="xl" title="Add Event" onClose={onCloseAdd} isOpen={isOpenAdd}>
-      <AddEvent onCloseDrawer={onCloseAdd} />
+				<AddEvent onCloseDrawer={onCloseAdd} />
+			</Drawer>
+			<Drawer size="xl" title="Update Event" onClose={onCloseUpdate} isOpen={isOpenUpdate}>
+				<UpdateEvent onCloseDrawer={onCloseUpdate} eventIdUpdate={eventIdUpdate} />
 			</Drawer>
 		</>
 	)

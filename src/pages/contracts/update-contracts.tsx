@@ -63,7 +63,7 @@ export default function UpdateContract({ onCloseDrawer, contractIdUpdate }: IUpd
 	//Query ----------------------------------------------------------------------
 	const { data: dataClients } = allClientsQuery(isAuthenticated)
 	const { data: dataContractTypes } = allContractTypesQuery()
-	const { data: dataDetailContract } = detailContractQuery(contractIdUpdate)
+	const { data: dataDetailContract } = detailContractQuery(isAuthenticated, contractIdUpdate)
 
 	//mutation -------------------------------------------------------------------
 	const [mutateUpContract, { status: statusUpContract, data: dataUpContract }] =

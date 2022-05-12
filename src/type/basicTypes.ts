@@ -222,7 +222,9 @@ export interface eventType {
 	clients: clientType[]
 	employees: employeeType[]
 	starts_on_date: Date
+	starts_on_time: string
 	ends_on_date: Date
+	ends_on_time: string
 	name: string
 	color: string
 	where: string

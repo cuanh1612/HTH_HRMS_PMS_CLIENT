@@ -32,6 +32,7 @@ import 'react-quill/dist/quill.snow.css'
 import { IOption } from 'type/basicTypes'
 import { createEventForm } from 'type/form/basicFormType'
 import { dataTypeRepeat } from 'utils/basicData'
+import { compareDateTime } from 'utils/time'
 import { createEventValidate } from 'utils/validate'
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
@@ -166,6 +167,22 @@ export default function AddEvent({ onCloseDrawer }: IAddEventProps) {
 				type: 'warning',
 			})
 		} else {
+			//Check time valid create event
+			const isValidTime = compareDateTime(
+				values.starts_on_date,
+				values.ends_on_date,
+				values.starts_on_time,
+				values.ends_on_time
+			)
+
+			if (isValidTime) {
+				return setToast({
+					msg: 'Ends on time cannot be less than starts on time',
+					type: 'warning',
+				})
+			}
+
+			//Set value submit
 			values.description = description
 			values.isRepeat = isRepeatEvent
 			if (!isRepeatEvent) {

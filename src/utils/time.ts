@@ -48,6 +48,15 @@ export const compareDateTime = (date1: Date, date2: Date, inClock: string, outCl
 }
 
 export const setTime = (time: string) => {
+	if( time.split(' ')[1] && time.split(' ')[1] == ('AM' || 'PM')) {
+		const hoursAminutes = time.split(':')
+		return {
+			time,
+			hours:Number(hoursAminutes[0]),
+			minutes:Number(hoursAminutes[1]),
+			AMOrPM:time.split(' ')[1]
+		}
+	}
 	const timeSplit = time.split(':')
 	if (Number(timeSplit[0]) > 12) {
 		return {

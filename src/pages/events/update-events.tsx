@@ -71,6 +71,7 @@ export default function UpdateEvent({ onCloseDrawer, eventIdUpdate }: IUpdateEve
 
 	const { handleSubmit } = formSetting
 
+
 	//Onsubmit handle update event
 	const onSubmit = async (values: updateEventForm) => {
 		if (!description) {
@@ -229,7 +230,7 @@ export default function UpdateEvent({ onCloseDrawer, eventIdUpdate }: IUpdateEve
 
 			//Set date description
 			setDescription(dataDetailEvent.event.description)
-			console.log('dfdfdfd')
+		
 			//set data form
 			formSetting.reset({
 				name: dataDetailEvent.event.name,
@@ -245,6 +246,10 @@ export default function UpdateEvent({ onCloseDrawer, eventIdUpdate }: IUpdateEve
 			})
 		}
 	}, [dataDetailEvent])
+
+	useEffect(()=> {
+		console.log(formSetting.getValues())
+	}, [formSetting])
 
 	//Funtion -------------------------------------------------------------------
 	const onChangeDescription = (value: string) => {
@@ -349,7 +354,7 @@ export default function UpdateEvent({ onCloseDrawer, eventIdUpdate }: IUpdateEve
 							name={'starts_on_time'}
 							label={'Starts On Time'}
 							required
-							timeInit={formSetting.getValues('starts_on_time')}
+							timeInit={formSetting.getValues()['starts_on_time']}
 						/>
 					</GridItem>
 
@@ -370,7 +375,7 @@ export default function UpdateEvent({ onCloseDrawer, eventIdUpdate }: IUpdateEve
 							name={'ends_on_time'}
 							label={'Ends On Time'}
 							required
-							timeInit={formSetting.getValues('ends_on_time')}
+							timeInit={formSetting.getValues()['ends_on_time']}
 						/>
 					</GridItem>
 

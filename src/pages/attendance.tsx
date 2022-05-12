@@ -401,11 +401,36 @@ const attendance: NextLayout = () => {
 									</Box>
 								</HStack>
 								<HStack spacing={5}>
-									{/* <CInput readOnly value={inClockInit ? inClockInit.time : ''} />
 									<CInput
 										readOnly
-										value={outClockInit ? outClockInit.time : ''}
-									/> */}
+										value={
+											String(formSetting.getValues()['clock_in_time']).split(
+												' '
+											)[1]
+												? String(formSetting.getValues()['clock_in_time'])
+												: setTime(
+														String(
+															formSetting.getValues()['clock_in_time']
+														)
+												  ).time || ''
+										}
+									/>
+									<CInput
+										readOnly
+										value={
+											String(formSetting.getValues()['clock_out_time']).split(
+												' '
+											)[1]
+												? String(formSetting.getValues()['clock_out_time'])
+												: setTime(
+														String(
+															formSetting.getValues()[
+																'clock_out_time'
+															]
+														)
+												  ).time || ''
+										}
+									/>
 								</HStack>
 							</VStack>
 						</ModalBody>

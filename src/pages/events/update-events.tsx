@@ -36,11 +36,11 @@ export default function UpdateEvent({ onCloseDrawer, eventIdUpdate }: IUpdateEve
 	const [description, setDescription] = useState<string>('')
 	const [optionEmployees, setOptionEmployees] = useState<IOption[]>([])
 	const [optionClients, setOptionClients] = useState<IOption[]>([])
-	const [startsTimeInit, setStartsTimeInit] = useState<ITime>()
-	const [endsTimeInit, setEndsTimeInit] = useState<ITime>()
+	const [selectedOptionEmployees, setSelectedOptionEmployees] = useState<IOption[]>([])
+	const [selectedOptionClients, setSelectedOptionClients] = useState<IOption[]>([])
 
 	//Query ----------------------------------------------------------------------
-	const { data: dataDetailContract } = detailEventQuery(isAuthenticated, eventIdUpdate)
+	const { data: dataDetailEvent } = detailEventQuery(isAuthenticated, eventIdUpdate)
 
 	// get all employees
 	const { data: allEmployees } = allEmployeesQuery(isAuthenticated)
@@ -160,22 +160,91 @@ export default function UpdateEvent({ onCloseDrawer, eventIdUpdate }: IUpdateEve
 
 	//Chane data form when have data detail event
 	useEffect(() => {
-		if (dataDetailContract && dataDetailContract.event) {
-			//Set date description
-			setDescription(dataDetailContract.event.description)
+		if (dataDetailEvent && dataDetailEvent.event) {
+			//Set data selected option employee
+			if (dataDetailEvent.event.employees) {
+				let newSelectedOptionEmployees: IOption[] = []
 
+				dataDetailEvent.event.employees.map((employee) => {
+					newSelectedOptionEmployees.push({
+						label: (
+							<>
+								<HStack>
+									<Avatar size={'xs'} name={employee.name} src={employee.avatar?.url} />
+									<Text>{employee.email}</Text>
+								</HStack>
+							</>
+						),
+						value: employee.email,
+					})
+				})
+
+				setSelectedOptionEmployees(newSelectedOptionEmployees)
+			}
+
+			//Set data selected option clients
+			if (dataDetailEvent.event.clients) {
+				let newSelectedOptionClients: IOption[] = []
+
+				dataDetailEvent.event.clients.map((client) => {
+					newSelectedOptionClients.push({
+						label: (
+							<>
+								<HStack>
+									<Avatar size={'xs'} name={client.name} src={client.avatar?.url} />
+									<Text>{client.email}</Text>
+								</HStack>
+							</>
+						),
+						value: client.email,
+					})
+				})
+
+				setSelectedOptionClients(newSelectedOptionClients)
+			}
+
+			if (allClients && allClients.clients) {
+				let newOptionClients: IOption[] = []
+
+				allClients.clients.map((client) => {
+					newOptionClients.push({
+						label: (
+							<>
+								<HStack>
+									<Avatar
+										size={'xs'}
+										name={client.name}
+										src={client.avatar?.url}
+									/>
+									<Text>{client.email}</Text>
+								</HStack>
+							</>
+						),
+						value: client.email,
+					})
+				})
+
+				setOptionClients(newOptionClients)
+			}
+
+			//Set date description
+			setDescription(dataDetailEvent.event.description)
+			console.log('dfdfdfd')
 			//set data form
 			formSetting.reset({
-				name: dataDetailContract.event.name,
-				color: dataDetailContract.event.color,
-				where: dataDetailContract.event.where,
-				starts_on_date: dataDetailContract.event.starts_on_date,
-				ends_on_date: dataDetailContract.event.ends_on_date,
-				employeeEmails: dataDetailContract.event.employees?.map(employee => employee.email) || [],
-				clientEmails: dataDetailContract.event.clients?.map(client => client.email) || []
+				name: dataDetailEvent.event.name,
+				color: dataDetailEvent.event.color,
+				where: dataDetailEvent.event.where,
+				starts_on_date: dataDetailEvent.event.starts_on_date,
+				ends_on_date: dataDetailEvent.event.ends_on_date,
+				employeeEmails:
+					dataDetailEvent.event.employees?.map((employee) => employee.email) || [],
+				clientEmails: dataDetailEvent.event.clients?.map((client) => client.email) || [],
+				starts_on_time: dataDetailEvent.event.starts_on_time,
+				ends_on_time: dataDetailEvent.event.ends_on_time,
 			})
 		}
-	}, [dataDetailContract])
+	}, [dataDetailEvent])
 
 	//Funtion -------------------------------------------------------------------
 	const onChangeDescription = (value: string) => {
@@ -280,7 +349,7 @@ export default function UpdateEvent({ onCloseDrawer, eventIdUpdate }: IUpdateEve
 							name={'starts_on_time'}
 							label={'Starts On Time'}
 							required
-							timeInit={startsTimeInit}
+							timeInit={formSetting.getValues('starts_on_time')}
 						/>
 					</GridItem>
 
@@ -301,7 +370,7 @@ export default function UpdateEvent({ onCloseDrawer, eventIdUpdate }: IUpdateEve
 							name={'ends_on_time'}
 							label={'Ends On Time'}
 							required
-							timeInit={endsTimeInit}
+							timeInit={formSetting.getValues('ends_on_time')}
 						/>
 					</GridItem>
 
@@ -312,6 +381,8 @@ export default function UpdateEvent({ onCloseDrawer, eventIdUpdate }: IUpdateEve
 							name={'employeeEmails'}
 							required={true}
 							options={optionEmployees}
+							defaultValues={formSetting.getValues('employeeEmails')}
+							selectedOptions={selectedOptionEmployees}
 						/>
 					</GridItem>
 
@@ -322,6 +393,7 @@ export default function UpdateEvent({ onCloseDrawer, eventIdUpdate }: IUpdateEve
 							name={'clientEmails'}
 							required={true}
 							options={optionClients}
+							selectedOptions={selectedOptionClients}
 						/>
 					</GridItem>
 				</Grid>

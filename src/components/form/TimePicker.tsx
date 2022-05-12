@@ -83,7 +83,10 @@ const TimePicker = ({
 		if (isSetInit && timeInit) {
 			setMorE(setTimeInit(timeInit).AMOrPM)
 		}
-	}, [hours, minutes, MorE, form.getValues()[name]])
+		if(timeInit){
+			setIsSetInit(true)
+		}
+	}, [hours, minutes, MorE])
 
 	const { onToggle, onOpen, isOpen, onClose } = useDisclosure()
 

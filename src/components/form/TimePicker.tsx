@@ -18,6 +18,7 @@ import { useEffect, useState } from 'react'
 import { Controller, UseFormReturn } from 'react-hook-form'
 import { BiTimeFive } from 'react-icons/bi'
 import { MdOutlineExpandLess, MdOutlineExpandMore } from 'react-icons/md'
+import { ITime } from 'type/basicTypes'
 import { IInput } from 'type/element/commom'
 
 const TimePicker = ({
@@ -25,7 +26,8 @@ const TimePicker = ({
 	label,
 	form,
 	required = false,
-}: IInput & { form: UseFormReturn<any, any> }) => {
+	timeInit
+}: IInput & { form: UseFormReturn<any, any>, timeInit?: ITime}) => {
 	const errorColor = useColorModeValue('red.400', 'pink.400')
 
 	// create time
@@ -41,17 +43,18 @@ const TimePicker = ({
 
 	const hours = useNumberInput({
 		step: 1,
-		defaultValue: 0,
+		defaultValue:  timeInit ? timeInit.hours : 0,
 		max: 12,
 		min: 0,
 	})
+	
 	const incHours = hours.getIncrementButtonProps()
 	const decHours = hours.getDecrementButtonProps()
 	const inputHours = hours.getInputProps()
 
 	const minutes = useNumberInput({
 		step: 1,
-		defaultValue: 0,
+		defaultValue: timeInit ? timeInit.minutes : 0,
 		max: 59,
 		min: 0,
 	})
@@ -63,6 +66,7 @@ const TimePicker = ({
 		const result = `${hours.valueAsNumber >= 10 ? hours.value : '0' + hours.value}:${
 			minutes.valueAsNumber >= 10 ? minutes.value : '0' + minutes.value
 		} ${MorE}`
+		
 		setTime(result)
 		if (hours && minutes) {
 			let timeChange = new Date(
@@ -71,10 +75,21 @@ const TimePicker = ({
 			timeChange = timeChange.split(' ')[1] ? timeChange : timeChange +" AM"
 			timeChange = timeChange.replace('AM', MorE)
 			timeChange = timeChange.replace('PM', MorE)
-			console.log(timeChange)
+			if(timeInit) {
+				timeChange = timeInit.time
+			}
+
 			form.setValue(name, timeChange)
 		}
 	}, [hours, minutes, MorE])
+
+	useEffect(()=> {
+		if(timeInit) {
+			setTime(timeInit.time) 
+			setMorE(timeInit.AMOrPM)
+			form.setValue(name, timeInit.time)
+		}
+	}, [timeInit])
 
 	const { onToggle, onOpen, isOpen, onClose} = useDisclosure()
 

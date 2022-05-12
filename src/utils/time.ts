@@ -21,7 +21,7 @@ export const compareTime = (inClock: string, outClock: string) => {
 }
 
 export const compareDateTime = (date1: Date, date2: Date, inClock: string, outClock: string) => {
-	if(new Date(date1).toLocaleString() == new Date(date2).toLocaleString()) {
+	if (new Date(date1).toLocaleString() == new Date(date2).toLocaleString()) {
 		const inClockSplit = inClock.split(' ')
 		const outClockSplit = outClock.split(' ')
 		if (inClockSplit[1] == 'PM' && outClockSplit[1] == 'AM') {
@@ -42,8 +42,26 @@ export const compareDateTime = (date1: Date, date2: Date, inClock: string, outCl
 			return true
 		}
 	}
-	if(new Date(date1).toLocaleString() > new Date(date2).toLocaleString()) {
+	if (new Date(date1).toLocaleString() > new Date(date2).toLocaleString()) {
 		return true
 	}
 }
 
+export const setTime = (time: string) => {
+	const timeSplit = time.split(':')
+	if (Number(timeSplit[0]) > 12) {
+		return {
+			time: `0${Number(timeSplit[0]) - 12 }` + ':' + timeSplit[1] + ' PM',
+			hours: Number(timeSplit[0]) - 12,
+			minutes: Number(timeSplit[1]),
+			AMOrPM: 'PM',
+		}
+	}
+
+	return {
+		time: `0${Number(timeSplit[0])}` + ':' + timeSplit[1] + ' AM',
+		hours: Number(timeSplit[0]),
+		minutes: Number(timeSplit[1]),
+		AMOrPM: 'AM',
+	}
+}

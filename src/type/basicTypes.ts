@@ -1,4 +1,4 @@
-import { ReactNode } from "react"
+import { ReactNode } from 'react'
 
 export interface userType {
 	email: string
@@ -227,4 +227,11 @@ export interface eventType {
 	color: string
 	where: string
 	description: string
+}
+
+export interface ITime {
+	time: string
+	hours: number
+	minutes: number
+	AMOrPM: string
 }

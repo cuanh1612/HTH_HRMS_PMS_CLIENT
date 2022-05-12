@@ -13,6 +13,7 @@ import {
 	Text,
 	useDisclosure,
 	VStack,
+	Input as CInput,
 } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
 import CheckAttendance from 'components/anttendance/CheckAttendance'
@@ -31,8 +32,9 @@ import { IAttendance } from 'type/element/commom'
 import { NextLayout } from 'type/element/layout'
 import { AttendanceForm } from 'type/form/basicFormType'
 import { AttendanceValidate } from 'utils/validate'
-import { compareTime } from 'utils/time'
+import { compareTime, setTime } from 'utils/time'
 import { createAttendanceMutation } from 'mutations/attendance'
+import { employeeType, ITime } from 'type/basicTypes'
 
 const attendance: NextLayout = () => {
 	const router = useRouter()
@@ -50,8 +52,8 @@ const attendance: NextLayout = () => {
 	const { data: allLeaves } = allLeaveQuery(isAuthenticated, dateFilter)
 	// get last day
 	const [lastDate, setLastDate] = useState(0)
-	const [inClockInit, setInClockInit] = useState<Date | null>(null)
-	const [outClockInit, setOutClockInit] = useState<Date | null>(null)
+	const [inClockInit, setInClockInit] = useState<ITime>()
+	const [outClockInit, setOutClockInit] = useState<ITime>()
 
 	// set open modal to check attendance
 	const { isOpen: isOpenInsert, onOpen: onOpenInsert, onClose: onCloseInsert } = useDisclosure()
@@ -133,6 +135,16 @@ const attendance: NextLayout = () => {
 		setLastDate(lastDayOfMonth)
 	}, [dateFilter])
 
+	// function to set info employee
+	const setUserHandle = (date: Date, employee: employeeType) =>
+		setUser({
+			id: employee.id,
+			avatar: employee.avatar?.url as string,
+			designation: employee.designation?.name as string,
+			name: employee.name,
+			date,
+		})
+
 	return (
 		<>
 			<select
@@ -146,7 +158,7 @@ const attendance: NextLayout = () => {
 					}
 				}}
 			>
-				<option value={0}>now</option>
+				<option value={0}>0</option>
 				<option value={1}>1</option>
 				<option value={2}>2</option>
 				<option value={3}>3</option>
@@ -209,9 +221,13 @@ const attendance: NextLayout = () => {
 						(attendance): IAttendance => ({
 							id: attendance.id,
 							date: attendance.date,
-							handle: () => {
-								console.log(attendance.clock_in_time)
-								console.log(attendance.clock_out_time)
+							handle: (date: Date) => {
+								const inClock = setTime(attendance.clock_in_time)
+								const outClock = setTime(attendance.clock_out_time)
+								setInClockInit(inClock)
+								setOutClockInit(outClock)
+								setUserHandle(date, employee)
+								onOpenDetail()
 							},
 							id_Employee: employee.id,
 						})
@@ -242,13 +258,7 @@ const attendance: NextLayout = () => {
 								<HStack spacing={5}>
 									<CheckAttendance
 										createHandle={(date: Date) => {
-											setUser({
-												id: employee.id,
-												avatar: employee.avatar?.url as string,
-												designation: employee.designation?.name as string,
-												name: employee.name,
-												date,
-											})
+											setUserHandle(date, employee)
 											onOpenInsert()
 										}}
 										countDate={lastDate}
@@ -283,7 +293,12 @@ const attendance: NextLayout = () => {
 						<ModalHeader>
 							Check attendance{' '}
 							<Text as="span" fontWeight={'normal'}>
-								{user && new Date(user.date).toLocaleDateString()}
+								{user &&
+									new Date(user.date).getDate() +
+										'-' +
+										(new Date(user.date).getMonth() + 1) +
+										'-' +
+										new Date(user.date).getFullYear()}
 							</Text>
 						</ModalHeader>
 						<ModalCloseButton />
@@ -316,12 +331,14 @@ const attendance: NextLayout = () => {
 												label="Clock in"
 												name={'clock_in_time'}
 												required={true}
+												timeInit={inClockInit}
 											/>
 											<TimePicker
 												form={formSetting}
 												label="Clock out"
 												name={'clock_out_time'}
 												required={true}
+												timeInit={outClockInit}
 											/>
 										</HStack>
 									</>
@@ -356,18 +373,40 @@ const attendance: NextLayout = () => {
 					</ModalContent>
 				</Modal>
 
-				<Modal isOpen={!isOpenDetail} onClose={onCloseDetail}>
+				<Modal isOpen={isOpenDetail} onClose={onCloseDetail}>
 					<ModalOverlay />
-					<ModalContent>
+					<ModalContent maxW={'350px'}>
 						<ModalHeader>
 							Detail{' '}
 							<Text as="span" fontWeight={'normal'}>
-								{user && new Date(user.date).toLocaleDateString()}
+								{user &&
+									new Date(user.date).getDate() +
+										'-' +
+										(new Date(user.date).getMonth() + 1) +
+										'-' +
+										new Date(user.date).getFullYear()}
 							</Text>{' '}
 						</ModalHeader>
 						<ModalCloseButton />
 						<ModalBody>
-							
+							<VStack alignItems={'flex-start'} spacing={5}>
+								<HStack minW={'200px'} alignItems={'flex-start'} spacing={3}>
+									<Avatar name={user?.name} src={user?.avatar} />
+									<Box w={'full'}>
+										<Text fontWeight={'semibold'}>{user?.name}</Text>
+										<Text color={'gray'} fontSize={'14px'}>
+											{user?.designation}
+										</Text>
+									</Box>
+								</HStack>
+								<HStack spacing={5}>
+									<CInput readOnly value={inClockInit ? inClockInit.time : ''} />
+									<CInput
+										readOnly
+										value={outClockInit ? outClockInit.time : ''}
+									/>
+								</HStack>
+							</VStack>
 						</ModalBody>
 						<ModalFooter>
 							<Button
@@ -378,7 +417,10 @@ const attendance: NextLayout = () => {
 							>
 								Close
 							</Button>
-							<Button bg={'hu-Green.normal'} color={'white'}>
+							<Button bg={'hu-Green.normal'} onClick={()=> {
+								onCloseDetail()
+								onOpenInsert()
+							}} color={'white'}>
 								Update
 							</Button>
 						</ModalFooter>

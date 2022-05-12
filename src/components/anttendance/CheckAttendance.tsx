@@ -83,14 +83,11 @@ export default function CheckAttendance({
 					return (
 						<IconButton
 							onClick={() => {
-								createHandle(
-									new Date().setFullYear(
-										dateFilter.getFullYear(),
-										dateFilter.getMonth(),
-										date
-									)
-								)
-								checkAttendance.handle()
+								checkAttendance.handle(new Date().setFullYear(
+									dateFilter.getFullYear(),
+									dateFilter.getMonth(),
+									date
+								))
 							}}
 							key={date}
 							h={'30px'}

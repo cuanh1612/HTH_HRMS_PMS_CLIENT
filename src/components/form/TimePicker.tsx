@@ -18,7 +18,6 @@ import { useEffect, useState } from 'react'
 import { Controller, UseFormReturn } from 'react-hook-form'
 import { BiTimeFive } from 'react-icons/bi'
 import { MdOutlineExpandLess, MdOutlineExpandMore } from 'react-icons/md'
-import { ITime } from 'type/basicTypes'
 import { IInput } from 'type/element/commom'
 import { setTime as setTimeInit } from 'utils/time'
 

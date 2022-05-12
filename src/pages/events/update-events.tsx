@@ -7,7 +7,6 @@ import Loading from 'components/Loading'
 import { AuthContext } from 'contexts/AuthContext'
 import { updateEventMutation } from 'mutations/event'
 import dynamic from 'next/dynamic'
-import { useRouter } from 'next/router'
 import { allClientsQuery } from 'queries/client'
 import { allEmployeesQuery } from 'queries/employee'
 import { detailEventQuery } from 'queries/event'
@@ -18,8 +17,9 @@ import { BsCalendarDate } from 'react-icons/bs'
 import { MdOutlineDriveFileRenameOutline, MdPlace } from 'react-icons/md'
 import 'react-quill/dist/quill.bubble.css'
 import 'react-quill/dist/quill.snow.css'
-import { IOption } from 'type/basicTypes'
+import { IOption, ITime } from 'type/basicTypes'
 import { updateEventForm } from 'type/form/basicFormType'
+import { setTime } from 'utils/time'
 import { updateEventValidate } from 'utils/validate'
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
@@ -36,6 +36,8 @@ export default function UpdateEvent({ onCloseDrawer, eventIdUpdate }: IUpdateEve
 	const [description, setDescription] = useState<string>('')
 	const [optionEmployees, setOptionEmployees] = useState<IOption[]>([])
 	const [optionClients, setOptionClients] = useState<IOption[]>([])
+	const [startsTimeInit, setStartsTimeInit] = useState<ITime>()
+	const [endsTimeInit, setEndsTimeInit] = useState<ITime>()
 
 	//Query ----------------------------------------------------------------------
 	const { data: dataDetailContract } = detailEventQuery(isAuthenticated, eventIdUpdate)
@@ -156,23 +158,24 @@ export default function UpdateEvent({ onCloseDrawer, eventIdUpdate }: IUpdateEve
 		}
 	}, [statusUpEvent])
 
-    //Chane data form when have data detail event
-    useEffect(() => {
-        if(dataDetailContract && dataDetailContract.event){
-            //Set date description
-            setDescription(dataDetailContract.event.description)
+	//Chane data form when have data detail event
+	useEffect(() => {
+		if (dataDetailContract && dataDetailContract.event) {
+			//Set date description
+			setDescription(dataDetailContract.event.description)
 
-            //set data form
-            formSetting.reset({
-                name: dataDetailContract.event.name,
-                color: dataDetailContract.event.color,
-                where: dataDetailContract.event.where,
-                starts_on_date: dataDetailContract.event.starts_on_date,
-                ends_on_date: dataDetailContract.event.ends_on_date,
-                starts_on_time: dataDetailContract.event.starts_on_time
-            })
-        }
-    }, [dataDetailContract])
+			//set data form
+			formSetting.reset({
+				name: dataDetailContract.event.name,
+				color: dataDetailContract.event.color,
+				where: dataDetailContract.event.where,
+				starts_on_date: dataDetailContract.event.starts_on_date,
+				ends_on_date: dataDetailContract.event.ends_on_date,
+				employeeEmails: dataDetailContract.event.employees?.map(employee => employee.email) || [],
+				clientEmails: dataDetailContract.event.clients?.map(client => client.email) || []
+			})
+		}
+	}, [dataDetailContract])
 
 	//Funtion -------------------------------------------------------------------
 	const onChangeDescription = (value: string) => {
@@ -277,6 +280,7 @@ export default function UpdateEvent({ onCloseDrawer, eventIdUpdate }: IUpdateEve
 							name={'starts_on_time'}
 							label={'Starts On Time'}
 							required
+							timeInit={startsTimeInit}
 						/>
 					</GridItem>
 
@@ -297,6 +301,7 @@ export default function UpdateEvent({ onCloseDrawer, eventIdUpdate }: IUpdateEve
 							name={'ends_on_time'}
 							label={'Ends On Time'}
 							required
+							timeInit={endsTimeInit}
 						/>
 					</GridItem>
 

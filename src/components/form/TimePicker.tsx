@@ -75,15 +75,7 @@ const TimePicker = ({
 			timeChange = timeChange.split(' ')[1] ? timeChange : timeChange +" AM"
 			timeChange = timeChange.replace('AM', MorE)
 			timeChange = timeChange.replace('PM', MorE)
-<<<<<<< HEAD
-			console.log(timeChange);
-			
-=======
-			if(timeInit) {
-				timeChange = timeInit.time
-			}
 
->>>>>>> 820a6218c9a763c1cc5bc7aeca32520679b70620
 			form.setValue(name, timeChange)
 		}
 	}, [hours, minutes, MorE])

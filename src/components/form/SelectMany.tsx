@@ -38,7 +38,9 @@ export default function SelectMany({
 
 	//Set value when change
 	useEffect(() => {
-		setOptionSelects(form.getValues(name) ? form.getValues(name) : [])
+		console.log(form.getValues(name));
+		setOptionSelects(form.getValues(name))
+		console.log(optionSelects);
 	}, [form.getValues(name)])
 
 	return (
@@ -49,6 +51,7 @@ export default function SelectMany({
 				</FormLabel>
 
 				<Select
+					value={optionSelects}
 					options={options}
 					closeMenuOnSelect={false}
 					components={animatedComponents}

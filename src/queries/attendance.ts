@@ -8,14 +8,22 @@ export const allAttendancesQuery = (
 	date?: Date,
 	department?: string
 ) => {
+	var url = ''
+	if(isAuthenticated) {
+		if(date && department) {
+			url = `attendances?date=${date.toLocaleString()}&department=${department}`
+		} else {
+			if(date) {
+				url = `attendances?date=${date.toLocaleString()}`
+			}
+			if(department) {
+				url = `attendances?department=${department}`
+			}
+		}
+	}
+	
 	return useSWR<attendanceMutaionResponse, AxiosError>(
-		isAuthenticated
-			? date
-				? department
-					? `attendances?date=${date.toLocaleString()}`
-					: `attendances?date=${date.toLocaleString()}&department=${department}`
-				: 'attendances'
-			: null,
+		url ? url : null,
 		allAttendancesRequest,
 		{
 			errorRetryCount: 2,

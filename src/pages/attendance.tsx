@@ -101,10 +101,6 @@ const attendance: NextLayout = () => {
 		departmentSl
 	)
 
-	useEffect(()=> {
-		alert(departmentSl)
-	}, [departmentSl])
-
 	// get all attendance
 	const { data: allDepartments, mutate: refetchDepartments } =
 		allDepartmentsQuery(isAuthenticated)

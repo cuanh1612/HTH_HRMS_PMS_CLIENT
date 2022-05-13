@@ -3,10 +3,19 @@ import { allAttendancesRequest } from 'requests/attendance'
 import useSWR from 'swr'
 import { attendanceMutaionResponse } from 'type/mutationResponses'
 
-export const allAttendancesQuery = (isAuthenticated: boolean | null, date?: Date) => {
-
+export const allAttendancesQuery = (
+	isAuthenticated: boolean | null,
+	date?: Date,
+	department?: string
+) => {
 	return useSWR<attendanceMutaionResponse, AxiosError>(
-		isAuthenticated ? (date ?  `attendances?date=${date.toLocaleString()}`: 'attendances') : null,
+		isAuthenticated
+			? date
+				? department
+					? `attendances?date=${date.toLocaleString()}`
+					: `attendances?date=${date.toLocaleString()}&department=${department}`
+				: 'attendances'
+			: null,
 		allAttendancesRequest,
 		{
 			errorRetryCount: 2,

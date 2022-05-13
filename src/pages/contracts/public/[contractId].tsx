@@ -26,7 +26,7 @@ import {
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Input } from 'components/form/Input'
 import Loading from 'components/Loading'
-import Modal from 'components/Modal'
+import Modal from 'components/modal/Modal'
 import { AuthContext } from 'contexts/AuthContext'
 import { createSignMutation } from 'mutations/sign'
 import { GetStaticPaths, GetStaticProps } from 'next'

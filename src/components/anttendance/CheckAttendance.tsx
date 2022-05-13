@@ -30,6 +30,8 @@ export default function CheckAttendance({
 	const [dates, setDates] = useState<number[]>([])
 	const [now, setNow] = useState<Date>(new Date())
 
+	console.log(new Date(dateFilter).toLocaleDateString())
+
 	useEffect(() => {
 		if (countDate) {
 			const data = []
@@ -44,7 +46,16 @@ export default function CheckAttendance({
 		<>
 			{dates.map((date) => {
 				const checkAttendance = attendances?.find((attendance) => {
-					return new Date(attendance.date).getDate() == date
+					return (
+						new Date(attendance.date).toLocaleDateString() ==
+						new Date(
+							new Date().setFullYear(
+								dateFilter.getFullYear(),
+								dateFilter.getMonth(),
+								date
+							)
+						).toLocaleDateString()
+					)
 				}) as IAttendance
 
 				const checkLeave = leaveDates
@@ -83,11 +94,13 @@ export default function CheckAttendance({
 					return (
 						<IconButton
 							onClick={() => {
-								checkAttendance.handle(new Date().setFullYear(
-									dateFilter.getFullYear(),
-									dateFilter.getMonth(),
-									date
-								))
+								checkAttendance.handle(
+									new Date().setFullYear(
+										dateFilter.getFullYear(),
+										dateFilter.getMonth(),
+										date
+									)
+								)
 							}}
 							key={date}
 							h={'30px'}
@@ -132,8 +145,7 @@ export default function CheckAttendance({
 					(date <= now.getDate() &&
 						dateFilter.getFullYear() <= now.getFullYear() &&
 						dateFilter.getMonth() <= now.getMonth()) ||
-					(dateFilter.getFullYear() < now.getFullYear() &&
-						dateFilter.getMonth() <= now.getMonth())
+					dateFilter.getFullYear() < now.getFullYear()
 				)
 					return (
 						<IconButton

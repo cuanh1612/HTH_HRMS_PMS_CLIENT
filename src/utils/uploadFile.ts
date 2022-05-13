@@ -1,29 +1,24 @@
 import { ICloudinaryImg, IImgCrop } from 'type/fileType'
-
-export const uploadFile = async (
-	files: File[],
-	tags: String[],
-	avatar: boolean,
-	folder?: string,
+interface IIploadFile {
+	files: File[]
+	tags: String[]
+	folder?: string
 	options?: IImgCrop
-) => {
+	upload_preset: string
+	raw: boolean
+}
+export const uploadFile = async ({ files, tags, folder, options, upload_preset, raw }: IIploadFile) => {
 	let data: any = []
 	await Promise.all(
 		files.map(async (file) => {
 			return new Promise(async (resolve) => {
 				const formData = new FormData()
 				formData.append('file', file)
-				if (avatar) {
+			
 					formData.append(
 						'upload_preset',
-						`${process.env.NEXT_PUBLIC_UPLOAD_PRESET_AVATAR}`
+						`${upload_preset}`
 					)
-				} else {
-					formData.append(
-						'upload_preset',
-						`${process.env.NEXT_PUBLIC_UPLOAD_PRESET_CONTRACT}`
-					)
-				}
 				if (folder) {
 					formData.set('public_id', `${folder}/${file.name}`)
 				}
@@ -35,7 +30,7 @@ export const uploadFile = async (
 				})
 
 				const result = await fetch(
-					avatar
+					!raw
 						? String(process.env.NEXT_PUBLIC_API_URL_IMG)
 						: String(process.env.NEXT_PUBLIC_API_URL_RAW),
 					{
@@ -52,7 +47,7 @@ export const uploadFile = async (
 			})
 		})
 	)
-	if (avatar && options) {
+	if (!raw && options) {
 		data = data.map((item: ICloudinaryImg) => {
 			item.url = item.url.replace(
 				'upload',
@@ -65,11 +60,11 @@ export const uploadFile = async (
 	return data
 }
 
-export const uploadBase64 = async (file: string, tags?: String[]) => {
+export const uploadBase64 = async (upload_preset: string, file: string, tags?: String[]) => {
 	const formData = new FormData()
 	formData.append('file', file)
 
-	formData.append('upload_preset', `${process.env.NEXT_PUBLIC_UPLOAD_PRESET_SIGN}`)
+	formData.append('upload_preset', `${upload_preset}`)
 
 	formData.append('api_key', `${process.env.NEXT_PUBLIC_API_KEY}`)
 	formData.append('cloud_name', `${process.env.NEXT_PUBLIC_API_CLOUD_NAME}`)
@@ -83,7 +78,6 @@ export const uploadBase64 = async (file: string, tags?: String[]) => {
 		method: 'POST',
 		body: formData,
 	}).then((e) => e.json())
-	console.log('thanh cong')
 
 	return {
 		public_id: result.public_id,

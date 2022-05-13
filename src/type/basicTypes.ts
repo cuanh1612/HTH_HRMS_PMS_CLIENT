@@ -237,3 +237,11 @@ export interface ITime {
 	minutes: number
 	AMOrPM: string
 }
+
+export interface UserAttendance {
+	id: number
+	name: string
+	avatar: string
+	designation: string
+	date: Date
+}

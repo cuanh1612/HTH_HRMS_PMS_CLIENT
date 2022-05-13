@@ -577,7 +577,6 @@ const Employees: NextLayout = () => {
 								columnId={'email'}
 								label="Email"
 								placeholder="Enter email"
-								required={false}
 								icon={
 									<AiOutlineSearch fontSize={'20px'} color="gray" opacity={0.6} />
 								}
@@ -592,7 +591,6 @@ const Employees: NextLayout = () => {
 								columnId={'department'}
 								label="Department"
 								placeholder="Select department"
-								required={false}
 							/>
 
 							<Select
@@ -603,7 +601,6 @@ const Employees: NextLayout = () => {
 								columnId={'designation'}
 								label="Designation"
 								placeholder="Select designation"
-								required={false}
 							/>
 
 							<Select
@@ -614,7 +611,6 @@ const Employees: NextLayout = () => {
 								columnId={'role'}
 								label="Role"
 								placeholder="Select role"
-								required={false}
 							/>
 							<SelectUser
 								handleSearch={(data: IFilter) => {

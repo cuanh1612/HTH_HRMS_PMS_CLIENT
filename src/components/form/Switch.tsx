@@ -27,7 +27,7 @@ export const Switch = ({
 						</FormLabel>
 					)}
 					<Box h={10}>
-						<CSwitch id={name} {...field}/>
+						<CSwitch defaultChecked={form.getValues()[name]} id={name} {...field}/>
 					</Box>
 					{form?.formState.errors[name] && (
 						<FormHelperText color={errorColor}>

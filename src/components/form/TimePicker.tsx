@@ -107,11 +107,12 @@ const TimePicker = ({
 			if (time.value > time.min) {
 				return time.value - 1
 			}
+			
 		}
 	}
 
 	const setHoursHandle = (value?: number) => {
-		if (value) {
+		if (value != null) {
 			setHours((state) => ({
 				...state,
 				value,
@@ -120,7 +121,7 @@ const TimePicker = ({
 	}
 
 	const setMinutesHandle = (value?: number) => {
-		if (value) {
+		if (value != null) {
 			setMinutes((state) => ({
 				...state,
 				value,

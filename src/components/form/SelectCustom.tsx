@@ -18,7 +18,7 @@ export default function SelectCustom({
 	const errorColor = useColorModeValue('red.400', 'pink.400')
 
 	//Sate
-	const [optionSelect, setOptionSelect] = useState<string>('')
+	const [optionSelect, setOptionSelect] = useState<string | number>('')
 
 	//handle change select
 	const onChangeSelect = (options: IOption) => {

@@ -1,6 +1,6 @@
-import { FormControl, FormHelperText, FormLabel, HStack, useColorModeValue } from '@chakra-ui/react'
+import { FormControl, FormHelperText, FormLabel, useColorModeValue } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
-import { Controller, UseFormReturn } from 'react-hook-form'
+import { UseFormReturn } from 'react-hook-form'
 import Select from 'react-select'
 import makeAnimated from 'react-select/animated'
 import { IOption } from 'type/basicTypes'
@@ -14,17 +14,17 @@ export default function SelectMany({
 	form,
 	required = false,
 	options,
-	selectedOptions
+	selectedOptions,
 }: ISelect & { form: UseFormReturn<any, any> }) {
 	const errorColor = useColorModeValue('red.400', 'pink.400')
 
 	//Sate
-	const [optionSelects, setOptionSelects] = useState<string[]>([])
+	const [optionSelects, setOptionSelects] = useState<any[]>([])
 	const [selectedOptionsState, setSelectedOptionsState] = useState<IOption[]>([])
 
 	//handle change select
 	const onChangeSelect = (options: IOption[]) => {
-		let newOptionSelects: string[] = []
+		let newOptionSelects: any[] = []
 
 		for (let index = 0; index < options.length; index++) {
 			const option = options[index]
@@ -41,7 +41,7 @@ export default function SelectMany({
 
 	//Set again sate when have data selected options select
 	useEffect(() => {
-		if(selectedOptions){
+		if (selectedOptions) {
 			setSelectedOptionsState(selectedOptions)
 		}
 	}, [selectedOptions])

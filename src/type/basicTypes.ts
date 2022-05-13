@@ -260,16 +260,24 @@ export interface projectType {
 	client?: clientType
 	employees?: employeeType[]
 	Added_by?: employeeType
-    name: string
-    start_date: Date
-    deadline: Date
-    project_summary?: string
-    notes?: string
-    project_budget?: number
-    hours_estimate?: number
-    send_task_noti?: boolean
-    project_status?:  'Not Started' | 'In Progress' |'On Hold' | 'Canceled' |'Finished'
-    currency:  'USD' | 'GBP' | 'EUR' | 'INR' | 'VND'
-    Progress: number
-    project_files?: projectFileType[]
+	name: string
+	start_date: Date
+	deadline: Date
+	project_summary?: string
+	notes?: string
+	project_budget?: number
+	hours_estimate?: number
+	send_task_noti?: boolean
+	project_status?: 'Not Started' | 'In Progress' | 'On Hold' | 'Canceled' | 'Finished'
+	currency: 'USD' | 'GBP' | 'EUR' | 'INR' | 'VND'
+	Progress: number
+	project_files?: projectFileType[]
+}
+
+export interface UserAttendance {
+	id: number
+	name: string
+	avatar: string
+	designation: string
+	date: Date
 }

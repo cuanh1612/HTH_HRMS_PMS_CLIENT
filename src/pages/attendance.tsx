@@ -13,28 +13,56 @@ import {
 	Text,
 	useDisclosure,
 	VStack,
-	Input as CInput,
+	Drawer,
+	DrawerOverlay,
+	DrawerContent,
+	DrawerCloseButton,
+	DrawerHeader,
+	DrawerBody,
 } from '@chakra-ui/react'
-import { yupResolver } from '@hookform/resolvers/yup'
 import CheckAttendance from 'components/anttendance/CheckAttendance'
 import Dates from 'components/anttendance/Dates'
+
+// custom form
+import { yupResolver } from '@hookform/resolvers/yup'
+import { useForm } from 'react-hook-form'
+
+// component to set value form
 import { Input } from 'components/form/Input'
 import { Switch } from 'components/form/Switch'
 import TimePicker from 'components/form/TimePicker'
+
+// get layout
 import { ClientLayout } from 'components/layouts'
+
+// check authentication
 import { AuthContext } from 'contexts/AuthContext'
 import { useRouter } from 'next/router'
+
+// query
 import { allAttendancesQuery } from 'queries/attendance'
 import { allLeaveQuery } from 'queries/leave'
+import { allDepartmentsQuery } from 'queries/department'
+
+// mutation
+import { createAttendanceMutation } from 'mutations/attendance'
+
+// hook
 import { useContext, useEffect, useState } from 'react'
-import { useForm } from 'react-hook-form'
+
+// type
 import { IAttendance } from 'type/element/commom'
 import { NextLayout } from 'type/element/layout'
 import { AttendanceForm } from 'type/form/basicFormType'
+import { employeeType, UserAttendance, IOption } from 'type/basicTypes'
+
+// validate and other functions of time
 import { AttendanceValidate } from 'utils/validate'
-import { compareTime, setTime } from 'utils/time'
-import { createAttendanceMutation } from 'mutations/attendance'
-import { employeeType, ITime } from 'type/basicTypes'
+import { compareTime } from 'utils/time'
+
+import DetailAttendance from 'components/modal/DetailAttendance'
+import { Select } from 'components/filter/Select'
+import { IFilter } from 'type/tableTypes'
 
 const attendance: NextLayout = () => {
 	const router = useRouter()
@@ -42,16 +70,17 @@ const attendance: NextLayout = () => {
 	// get date to filter
 	const [dateFilter, setDateFilter] = useState(new Date())
 
-	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
-	// get all attendance
-	const { data: allAttendances, mutate: refetchAttendances } = allAttendancesQuery(
-		isAuthenticated,
-		dateFilter
-	)
-	// get all leaves
-	const { data: allLeaves } = allLeaveQuery(isAuthenticated, dateFilter)
+	// get info user to check attendance
+	const [user, setUser] = useState<UserAttendance>()
+
 	// get last day
 	const [lastDate, setLastDate] = useState(0)
+
+	// set departments to select
+	const [departments, setDepartments] = useState<IOption[]>([])
+
+	// get department id to filter
+	const [departmentSl, setDepartmentSl] = useState<string>()
 
 	// set open modal to check attendance
 	const { isOpen: isOpenInsert, onOpen: onOpenInsert, onClose: onCloseInsert } = useDisclosure()
@@ -59,24 +88,42 @@ const attendance: NextLayout = () => {
 	// set open modal to check attendance
 	const { isOpen: isOpenDetail, onOpen: onOpenDetail, onClose: onCloseDetail } = useDisclosure()
 
-	// get info user to check attendance
-	const [user, setUser] = useState<{
-		id: number
-		name: string
-		avatar: string
-		designation: string
-		date: Date
-	}>()
+	// set open modal to check filter
+	const { isOpen: isOpenFilter, onOpen: onOpenFilter, onClose: onCloseFilter } = useDisclosure()
+
+	// check authenticate
+	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
+
+	// get all attendance
+	const { data: allAttendances, mutate: refetchAttendances } = allAttendancesQuery(
+		isAuthenticated,
+		dateFilter,
+		departmentSl
+	)
+
+	useEffect(()=> {
+		alert(departmentSl)
+	}, [departmentSl])
+
+	// get all attendance
+	const { data: allDepartments, mutate: refetchDepartments } =
+		allDepartmentsQuery(isAuthenticated)
+
+	// get all leaves
+	const { data: allLeaves } = allLeaveQuery(isAuthenticated, dateFilter)
+
+	// function to reset form
+	const resetForm = () => ({
+		late: false,
+		half_day: false,
+		working_from: '',
+		clock_in_time: '',
+		clock_out_time: '',
+	})
 
 	// setForm and submit form ----------------------------------------------------------
 	const formSetting = useForm<AttendanceForm>({
-		defaultValues: {
-			late: false,
-			half_day: false,
-			working_from: '',
-			clock_in_time: '',
-			clock_out_time: '',
-		},
+		defaultValues: resetForm(),
 		resolver: yupResolver(AttendanceValidate),
 	})
 
@@ -89,7 +136,7 @@ const attendance: NextLayout = () => {
 	const onSubmit = (values: AttendanceForm) => {
 		const isOutLessInClock = compareTime(values.clock_in_time, values.clock_out_time)
 		if (isOutLessInClock) {
-			setToast({
+			return setToast({
 				type: 'error',
 				msg: 'Clock-out time cannot be less than clock-in time',
 			})
@@ -100,10 +147,22 @@ const attendance: NextLayout = () => {
 			date: user?.date,
 			employee: user?.id,
 		}
-
 		mutateCorUAttendance(data)
 	}
 
+	// set department to filter
+	useEffect(() => {
+		if (allDepartments?.departments) {
+			const valuesFilter = allDepartments.departments.map(
+				(department): IOption => ({
+					label: department.name,
+					value: String(department.id),
+				})
+			)
+			setDepartments(valuesFilter)
+		}
+	}, [allDepartments])
+	// alert when insert attendance successfully
 	useEffect(() => {
 		if (status == 'success') {
 			setToast({
@@ -112,8 +171,10 @@ const attendance: NextLayout = () => {
 			})
 			refetchAttendances()
 			onCloseInsert()
+			resetForm()
 		}
 	}, [status])
+
 	// check authenticate
 	useEffect(() => {
 		if (isAuthenticated) {
@@ -143,50 +204,13 @@ const attendance: NextLayout = () => {
 			date,
 		})
 
+	const getYearCurrent = () => {
+		return new Date().getFullYear()
+	}
+
 	return (
 		<>
-			<select
-				onChange={(event) => {
-					if (Number(event.target.value) == 0) {
-						setDateFilter(new Date())
-					} else {
-						setDateFilter(
-							(date) => new Date(date.setMonth(Number(event.target.value) - 1))
-						)
-					}
-				}}
-			>
-				<option value={0}>0</option>
-				<option value={1}>1</option>
-				<option value={2}>2</option>
-				<option value={3}>3</option>
-				<option value={4}>4</option>
-				<option value={5}>5</option>
-				<option value={6}>6</option>
-				<option value={7}>7</option>
-				<option value={8}>8</option>
-				<option value={9}>9</option>
-				<option value={10}>10</option>
-				<option value={11}>11</option>
-				<option value={12}>12</option>
-			</select>
-			<select
-				onChange={(event) => {
-					if (Number(event.target.value) == 0) {
-						setDateFilter(new Date())
-					} else {
-						setDateFilter(
-							(date) => new Date(date.setFullYear(Number(event.target.value)))
-						)
-					}
-				}}
-			>
-				<option value={new Date().getFullYear()}>{new Date().getFullYear()}</option>
-				<option value={new Date().getFullYear() - 1}>{new Date().getFullYear() - 1}</option>
-				<option value={new Date().getFullYear() - 2}>{new Date().getFullYear() - 2}</option>
-				<option value={new Date().getFullYear() - 3}>{new Date().getFullYear() - 3}</option>
-				<option value={new Date().getFullYear() - 4}>{new Date().getFullYear() - 4}</option>
-			</select>
+			<Button onClick={onOpenFilter}>Filter</Button>
 			<VStack paddingBottom={'25px'} spacing={5} alignItems={'start'} overflow={'auto'}>
 				<HStack spacing={10} alignItems="center" justifyContent={'space-between'}>
 					<HStack spacing={10}>
@@ -224,6 +248,7 @@ const attendance: NextLayout = () => {
 									clock_in_time: attendance.clock_in_time,
 									clock_out_time: attendance.clock_out_time,
 									half_day: attendance.half_day,
+									late: attendance.late,
 									working_from: attendance.working_from,
 								})
 
@@ -259,6 +284,7 @@ const attendance: NextLayout = () => {
 								<HStack spacing={5}>
 									<CheckAttendance
 										createHandle={(date: Date) => {
+											formSetting.reset(resetForm())
 											setUserHandle(date, employee)
 											onOpenInsert()
 										}}
@@ -373,90 +399,155 @@ const attendance: NextLayout = () => {
 						</ModalFooter>
 					</ModalContent>
 				</Modal>
-
-				<Modal isOpen={isOpenDetail} onClose={onCloseDetail}>
-					<ModalOverlay />
-					<ModalContent maxW={'350px'}>
-						<ModalHeader>
-							Detail{' '}
-							<Text as="span" fontWeight={'normal'}>
-								{user &&
-									new Date(user.date).getDate() +
-										'-' +
-										(new Date(user.date).getMonth() + 1) +
-										'-' +
-										new Date(user.date).getFullYear()}
-							</Text>{' '}
-						</ModalHeader>
-						<ModalCloseButton />
-						<ModalBody>
-							<VStack alignItems={'flex-start'} spacing={5}>
-								<HStack minW={'200px'} alignItems={'flex-start'} spacing={3}>
-									<Avatar name={user?.name} src={user?.avatar} />
-									<Box w={'full'}>
-										<Text fontWeight={'semibold'}>{user?.name}</Text>
-										<Text color={'gray'} fontSize={'14px'}>
-											{user?.designation}
-										</Text>
-									</Box>
-								</HStack>
-								<HStack spacing={5}>
-									<CInput
-										readOnly
-										value={
-											String(formSetting.getValues()['clock_in_time']).split(
-												' '
-											)[1]
-												? String(formSetting.getValues()['clock_in_time'])
-												: setTime(
-														String(
-															formSetting.getValues()['clock_in_time']
-														)
-												  ).time || ''
-										}
-									/>
-									<CInput
-										readOnly
-										value={
-											String(formSetting.getValues()['clock_out_time']).split(
-												' '
-											)[1]
-												? String(formSetting.getValues()['clock_out_time'])
-												: setTime(
-														String(
-															formSetting.getValues()[
-																'clock_out_time'
-															]
-														)
-												  ).time || ''
-										}
-									/>
-								</HStack>
-							</VStack>
-						</ModalBody>
-						<ModalFooter>
-							<Button
-								colorScheme="red"
-								variant={'ghost'}
-								mr={3}
-								onClick={onCloseDetail}
-							>
-								Close
-							</Button>
-							<Button
-								bg={'hu-Green.normal'}
-								onClick={() => {
-									onCloseDetail()
-									onOpenInsert()
-								}}
-								color={'white'}
-							>
-								Update
-							</Button>
-						</ModalFooter>
-					</ModalContent>
-				</Modal>
+				<DetailAttendance
+					isOpenDetail={isOpenDetail}
+					onCloseDetail={() => onCloseDetail()}
+					onOpenInsert={() => onOpenInsert()}
+					user={user}
+					values={formSetting.getValues()}
+				/>
 			</VStack>
+
+			{/* filter */}
+
+			<Drawer isOpen={isOpenFilter} placement="right" onClose={onCloseFilter}>
+				<DrawerOverlay />
+				<DrawerContent>
+					<DrawerCloseButton />
+					<DrawerHeader>Filters</DrawerHeader>
+
+					<DrawerBody>
+						<VStack spacing={5}>
+							<Select
+								options={[
+									{
+										label: 1,
+										value: '1',
+									},
+									{
+										label: 2,
+										value: '2',
+									},
+									{
+										label: 3,
+										value: '3',
+									},
+									{
+										label: 4,
+										value: '4',
+									},
+									{
+										label: 5,
+										value: '5',
+									},
+									{
+										label: 6,
+										value: '6',
+									},
+									{
+										label: 7,
+										value: '7',
+									},
+									{
+										label: 8,
+										value: '8',
+									},
+									{
+										label: 9,
+										value: '9',
+									},
+									{
+										label: 10,
+										value: '10',
+									},
+									{
+										label: 11,
+										value: '11',
+									},
+									{
+										label: 12,
+										value: '12',
+									},
+								]}
+								handleSearch={(data: IFilter) => {
+									if (!data.filterValue) {
+										setDateFilter(
+											(date) => new Date(date.setMonth(new Date().getMonth()))
+										)
+									} else {
+										setDateFilter(
+											(date) =>
+												new Date(
+													date.setMonth(Number(data.filterValue) - 1)
+												)
+										)
+									}
+								}}
+								columnId={'month'}
+								label="Month"
+								placeholder="Select month"
+							/>
+
+							<Select
+								options={[
+									{
+										label: String(getYearCurrent()),
+										value: String(getYearCurrent()),
+									},
+									{
+										label: String(getYearCurrent() - 1),
+										value: String(getYearCurrent() - 1),
+									},
+									{
+										label: String(getYearCurrent() - 2),
+										value: String(getYearCurrent() - 2),
+									},
+									{
+										label: String(getYearCurrent() - 3),
+										value: String(getYearCurrent() - 3),
+									},
+									{
+										label: String(getYearCurrent() - 4),
+										value: String(getYearCurrent() - 4),
+									},
+								]}
+								handleSearch={(data: IFilter) => {
+									if (!data.filterValue) {
+										setDateFilter(
+											(date) =>
+												new Date(date.setFullYear(new Date().getFullYear()))
+										)
+									} else {
+										setDateFilter(
+											(date) =>
+												new Date(date.setFullYear(Number(data.filterValue)))
+										)
+									}
+								}}
+								columnId={'year'}
+								label="Year"
+								placeholder="Select year"
+							/>
+							{departments && (
+								<Select
+									options={departments}
+									handleSearch={(data: IFilter) => {
+										if(!data.filterValue) {
+											setDepartmentSl(undefined)
+										} else {
+											setDepartmentSl(data.filterValue)
+										}
+									}}
+									columnId={'department'}
+									label="Department"
+									placeholder="Select department"
+								/>
+							)}
+
+						</VStack>
+					</DrawerBody>
+				</DrawerContent>
+			</Drawer>
 		</>
 	)
 }

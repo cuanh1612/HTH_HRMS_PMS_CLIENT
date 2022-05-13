@@ -21,13 +21,15 @@ import {
 	Thead,
 	Tr,
 	useDisclosure,
-	VStack,
+	VStack
 } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Input } from 'components/form/Input'
 import Loading from 'components/Loading'
-import Modal from 'components/Modal'
+import Modal from 'components/modal/Modal'
 import { AuthContext } from 'contexts/AuthContext'
+import { convert } from 'html-to-text'
+import jsPDF from 'jspdf'
 import { createSignMutation } from 'mutations/sign'
 import { GetStaticPaths, GetStaticProps } from 'next'
 import Link from 'next/link'
@@ -43,8 +45,6 @@ import { createSignatureForm } from 'type/form/basicFormType'
 import { signBase64Empaty } from 'utils/basicData'
 import { getDataBlob, uploadBase64 } from 'utils/uploadFile'
 import { CreateSignatureValidate } from 'utils/validate'
-import jsPDF from 'jspdf'
-import { convert } from 'html-to-text'
 
 export interface IPublickContractProps {}
 
@@ -105,7 +105,7 @@ export default function PublickContract({}: IPublickContractProps) {
 			} else {
 				//Set img sing
 				setIsUpSignImg(true)
-				const uploadedSign = await uploadBase64(signBase64, [values.email])
+				const uploadedSign = await uploadBase64('sign-huprom', signBase64, [values.email])
 				setIsUpSignImg(false)
 
 				if (contractId) {

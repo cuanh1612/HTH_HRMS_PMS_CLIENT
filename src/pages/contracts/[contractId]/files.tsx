@@ -4,9 +4,10 @@ import {
 	Grid,
 	GridItem,
 	HStack,
-	Img, Text,
+	Img,
+	Text,
 	useDisclosure,
-	VStack
+	VStack,
 } from '@chakra-ui/react'
 import ItemContractFile from 'components/ItemContractFile'
 import ItemFileUpload from 'components/ItemFileUpload'
@@ -178,12 +179,12 @@ export default function Files(props: IFilesProps) {
 			//Set is load upload file
 			setIsLoadUpFiles(true)
 
-			const dataUploadFiles: Array<ICloudinaryImg> = await uploadFile(
-				filesUpload,
-				['contractFile'],
-				false,
-				undefined
-			)
+			const dataUploadFiles: Array<ICloudinaryImg> = await uploadFile({
+				files: filesUpload,
+				tags: ['contractFile'],
+				raw: true,
+				upload_preset: 'contract',
+			})
 
 			//Set is load upload file
 			setIsLoadUpFiles(false)

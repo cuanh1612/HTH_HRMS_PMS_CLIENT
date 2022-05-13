@@ -1,7 +1,7 @@
 import { Box, Button, Grid, GridItem, HStack, Text, useDisclosure, VStack } from '@chakra-ui/react'
 import { Input } from 'components/form/Input'
 import Message from 'components/Message'
-import Modal from 'components/Modal'
+import Modal from 'components/modal/Modal'
 import Receiver from 'components/Reciever'
 import { AuthContext } from 'contexts/AuthContext'
 import { createConversationReplyMutation } from 'mutations/conversationReply'

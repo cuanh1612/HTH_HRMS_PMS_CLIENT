@@ -17,7 +17,7 @@ import 'react-quill/dist/quill.bubble.css'
 import 'react-quill/dist/quill.snow.css'
 import { discussionType, employeeType } from 'type/basicTypes'
 import { updateDiscussionForm } from 'type/form/basicFormType'
-import Modal from './Modal'
+import Modal from './modal/Modal'
 import moment from 'moment'
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })

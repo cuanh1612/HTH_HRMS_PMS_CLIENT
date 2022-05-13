@@ -18,7 +18,7 @@ import { Select } from 'components/form/Select'
 import { Textarea } from 'components/form/Textarea'
 import UploadAvatar from 'components/form/UploadAvatar'
 import Loading from 'components/Loading'
-import Modal from 'components/Modal'
+import Modal from 'components/modal/Modal'
 import { AuthContext } from 'contexts/AuthContext'
 import { createEmployeeMutation } from 'mutations/employee'
 import { useRouter } from 'next/router'
@@ -104,13 +104,13 @@ export default function Employees({ onCloseDrawer }: IEmployeesProps) {
 		if (infoImg) {
 			setLoadingImg(true)
 
-			const dataUploadAvatar: Array<ICloudinaryImg> = await uploadFile(
-				infoImg.files,
-				['avatar'],
-				true,
-				undefined,
-				infoImg.options
-			)
+			const dataUploadAvatar: Array<ICloudinaryImg> = await uploadFile({
+				files:infoImg.files,
+				raw: false,
+				tags: ['avatar'],
+				options: infoImg.options,
+				upload_preset: "huprom-avatar"
+			})
 
 			setLoadingImg(false)
 			

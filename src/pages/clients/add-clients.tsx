@@ -16,7 +16,7 @@ import { Select } from 'components/form/Select'
 import { Textarea } from 'components/form/Textarea'
 import UploadAvatar from 'components/form/UploadAvatar'
 import Loading from 'components/Loading'
-import Modal from 'components/Modal'
+import Modal from 'components/modal/Modal'
 import { AuthContext } from 'contexts/AuthContext'
 import { createClientMutation } from 'mutations/client'
 import { useRouter } from 'next/router'
@@ -87,13 +87,13 @@ export default function AddClient({ onCloseDrawer }: IAddClientProps) {
 		if (infoImg) {
 			setLoadingImg(true)
 
-			const dataUploadAvatar: Array<ICloudinaryImg> = await uploadFile(
-				infoImg.files,
-				['avatar'],
-				true,
-				undefined,
-				infoImg.options
-			)
+			const dataUploadAvatar: Array<ICloudinaryImg> = await uploadFile({
+				files: infoImg.files,
+				tags: ['avatar'],
+				raw: false,
+				upload_preset: 'huprom-avatar',
+				options: infoImg.options,
+			})
 
 			setLoadingImg(false)
 

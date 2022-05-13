@@ -117,3 +117,9 @@ export const AttendanceValidate = yup.object({
 	clock_in_time: yup.string().required('Please, enter clock in'),
 	clock_out_time: yup.string().required('Please, enter clock out'),
 })
+
+export const createProjectValidate = yup.object({
+	name: yup.string().required('Please enter field name event'),
+	start_date: yup.date().required('Please select start on date project'),
+	deadline: yup.date().required('Please select deadline event'),
+})

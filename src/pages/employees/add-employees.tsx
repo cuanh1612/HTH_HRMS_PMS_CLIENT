@@ -24,7 +24,7 @@ import { createEmployeeMutation } from 'mutations/employee'
 import { useRouter } from 'next/router'
 import { allDepartmentsQuery } from 'queries/department'
 import { allDesignationsQuery } from 'queries/designation'
-import { useContext, useEffect, useState } from 'react'
+import { ChangeEvent, useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { AiOutlineCheck, AiOutlineMail, AiOutlinePhone } from 'react-icons/ai'
 import { BsCalendarDate } from 'react-icons/bs'
@@ -402,7 +402,7 @@ export default function Employees({ onCloseDrawer }: IEmployeesProps) {
 								colorScheme={'teal'}
 								name="can_login"
 								defaultChecked={formSetting.getValues('can_login')}
-								onChange={(e) =>
+								onChange={(e: ChangeEvent<HTMLInputElement>) =>
 									formSetting.setValue('can_login', e.target.checked)
 								}
 							>
@@ -417,7 +417,7 @@ export default function Employees({ onCloseDrawer }: IEmployeesProps) {
 								name="can_receive_email"
 								colorScheme={'teal'}
 								defaultChecked={formSetting.getValues('can_receive_email')}
-								onChange={(e) =>
+								onChange={(e: ChangeEvent<HTMLInputElement>) =>
 									formSetting.setValue('can_receive_email', e.target.checked)
 								}
 							>

@@ -15,6 +15,8 @@ import {
 	holidayType,
 	leaveType,
 	leaveTypeType,
+	projectCategoryType,
+	projectType,
 	signType,
 	userType,
 } from './basicTypes'
@@ -127,5 +129,19 @@ export interface eventMutaionResponse {
 	message: string
 	event?: eventType
 	events?: eventType[]
+	[index: string]: any
+}
+
+export interface ProjectCategoryMutaionResponse extends commonResponse {
+	projectCategory?: projectCategoryType
+	projectCategories?: projectCategoryType[]
+}
+
+export interface projectMutaionResponse {
+	code: number
+	success: boolean
+	message: string
+	project?: projectType
+	projects?: projectType[]
 	[index: string]: any
 }

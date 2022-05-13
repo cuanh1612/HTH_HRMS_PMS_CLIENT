@@ -204,7 +204,7 @@ export interface contractFileType {
 }
 
 export interface IOption {
-	value: string
+	value: string | number
 	label: string | ReactNode
 }
 
@@ -236,4 +236,40 @@ export interface ITime {
 	hours: number
 	minutes: number
 	AMOrPM: string
+}
+
+export interface projectCategoryType {
+	id: number
+	name: string
+	[index: string]: any
+}
+
+export interface projectFileType {
+	id: number
+	url: string
+	name: string
+	public_id: string
+	project: projectType
+	createdAt: Date
+}
+
+export interface projectType {
+	id: number
+	project_category?: projectCategoryType
+	department?: departmentType
+	client?: clientType
+	employees?: employeeType[]
+	Added_by?: employeeType
+    name: string
+    start_date: Date
+    deadline: Date
+    project_summary?: string
+    notes?: string
+    project_budget?: number
+    hours_estimate?: number
+    send_task_noti?: boolean
+    project_status?:  'Not Started' | 'In Progress' |'On Hold' | 'Canceled' |'Finished'
+    currency:  'USD' | 'GBP' | 'EUR' | 'INR' | 'VND'
+    Progress: number
+    project_files?: projectFileType[]
 }

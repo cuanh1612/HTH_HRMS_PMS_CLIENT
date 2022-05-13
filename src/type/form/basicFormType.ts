@@ -304,35 +304,65 @@ export type createContractFileForm = {
 }
 
 export type createEventForm = {
-	clientEmails: string[],
-	employeeEmails: string[],
-	repeatEvery?: number,
-	typeRepeat: "Day" | "Week" | "Month" | "Year",
-	cycles?: number,
-	isRepeat: boolean,
-	starts_on_date: Date,
-	ends_on_date: Date,
-	name: string,
-	color: string,
-	where: string,
-	description: string,
-	starts_on_time: string,
+	clientEmails: string[]
+	employeeEmails: string[]
+	repeatEvery?: number
+	typeRepeat: 'Day' | 'Week' | 'Month' | 'Year'
+	cycles?: number
+	isRepeat: boolean
+	starts_on_date: Date
+	ends_on_date: Date
+	name: string
+	color: string
+	where: string
+	description: string
+	starts_on_time: string
 	ends_on_time: string
 }
 
 export type updateEventForm = {
-	clientEmails: string[],
-	employeeEmails: string[],
-	repeatEvery?: number,
-	typeRepeat: "Day" | "Week" | "Month" | "Year",
-	cycles?: number,
-	isRepeat: boolean,
-	starts_on_date: Date,
-	ends_on_date: Date,
-	name: string,
-	color: string,
-	where: string,
-	description: string,
-	starts_on_time: string,
+	clientEmails: string[]
+	employeeEmails: string[]
+	repeatEvery?: number
+	typeRepeat: 'Day' | 'Week' | 'Month' | 'Year'
+	cycles?: number
+	isRepeat: boolean
+	starts_on_date: Date
+	ends_on_date: Date
+	name: string
+	color: string
+	where: string
+	description: string
+	starts_on_time: string
 	ends_on_time: string
+}
+
+export type createProjectFileForm = {
+	public_id: string
+	url: string
+	name: string
+}
+
+export type createProjectForm = {
+	project_category?: number
+	department?: number
+	client?: number
+	employees?: number[]
+	Added_by?: number
+    name: string
+    start_date: Date
+    deadline: Date
+    project_summary?: string
+    notes?: string
+    project_budget?: number
+    hours_estimate?: number
+    send_task_noti?: boolean
+    project_status?:  'Not Started' | 'In Progress' |'On Hold' | 'Canceled' |'Finished'
+    currency:  'USD' | 'GBP' | 'EUR' | 'INR' | 'VND'
+    Progress: number
+    project_files?: createProjectFileForm[]
+}
+
+export type createProjetCategoryForm = {
+	name: string
 }

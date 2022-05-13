@@ -4,29 +4,21 @@ import {
 	Grid,
 	GridItem,
 	HStack,
-	Img,
-	Menu,
-	MenuButton,
-	MenuItem,
-	MenuList,
-	Text,
+	Img, Text,
 	useDisclosure,
-	VStack,
+	VStack
 } from '@chakra-ui/react'
 import ItemContractFile from 'components/ItemContractFile'
 import ItemFileUpload from 'components/ItemFileUpload'
 import Loading from 'components/Loading'
 import { AuthContext } from 'contexts/AuthContext'
-import moment from 'moment'
 import { createContractFileMutation, deleteContractFileMutation } from 'mutations/contractFile'
 import { GetStaticPaths, GetStaticProps } from 'next'
-import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { allContractFilesQuery } from 'queries/contractFile'
 import { useCallback, useContext, useEffect, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
-import { AiOutlineDownload, AiOutlinePlusCircle, AiOutlineSave } from 'react-icons/ai'
-import { BsThreeDotsVertical, BsTrash } from 'react-icons/bs'
+import { AiOutlinePlusCircle, AiOutlineSave } from 'react-icons/ai'
 import { ICloudinaryImg } from 'type/fileType'
 import { dataTypeFile } from 'utils/basicData'
 import { uploadFile } from 'utils/uploadFile'

@@ -22,7 +22,7 @@ import { createClientMutation } from 'mutations/client'
 import { useRouter } from 'next/router'
 import { allClientCategoriesQuery } from 'queries/clientCategory'
 import { allClientSubCategoriesQuery } from 'queries/clientSubCategory'
-import { useContext, useEffect, useState } from 'react'
+import { ChangeEvent, useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { AiOutlineCheck, AiOutlineMail, AiOutlinePhone } from 'react-icons/ai'
 import { FaCity } from 'react-icons/fa'
@@ -372,7 +372,7 @@ export default function AddClient({ onCloseDrawer }: IAddClientProps) {
 							<Checkbox
 								colorScheme={'teal'}
 								isChecked={advancedInfo.can_login}
-								onChange={(e) =>
+								onChange={(e: ChangeEvent<HTMLInputElement>) =>
 									setAdvancedInfo({
 										...advancedInfo,
 										can_login: e.currentTarget.checked,
@@ -389,7 +389,7 @@ export default function AddClient({ onCloseDrawer }: IAddClientProps) {
 							<Checkbox
 								colorScheme={'teal'}
 								isChecked={advancedInfo.can_receive_email}
-								onChange={(e) => {
+								onChange={(e: ChangeEvent<HTMLInputElement>) => {
 									setAdvancedInfo({
 										...advancedInfo,
 										can_receive_email: e.currentTarget.checked,

@@ -27,7 +27,7 @@ import {
 } from 'mutations/department'
 import { useRouter } from 'next/router'
 import { allDepartmentsQuery } from 'queries/department'
-import { ChangeEventHandler, useContext, useEffect, useState } from 'react'
+import { ChangeEvent, ChangeEventHandler, useContext, useEffect, useState } from 'react'
 import { AiOutlineCheck } from 'react-icons/ai'
 import { MdDeleteOutline } from 'react-icons/md'
 
@@ -178,7 +178,7 @@ export default function Department({}: IDepartmentProps) {
 													<EditablePreview />
 													<EditableInput
 														paddingLeft={2}
-														onBlur={(e) => {
+														onBlur={(e: ChangeEvent<HTMLInputElement>) => {
 															onUpdate(
 																department.id,
 																department.name,

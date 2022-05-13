@@ -6,6 +6,7 @@ import {
 	Grid,
 	GridItem,
 	HStack,
+	Img,
 	Text,
 	useDisclosure,
 	VStack,
@@ -16,6 +17,8 @@ import { InputNumber } from 'components/form/InputNumber'
 import { Select } from 'components/form/Select'
 import SelectCustom from 'components/form/SelectCustom'
 import SelectMany from 'components/form/SelectMany'
+import ItemFileUpload from 'components/ItemFileUpload'
+import Loading from 'components/Loading'
 import Modal from 'components/modal/Modal'
 import { AuthContext } from 'contexts/AuthContext'
 import { createProjectMutation } from 'mutations/project'
@@ -25,7 +28,8 @@ import { allClientsQuery } from 'queries/client'
 import { allDepartmentsQuery } from 'queries/department'
 import { allEmployeesQuery } from 'queries/employee'
 import { allProjectCategoriesQuery } from 'queries/projectCategory'
-import { useContext, useEffect, useState } from 'react'
+import { useCallback, useContext, useEffect, useState } from 'react'
+import { useDropzone } from 'react-dropzone'
 import { useForm } from 'react-hook-form'
 import { AiOutlineCheck } from 'react-icons/ai'
 import { BsCalendarDate } from 'react-icons/bs'
@@ -33,8 +37,11 @@ import { MdOutlineDriveFileRenameOutline } from 'react-icons/md'
 import 'react-quill/dist/quill.bubble.css'
 import 'react-quill/dist/quill.snow.css'
 import { IOption } from 'type/basicTypes'
+import { ICloudinaryImg } from 'type/fileType'
 import { createProjectForm } from 'type/form/basicFormType'
 import { dataCurrency } from 'utils/basicData'
+import { generateImgFile } from 'utils/helper'
+import { uploadFile } from 'utils/uploadFile'
 import { createProjectValidate } from 'utils/validate'
 import Department from '../departments'
 import ProjectCategory from '../project-categories'
@@ -67,9 +74,10 @@ export default function AddProject({ onCloseDrawer }: IAddEventProps) {
 	const [notes, setNotes] = useState<string>('')
 	const [optionEmployees, setOptionEmployees] = useState<IOption[]>([])
 	const [optionClients, setOptionClients] = useState<IOption[]>([])
-
 	const [optionProjectCategories, setOptionProjectCategories] = useState<IOption[]>([])
 	const [optionDepartments, setOptionDepartments] = useState<IOption[]>([])
+	const [filesUpload, setFilesUpload] = useState<File[]>([])
+	const [isLoadUpFiles, setIsLoadUpFiles] = useState<boolean>(false)
 
 	//query ----------------------------------------------------------------------
 	// get all employees
@@ -187,6 +195,8 @@ export default function AddProject({ onCloseDrawer }: IAddEventProps) {
 				onCloseDrawer()
 			}
 
+			setFilesUpload([])
+
 			setToast({
 				type: 'success',
 				msg: dataCreProject?.message as string,
@@ -226,10 +236,18 @@ export default function AddProject({ onCloseDrawer }: IAddEventProps) {
 				type: 'warning',
 			})
 		} else {
-			values.project_summary = summary
-			values.notes = notes
+			//Upload contract files
+			const dataUploadFiles: ICloudinaryImg[] | null = await handleUploadFiles()
 
-			mutateCreProject(values)
+			//Check upload files project
+			if (dataUploadFiles && dataUploadFiles?.length > 0) {
+				//Create project
+				values.project_summary = summary
+				values.notes = notes
+				values.project_files = dataUploadFiles
+
+				mutateCreProject(values)
+			}
 		}
 	}
 
@@ -241,6 +259,57 @@ export default function AddProject({ onCloseDrawer }: IAddEventProps) {
 	const onChangeNotes = (value: string) => {
 		setNotes(value)
 	}
+
+	//Setting data file submit
+	const onDrop = useCallback((acceptedFiles: File[]) => {
+		//Check size
+		let isValidSize = true
+		acceptedFiles.forEach((file) => {
+			if (file.size >= 10485760) {
+				isValidSize = false
+			}
+		})
+
+		if (isValidSize) {
+			setFilesUpload(acceptedFiles)
+		} else {
+			setToast({
+				msg: 'Each file should be less than 10MB in size.',
+				type: 'warning',
+			})
+		}
+	}, [])
+
+	//Remove file upload
+	const onRemoveFile = (index: number) => {
+		const newFilesUpload = filesUpload.filter((_, indexFile) => indexFile !== index)
+		setFilesUpload(newFilesUpload)
+	}
+
+	//Handle upload fies
+	const handleUploadFiles = async () => {
+		if (filesUpload.length > 0) {
+			//Set is load upload file
+			setIsLoadUpFiles(true)
+
+			const dataUploadFiles: Array<ICloudinaryImg> = await uploadFile({
+				files: filesUpload,
+				tags: ['projectFile'],
+				raw: true,
+				upload_preset: 'project-file',
+			})
+
+			//Set is load upload file
+			setIsLoadUpFiles(false)
+
+			return dataUploadFiles
+		}
+
+		return null
+	}
+
+	//Setting files uploads -----------------------------------------------------
+	const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop })
 
 	return (
 		<>
@@ -408,6 +477,57 @@ export default function AddProject({ onCloseDrawer }: IAddEventProps) {
 				</Text>
 
 				<Grid templateColumns="repeat(2, 1fr)" gap={6} mt={6}>
+					<GridItem w="100%" colSpan={[2]}>
+						<Text color={'gray.400'} fontWeight={'normal'}>
+							Add Files
+						</Text>
+						<VStack w={'full'} spacing={5} position={'relative'} mt={2}>
+							<VStack
+								align={'center'}
+								w={'full'}
+								border={'4px dotted #009F9D30'}
+								p={10}
+								spacing={10}
+								borderRadius={20}
+								{...getRootProps()}
+							>
+								<Img
+									width={150}
+									height={100}
+									alt="upload_file"
+									src="/assets/uploadFiles.svg"
+								/>
+								<input {...getInputProps()} />
+								{isDragActive ? (
+									<Text fontSize={16} fontWeight={'semibold'} color={'gray'}>
+										Drop the files here ...
+									</Text>
+								) : (
+									<Text fontSize={16} fontWeight={'semibold'} color={'gray'}>
+										Drag your documents, photos, or videos here to start
+										uploading
+									</Text>
+								)}
+							</VStack>
+						</VStack>
+					</GridItem>
+
+					<GridItem w="100%" colSpan={[2]}>
+						{filesUpload.length > 0 && (
+							<VStack w={'full'} px={2}>
+								{filesUpload.map((file, index) => (
+									<ItemFileUpload
+										key={index}
+										src={generateImgFile(file.name)}
+										fileName={file.name}
+										index={index}
+										onRemoveFile={onRemoveFile}
+									/>
+								))}
+							</VStack>
+						)}
+					</GridItem>
+
 					<GridItem w="100%" colSpan={[2, 1]}>
 						<SelectCustom
 							name="currency"
@@ -455,7 +575,7 @@ export default function AddProject({ onCloseDrawer }: IAddEventProps) {
 					Save
 				</Button>
 
-				{/* {statusCreEvent === 'running' && <Loading />} */}
+				{(statusCreProject === 'running' || isLoadUpFiles) && <Loading />}
 			</Box>
 
 			{/* Modal project category and designation */}

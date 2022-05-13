@@ -21,7 +21,7 @@ import { useCallback, useContext, useEffect, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { AiOutlinePlusCircle, AiOutlineSave } from 'react-icons/ai'
 import { ICloudinaryImg } from 'type/fileType'
-import { dataTypeFile } from 'utils/basicData'
+import { generateImgFile } from 'utils/helper'
 import { uploadFile } from 'utils/uploadFile'
 
 export interface IFilesProps {}
@@ -148,18 +148,6 @@ export default function Files(props: IFilesProps) {
 	}, [statusDeleteContractFile])
 
 	//Function --------------------------------------------
-	//Generate img type file
-	const generateImgFile = (nameFile: string) => {
-		const nameSplit = nameFile.split('.')
-		let typeFile = nameSplit[nameSplit.length - 1]
-		console.log(typeFile)
-
-		if (!dataTypeFile.includes(typeFile)) {
-			typeFile = 'other'
-		}
-
-		return `/assets/files/${typeFile}.svg`
-	}
 
 	//Remove file upload
 	const onRemoveFile = (index: number) => {
@@ -197,7 +185,7 @@ export default function Files(props: IFilesProps) {
 
 	//Handle upload files
 	const onUploadFiles = async () => {
-		//Upload avatar
+		//Upload contract files
 		const dataUploadFiles: ICloudinaryImg[] | null = await handleUploadFiles()
 
 		//Check upload files success

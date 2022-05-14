@@ -7,7 +7,7 @@ import {
 	GridItem,
 	Text,
 	useDisclosure,
-	VStack
+	VStack,
 } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
 import CoutrySelector from 'components/form/CountrySelector'
@@ -24,7 +24,7 @@ import { useRouter } from 'next/router'
 import { detailClientQuery } from 'queries/client'
 import { allClientCategoriesQuery } from 'queries/clientCategory'
 import { allClientSubCategoriesQuery } from 'queries/clientSubCategory'
-import { useContext, useEffect, useState } from 'react'
+import { ChangeEvent, useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { AiOutlineCheck, AiOutlineMail, AiOutlinePhone } from 'react-icons/ai'
 import { FaCity } from 'react-icons/fa'
@@ -32,7 +32,7 @@ import { GiMatterStates } from 'react-icons/gi'
 import {
 	MdDriveFileRenameOutline,
 	MdOutlineDriveFileRenameOutline,
-	MdPassword
+	MdPassword,
 } from 'react-icons/md'
 import { SiCurl } from 'react-icons/si'
 import { IOption } from 'type/basicTypes'
@@ -87,10 +87,7 @@ export default function UpdateClient({ onCloseDrawer, clientUpdateId }: IAddClie
 	//Query -------------------------------------------------------------------
 	const { data: dataCategories } = allClientCategoriesQuery()
 	const { data: dataSubCategories } = allClientSubCategoriesQuery()
-	const { data: dataDetailClient } = detailClientQuery(
-		isAuthenticated,
-		clientUpdateId
-	)
+	const { data: dataDetailClient } = detailClientQuery(isAuthenticated, clientUpdateId)
 
 	//mutation ----------------------------------------------------------------
 	const [mutateUpClient, { status: statusUpClient, data: dataUpClient }] =
@@ -106,13 +103,13 @@ export default function UpdateClient({ onCloseDrawer, clientUpdateId }: IAddClie
 		if (infoImg) {
 			setLoadingImg(true)
 
-			const dataUploadAvatar: Array<ICloudinaryImg> = await uploadFile(
-				infoImg.files,
-				['avatar'],
-				true,
-				undefined,
-				infoImg.options
-			)
+			const dataUploadAvatar: Array<ICloudinaryImg> = await uploadFile({
+				files: infoImg.files,
+				tags: ['avatar'],
+				raw: false,
+				upload_preset: 'huprom-avatar',
+				options: infoImg.options,
+			})
 
 			setLoadingImg(false)
 
@@ -287,7 +284,7 @@ export default function UpdateClient({ onCloseDrawer, clientUpdateId }: IAddClie
 				})
 			}
 
-			//Close drawer when using drawer 
+			//Close drawer when using drawer
 			if (onCloseDrawer) {
 				onCloseDrawer()
 			}
@@ -446,7 +443,7 @@ export default function UpdateClient({ onCloseDrawer, clientUpdateId }: IAddClie
 							<Checkbox
 								colorScheme={'teal'}
 								isChecked={advancedInfo.can_login}
-								onChange={(e) =>
+								onChange={(e: ChangeEvent<HTMLInputElement>) =>
 									setAdvancedInfo({
 										...advancedInfo,
 										can_login: e.currentTarget.checked,
@@ -463,7 +460,7 @@ export default function UpdateClient({ onCloseDrawer, clientUpdateId }: IAddClie
 							<Checkbox
 								colorScheme={'teal'}
 								isChecked={advancedInfo.can_receive_email}
-								onChange={(e) => {
+								onChange={(e: ChangeEvent<HTMLInputElement>) => {
 									setAdvancedInfo({
 										...advancedInfo,
 										can_receive_email: e.currentTarget.checked,

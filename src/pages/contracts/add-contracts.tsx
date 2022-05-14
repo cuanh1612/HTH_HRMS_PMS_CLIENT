@@ -117,11 +117,13 @@ export default function AddContract({ onCloseDrawer }: IAddContractProps) {
 			setLoadingImg(true)
 
 			const dataUploadIgm: Array<ICloudinaryImg> = await uploadFile(
-				infoImg.files,
-				['avatar'],
-				true,
-				undefined,
-				infoImg.options
+				{
+					files: infoImg.files,
+					tags: ['avatar'],
+					raw: false,
+					upload_preset: "huprom-avatar",
+					options: infoImg.options
+				}
 			)
 
 			setLoadingImg(false)

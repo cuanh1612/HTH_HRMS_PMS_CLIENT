@@ -267,7 +267,7 @@ export interface projectType {
 	notes?: string
 	project_budget?: number
 	hours_estimate?: number
-	send_task_noti?: boolean
+	send_task_noti: boolean
 	project_status?: 'Not Started' | 'In Progress' | 'On Hold' | 'Canceled' | 'Finished'
 	currency: 'USD' | 'GBP' | 'EUR' | 'INR' | 'VND'
 	Progress: number

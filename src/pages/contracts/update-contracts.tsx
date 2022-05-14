@@ -129,13 +129,13 @@ export default function UpdateContract({ onCloseDrawer, contractIdUpdate }: IUpd
 		if (infoImg) {
 			setLoadingImg(true)
 
-			const dataUploadIgm: Array<ICloudinaryImg> = await uploadFile(
-				infoImg.files,
-				['avatar'],
-				true,
-				undefined,
-				infoImg.options
-			)
+			const dataUploadIgm: Array<ICloudinaryImg> = await uploadFile({
+				files: infoImg.files,
+				raw: true,
+				tags: ['avatar'],
+				upload_preset: 'contract',
+				options: infoImg.options,
+			})
 
 			setLoadingImg(false)
 
@@ -193,7 +193,7 @@ export default function UpdateContract({ onCloseDrawer, contractIdUpdate }: IUpd
 				(contractType) => {
 					return {
 						value: contractType.id.toString(),
-						label: contractType.name
+						label: contractType.name,
 					}
 				}
 			)

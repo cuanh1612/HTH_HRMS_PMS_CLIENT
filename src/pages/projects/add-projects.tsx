@@ -2,6 +2,7 @@ import {
 	Avatar,
 	Box,
 	Button,
+	Checkbox,
 	Divider,
 	Grid,
 	GridItem,
@@ -31,7 +32,7 @@ import { allProjectCategoriesQuery } from 'queries/projectCategory'
 import { useCallback, useContext, useEffect, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { useForm } from 'react-hook-form'
-import { AiOutlineCheck } from 'react-icons/ai'
+import { AiFillCaretDown, AiFillCaretUp, AiOutlineCheck } from 'react-icons/ai'
 import { BsCalendarDate } from 'react-icons/bs'
 import { MdOutlineDriveFileRenameOutline } from 'react-icons/md'
 import 'react-quill/dist/quill.bubble.css'
@@ -48,12 +49,12 @@ import ProjectCategory from '../project-categories'
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
 
-export interface IAddEventProps {
+export interface IAddProjectProps {
 	onCloseDrawer: () => void
 }
 
-export default function AddProject({ onCloseDrawer }: IAddEventProps) {
-	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
+export default function AddProject({ onCloseDrawer }: IAddProjectProps) {
+	const { isAuthenticated, handleLoading, setToast, currentUser } = useContext(AuthContext)
 	const router = useRouter()
 
 	//Setup modal ----------------------------------------------------------------
@@ -69,6 +70,12 @@ export default function AddProject({ onCloseDrawer }: IAddEventProps) {
 		onClose: onCloseDepartment,
 	} = useDisclosure()
 
+	const {
+		isOpen: isOpenOtherDetails,
+		onOpen: onOpenOtherDetails,
+		onClose: onCloseOtherDetails,
+	} = useDisclosure()
+
 	//State ----------------------------------------------------------------------
 	const [summary, setSummary] = useState<string>('')
 	const [notes, setNotes] = useState<string>('')
@@ -78,6 +85,7 @@ export default function AddProject({ onCloseDrawer }: IAddEventProps) {
 	const [optionDepartments, setOptionDepartments] = useState<IOption[]>([])
 	const [filesUpload, setFilesUpload] = useState<File[]>([])
 	const [isLoadUpFiles, setIsLoadUpFiles] = useState<boolean>(false)
+	const [isSendTaskNoti, setIsSendTaskNoti] = useState<boolean>(true)
 
 	//query ----------------------------------------------------------------------
 	// get all employees
@@ -245,6 +253,11 @@ export default function AddProject({ onCloseDrawer }: IAddEventProps) {
 				values.project_summary = summary
 				values.notes = notes
 				values.project_files = dataUploadFiles
+				values.send_task_noti = isSendTaskNoti
+
+				if (currentUser) {
+					values.Added_by = currentUser.id
+				}
 
 				mutateCreProject(values)
 			}
@@ -306,6 +319,16 @@ export default function AddProject({ onCloseDrawer }: IAddEventProps) {
 		}
 
 		return null
+	}
+
+	//Handle trigger other detail
+	const onTriggerOtherDetails = () => {
+		if (isOpenOtherDetails) {
+			setFilesUpload([])
+			onCloseOtherDetails()
+		} else {
+			onOpenOtherDetails()
+		}
 	}
 
 	//Setting files uploads -----------------------------------------------------
@@ -469,95 +492,109 @@ export default function AddProject({ onCloseDrawer }: IAddEventProps) {
 							options={optionEmployees}
 						/>
 					</GridItem>
+
+					<GridItem w="100%" colSpan={[2]}>
+						<Checkbox
+							isChecked={isSendTaskNoti}
+							onChange={() => setIsSendTaskNoti(!isSendTaskNoti)}
+						>
+							Send task notice
+						</Checkbox>
+					</GridItem>
 				</Grid>
 
 				<Divider marginY={6} />
-				<Text fontSize={20} fontWeight={'semibold'}>
-					Other Details
-				</Text>
+				<HStack onClick={onTriggerOtherDetails} cursor={'pointer'}>
+					{isOpenOtherDetails ? <AiFillCaretUp /> : <AiFillCaretDown />}
+					<Text fontSize={20} fontWeight={'semibold'}>
+						Other Details
+					</Text>
+				</HStack>
 
-				<Grid templateColumns="repeat(2, 1fr)" gap={6} mt={6}>
-					<GridItem w="100%" colSpan={[2]}>
-						<Text color={'gray.400'} fontWeight={'normal'}>
-							Add Files
-						</Text>
-						<VStack w={'full'} spacing={5} position={'relative'} mt={2}>
-							<VStack
-								align={'center'}
-								w={'full'}
-								border={'4px dotted #009F9D30'}
-								p={10}
-								spacing={10}
-								borderRadius={20}
-								{...getRootProps()}
-							>
-								<Img
-									width={150}
-									height={100}
-									alt="upload_file"
-									src="/assets/uploadFiles.svg"
-								/>
-								<input {...getInputProps()} />
-								{isDragActive ? (
-									<Text fontSize={16} fontWeight={'semibold'} color={'gray'}>
-										Drop the files here ...
-									</Text>
-								) : (
-									<Text fontSize={16} fontWeight={'semibold'} color={'gray'}>
-										Drag your documents, photos, or videos here to start
-										uploading
-									</Text>
-								)}
-							</VStack>
-						</VStack>
-					</GridItem>
-
-					<GridItem w="100%" colSpan={[2]}>
-						{filesUpload.length > 0 && (
-							<VStack w={'full'} px={2}>
-								{filesUpload.map((file, index) => (
-									<ItemFileUpload
-										key={index}
-										src={generateImgFile(file.name)}
-										fileName={file.name}
-										index={index}
-										onRemoveFile={onRemoveFile}
+				{isOpenOtherDetails && (
+					<Grid templateColumns="repeat(2, 1fr)" gap={6} mt={6}>
+						<GridItem w="100%" colSpan={[2]}>
+							<Text color={'gray.400'} fontWeight={'normal'}>
+								Add Files
+							</Text>
+							<VStack w={'full'} spacing={5} position={'relative'} mt={2}>
+								<VStack
+									align={'center'}
+									w={'full'}
+									border={'4px dotted #009F9D30'}
+									p={10}
+									spacing={10}
+									borderRadius={20}
+									{...getRootProps()}
+								>
+									<Img
+										width={150}
+										height={100}
+										alt="upload_file"
+										src="/assets/uploadFiles.svg"
 									/>
-								))}
+									<input {...getInputProps()} />
+									{isDragActive ? (
+										<Text fontSize={16} fontWeight={'semibold'} color={'gray'}>
+											Drop the files here ...
+										</Text>
+									) : (
+										<Text fontSize={16} fontWeight={'semibold'} color={'gray'}>
+											Drag your documents, photos, or videos here to start
+											uploading
+										</Text>
+									)}
+								</VStack>
 							</VStack>
-						)}
-					</GridItem>
+						</GridItem>
 
-					<GridItem w="100%" colSpan={[2, 1]}>
-						<SelectCustom
-							name="currency"
-							label="Currency"
-							required={false}
-							form={formSetting}
-							options={dataCurrency}
-						/>
-					</GridItem>
+						<GridItem w="100%" colSpan={[2]}>
+							{filesUpload.length > 0 && (
+								<VStack w={'full'} px={2}>
+									{filesUpload.map((file, index) => (
+										<ItemFileUpload
+											key={index}
+											src={generateImgFile(file.name)}
+											fileName={file.name}
+											index={index}
+											onRemoveFile={onRemoveFile}
+										/>
+									))}
+								</VStack>
+							)}
+						</GridItem>
 
-					<GridItem w="100%" colSpan={[2, 1]}>
-						<InputNumber
-							name="project_budget"
-							label="Project Budget"
-							required={false}
-							form={formSetting}
-							min={0}
-						/>
-					</GridItem>
+						<GridItem w="100%" colSpan={[2, 1]}>
+							<SelectCustom
+								name="currency"
+								label="Currency"
+								required={false}
+								form={formSetting}
+								options={dataCurrency}
+							/>
+						</GridItem>
 
-					<GridItem w="100%" colSpan={[2, 1]}>
-						<InputNumber
-							name="hours_estimate"
-							label="Hourse Estimate (In Hours)"
-							required={false}
-							form={formSetting}
-							min={0}
-						/>
-					</GridItem>
-				</Grid>
+						<GridItem w="100%" colSpan={[2, 1]}>
+							<InputNumber
+								name="project_budget"
+								label="Project Budget"
+								required={false}
+								form={formSetting}
+								min={0}
+							/>
+						</GridItem>
+
+						<GridItem w="100%" colSpan={[2, 1]}>
+							<InputNumber
+								name="hours_estimate"
+								label="Hourse Estimate (In Hours)"
+								required={false}
+								form={formSetting}
+								min={0}
+							/>
+						</GridItem>
+					</Grid>
+				)}
 
 				<Button
 					color={'white'}

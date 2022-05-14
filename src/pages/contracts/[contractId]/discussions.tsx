@@ -1,5 +1,3 @@
-export interface IDiscussionProps {}
-
 import { Avatar, Box, Button, HStack, Text, useDisclosure, VStack } from '@chakra-ui/react'
 import DiscussionItem from 'components/Discussion'
 import Loading from 'components/Loading'
@@ -17,12 +15,11 @@ import { AiOutlinePlusCircle, AiOutlineSend } from 'react-icons/ai'
 import 'react-quill/dist/quill.bubble.css'
 import 'react-quill/dist/quill.snow.css'
 import { updateDiscussionForm } from 'type/form/basicFormType'
-import moment from 'moment'
 import { GetStaticPaths, GetStaticProps } from 'next'
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
 
-export default function Discussion(props: IDiscussionProps) {
+export default function Discussion() {
 	const { isAuthenticated, handleLoading, setToast, currentUser, socket } =
 		useContext(AuthContext)
 	const router = useRouter()
@@ -293,7 +290,7 @@ export default function Discussion(props: IDiscussionProps) {
 	)
 }
 
-export const getStaticProps: GetStaticProps = async (contexts) => {
+export const getStaticProps: GetStaticProps = async () => {
 	return {
 		props: {},
 		// Next.js will attempt to re-generate the page:

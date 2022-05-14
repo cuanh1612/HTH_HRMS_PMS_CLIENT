@@ -357,10 +357,26 @@ export type createProjectForm = {
     project_budget?: number
     hours_estimate?: number
     send_task_noti?: boolean
+    currency:  'USD' | 'GBP' | 'EUR' | 'INR' | 'VND'
+    project_files?: createProjectFileForm[]
+}
+
+export type updateProjectForm = {
+	project_category?: number
+	department?: number
+	client?: number
+	Added_by?: number
+    name: string
+    start_date: Date
+    deadline: Date
+    project_summary?: string
+    notes?: string
+    project_budget?: number
+    hours_estimate?: number
+    send_task_noti?: boolean
     project_status?:  'Not Started' | 'In Progress' |'On Hold' | 'Canceled' |'Finished'
     currency:  'USD' | 'GBP' | 'EUR' | 'INR' | 'VND'
     Progress: number
-    project_files?: createProjectFileForm[]
 }
 
 export type createProjetCategoryForm = {

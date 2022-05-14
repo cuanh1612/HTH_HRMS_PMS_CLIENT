@@ -107,11 +107,13 @@ export default function UpdateClient({ onCloseDrawer, clientUpdateId }: IAddClie
 			setLoadingImg(true)
 
 			const dataUploadAvatar: Array<ICloudinaryImg> = await uploadFile(
-				infoImg.files,
-				['avatar'],
-				true,
-				undefined,
-				infoImg.options
+				{
+					files: infoImg.files,
+					raw: false,
+					tags: ['avatar'],
+					options: infoImg.options,
+					upload_preset: 'huprom-avatar'
+				}
 			)
 
 			setLoadingImg(false)

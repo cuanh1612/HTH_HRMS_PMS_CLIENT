@@ -24,10 +24,8 @@ import { ICloudinaryImg } from 'type/fileType'
 import { generateImgFile } from 'utils/helper'
 import { uploadFile } from 'utils/uploadFile'
 
-export interface IFilesProps {}
-
-export default function Files(props: IFilesProps) {
-	const { isAuthenticated, handleLoading, setToast, currentUser, socket } =
+export default function Files() {
+	const { isAuthenticated, handleLoading, setToast, socket } =
 		useContext(AuthContext)
 	const router = useRouter()
 	const { contractId } = router.query
@@ -322,7 +320,7 @@ export default function Files(props: IFilesProps) {
 	)
 }
 
-export const getStaticProps: GetStaticProps = async (contexts) => {
+export const getStaticProps: GetStaticProps = async () => {
 	return {
 		props: {},
 		// Next.js will attempt to re-generate the page:

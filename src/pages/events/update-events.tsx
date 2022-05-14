@@ -17,9 +17,8 @@ import { BsCalendarDate } from 'react-icons/bs'
 import { MdOutlineDriveFileRenameOutline, MdPlace } from 'react-icons/md'
 import 'react-quill/dist/quill.bubble.css'
 import 'react-quill/dist/quill.snow.css'
-import { IOption, ITime } from 'type/basicTypes'
+import { IOption } from 'type/basicTypes'
 import { updateEventForm } from 'type/form/basicFormType'
-import { setTime } from 'utils/time'
 import { updateEventValidate } from 'utils/validate'
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })

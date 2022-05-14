@@ -1,125 +1,112 @@
-import { Avatar, Box, Button, Grid, GridItem, HStack, Text, VStack } from '@chakra-ui/react'
+import {
+	Avatar,
+	Box,
+	Button,
+	Checkbox,
+	Divider,
+	Grid,
+	GridItem,
+	HStack,
+	Slider,
+	SliderFilledTrack,
+	SliderMark,
+	SliderThumb,
+	SliderTrack,
+	Text,
+	useDisclosure,
+	VStack,
+} from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Input } from 'components/form/Input'
+import { InputNumber } from 'components/form/InputNumber'
+import { Select } from 'components/form/Select'
+import SelectCustom from 'components/form/SelectCustom'
 import SelectMany from 'components/form/SelectMany'
-import TimePicker from 'components/form/TimePicker'
 import Loading from 'components/Loading'
+import Modal from 'components/modal/Modal'
 import { AuthContext } from 'contexts/AuthContext'
-import { updateEventMutation } from 'mutations/event'
+import { createProjectMutation, updateProjectMutation } from 'mutations/project'
 import dynamic from 'next/dynamic'
+import { useRouter } from 'next/router'
 import { allClientsQuery } from 'queries/client'
+import { allDepartmentsQuery } from 'queries/department'
 import { allEmployeesQuery } from 'queries/employee'
-import { detailEventQuery } from 'queries/event'
+import { detailProjectQuery } from 'queries/project'
+import { allProjectCategoriesQuery } from 'queries/projectCategory'
 import { useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { AiOutlineBgColors, AiOutlineCheck } from 'react-icons/ai'
+import { AiOutlineCheck } from 'react-icons/ai'
 import { BsCalendarDate } from 'react-icons/bs'
-import { MdOutlineDriveFileRenameOutline, MdPlace } from 'react-icons/md'
+import { MdOutlineDriveFileRenameOutline } from 'react-icons/md'
 import 'react-quill/dist/quill.bubble.css'
 import 'react-quill/dist/quill.snow.css'
-import { IOption, ITime } from 'type/basicTypes'
-import { updateEventForm } from 'type/form/basicFormType'
-import { setTime } from 'utils/time'
-import { updateEventValidate } from 'utils/validate'
+import { IOption } from 'type/basicTypes'
+import { createProjectForm, updateProjectForm } from 'type/form/basicFormType'
+import { dataCurrency, dataProjectStatus } from 'utils/basicData'
+import { createProjectValidate } from 'utils/validate'
+import Department from '../departments'
+import ProjectCategory from '../project-categories'
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
 
-export interface IUpdateEventProps {
+export interface IUpdateProjectProps {
 	onCloseDrawer?: () => void
-	eventIdUpdate: number | null
+	projectIdUpdate: number | null
 }
 
-export default function UpdateEvent({ onCloseDrawer, eventIdUpdate }: IUpdateEventProps) {
+export default function UpdateProject({ onCloseDrawer, projectIdUpdate }: IUpdateProjectProps) {
 	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
+	const router = useRouter()
+
+	//Setup modal ----------------------------------------------------------------
+	const {
+		isOpen: isOpenProjectCategory,
+		onOpen: onOpenProjectCategory,
+		onClose: onCloseProjectCategory,
+	} = useDisclosure()
+
+	const {
+		isOpen: isOpenDepartment,
+		onOpen: onOpenDepartment,
+		onClose: onCloseDepartment,
+	} = useDisclosure()
 
 	//State ----------------------------------------------------------------------
-	const [description, setDescription] = useState<string>('')
-	const [optionEmployees, setOptionEmployees] = useState<IOption[]>([])
+	const [summary, setSummary] = useState<string>('')
+	const [notes, setNotes] = useState<string>('')
 	const [optionClients, setOptionClients] = useState<IOption[]>([])
-	const [selectedOptionEmployees, setSelectedOptionEmployees] = useState<IOption[]>([])
-	const [selectedOptionClients, setSelectedOptionClients] = useState<IOption[]>([])
+	const [optionProjectCategories, setOptionProjectCategories] = useState<IOption[]>([])
+	const [optionDepartments, setOptionDepartments] = useState<IOption[]>([])
+	const [isSendTaskNoti, setIsSendTaskNoti] = useState<boolean>(true)
 
-	//Query ----------------------------------------------------------------------
-	const { data: dataDetailEvent } = detailEventQuery(isAuthenticated, eventIdUpdate)
-
-	// get all employees
-	const { data: allEmployees } = allEmployeesQuery(isAuthenticated)
-
+	//query ----------------------------------------------------------------------
 	// get all clients
 	const { data: allClients } = allClientsQuery(isAuthenticated)
 
+	// get all project categories
+	const { data: allProjectCategories } = allProjectCategoriesQuery(isAuthenticated)
+
+	// get all department
+	const { data: allDepartments } = allDepartmentsQuery(isAuthenticated)
+
+	// get detail project
+	const { data: dataDetailProject } = detailProjectQuery(isAuthenticated, projectIdUpdate)
+
 	//mutation -------------------------------------------------------------------
-	const [mutateUpEvent, { status: statusUpEvent, data: dataUpEvent }] =
-		updateEventMutation(setToast)
+	const [mutateUpProject, { status: statusUpProject, data: dataUpProject }] =
+		updateProjectMutation(setToast)
 
-	// setForm and submit form create new contract -------------------------------
-	const formSetting = useForm<updateEventForm>({
-		defaultValues: {
-			name: '',
-			color: '#FF0000',
-			where: '',
-			starts_on_date: undefined,
-			ends_on_date: undefined,
-			employeeEmails: [],
-			clientEmails: [],
-			typeRepeat: undefined,
-			starts_on_time: '',
-			ends_on_time: '',
-		},
-		resolver: yupResolver(updateEventValidate),
-	})
-
-	const { handleSubmit } = formSetting
-
-
-	//Onsubmit handle update event
-	const onSubmit = async (values: updateEventForm) => {
-		if (!description) {
-			setToast({
-				msg: 'Please enter field description',
-				type: 'warning',
-			})
+	//User effect ---------------------------------------------------------------
+	//Handle check loged in
+	useEffect(() => {
+		if (isAuthenticated) {
+			handleLoading(false)
 		} else {
-			if (eventIdUpdate) {
-				mutateUpEvent({
-					eventId: eventIdUpdate,
-					inputUpdate: values,
-				})
-			} else {
-				setToast({
-					msg: 'Not found event to update',
-					type: 'warning',
-				})
+			if (isAuthenticated === false) {
+				router.push('/login')
 			}
 		}
-	}
-
-	//Set data option employees state
-	useEffect(() => {
-		if (allEmployees && allEmployees.employees) {
-			let newOptionEmployees: IOption[] = []
-
-			allEmployees.employees.map((employee) => {
-				newOptionEmployees.push({
-					label: (
-						<>
-							<HStack>
-								<Avatar
-									size={'xs'}
-									name={employee.name}
-									src={employee.avatar?.url}
-								/>
-								<Text>{employee.email}</Text>
-							</HStack>
-						</>
-					),
-					value: employee.email,
-				})
-			})
-
-			setOptionEmployees(newOptionEmployees)
-		}
-	}, [allEmployees])
+	}, [isAuthenticated])
 
 	//Set data option clients state
 	useEffect(() => {
@@ -136,7 +123,7 @@ export default function UpdateEvent({ onCloseDrawer, eventIdUpdate }: IUpdateEve
 							</HStack>
 						</>
 					),
-					value: client.email,
+					value: client.id,
 				})
 			})
 
@@ -144,9 +131,38 @@ export default function UpdateEvent({ onCloseDrawer, eventIdUpdate }: IUpdateEve
 		}
 	}, [allClients])
 
+	//Set sate option when have data all project categories
+	useEffect(() => {
+		if (allProjectCategories?.projectCategories) {
+			const newOptionProjectCategories: IOption[] =
+				allProjectCategories.projectCategories.map((projectCategory) => {
+					return {
+						value: projectCategory.id,
+						label: projectCategory.name,
+					}
+				})
+
+			setOptionProjectCategories(newOptionProjectCategories)
+		}
+	}, [allProjectCategories])
+
+	//Set sate option when have data all departments
+	useEffect(() => {
+		if (allDepartments?.departments) {
+			const newOptionDepartments: IOption[] = allDepartments.departments.map((department) => {
+				return {
+					value: department.id,
+					label: department.name,
+				}
+			})
+
+			setOptionDepartments(newOptionDepartments)
+		}
+	}, [allDepartments])
+
 	//Note when request success
 	useEffect(() => {
-		if (statusUpEvent === 'success') {
+		if (statusUpProject === 'success') {
 			//Close drawer when using drawer
 			if (onCloseDrawer) {
 				onCloseDrawer()
@@ -154,106 +170,83 @@ export default function UpdateEvent({ onCloseDrawer, eventIdUpdate }: IUpdateEve
 
 			setToast({
 				type: 'success',
-				msg: dataUpEvent?.message as string,
+				msg: dataUpProject?.message as string,
 			})
 		}
-	}, [statusUpEvent])
+	}, [statusUpProject])
 
-	//Chane data form when have data detail event
+	//Set again data form when have detail data project
 	useEffect(() => {
-		if (dataDetailEvent && dataDetailEvent.event) {
-			//Set data selected option employee
-			if (dataDetailEvent.event.employees) {
-				let newSelectedOptionEmployees: IOption[] = []
+		if (dataDetailProject?.project) {
+			setSummary(dataDetailProject.project.project_summary || '')
+			setNotes(dataDetailProject.project.notes || '')
+			setIsSendTaskNoti(dataDetailProject.project.send_task_noti)
 
-				dataDetailEvent.event.employees.map((employee) => {
-					newSelectedOptionEmployees.push({
-						label: (
-							<>
-								<HStack>
-									<Avatar size={'xs'} name={employee.name} src={employee.avatar?.url} />
-									<Text>{employee.email}</Text>
-								</HStack>
-							</>
-						),
-						value: employee.email,
-					})
-				})
-
-				setSelectedOptionEmployees(newSelectedOptionEmployees)
-			}
-
-			//Set data selected option clients
-			if (dataDetailEvent.event.clients) {
-				let newSelectedOptionClients: IOption[] = []
-
-				dataDetailEvent.event.clients.map((client) => {
-					newSelectedOptionClients.push({
-						label: (
-							<>
-								<HStack>
-									<Avatar size={'xs'} name={client.name} src={client.avatar?.url} />
-									<Text>{client.email}</Text>
-								</HStack>
-							</>
-						),
-						value: client.email,
-					})
-				})
-
-				setSelectedOptionClients(newSelectedOptionClients)
-			}
-
-			if (allClients && allClients.clients) {
-				let newOptionClients: IOption[] = []
-
-				allClients.clients.map((client) => {
-					newOptionClients.push({
-						label: (
-							<>
-								<HStack>
-									<Avatar
-										size={'xs'}
-										name={client.name}
-										src={client.avatar?.url}
-									/>
-									<Text>{client.email}</Text>
-								</HStack>
-							</>
-						),
-						value: client.email,
-					})
-				})
-
-				setOptionClients(newOptionClients)
-			}
-
-			//Set date description
-			setDescription(dataDetailEvent.event.description)
-		
-			//set data form
 			formSetting.reset({
-				name: dataDetailEvent.event.name,
-				color: dataDetailEvent.event.color,
-				where: dataDetailEvent.event.where,
-				starts_on_date: dataDetailEvent.event.starts_on_date,
-				ends_on_date: dataDetailEvent.event.ends_on_date,
-				employeeEmails:
-					dataDetailEvent.event.employees?.map((employee) => employee.email) || [],
-				clientEmails: dataDetailEvent.event.clients?.map((client) => client.email) || [],
-				starts_on_time: dataDetailEvent.event.starts_on_time,
-				ends_on_time: dataDetailEvent.event.ends_on_time,
+				name: dataDetailProject.project.name,
+				start_date: dataDetailProject.project.start_date,
+				deadline: dataDetailProject.project.deadline,
+				project_category: dataDetailProject.project.project_category?.id,
+				department: dataDetailProject.project.department?.id,
+				client: dataDetailProject.project.client?.id,
+				currency: dataDetailProject.project.currency,
+				project_budget: dataDetailProject.project.project_budget,
+				hours_estimate: dataDetailProject.project.hours_estimate,
+				project_status: dataDetailProject.project.project_status,
 			})
 		}
-	}, [dataDetailEvent])
+	}, [dataDetailProject])
 
-	useEffect(()=> {
-		console.log(formSetting.getValues())
-	}, [formSetting])
+	// setForm and submit form update new project -------------------------------
+	const formSetting = useForm<updateProjectForm>({
+		defaultValues: {
+			name: '',
+			start_date: undefined,
+			deadline: undefined,
+			project_category: undefined,
+			department: undefined,
+			client: undefined,
+			currency: undefined,
+			project_budget: 0,
+			hours_estimate: 0,
+			project_status: undefined,
+		},
+		resolver: yupResolver(createProjectValidate),
+	})
+
+	const { handleSubmit } = formSetting
+
+	const onSubmit = async (values: updateProjectForm) => {
+		if (new Date(values.deadline) < new Date(values.start_date)) {
+			setToast({
+				msg: 'The deadline time must be greater than the project start date',
+				type: 'warning',
+			})
+		} else if (!projectIdUpdate) {
+			setToast({
+				msg: 'Not found project to update',
+				type: 'warning',
+			})
+		} else {
+			//Update project
+			values.project_summary = summary
+			values.notes = notes
+			values.send_task_noti = isSendTaskNoti
+
+			mutateUpProject({
+				inputUpdate: values,
+				projectId: projectIdUpdate,
+			})
+		}
+	}
 
 	//Funtion -------------------------------------------------------------------
-	const onChangeDescription = (value: string) => {
-		setDescription(value)
+	const onChangeSummary = (value: string) => {
+		setSummary(value)
+	}
+
+	const onChangeNotes = (value: string) => {
+		setNotes(value)
 	}
 
 	return (
@@ -263,7 +256,7 @@ export default function UpdateEvent({ onCloseDrawer, eventIdUpdate }: IUpdateEve
 					<GridItem w="100%" colSpan={[2, 1]}>
 						<Input
 							name="name"
-							label="Event Name"
+							label="Project Name"
 							icon={
 								<MdOutlineDriveFileRenameOutline
 									fontSize={'20px'}
@@ -272,7 +265,7 @@ export default function UpdateEvent({ onCloseDrawer, eventIdUpdate }: IUpdateEve
 								/>
 							}
 							form={formSetting}
-							placeholder="Enter Event Name"
+							placeholder="Write a project name"
 							type="text"
 							required
 						/>
@@ -280,33 +273,67 @@ export default function UpdateEvent({ onCloseDrawer, eventIdUpdate }: IUpdateEve
 
 					<GridItem w="100%" colSpan={[2, 1]}>
 						<Input
-							name="color"
-							label="Label Color"
-							icon={
-								<AiOutlineBgColors fontSize={'20px'} color="gray" opacity={0.6} />
-							}
+							name="start_date"
+							label="Start Date"
+							icon={<BsCalendarDate fontSize={'20px'} color="gray" opacity={0.6} />}
 							form={formSetting}
-							type="color"
+							type="date"
 							required
 						/>
 					</GridItem>
 
 					<GridItem w="100%" colSpan={[2, 1]}>
 						<Input
-							name="where"
-							label="Where"
-							icon={<MdPlace fontSize={'20px'} color="gray" opacity={0.6} />}
+							name="deadline"
+							label="Deadline"
+							icon={<BsCalendarDate fontSize={'20px'} color="gray" opacity={0.6} />}
 							form={formSetting}
-							type="text"
-							placeholder="Enter Event place"
+							type="date"
 							required
+						/>
+					</GridItem>
+
+					<GridItem w="100%" colSpan={[2, 1]}>
+						<Select
+							name="project_category"
+							label="Project Category"
+							required={false}
+							form={formSetting}
+							placeholder={'Select Project Category'}
+							options={optionProjectCategories}
+							isModal={true}
+							onOpenModal={onOpenProjectCategory}
+						/>
+					</GridItem>
+
+					<GridItem w="100%" colSpan={[2, 1]}>
+						<Select
+							name="department"
+							label="Department"
+							required={false}
+							form={formSetting}
+							placeholder={'Select Project Category'}
+							options={optionDepartments}
+							isModal={true}
+							onOpenModal={onOpenDepartment}
+						/>
+					</GridItem>
+
+					<GridItem w="100%" colSpan={[2, 1]}>
+						<SelectCustom
+							name="client"
+							label="Client"
+							required={false}
+							form={formSetting}
+							placeholder={'Select Project Category'}
+							options={optionClients}
 						/>
 					</GridItem>
 
 					<GridItem w="100%" colSpan={2}>
 						<VStack align={'start'}>
 							<Text fontWeight={'normal'} color={'gray.400'}>
-								Description
+								Project Summary
 							</Text>
 							<ReactQuill
 								placeholder="Enter you text"
@@ -331,74 +358,129 @@ export default function UpdateEvent({ onCloseDrawer, eventIdUpdate }: IUpdateEve
 										['clean'], // remove formatting button
 									],
 								}}
-								value={description}
-								onChange={onChangeDescription}
+								value={summary}
+								onChange={onChangeSummary}
+							/>
+						</VStack>
+					</GridItem>
+
+					<GridItem w="100%" colSpan={2}>
+						<VStack align={'start'}>
+							<Text fontWeight={'normal'} color={'gray.400'}>
+								Notes
+							</Text>
+							<ReactQuill
+								placeholder="Enter you text"
+								modules={{
+									toolbar: [
+										['bold', 'italic', 'underline', 'strike'], // toggled buttons
+										['blockquote', 'code-block'],
+
+										[{ header: 1 }, { header: 2 }], // custom button values
+										[{ list: 'ordered' }, { list: 'bullet' }],
+										[{ script: 'sub' }, { script: 'super' }], // superscript/subscript
+										[{ indent: '-1' }, { indent: '+1' }], // outdent/indent
+										[{ direction: 'rtl' }], // text direction
+
+										[{ size: ['small', false, 'large', 'huge'] }], // custom dropdown
+										[{ header: [1, 2, 3, 4, 5, 6, false] }],
+
+										[{ color: [] }, { background: [] }], // dropdown with defaults from theme
+										[{ font: [] }],
+										[{ align: [] }],
+
+										['clean'], // remove formatting button
+									],
+								}}
+								value={notes}
+								onChange={onChangeNotes}
 							/>
 						</VStack>
 					</GridItem>
 
 					<GridItem w="100%" colSpan={[2, 1]}>
-						<Input
-							name="starts_on_date"
-							label="Start On Date"
-							icon={<BsCalendarDate fontSize={'20px'} color="gray" opacity={0.6} />}
+						<SelectCustom
+							name="project_status"
+							label="Project Status"
+							required={false}
 							form={formSetting}
-							type="date"
-							required
+							options={dataProjectStatus}
 						/>
 					</GridItem>
 
 					<GridItem w="100%" colSpan={[2, 1]}>
-						<TimePicker
-							form={formSetting}
-							name={'starts_on_time'}
-							label={'Starts On Time'}
-							required
-							timeInit={formSetting.getValues()['starts_on_time']}
-						/>
-					</GridItem>
-
-					<GridItem w="100%" colSpan={[2, 1]}>
-						<Input
-							name="ends_on_date"
-							label="Ends On Date"
-							icon={<BsCalendarDate fontSize={'20px'} color="gray" opacity={0.6} />}
-							form={formSetting}
-							type="date"
-							required
-						/>
-					</GridItem>
-
-					<GridItem w="100%" colSpan={[2, 1]}>
-						<TimePicker
-							form={formSetting}
-							name={'ends_on_time'}
-							label={'Ends On Time'}
-							required
-							timeInit={formSetting.getValues()['ends_on_time']}
-						/>
+						<Text fontWeight={'normal'} color={'gray.400'}>
+							Project Completion Status
+						</Text>
+						<Slider
+							mt={2}
+							id="slider"
+							defaultValue={dataDetailProject?.project?.Progress || 0}
+							min={0}
+							max={100}
+							colorScheme="teal"
+							isDisabled={true}
+						>
+							<SliderMark value={25} mt="1" ml="-2.5" fontSize="sm">
+								25%
+							</SliderMark>
+							<SliderMark value={50} mt="1" ml="-2.5" fontSize="sm">
+								50%
+							</SliderMark>
+							<SliderMark value={75} mt="1" ml="-2.5" fontSize="sm">
+								75%
+							</SliderMark>
+							<SliderTrack>
+								<SliderFilledTrack />
+							</SliderTrack>
+						</Slider>
 					</GridItem>
 
 					<GridItem w="100%" colSpan={[2]}>
-						<SelectMany
+						<Checkbox
+							isChecked={isSendTaskNoti}
+							onChange={() => setIsSendTaskNoti(!isSendTaskNoti)}
+						>
+							Send task notice
+						</Checkbox>
+					</GridItem>
+				</Grid>
+
+				<Divider marginY={6} />
+				<HStack cursor={'pointer'}>
+					<Text fontSize={20} fontWeight={'semibold'}>
+						Other Details
+					</Text>
+				</HStack>
+
+				<Grid templateColumns="repeat(2, 1fr)" gap={6}>
+					<GridItem w="100%" colSpan={[2, 1]}>
+						<SelectCustom
+							name="currency"
+							label="Currency"
+							required={false}
 							form={formSetting}
-							label={'Select Employee'}
-							name={'employeeEmails'}
-							required={true}
-							options={optionEmployees}
-							defaultValues={formSetting.getValues('employeeEmails')}
-							selectedOptions={selectedOptionEmployees}
+							options={dataCurrency}
 						/>
 					</GridItem>
 
-					<GridItem w="100%" colSpan={[2]}>
-						<SelectMany
+					<GridItem w="100%" colSpan={[2, 1]}>
+						<InputNumber
+							name="project_budget"
+							label="Project Budget"
+							required={false}
 							form={formSetting}
-							label={'Select Client'}
-							name={'clientEmails'}
-							required={true}
-							options={optionClients}
-							selectedOptions={selectedOptionClients}
+							min={0}
+						/>
+					</GridItem>
+
+					<GridItem w="100%" colSpan={[2, 1]}>
+						<InputNumber
+							name="hours_estimate"
+							label="Hourse Estimate (In Hours)"
+							required={false}
+							form={formSetting}
+							min={0}
 						/>
 					</GridItem>
 				</Grid>
@@ -419,8 +501,34 @@ export default function UpdateEvent({ onCloseDrawer, eventIdUpdate }: IUpdateEve
 					Save
 				</Button>
 
-				{statusUpEvent === 'running' && <Loading />}
+				{statusUpProject === 'running' && <Loading />}
 			</Box>
+
+			{/* Modal project category and designation */}
+			<Modal
+				size="3xl"
+				isOpen={isOpenProjectCategory}
+				onOpen={onOpenProjectCategory}
+				onClose={onCloseProjectCategory}
+				title="Project Category"
+			>
+				<Text>
+					<ProjectCategory />
+				</Text>
+			</Modal>
+
+			{/* Modal department and designation */}
+			<Modal
+				size="3xl"
+				isOpen={isOpenDepartment}
+				onOpen={onOpenDepartment}
+				onClose={onCloseDepartment}
+				title="Department"
+			>
+				<Text>
+					<Department />
+				</Text>
+			</Modal>
 		</>
 	)
 }

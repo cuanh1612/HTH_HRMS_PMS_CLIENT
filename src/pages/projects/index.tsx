@@ -4,7 +4,7 @@ import { AuthContext } from 'contexts/AuthContext'
 import { useRouter } from 'next/router'
 import { useContext, useEffect, useState } from 'react'
 import AddProject from './add-projects'
-import UpdateEvent from './update-projects'
+import UpdateProject from './update-projects'
 
 export interface IProjectProps {}
 
@@ -13,7 +13,7 @@ export default function Event({}: IProjectProps) {
 	const router = useRouter()
 
 	//State ---------------------------------------------------------------------
-	const [projectIdUpdate, setProjectIdUpdate] = useState<number | null>(1)
+	const [projectIdUpdate, setProjectIdUpdate] = useState<number | null>(12)
 
 	//Setup drawer --------------------------------------------------------------
 	const { isOpen: isOpenAdd, onOpen: onOpenAdd, onClose: onCloseAdd } = useDisclosure()
@@ -43,9 +43,9 @@ export default function Event({}: IProjectProps) {
 			<Drawer size="xl" title="Add Project" onClose={onCloseAdd} isOpen={isOpenAdd}>
 				<AddProject onCloseDrawer={onCloseAdd} />
 			</Drawer>
-			{/* <Drawer size="xl" title="Update Event" onClose={onCloseUpdate} isOpen={isOpenUpdate}>
-				<UpdateEvent onCloseDrawer={onCloseUpdate} eventIdUpdate={projectIdUpdate} />
-			</Drawer> */}
+			<Drawer size="xl" title="Update Project" onClose={onCloseUpdate} isOpen={isOpenUpdate}>
+				<UpdateProject onCloseDrawer={onCloseUpdate} projectIdUpdate={projectIdUpdate} />
+			</Drawer>
 		</>
 	)
 }

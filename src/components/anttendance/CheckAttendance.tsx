@@ -1,10 +1,11 @@
 import { HStack, IconButton } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
+import { AiTwotoneStar } from 'react-icons/ai'
 import { BiCheck } from 'react-icons/bi'
 import { BsDash } from 'react-icons/bs'
 import { IoMdClose } from 'react-icons/io'
 import { IoAirplaneOutline } from 'react-icons/io5'
-import { leaveType } from 'type/basicTypes'
+import { holidayType, leaveType } from 'type/basicTypes'
 import { IAttendance } from 'type/element/commom'
 
 interface ICheckAttendance {
@@ -18,6 +19,8 @@ interface ICheckAttendance {
 	createHandle: any
 	// lọc theo tháng, năm
 	dateFilter: Date
+
+	holidays?: holidayType[]
 }
 
 export default function CheckAttendance({
@@ -26,9 +29,10 @@ export default function CheckAttendance({
 	leaveDates,
 	createHandle,
 	dateFilter,
+	holidays,
 }: ICheckAttendance) {
 	const [dates, setDates] = useState<number[]>([])
-	const [now, setNow] = useState<Date>(new Date())
+	const [now] = useState<Date>(new Date())
 
 	console.log(new Date(dateFilter).toLocaleDateString())
 
@@ -58,19 +62,30 @@ export default function CheckAttendance({
 					)
 				}) as IAttendance
 
-				const checkLeave = leaveDates
-					? leaveDates.some(function (value) {
-							const leaveDate = new Date(value.date)
-							return (
-								date == leaveDate.getDate() &&
-								leaveDate.getMonth() == dateFilter.getMonth() &&
-								leaveDate.getFullYear() == dateFilter.getFullYear()
-							)
-					  })
-					: []
+				const checkLeave =
+					leaveDates &&
+					leaveDates.some(function (value) {
+						const leaveDate = new Date(value.date)
+						return (
+							date == leaveDate.getDate() &&
+							leaveDate.getMonth() == dateFilter.getMonth() &&
+							leaveDate.getFullYear() == dateFilter.getFullYear()
+						)
+					})
+
+				const checkHoliday =
+					holidays &&
+					holidays.some(function (value) {
+						console.log(value, new Date(value.holiday_date))
+						const holydayDate = new Date(value.holiday_date)
+						return (
+							date == holydayDate.getDate() &&
+							holydayDate.getMonth() == dateFilter.getMonth() &&
+							holydayDate.getFullYear() == dateFilter.getFullYear()
+						)
+					})
 
 				// leave
-
 				if (checkLeave) {
 					return (
 						<HStack
@@ -85,6 +100,26 @@ export default function CheckAttendance({
 							justifyContent={'center'}
 						>
 							<IoAirplaneOutline />
+						</HStack>
+					)
+				}
+
+				// holiday
+				if (checkHoliday) {
+					return (
+						<HStack
+							key={date}
+							h={'30px'}
+							minW={'30px'}
+							bg={'yellow.200'}
+							userSelect={'all'}
+							color={'yellow.500'}
+							aria-label="Search database"
+							borderRadius={'5px'}
+							justifyContent={'center'}
+							
+						>
+							<AiTwotoneStar />
 						</HStack>
 					)
 				}

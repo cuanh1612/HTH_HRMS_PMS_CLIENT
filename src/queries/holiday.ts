@@ -13,3 +13,14 @@ export const detailHolidayQuery = (holidayId: number | null) => {
 		}
 	)
 }
+
+export const allHolidaysQuery = () => {
+	return useSWR<holidayMutaionResponse, AxiosError>(
+		'holidays',
+		detailHolidayRequest,
+		{
+			errorRetryCount: 2,
+			revalidateOnFocus: false,
+		}
+	)
+}

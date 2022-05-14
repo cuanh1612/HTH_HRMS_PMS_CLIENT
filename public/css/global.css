@@ -225,3 +225,16 @@ td.fc-day-today {
     border: 1px solid #E2E8F0!important;
     min-height: 2.5rem!important;
 }
+
+/* style for select */
+.select-dark > div{
+    border-radius: 5px;
+    border: 1px solid rgb(105, 105, 105) !important;
+    background: #ffffff10
+}
+
+.select-light > div{
+    border-radius: 5px;
+    border: 1px solid rgba(48, 48, 48, 0.161) !important;
+    background: #ffffff10
+}

@@ -133,7 +133,7 @@ const TimePicker = ({
 		<Controller
 			control={form?.control}
 			name={name}
-			render={({ field }) => (
+			render={() => (
 				<FormControl onMouseMove={onOpen} onMouseLeave={onClose} isRequired={required}>
 					<FormLabel fontWeight={'normal'} htmlFor={name} color={'gray.400'}>
 						{label}

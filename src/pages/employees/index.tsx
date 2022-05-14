@@ -138,8 +138,6 @@ const Employees: NextLayout = () => {
 	// get all Designations
 	const { data: allDesignations, mutate: refetchDesignations } =
 		allDesignationsQuery(isAuthenticated)
-		
-	console.log(refetchAllDepartments, refetchDesignations)
 
 	// delete employee
 	const [mutateDeleteEmpl, { status: statusDl }] = deleteEmployeeMutation(setToast)

@@ -1,19 +1,20 @@
 import {
-    Box,
-    Button,
-    Divider,
-    FormControl,
-    FormLabel,
-    Grid,
-    GridItem,
-    HStack,
-    Input,
-    VStack
+	Box,
+	Button,
+	Divider,
+	FormControl,
+	FormLabel,
+	Grid,
+	GridItem,
+	HStack,
+	Input,
+	VStack,
 } from '@chakra-ui/react'
 import ButtonIcon from 'components/ButtonIcon'
 import { AuthContext } from 'contexts/AuthContext'
 import { createHolidaysMutation } from 'mutations/holiday'
 import { useRouter } from 'next/router'
+import { allHolidaysQuery } from 'queries/holiday'
 import { FormEventHandler, useContext, useEffect, useState } from 'react'
 import { AiOutlineCheck } from 'react-icons/ai'
 import { MdDeleteOutline } from 'react-icons/md'
@@ -35,6 +36,9 @@ export default function AddHoliday({ onCloseDrawer }: IAddHolidayProps) {
 			occasion: '',
 		},
 	])
+
+	// get all holidays
+	const { mutate: refetchAllHolidays } = allHolidaysQuery()
 
 	//mutation ------------------------------------------------------------------
 	const [mutateCreHolidays, { status: statusCreHolidays, data: dataCreHolidays }] =
@@ -78,8 +82,8 @@ export default function AddHoliday({ onCloseDrawer }: IAddHolidayProps) {
 		event.preventDefault()
 
 		if (holidays.length !== 0) {
-            console.log(holidays);
-            
+			console.log(holidays)
+
 			mutateCreHolidays({
 				holidays,
 			})
@@ -111,6 +115,8 @@ export default function AddHoliday({ onCloseDrawer }: IAddHolidayProps) {
 				type: 'success',
 				msg: dataCreHolidays?.message as string,
 			})
+
+			refetchAllHolidays()
 		}
 	}, [statusCreHolidays])
 

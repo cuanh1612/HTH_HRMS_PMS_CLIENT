@@ -1,5 +1,4 @@
 import { FormControl, FormHelperText, FormLabel, useColorModeValue } from '@chakra-ui/react'
-import { useState } from 'react'
 import { UseFormReturn } from 'react-hook-form'
 import Select from 'react-select'
 import makeAnimated from 'react-select/animated'
@@ -17,14 +16,9 @@ export default function SelectCustom({
 }: ISelect & { form: UseFormReturn<any, any> }) {
 	const errorColor = useColorModeValue('red.400', 'pink.400')
 
-	//Sate
-	const [optionSelect, setOptionSelect] = useState<string | number>('')
 
 	//handle change select
 	const onChangeSelect = (options: IOption) => {
-		//Set state
-		setOptionSelect(options.value)
-
 		//Set value form select
 		form.setValue(name, options.value)
 	}

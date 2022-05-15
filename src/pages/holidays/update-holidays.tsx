@@ -14,7 +14,7 @@ import { updateHolidayForm } from 'type/form/basicFormType'
 
 export interface IUpdateHolidayProps {
 	onCloseDrawer?: () => void
-	holidayId: number | null
+	holidayId: string | number | null
 }
 
 export default function UpdateHoliday({ onCloseDrawer, holidayId }: IUpdateHolidayProps) {

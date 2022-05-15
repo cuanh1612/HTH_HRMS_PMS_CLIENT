@@ -3,7 +3,7 @@ import { detailHolidayRequest } from 'requests/holiday'
 import useSWR from 'swr'
 import { holidayMutaionResponse } from 'type/mutationResponses'
 
-export const detailHolidayQuery = (holidayId: number | null) => {
+export const detailHolidayQuery = (holidayId: string | number | null) => {
 	return useSWR<holidayMutaionResponse, AxiosError>(
 		holidayId ? `holidays/${holidayId}` : null,
 		detailHolidayRequest,

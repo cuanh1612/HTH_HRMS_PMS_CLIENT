@@ -29,6 +29,7 @@ import { IFilter, TColumn } from 'type/tableTypes'
 import { monthFilter, textFilter, yearFilter } from 'utils/tableFilters'
 import AddHoliday from './add-holidays'
 import UpdateHoliday from './update-holidays'
+import DetailHoliday from './[holidayId]'
 import { deleteHolidayMutation, deleteHolidaysMutation } from 'mutations/holiday'
 import AlertDialog from 'components/AlertDialog'
 import { AiOutlineSearch } from 'react-icons/ai'
@@ -42,6 +43,8 @@ const Holiday: NextLayout = () => {
 	//Setup drawer --------------------------------------------------------------
 	const { isOpen: isOpenAdd, onOpen: onOpenAdd, onClose: onCloseAdd } = useDisclosure()
 	const { isOpen: isOpenUpdate, onOpen: onOpenUpdate, onClose: onCloseUpdate } = useDisclosure()
+	const { isOpen: isOpenDetail, onOpen: onOpenDetail, onClose: onCloseDetail } = useDisclosure()
+
 	// set isOpen of dialog to delete one
 	const {
 		isOpen: isOpenDialogDlMany,
@@ -56,6 +59,8 @@ const Holiday: NextLayout = () => {
 	const { isOpen: isOpenFilter, onOpen: onOpenFilter, onClose: onCloseFilter } = useDisclosure()
 
 	//State ---------------------------------------------------------------------
+	const [holidayIdDetail, setHolidayIdDetail] = useState<number | null>(2)
+
 	const [holidayIdUpdate, setHolidayIdUpdate] = useState<number | null>(1)
 	// set loading table
 	const [isLoading, setIsloading] = useState(true)
@@ -97,6 +102,17 @@ const Holiday: NextLayout = () => {
 		}
 	}, [isAuthenticated])
 
+	//Function -------------------------------------------------------------------
+	const handleOpenDetailHoliday = () => {
+		window.history.pushState({}, '', `/holidays/${holidayIdDetail}`)
+		onOpenDetail()
+	}
+
+	const handleCloseDetailHoliday = () => {
+		router.push('/holidays', undefined, { shallow: true })
+		onCloseDetail()
+	}
+	
 	// check is successfully delete many
 	useEffect(() => {
 		if (statusDlHolidays == 'success') {
@@ -227,6 +243,9 @@ const Holiday: NextLayout = () => {
 			</Button>
 			<Button disabled={!dataSl || dataSl.length == 0 ? true : false} onClick={onOpenDlMany}>
 				Delete all
+			</Button>
+			<Button colorScheme="blue" onClick={() => handleOpenDetailHoliday()}>
+				open detail holiday
 			</Button>
 			<Button
 				onClick={() => {
@@ -401,6 +420,17 @@ const Holiday: NextLayout = () => {
 			</Drawer>
 			<Drawer size="xl" title="Update Holiday" onClose={onCloseUpdate} isOpen={isOpenUpdate}>
 				<UpdateHoliday onCloseDrawer={onCloseUpdate} holidayId={holidayIdUpdate} />
+			</Drawer>
+			<Drawer
+				size="xl"
+				title="Detail Holiday"
+				onClose={handleCloseDetailHoliday}
+				isOpen={isOpenDetail}
+			>
+				<DetailHoliday
+					holidayIdProp={holidayIdDetail}
+					onCloseDrawer={handleCloseDetailHoliday}
+				/>
 			</Drawer>
 		</>
 	)

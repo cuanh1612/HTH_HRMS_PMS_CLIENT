@@ -16,6 +16,7 @@ import 'react-quill/dist/quill.bubble.css'
 import 'react-quill/dist/quill.snow.css'
 import { updateDiscussionForm } from 'type/form/basicFormType'
 import { GetStaticPaths, GetStaticProps } from 'next'
+import { contractMutaionResponse } from 'type/mutationResponses'
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
 
@@ -301,8 +302,12 @@ export const getStaticProps: GetStaticProps = async () => {
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-	const res = await fetch('http://localhost:4000/api/contracts').then((result) => result.json())
+	const res: contractMutaionResponse = await fetch('http://localhost:4000/api/contracts').then((result) => result.json())
 	const contracts = res.contracts
+
+	if(!contracts){
+		return { paths: [], fallback: false }
+	}
 
 	// Get the paths we want to pre-render based on leave
 	const paths = contracts.map((contract: any) => ({

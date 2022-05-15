@@ -32,7 +32,7 @@ export async function updateHolidayRequest({
 	holidayId,
 }: {
 	inputUpdate: updateHolidayForm
-	holidayId: number
+	holidayId: number | string
 }) {
 	const resultFetch = await putData<holidayMutaionResponse>({
 		url: `http://localhost:4000/api/holidays/${holidayId}`,
@@ -53,7 +53,7 @@ export const deleteHolidaysRequest = async (ids: number[]) => {
 }
 
 //Handle to delete holiday
-export const deleteHolidayRequest = async (id: string) => {
+export const deleteHolidayRequest = async (id: string | number) => {
 	return await deleteData<holidayMutaionResponse>({
 		url: `http://localhost:4000/api/holidays/${id}`,
 	})

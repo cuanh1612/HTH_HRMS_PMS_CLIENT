@@ -11,6 +11,7 @@ import {
 	VStack,
 } from '@chakra-ui/react'
 import ButtonIcon from 'components/ButtonIcon'
+import Loading from 'components/Loading'
 import { AuthContext } from 'contexts/AuthContext'
 import { createHolidaysMutation } from 'mutations/holiday'
 import { useRouter } from 'next/router'
@@ -132,7 +133,7 @@ export default function AddHoliday({ onCloseDrawer }: IAddHolidayProps) {
 									required
 									type="date"
 									defaultValue={holiday.holiday_date}
-									onChange={(e) => onChangeDate(e.target.value, index)}
+									onChange={(e: any) => onChangeDate(e.target.value, index)}
 								/>
 							</FormControl>
 						</GridItem>
@@ -145,7 +146,7 @@ export default function AddHoliday({ onCloseDrawer }: IAddHolidayProps) {
 									type="text"
 									defaultValue={holiday.occasion}
 									placeholder={'Occasion'}
-									onChange={(e) => onChangeOccasion(e.target.value, index)}
+									onChange={(e: any) => onChangeOccasion(e.target.value, index)}
 								/>
 							</FormControl>
 						</GridItem>
@@ -187,7 +188,7 @@ export default function AddHoliday({ onCloseDrawer }: IAddHolidayProps) {
 				Save
 			</Button>
 
-			{/* {statusLeave === 'running' && <Loading />} */}
+			{statusCreHolidays === 'running' && <Loading />}
 		</Box>
 	)
 }

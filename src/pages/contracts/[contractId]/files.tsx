@@ -21,6 +21,7 @@ import { useCallback, useContext, useEffect, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { AiOutlinePlusCircle, AiOutlineSave } from 'react-icons/ai'
 import { ICloudinaryImg } from 'type/fileType'
+import { contractMutaionResponse } from 'type/mutationResponses'
 import { generateImgFile } from 'utils/helper'
 import { uploadFile } from 'utils/uploadFile'
 
@@ -331,8 +332,12 @@ export const getStaticProps: GetStaticProps = async () => {
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-	const res = await fetch('http://localhost:4000/api/contracts').then((result) => result.json())
+	const res: contractMutaionResponse = await fetch('http://localhost:4000/api/contracts').then((result) => result.json())
 	const contracts = res.contracts
+
+	if(!contracts){
+		return { paths: [], fallback: false }
+	}
 
 	// Get the paths we want to pre-render based on leave
 	const paths = contracts.map((contract: any) => ({

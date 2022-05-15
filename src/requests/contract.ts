@@ -35,3 +35,10 @@ export async function updateContractRequest({
 
 	return resultFetch
 }
+
+//Function handle get all employees
+export const allContractsRequest = async (url: string) => {
+	return await getData<contractMutaionResponse>({
+		url: `http://localhost:4000/api/${url}`,
+	})
+}

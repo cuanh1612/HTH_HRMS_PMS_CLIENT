@@ -131,10 +131,10 @@ export default function UpdateContract({ onCloseDrawer, contractIdUpdate }: IUpd
 
 			const dataUploadIgm: Array<ICloudinaryImg> = await uploadFile({
 				files: infoImg.files,
-				raw: true,
 				tags: ['avatar'],
-				upload_preset: 'contract',
-				options: infoImg.options,
+				raw: false,
+				upload_preset: "huprom-avatar",
+				options: infoImg.options
 			})
 
 			setLoadingImg(false)

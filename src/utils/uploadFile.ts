@@ -28,7 +28,7 @@ export const uploadFile = async ({ files, tags, folder, options, upload_preset, 
 				tags.map((tag: any) => {
 					formData.append('tags[]', tag)
 				})
-
+				console.log( String(process.env.NEXT_PUBLIC_API_URL_IMG), String(process.env.NEXT_PUBLIC_API_URL_RAW))
 				const result = await fetch(
 					!raw
 						? String(process.env.NEXT_PUBLIC_API_URL_IMG)

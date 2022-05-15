@@ -213,18 +213,9 @@ const Holiday: NextLayout = () => {
 		},
 	]
 
-	// set loading == false when get all employees successfully
+	// set loading == false when get all holidays successfully
 	useEffect(() => {
 		if (allHolidays) {
-			console.log(allHolidays)
-			// const users = allEmployees.employees?.map((item): IPeople => {
-			// 	return {
-			// 		id: item.id,
-			// 		name: item.name,
-			// 		avatar: item.avatar?.url,
-			// 	}
-			// })
-			// setAllusersSl(users || [])
 			setIsloading(false)
 		}
 	}, [allHolidays])

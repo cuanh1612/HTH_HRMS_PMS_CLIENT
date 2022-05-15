@@ -44,7 +44,7 @@ export default function DetailHoliday({ onCloseDrawer, holidayIdProp }: IDetailH
 
 	//handle delete holiday
 	const onDeleteHoliday = () => {
-		if(!holidayIdProp && !holidayIdProp){
+		if(!holidayIdProp && !holidayIdRouter){
 			setToast({
 				msg: "Not found holiday to delete",
 				type: "warning"

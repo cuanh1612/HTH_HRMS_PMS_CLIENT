@@ -1,17 +1,20 @@
-import { Avatar, Button, HStack, Text, useDisclosure, VStack } from '@chakra-ui/react'
+import { Avatar, Button, HStack, Menu, MenuButton, MenuItem, MenuList, Text, useDisclosure, VStack } from '@chakra-ui/react'
 import Drawer from 'components/Drawer'
+import { ClientLayout } from 'components/layouts'
 import Table from 'components/Table'
 import { AuthContext } from 'contexts/AuthContext'
 import { useRouter } from 'next/router'
 import { allContractsQuery } from 'queries/contract'
 import { useContext, useEffect, useState } from 'react'
+import { IoEyeOutline } from 'react-icons/io5'
+import { MdOutlineDeleteOutline, MdOutlineMoreVert } from 'react-icons/md'
+import { RiPencilLine } from 'react-icons/ri'
+import { NextLayout } from 'type/element/layout'
 import { IFilter, TColumn } from 'type/tableTypes'
 import AddContract from './add-contracts'
 import UpdateContract from './update-contracts'
 
-export interface ILeaveProps {}
-
-export default function Leave({}: ILeaveProps) {
+const Contracts: NextLayout = ()=> {
 	const { isAuthenticated, handleLoading } = useContext(AuthContext)
 	const router = useRouter()
 
@@ -91,8 +94,7 @@ export default function Leave({}: ILeaveProps) {
 				{
 					Header: 'Client',
 					accessor: 'client',
-					minWidth: 180,
-					width: 180,
+					minWidth: 250,
 					Cell: ({ row }) => {
 						return (
 							<HStack w={'full'} spacing={5}>
@@ -123,6 +125,63 @@ export default function Leave({}: ILeaveProps) {
 					width: 180,
 					Cell: ({ row }) => (
 						<Text>{`${row.original.contract_value} ${row.original.currency}`}</Text>
+					),
+				},
+				{
+					Header: 'Start date',
+					accessor: 'start_date',
+					minWidth: 180,
+					width: 180,
+					Cell: ({ value }) => {
+						const date = new Date(value as string)
+						return (<Text>{`${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`}</Text>)
+					}
+					
+				},
+				{
+					Header: 'End date',
+					accessor: 'end_date',
+					minWidth: 180,
+					width: 180,
+					Cell: ({ value }) => {
+						const date = new Date(value as string)
+						return (<Text>{`${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`}</Text>)
+					}
+				},
+				{
+					Header: 'Action',
+					accessor: 'action',
+					disableResizing: true,
+					width: 120,
+					minWidth: 120,
+					disableSortBy: true,
+					Cell: ({ row }) => (
+						<Menu>
+							<MenuButton as={Button} paddingInline={3}>
+								<MdOutlineMoreVert />
+							</MenuButton>
+							<MenuList>
+								<MenuItem icon={<IoEyeOutline fontSize={'15px'} />}>View</MenuItem>
+								<MenuItem
+									onClick={() => {
+										
+									}}
+									icon={<RiPencilLine fontSize={'15px'} />}
+								>
+									Edit
+								</MenuItem>
+								
+									<MenuItem
+										onClick={() => {
+
+										}}
+										icon={<MdOutlineDeleteOutline fontSize={'15px'} />}
+									>
+										Delete
+									</MenuItem>
+								
+							</MenuList>
+						</Menu>
 					),
 				},
 			],
@@ -157,3 +216,7 @@ export default function Leave({}: ILeaveProps) {
 		</>
 	)
 }
+
+Contracts.getLayout = ClientLayout
+
+export default Contracts

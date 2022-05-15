@@ -18,7 +18,7 @@ export interface IDetailHolidayProps {
 export default function DetailHoliday({ onCloseDrawer, holidayIdProp }: IDetailHolidayProps) {
 	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
 	const router = useRouter()
-	const { id: holidayIdRouter } = router.query
+	const { holidayId: holidayIdRouter } = router.query
 
 	//Setup drawer --------------------------------------------------------------
 	const { isOpen: isOpenUpdate, onOpen: onOpenUpdate, onClose: onCloseUpdate } = useDisclosure()
@@ -44,6 +44,12 @@ export default function DetailHoliday({ onCloseDrawer, holidayIdProp }: IDetailH
 
 	//handle delete holiday
 	const onDeleteHoliday = () => {
+		if(!holidayIdProp && !holidayIdProp){
+			setToast({
+				msg: "Not found holiday to delete",
+				type: "warning"
+			})
+		}
 		mutateDelHolidays(holidayIdProp || holidayIdRouter as string)
 	}
 

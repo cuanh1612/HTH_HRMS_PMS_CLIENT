@@ -29,29 +29,22 @@ import { NextLayout } from 'type/element/layout'
 // use layout
 import { ClientLayout } from 'components/layouts'
 import ButtonIcon from 'components/ButtonIcon'
-import { MdOutlineArrowBack, MdOutlineNavigateBefore, MdOutlineNavigateNext } from 'react-icons/md'
+import { MdOutlineNavigateBefore, MdOutlineNavigateNext } from 'react-icons/md'
 import Drawer from 'components/Drawer'
 import UpdateLeaves from './update-leaves'
 import AddLeaves from './add-leaves'
-import { Select } from 'components/filter/Select'
-import { AiOutlineSearch } from 'react-icons/ai'
-import { IFilter } from 'type/tableTypes'
-import { Input } from 'components/filter/Input'
-import SelectUser from 'components/filter/SelectUser'
-import DateRange from 'components/date/DateRange'
-
-// get current year
-const year = new Date().getFullYear()
 
 const calendar: NextLayout = () => {
-	const {colorMode} = useColorMode()
+	const { colorMode } = useColorMode()
 	// style
-	const dayHeader = useColorModeValue('dayHeader', 'dayHeader--dark') 
+	const dayHeader = useColorModeValue('dayHeader', 'dayHeader--dark')
+
 	// set filter
-	const [filter, setFilter] = useState<IFilter>({
-		columnId: '',
-		filterValue: '',
-	})
+	// const [filter, setFilter] = useState<IFilter>({
+	// 	columnId: '',
+	// 	filterValue: '',
+	// })
+
 	const { isAuthenticated, handleLoading } = useContext(AuthContext)
 	const [calendar, setCalendar] = useState<Calendar>()
 	const [data, setData] = useState<EventInput[]>([])
@@ -59,7 +52,7 @@ const calendar: NextLayout = () => {
 	const { isOpen: isOpenUpdate, onOpen: onOpenUpdate, onClose: onCloseUpdate } = useDisclosure()
 	const { isOpen: isOpenAdd, onOpen: onOpenAdd, onClose: onCloseAdd } = useDisclosure()
 	// set isOpen of dialog to filters
-	const { isOpen: isOpenFilter, onOpen: onOpenFilter, onClose: onCloseFilter } = useDisclosure()
+	const { isOpen: isOpenFilter, onClose: onCloseFilter } = useDisclosure()
 	const [leaveIdUpdate, setLeaveIdUpdate] = useState<number | null>(30)
 
 	useEffect(() => {
@@ -68,7 +61,7 @@ const calendar: NextLayout = () => {
 		}
 	}, [isAuthenticated])
 
-	const { data: allLeaves, mutate: refetchAllLeaves } = allLeaveQuery(isAuthenticated)
+	const { data: allLeaves } = allLeaveQuery(isAuthenticated)
 
 	useEffect(() => {
 		if (allLeaves) {
@@ -76,8 +69,10 @@ const calendar: NextLayout = () => {
 				return {
 					title: item.employee.name,
 					id: `${item.id}`,
-					backgroundColor:`${item.leave_type.color_code}${ colorMode == 'light' ? '30': ''}`,
-					textColor: colorMode != 'light' ? 'white': item.leave_type.color_code,
+					backgroundColor: `${item.leave_type.color_code}${
+						colorMode == 'light' ? '30' : ''
+					}`,
+					textColor: colorMode != 'light' ? 'white' : item.leave_type.color_code,
 					date: item.date,
 					borderColor: `${item.leave_type.color_code}`,
 				}
@@ -225,7 +220,7 @@ const calendar: NextLayout = () => {
 								type={'text'}
 							/> */}
 
-							<Select
+							{/* <Select
 								options={[
 									{
 										label: 'Pending',
@@ -274,7 +269,7 @@ const calendar: NextLayout = () => {
 								label="Year"
 								placeholder="Select year"
 								required={false}
-							/>
+							/> */}
 
 							{/* <Select
 								options={leaveTypes}

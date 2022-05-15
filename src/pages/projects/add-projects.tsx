@@ -637,7 +637,7 @@ export default function AddProject({ onCloseDrawer }: IAddProjectProps) {
 				title="Department"
 			>
 				<Text>
-					<Department />
+					<Department/>
 				</Text>
 			</Modal>
 		</>

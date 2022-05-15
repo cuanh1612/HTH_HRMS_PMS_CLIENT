@@ -1,4 +1,3 @@
-import { updateContractRequest } from 'requests/contract'
 import { createEventRequest, updateEventRequest } from 'requests/event'
 import { TToast } from 'type/basicTypes'
 import useMutation from 'use-mutation'

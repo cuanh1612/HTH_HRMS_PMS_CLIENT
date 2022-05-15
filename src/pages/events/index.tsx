@@ -13,7 +13,7 @@ export default function Event({}: IEventProps) {
 	const router = useRouter()
 
 	//State ---------------------------------------------------------------------
-	const [eventIdUpdate, setEventIdUpdate] = useState<number | null>(1)
+	const [eventIdUpdate] = useState<number | null>(1)
 
 	//Setup drawer --------------------------------------------------------------
 	const { isOpen: isOpenAdd, onOpen: onOpenAdd, onClose: onCloseAdd } = useDisclosure()

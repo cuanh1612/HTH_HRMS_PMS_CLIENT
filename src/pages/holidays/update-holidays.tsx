@@ -4,7 +4,7 @@ import Loading from 'components/Loading'
 import { AuthContext } from 'contexts/AuthContext'
 import { updateHolidayMutation } from 'mutations/holiday'
 import { useRouter } from 'next/router'
-import { detailHolidayQuery } from 'queries/holiday'
+import { allHolidaysQuery, detailHolidayQuery } from 'queries/holiday'
 import { useContext, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { AiOutlineCheck } from 'react-icons/ai'
@@ -23,6 +23,9 @@ export default function UpdateHoliday({ onCloseDrawer, holidayId }: IUpdateHolid
 
 	//Query ---------------------------------------------------------------------
 	const { data: dataDetailHoliday } = detailHolidayQuery(holidayId)
+
+	// get all holidays
+	const { mutate: refetchAllHolidays} = allHolidaysQuery()
 
 	//mutation ------------------------------------------------------------------
 	const [mutateUpHoliday, { status: statusUpHoliday, data: dataUpHoliday }] =
@@ -88,6 +91,8 @@ export default function UpdateHoliday({ onCloseDrawer, holidayId }: IUpdateHolid
 				type: 'success',
 				msg: dataUpHoliday?.message as string,
 			})
+
+			refetchAllHolidays()
 		}
 	}, [statusUpHoliday])
 

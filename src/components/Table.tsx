@@ -136,7 +136,7 @@ const Table = ({
 						Header: ({ getToggleAllPageRowsSelectedProps }: any) => (
 							<IndeterminateCheckbox
 								{...getToggleAllPageRowsSelectedProps()}
-								handleIsSelected={() => setIsSelected(true)}
+								handleIsSelected={() => {setIsSelected(true)}}
 							/>
 						),
 						Cell: ({ row }: any) => {
@@ -160,7 +160,6 @@ const Table = ({
 	)
 
 	// useEffect -------------------------------------
-
 	// set filter
 	useEffect(() => {
 		if (filter?.columnId) {
@@ -192,7 +191,7 @@ const Table = ({
 	// when data reset
 	useEffect(() => {
 		toggleAllPageRowsSelected(false)
-		setIsSelected(true)
+		// setIsSelected(true)
 	}, [data])
 
 	// reset filter

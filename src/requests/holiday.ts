@@ -19,6 +19,13 @@ export const detailHolidayRequest = async (url: string) => {
 	})
 }
 
+// get all
+export const allHolidaysRequest = async (url: string) => {
+	return await getData<holidayMutaionResponse>({
+		url: `http://localhost:4000/api/${url}`,
+	})
+}
+
 //Function handle update holiday
 export async function updateHolidayRequest({
 	inputUpdate,
@@ -35,6 +42,15 @@ export async function updateHolidayRequest({
 	return resultFetch
 }
 
+// Handle to delete many holidays
+export const deleteHolidaysRequest = async (ids: number[]) => {
+	return await postData<holidayMutaionResponse>({
+		url: `http://localhost:4000/api/holidays/delete-many`,
+		body: {
+			holidays: ids,
+		},
+	})
+}
 
 //Handle to delete holiday
 export const deleteHolidayRequest = async (id: string | number) => {
@@ -42,3 +58,4 @@ export const deleteHolidayRequest = async (id: string | number) => {
 		url: `http://localhost:4000/api/holidays/${id}`,
 	})
 }
+

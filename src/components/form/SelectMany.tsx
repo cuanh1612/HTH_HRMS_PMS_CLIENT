@@ -18,8 +18,7 @@ export default function SelectMany({
 }: ISelect & { form: UseFormReturn<any, any> }) {
 	const errorColor = useColorModeValue('red.400', 'pink.400')
 
-	//Sate
-	const [optionSelects, setOptionSelects] = useState<any[]>([])
+
 	const [selectedOptionsState, setSelectedOptionsState] = useState<IOption[]>([])
 
 	//handle change select
@@ -33,7 +32,6 @@ export default function SelectMany({
 
 		//Set state
 		setSelectedOptionsState(options)
-		setOptionSelects(newOptionSelects)
 
 		//Set value form select many
 		form.setValue(name, newOptionSelects)
@@ -46,10 +44,6 @@ export default function SelectMany({
 		}
 	}, [selectedOptions])
 
-	//Set value when change
-	useEffect(() => {
-		setOptionSelects(form.getValues(name) ? form.getValues(name) : [])
-	}, [form.getValues(name)])
 
 	return (
 		<>

@@ -1,4 +1,4 @@
-import { Box, Divider, Grid, GridItem, VStack, Button } from '@chakra-ui/react'
+import { Box, Grid, GridItem, VStack, Button } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Input } from 'components/form/Input'
 import Loading from 'components/Loading'

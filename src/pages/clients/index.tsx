@@ -119,7 +119,6 @@ const Clients: NextLayout = () => {
 
 	// data all users to select
 	const [dataUsersSl, setAllusersSl] = useState<IPeople[]>([])
-	console.log(dataUsersSl)
 
 	// is reset table
 	const [isResetFilter, setIsReset] = useState(false)
@@ -135,10 +134,10 @@ const Clients: NextLayout = () => {
 	const { data: allClients, mutate: refetchAllClients } = allClientsQuery(isAuthenticated)
 
 	// get all categories
-	const { data: allCategories, mutate: refetchAllCts } = allClientCategoriesQuery()
+	const { data: allCategories } = allClientCategoriesQuery()
 
 	// get all sub categories
-	const { data: allSubCategories, mutate: refetchAllSubCts } = allClientSubCategoriesQuery()
+	const { data: allSubCategories } = allClientSubCategoriesQuery()
 
 	// delete client
 	const [mutateDeleteClient, { status: statusDl }] = deleteClientMutation(setToast)

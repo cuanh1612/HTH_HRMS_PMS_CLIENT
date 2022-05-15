@@ -167,7 +167,7 @@ export default function AddContract({ onCloseDrawer }: IAddContractProps) {
 			const newOptionClients: IOption[] = dataClients.clients.map((client) => {
 				return {
 					value: client.id.toString(),
-					label: client.email
+					label: client.email,
 				}
 			})
 
@@ -182,7 +182,7 @@ export default function AddContract({ onCloseDrawer }: IAddContractProps) {
 				(contractType) => {
 					return {
 						value: contractType.id.toString(),
-						label: contractType.name
+						label: contractType.name,
 					}
 				}
 			)

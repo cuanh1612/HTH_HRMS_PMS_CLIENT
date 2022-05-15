@@ -5,7 +5,7 @@ import { projectMutaionResponse } from 'type/mutationResponses'
 
 export const detailProjectQuery = (
 	isAuthenticated: boolean | null,
-	projectId: number | null | undefined
+	projectId: string | number | null | undefined
 ) => {
 	return useSWR<projectMutaionResponse, AxiosError>(
 		isAuthenticated && projectId ? `projects/${projectId}` : null,

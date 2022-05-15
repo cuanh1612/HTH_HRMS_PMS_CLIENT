@@ -1,6 +1,6 @@
 import { createHolidaysForm, updateHolidayForm } from 'type/form/basicFormType'
 import { holidayMutaionResponse } from 'type/mutationResponses'
-import { getData, postData, putData } from 'utils/fetchData'
+import { deleteData, getData, postData, putData } from 'utils/fetchData'
 
 //Function handle create holidays
 export async function createHolidaysRequest(inputCreate: createHolidaysForm) {
@@ -25,7 +25,7 @@ export async function updateHolidayRequest({
 	holidayId,
 }: {
 	inputUpdate: updateHolidayForm
-	holidayId: number
+	holidayId: number | string
 }) {
 	const resultFetch = await putData<holidayMutaionResponse>({
 		url: `http://localhost:4000/api/holidays/${holidayId}`,
@@ -33,4 +33,12 @@ export async function updateHolidayRequest({
 	})
 
 	return resultFetch
+}
+
+
+//Handle to delete holiday
+export const deleteHolidayRequest = async (id: string | number) => {
+	return await deleteData<holidayMutaionResponse>({
+		url: `http://localhost:4000/api/holidays/${id}`,
+	})
 }

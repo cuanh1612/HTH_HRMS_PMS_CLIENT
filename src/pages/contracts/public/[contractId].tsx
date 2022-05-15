@@ -46,9 +46,7 @@ import { signBase64Empaty } from 'utils/basicData'
 import { getDataBlob, uploadBase64 } from 'utils/uploadFile'
 import { CreateSignatureValidate } from 'utils/validate'
 
-export interface IPublickContractProps {}
-
-export default function PublickContract({}: IPublickContractProps) {
+export default function PublickContract() {
 	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
 	const router = useRouter()
 	const { contractId } = router.query
@@ -494,7 +492,7 @@ export default function PublickContract({}: IPublickContractProps) {
 	)
 }
 
-export const getStaticProps: GetStaticProps = async (contexts) => {
+export const getStaticProps: GetStaticProps = async () => {
 	return {
 		props: {},
 		// Next.js will attempt to re-generate the page:

@@ -29,7 +29,7 @@ export interface IUpdateEventProps {
 }
 
 export default function UpdateEvent({ onCloseDrawer, eventIdUpdate }: IUpdateEventProps) {
-	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
+	const { isAuthenticated, setToast } = useContext(AuthContext)
 
 	//State ----------------------------------------------------------------------
 	const [description, setDescription] = useState<string>('')

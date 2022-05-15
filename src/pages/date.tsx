@@ -11,7 +11,7 @@ import { Box, Button, ButtonGroup } from '@chakra-ui/react'
 export default function date() {
 	const { isAuthenticated, handleLoading } = useContext(AuthContext)
 	const [calendar, setCalendar] = useState<Calendar>()
-	const [data, setData] = useState([
+	const [data] = useState([
 		{
 			title: 'dd dsfs fsd dsfds sd d sd dsf sdf sd sdsd sd',
 			start: '2022-04-08',

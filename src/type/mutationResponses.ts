@@ -16,6 +16,7 @@ import {
 	leaveType,
 	leaveTypeType,
 	projectCategoryType,
+	projectFileType,
 	projectType,
 	signType,
 	userType,
@@ -143,5 +144,11 @@ export interface projectMutaionResponse {
 	message: string
 	project?: projectType
 	projects?: projectType[]
+	[index: string]: any
+}
+
+export interface projectFileMutaionResponse extends commonResponse {
+	projectFile?: projectFileType
+	projectFiles?: projectFileType[]
 	[index: string]: any
 }

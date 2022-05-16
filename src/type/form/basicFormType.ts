@@ -337,28 +337,26 @@ export type updateEventForm = {
 	ends_on_time: string
 }
 
-export type createProjectFileForm = {
-	public_id: string
-	url: string
-	name: string
-}
-
 export type createProjectForm = {
 	project_category?: number
 	department?: number
 	client?: number
 	employees?: number[]
 	Added_by?: number
-    name: string
-    start_date: Date
-    deadline: Date
-    project_summary?: string
-    notes?: string
-    project_budget?: number
-    hours_estimate?: number
-    send_task_noti?: boolean
-    currency:  'USD' | 'GBP' | 'EUR' | 'INR' | 'VND'
-    project_files?: createProjectFileForm[]
+	name: string
+	start_date: Date
+	deadline: Date
+	project_summary?: string
+	notes?: string
+	project_budget?: number
+	hours_estimate?: number
+	send_task_noti?: boolean
+	currency: 'USD' | 'GBP' | 'EUR' | 'INR' | 'VND'
+	project_files?: {
+		public_id: string
+		url: string
+		name: string
+	}[]
 }
 
 export type updateProjectForm = {
@@ -366,19 +364,28 @@ export type updateProjectForm = {
 	department?: number
 	client?: number
 	Added_by?: number
-    name: string
-    start_date: Date
-    deadline: Date
-    project_summary?: string
-    notes?: string
-    project_budget?: number
-    hours_estimate?: number
-    send_task_noti?: boolean
-    project_status?:  'Not Started' | 'In Progress' |'On Hold' | 'Canceled' |'Finished'
-    currency:  'USD' | 'GBP' | 'EUR' | 'INR' | 'VND'
-    Progress: number
+	name: string
+	start_date: Date
+	deadline: Date
+	project_summary?: string
+	notes?: string
+	project_budget?: number
+	hours_estimate?: number
+	send_task_noti?: boolean
+	project_status?: 'Not Started' | 'In Progress' | 'On Hold' | 'Canceled' | 'Finished'
+	currency: 'USD' | 'GBP' | 'EUR' | 'INR' | 'VND'
+	Progress: number
 }
 
 export type createProjetCategoryForm = {
 	name: string
+}
+
+export type createProjectFileForm = {
+	files: {
+		name: string
+		public_id: string
+		url: string
+	}[]
+	project: number
 }

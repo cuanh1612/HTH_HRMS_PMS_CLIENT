@@ -244,23 +244,27 @@ export default function AddProject({ onCloseDrawer }: IAddProjectProps) {
 				type: 'warning',
 			})
 		} else {
-			//Upload contract files
-			const dataUploadFiles: ICloudinaryImg[] | null = await handleUploadFiles()
-
-			//Check upload files project
-			if (dataUploadFiles && dataUploadFiles?.length > 0) {
-				//Create project
-				values.project_summary = summary
-				values.notes = notes
-				values.project_files = dataUploadFiles
-				values.send_task_noti = isSendTaskNoti
-
-				if (currentUser) {
-					values.Added_by = currentUser.id
-				}
-
-				mutateCreProject(values)
+			//Create project
+			values.project_summary = summary
+			values.notes = notes
+			values.send_task_noti = isSendTaskNoti
+			
+			if (currentUser) {
+				values.Added_by = currentUser.id
 			}
+
+			if (filesUpload.length > 0) {
+				//Upload contract files
+				const dataUploadFiles: ICloudinaryImg[] | null = await handleUploadFiles()
+
+				//Check upload files project
+				if (dataUploadFiles && dataUploadFiles?.length > 0) {
+					//Create project
+					values.project_files = dataUploadFiles
+				}
+			}
+
+			mutateCreProject(values)
 		}
 	}
 
@@ -637,7 +641,7 @@ export default function AddProject({ onCloseDrawer }: IAddProjectProps) {
 				title="Department"
 			>
 				<Text>
-					<Department/>
+					<Department />
 				</Text>
 			</Modal>
 		</>

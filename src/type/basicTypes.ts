@@ -281,3 +281,12 @@ export interface UserAttendance {
 	designation: string
 	date: Date
 }
+
+export interface projectFileType {
+	id: number
+	url: string
+	name: string
+	public_id: string
+	contract: contractType
+	createdAt: Date
+}

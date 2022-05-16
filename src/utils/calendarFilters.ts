@@ -52,7 +52,7 @@ export const arrayFilter = (columns: string[]) => {
 export const dateFilter = (columns: string[]) => {
 	return (
 		rows: Row[],
-		id: string,
+		_: string,
 		filterValue: {
 			from: Date
 			to: Date
@@ -83,7 +83,7 @@ export const dateFilter = (columns: string[]) => {
 }
 
 export const yearFilter = (columns: string[]) => {
-	return (rows: Row[], id: string, filterValue: number) => {
+	return (rows: Row[], _: string, filterValue: number) => {
 		if (!filterValue) {
 			return rows
 		}

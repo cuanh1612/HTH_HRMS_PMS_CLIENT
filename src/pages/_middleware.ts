@@ -13,9 +13,9 @@ export function middleware(req: NextRequest) {
 	console.log(roleCurrentUser)
 
 	//Check authorization
-	if (url.includes('/login')) {
-		return NextResponse.next()
-	}
+	// if (url.includes('/login')) {
+	// 	return NextResponse.next()
+	// }
 
 	return NextResponse.next()
 }

@@ -182,6 +182,7 @@ const Clients: NextLayout = () => {
 
 	// set loading == false when get all clients successfully
 	useEffect(() => {
+		console.log(allClients)
 		if (allClients) {
 			const users = allClients.clients?.map((item): IPeople => {
 				return {
@@ -586,6 +587,7 @@ const Clients: NextLayout = () => {
 								}}
 								label="Select date"
 							/>
+							
 							<SelectUser
 								handleSearch={(data: IFilter) => {
 									setFilter(data)

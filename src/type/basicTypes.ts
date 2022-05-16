@@ -281,3 +281,9 @@ export interface UserAttendance {
 	designation: string
 	date: Date
 }
+
+export interface IContractUrls {
+	summary: string
+	discussion: string
+	files: string
+}

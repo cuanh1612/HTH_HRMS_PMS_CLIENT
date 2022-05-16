@@ -11,6 +11,7 @@ import {
 } from '@chakra-ui/react'
 import ItemContractFile from 'components/ItemContractFile'
 import ItemFileUpload from 'components/ItemFileUpload'
+import { ContractLayout } from 'components/layouts/Contract'
 import Loading from 'components/Loading'
 import { AuthContext } from 'contexts/AuthContext'
 import { createContractFileMutation, deleteContractFileMutation } from 'mutations/contractFile'
@@ -20,16 +21,16 @@ import { allContractFilesQuery } from 'queries/contractFile'
 import { useCallback, useContext, useEffect, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { AiOutlinePlusCircle, AiOutlineSave } from 'react-icons/ai'
+import { NextLayout } from 'type/element/layout'
 import { ICloudinaryImg } from 'type/fileType'
 import { contractMutaionResponse } from 'type/mutationResponses'
 import { generateImgFile } from 'utils/helper'
 import { uploadFile } from 'utils/uploadFile'
 
-export default function Files() {
-	const { isAuthenticated, handleLoading, setToast, socket } =
-		useContext(AuthContext)
+const Files: NextLayout = () => {
+	const { isAuthenticated, handleLoading, setToast, socket } = useContext(AuthContext)
 	const router = useRouter()
-	const { contractId } = router.query
+	const { id } = router.query
 
 	//Setup disclosure ----------------------------------------------------------
 	const { isOpen: isOpenAdd, onOpen: onOpenAdd, onClose: onCloseAdd } = useDisclosure()
@@ -41,7 +42,7 @@ export default function Files() {
 	//Query ----------------------------------------------------------------------
 	const { data: dataAllContractFiles, mutate: refetchAllContractFiles } = allContractFilesQuery(
 		isAuthenticated,
-		Number(contractId)
+		Number(id)
 	)
 	console.log(dataAllContractFiles)
 
@@ -81,8 +82,8 @@ export default function Files() {
 	//Join room socket
 	useEffect(() => {
 		//Join room
-		if (socket && contractId) {
-			socket.emit('joinRoomFileContract', contractId)
+		if (socket && id) {
+			socket.emit('joinRoomFileContract', id)
 
 			socket.on('getNewFileContract', () => {
 				refetchAllContractFiles()
@@ -91,13 +92,13 @@ export default function Files() {
 
 		//Leave room
 		function leaveRoom() {
-			if (socket && contractId) {
-				socket.emit('leaveRoomFileContract', contractId)
+			if (socket && id) {
+				socket.emit('leaveRoomFileContract', id)
 			}
 		}
 
 		return leaveRoom
-	}, [socket, contractId])
+	}, [socket, id])
 
 	//Handle check loged in
 	useEffect(() => {
@@ -123,8 +124,8 @@ export default function Files() {
 			refetchAllContractFiles()
 
 			// Emit to other user join room
-			if (socket && contractId) {
-				socket.emit('newFile', contractId)
+			if (socket && id) {
+				socket.emit('newFile', id)
 			}
 		}
 	}, [statusCreContractFile])
@@ -140,8 +141,8 @@ export default function Files() {
 			refetchAllContractFiles()
 
 			// Emit to other user join room
-			if (socket && contractId) {
-				socket.emit('newFile', contractId)
+			if (socket && id) {
+				socket.emit('newFile', id)
 			}
 		}
 	}, [statusDeleteContractFile])
@@ -188,18 +189,18 @@ export default function Files() {
 		const dataUploadFiles: ICloudinaryImg[] | null = await handleUploadFiles()
 
 		//Check upload files success
-		if (contractId && dataUploadFiles && dataUploadFiles?.length > 0) {
+		if (id && dataUploadFiles && dataUploadFiles?.length > 0) {
 			//Create contract file
 			mutateCreContractFile({
 				files: dataUploadFiles,
-				contract: Number(contractId),
+				contract: Number(id),
 			})
 		}
 	}
 
 	//Handle delete contract file
 	const onDeleteFile = (contractFileId: number) => {
-		if (!contractId) {
+		if (!id) {
 			setToast({
 				msg: 'Not found contract to delete contract file',
 				type: 'error',
@@ -207,7 +208,7 @@ export default function Files() {
 		} else {
 			mutateDeleteContractFile({
 				contractFileId,
-				contractId: Number(contractId),
+				contractId: Number(id),
 			})
 		}
 	}
@@ -332,16 +333,18 @@ export const getStaticProps: GetStaticProps = async () => {
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-	const res: contractMutaionResponse = await fetch('http://localhost:4000/api/contracts').then((result) => result.json())
+	const res: contractMutaionResponse = await fetch('http://localhost:4000/api/contracts').then(
+		(result) => result.json()
+	)
 	const contracts = res.contracts
 
-	if(!contracts){
+	if (!contracts) {
 		return { paths: [], fallback: false }
 	}
 
 	// Get the paths we want to pre-render based on leave
 	const paths = contracts.map((contract: any) => ({
-		params: { contractId: String(contract.id) },
+		params: { id: String(contract.id) },
 	}))
 
 	// We'll pre-render only these paths at build time.
@@ -349,3 +352,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 	// on-demand if the path doesn't exist.
 	return { paths, fallback: false }
 }
+
+Files.getLayout = ContractLayout
+
+export default Files

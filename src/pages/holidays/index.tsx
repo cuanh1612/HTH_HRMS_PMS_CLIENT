@@ -159,7 +159,7 @@ const Holiday: NextLayout = () => {
 					Cell: ({ value }) => {
 						const date = new Date(value)
 						return (
-							<Text>{`${date.getDate()}-${date.getMonth()}-${date.getFullYear()}`}</Text>
+							<Text>{`${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`}</Text>
 						)
 					},
 				},

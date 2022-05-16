@@ -34,3 +34,10 @@ export async function updateProjectRequest({
 
 	return resultFetch
 }
+
+// get all
+export const allProjectsRequest = async (url: string) => {
+	return await getData<projectMutaionResponse>({
+		url: `http://localhost:4000/api/${url}`,
+	})
+}

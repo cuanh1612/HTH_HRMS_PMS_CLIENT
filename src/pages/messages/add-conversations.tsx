@@ -14,9 +14,7 @@ import { IOption } from 'type/basicTypes'
 import { createConversationForm } from 'type/form/basicFormType'
 import { createConversationValidate } from 'utils/validate'
 
-export interface IAddConversationsProps {}
-
-export default function AddConversations(props: IAddConversationsProps) {
+export default function AddConversations() {
 	const { isAuthenticated, handleLoading, setToast, currentUser } = useContext(AuthContext)
 	const router = useRouter()
 

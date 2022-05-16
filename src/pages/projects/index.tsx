@@ -2,6 +2,7 @@ import { Button, useDisclosure } from '@chakra-ui/react'
 import Drawer from 'components/Drawer'
 import { AuthContext } from 'contexts/AuthContext'
 import { useRouter } from 'next/router'
+import { allProjectsQuery } from 'queries/project'
 import { useContext, useEffect, useState } from 'react'
 import AddProject from './add-projects'
 import UpdateProject from './update-projects'
@@ -13,12 +14,15 @@ export default function Event({}: IProjectProps) {
 	const router = useRouter()
 
 	//State ---------------------------------------------------------------------
-	const [projectIdUpdate, setProjectIdUpdate] = useState<number | null>(12)
+	const [projectIdUpdate] = useState<number | null>(12)
 
 	//Setup drawer --------------------------------------------------------------
 	const { isOpen: isOpenAdd, onOpen: onOpenAdd, onClose: onCloseAdd } = useDisclosure()
 	const { isOpen: isOpenUpdate, onOpen: onOpenUpdate, onClose: onCloseUpdate } = useDisclosure()
 
+	// query and mutation
+	const {data: allProjects, mutate: refetchAllProjects} = allProjectsQuery(isAuthenticated)
+	
 	//User effect ---------------------------------------------------------------
 
 	//Handle check loged in
@@ -31,6 +35,10 @@ export default function Event({}: IProjectProps) {
 			}
 		}
 	}, [isAuthenticated])
+
+	useEffect(()=> {
+		console.log(allProjects)
+	}, [allProjects])
 
 	return (
 		<>

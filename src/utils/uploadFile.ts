@@ -89,7 +89,7 @@ export const uploadBase64 = async (upload_preset: string, file: string, tags?: S
 async function parseURI(d: Blob) {
 	var reader = new FileReader()
 	reader.readAsDataURL(d)
-	return new Promise((res, rej) => {
+	return new Promise((res) => {
 		reader.onload = (e) => {
 			if (e.target) {
 				res(e.target.result)

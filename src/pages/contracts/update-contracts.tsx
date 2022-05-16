@@ -21,7 +21,7 @@ import { Textarea } from 'components/form/Textarea'
 import UploadAvatar from 'components/form/UploadAvatar'
 import Modal from 'components/modal/Modal'
 import { allClientsQuery } from 'queries/client'
-import { detailContractQuery } from 'queries/contract'
+import { allContractsQuery, detailContractQuery } from 'queries/contract'
 import { allContractTypesQuery } from 'queries/contractType'
 import { BsCalendarDate } from 'react-icons/bs'
 import { FaCity } from 'react-icons/fa'
@@ -64,6 +64,8 @@ export default function UpdateContract({ onCloseDrawer, contractIdUpdate }: IUpd
 	const { data: dataClients } = allClientsQuery(isAuthenticated)
 	const { data: dataContractTypes } = allContractTypesQuery()
 	const { data: dataDetailContract } = detailContractQuery(isAuthenticated, contractIdUpdate)
+	// refetch when add contract success
+	const { mutate: refetchAllContracts } = allContractsQuery(isAuthenticated)
 
 	//mutation -------------------------------------------------------------------
 	const [mutateUpContract, { status: statusUpContract, data: dataUpContract }] =
@@ -133,8 +135,8 @@ export default function UpdateContract({ onCloseDrawer, contractIdUpdate }: IUpd
 				files: infoImg.files,
 				tags: ['avatar'],
 				raw: false,
-				upload_preset: "huprom-avatar",
-				options: infoImg.options
+				upload_preset: 'huprom-avatar',
+				options: infoImg.options,
 			})
 
 			setLoadingImg(false)
@@ -170,6 +172,7 @@ export default function UpdateContract({ onCloseDrawer, contractIdUpdate }: IUpd
 				type: 'success',
 				msg: dataUpContract?.message as string,
 			})
+			refetchAllContracts()
 		}
 	}, [statusUpContract])
 

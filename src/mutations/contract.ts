@@ -1,4 +1,4 @@
-import { createContractRequest, updateContractRequest } from 'requests/contract'
+import { createContractRequest, deleteContractRequest, deleteContractsRequest, updateContractRequest } from 'requests/contract'
 import { TToast } from 'type/basicTypes'
 import useMutation from 'use-mutation'
 
@@ -17,6 +17,30 @@ export const createContractMutation = (setToast: TToast) => {
 //update
 export const updateContractMutation = (setToast: TToast) => {
 	return useMutation(updateContractRequest, {
+		onFailure({ error }) {
+			setToast({
+				msg: error.message,
+				type: 'error',
+			})
+		},
+	})
+}
+
+// delete one
+export const deleteContractMutation = (setToast: TToast) => {
+	return useMutation(deleteContractRequest, {
+		onFailure({ error }) {
+			setToast({
+				msg: error.message,
+				type: 'error',
+			})
+		},
+	})
+}
+
+// delete many
+export const deleteContractsMutation = (setToast: TToast) => {
+	return useMutation(deleteContractsRequest, {
 		onFailure({ error }) {
 			setToast({
 				msg: error.message,

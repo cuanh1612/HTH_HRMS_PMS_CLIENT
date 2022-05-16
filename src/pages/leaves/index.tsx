@@ -123,12 +123,6 @@ const Leaves: NextLayout = () => {
 	// is reset table
 	const [isResetFilter, setIsReset] = useState(false)
 
-	// all categories
-	const [categories, setCts] = useState<IOption[]>()
-
-	// all sub categories
-	const [subCategories, setSubCts] = useState<IOption[]>()
-
 	// all leave type
 	const [leaveTypes, setLeaveTypes] = useState<IOption[]>()
 
@@ -137,7 +131,7 @@ const Leaves: NextLayout = () => {
 	const { data: allLeaves, mutate: refetchAllLeaves } = allLeaveQuery(isAuthenticated)
 
 	// get all leave type
-	const { data: allLeaveType, mutate: refetchLeaveType } = allLeaveTypesQuery()
+	const { data: allLeaveType } = allLeaveTypesQuery()
 
 	// update status of leave
 	const [mutateUpdateStatus, { status: statusUpStatus }] = updateStatusMutation(setToast)
@@ -244,7 +238,7 @@ const Leaves: NextLayout = () => {
 					Header: 'Name',
 					accessor: 'name',
 					minWidth: 250,
-					Cell: ({ value, row }) => {
+					Cell: ({ row }) => {
 						const people = row.original.employee
 						return (
 							<HStack w={'full'} spacing={5}>

@@ -1,9 +1,4 @@
-import * as React from 'react';
-
-export interface ITasksProps {
-}
-
-export default function Tasks (props: ITasksProps) {
+export default function Tasks () {
   return (
     <div>
       

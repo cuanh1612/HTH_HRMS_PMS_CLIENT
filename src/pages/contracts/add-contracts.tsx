@@ -31,6 +31,7 @@ import ContractTypes from '../contract-types'
 import { ICloudinaryImg, IImg } from 'type/fileType'
 import { uploadFile } from 'utils/uploadFile'
 import UploadAvatar from 'components/form/UploadAvatar'
+import { allContractsQuery } from 'queries/contract'
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
 
@@ -61,6 +62,9 @@ export default function AddContract({ onCloseDrawer }: IAddContractProps) {
 	//Query ----------------------------------------------------------------------
 	const { data: dataClients } = allClientsQuery(isAuthenticated)
 	const { data: dataContractTypes } = allContractTypesQuery()
+
+	// refetch when add contract success
+	const { mutate: refetchAllContracts } = allContractsQuery(isAuthenticated)
 
 	//mutation -------------------------------------------------------------------
 	const [mutateCreContract, { status: statusCreContract, data: dataCreContract }] =
@@ -116,15 +120,13 @@ export default function AddContract({ onCloseDrawer }: IAddContractProps) {
 		if (infoImg) {
 			setLoadingImg(true)
 
-			const dataUploadIgm: Array<ICloudinaryImg> = await uploadFile(
-				{
-					files: infoImg.files,
-					tags: ['avatar'],
-					raw: false,
-					upload_preset: "huprom-avatar",
-					options: infoImg.options
-				}
-			)
+			const dataUploadIgm: Array<ICloudinaryImg> = await uploadFile({
+				files: infoImg.files,
+				tags: ['avatar'],
+				raw: false,
+				upload_preset: 'huprom-avatar',
+				options: infoImg.options,
+			})
 
 			setLoadingImg(false)
 
@@ -159,6 +161,7 @@ export default function AddContract({ onCloseDrawer }: IAddContractProps) {
 				type: 'success',
 				msg: dataCreContract?.message as string,
 			})
+			refetchAllContracts()
 		}
 	}, [statusCreContract])
 

@@ -287,3 +287,12 @@ export interface IContractUrls {
 	discussion: string
 	files: string
 }
+
+export interface projectFileType {
+	id: number
+	url: string
+	name: string
+	public_id: string
+	contract: contractType
+	createdAt: Date
+}

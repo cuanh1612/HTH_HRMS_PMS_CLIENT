@@ -1,6 +1,6 @@
-import { Box, Button, Grid, GridItem, VStack } from '@chakra-ui/react'
+import { Avatar, Box, Button, Grid, GridItem, HStack, Text, VStack } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { Select } from 'components/form/Select'
+import SelectCustom from 'components/form/SelectCustom'
 import Loading from 'components/Loading'
 import { AuthContext } from 'contexts/AuthContext'
 import { createConversationMutation } from 'mutations/conversation'
@@ -65,14 +65,27 @@ export default function AddConversations() {
 		}
 	}, [isAuthenticated])
 
-	//Set options select employees/
+	//Set data option employees state
 	useEffect(() => {
-		if (dataEmployees?.employees) {
-			const newOptionEmployees: IOption[] = dataEmployees.employees.map((employee) => {
-				return {
-					value: employee.id.toString(),
-					label: employee.email,
-				}
+		if (dataEmployees && dataEmployees.employees) {
+			let newOptionEmployees: IOption[] = []
+
+			dataEmployees.employees.map((employee) => {
+				newOptionEmployees.push({
+					label: (
+						<>
+							<HStack>
+								<Avatar
+									size={'xs'}
+									name={employee.name}
+									src={employee.avatar?.url}
+								/>
+								<Text>{employee.email}</Text>
+							</HStack>
+						</>
+					),
+					value: employee.id,
+				})
 			})
 
 			setOptionEmployees(newOptionEmployees)
@@ -96,7 +109,7 @@ export default function AddConversations() {
 			<Box pos="relative" px={6} as={'form'} h="auto" onSubmit={handleSubmit(onSubmit)}>
 				<Grid templateColumns="repeat(2, 1fr)" gap={6}>
 					<GridItem w="100%" colSpan={[2]}>
-						<Select
+						<SelectCustom
 							name="user_two"
 							label="Choose Member"
 							required
@@ -125,7 +138,7 @@ export default function AddConversations() {
 					</Button>
 				</VStack>
 
-                {statusCreConversation === 'running' && <Loading />}
+				{statusCreConversation === 'running' && <Loading />}
 			</Box>
 		</>
 	)

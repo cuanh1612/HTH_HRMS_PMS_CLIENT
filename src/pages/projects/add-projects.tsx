@@ -28,6 +28,7 @@ import { useRouter } from 'next/router'
 import { allClientsQuery } from 'queries/client'
 import { allDepartmentsQuery } from 'queries/department'
 import { allEmployeesQuery } from 'queries/employee'
+import { allProjectsQuery } from 'queries/project'
 import { allProjectCategoriesQuery } from 'queries/projectCategory'
 import { useCallback, useContext, useEffect, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
@@ -99,6 +100,9 @@ export default function AddProject({ onCloseDrawer }: IAddProjectProps) {
 
 	// get all department
 	const { data: allDepartments } = allDepartmentsQuery(isAuthenticated)
+
+	// refetch all Project
+	const { mutate: refetchAllProjects } = allProjectsQuery(isAuthenticated)
 
 	//mutation -------------------------------------------------------------------
 	const [mutateCreProject, { status: statusCreProject, data: dataCreProject }] =
@@ -209,6 +213,7 @@ export default function AddProject({ onCloseDrawer }: IAddProjectProps) {
 				type: 'success',
 				msg: dataCreProject?.message as string,
 			})
+			refetchAllProjects()
 		}
 	}, [statusCreProject])
 
@@ -244,23 +249,27 @@ export default function AddProject({ onCloseDrawer }: IAddProjectProps) {
 				type: 'warning',
 			})
 		} else {
-			//Upload contract files
-			const dataUploadFiles: ICloudinaryImg[] | null = await handleUploadFiles()
+			//Create project
+			values.project_summary = summary
+			values.notes = notes
+			values.send_task_noti = isSendTaskNoti
 
-			//Check upload files project
-			if (dataUploadFiles && dataUploadFiles?.length > 0) {
-				//Create project
-				values.project_summary = summary
-				values.notes = notes
-				values.project_files = dataUploadFiles
-				values.send_task_noti = isSendTaskNoti
-
-				if (currentUser) {
-					values.Added_by = currentUser.id
-				}
-
-				mutateCreProject(values)
+			if (currentUser) {
+				values.Added_by = currentUser.id
 			}
+
+			if (filesUpload.length > 0) {
+				//Upload contract files
+				const dataUploadFiles: ICloudinaryImg[] | null = await handleUploadFiles()
+
+				//Check upload files project
+				if (dataUploadFiles && dataUploadFiles?.length > 0) {
+					//Create project
+					values.project_files = dataUploadFiles
+				}
+			}
+
+			mutateCreProject(values)
 		}
 	}
 
@@ -637,7 +646,7 @@ export default function AddProject({ onCloseDrawer }: IAddProjectProps) {
 				title="Department"
 			>
 				<Text>
-					<Department/>
+					<Department />
 				</Text>
 			</Modal>
 		</>

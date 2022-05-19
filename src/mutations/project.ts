@@ -1,4 +1,4 @@
-import { createProjectRequest, updateProjectRequest } from 'requests/project'
+import { createProjectRequest, deleteProjectRequest, deleteProjectsRequest, updateProjectRequest } from 'requests/project'
 import { TToast } from 'type/basicTypes'
 import useMutation from 'use-mutation'
 
@@ -17,6 +17,30 @@ export const createProjectMutation = (setToast: TToast) => {
 //update
 export const updateProjectMutation = (setToast: TToast) => {
 	return useMutation(updateProjectRequest, {
+		onFailure({ error }) {
+			setToast({
+				msg: error.message,
+				type: 'error',
+			})
+		},
+	})
+}
+
+// delete one
+export const deleteProjectMutation = (setToast: TToast) => {
+	return useMutation(deleteProjectRequest, {
+		onFailure({ error }) {
+			setToast({
+				msg: error.message,
+				type: 'error',
+			})
+		},
+	})
+}
+
+// delete many
+export const deleteProjectsMutation = (setToast: TToast) => {
+	return useMutation(deleteProjectsRequest, {
 		onFailure({ error }) {
 			setToast({
 				msg: error.message,

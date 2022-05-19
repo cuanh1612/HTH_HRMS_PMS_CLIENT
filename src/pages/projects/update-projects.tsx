@@ -28,7 +28,7 @@ import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 import { allClientsQuery } from 'queries/client'
 import { allDepartmentsQuery } from 'queries/department'
-import { detailProjectQuery } from 'queries/project'
+import { allProjectsQuery, detailProjectQuery } from 'queries/project'
 import { allProjectCategoriesQuery } from 'queries/projectCategory'
 import { useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -88,6 +88,9 @@ export default function UpdateProject({ onCloseDrawer, projectIdUpdate }: IUpdat
 
 	// get detail project
 	const { data: dataDetailProject } = detailProjectQuery(isAuthenticated, projectIdUpdate)
+
+	// refetch all Project
+	const { mutate: refetchAllProjects } = allProjectsQuery(isAuthenticated)
 
 	//mutation -------------------------------------------------------------------
 	const [mutateUpProject, { status: statusUpProject, data: dataUpProject }] =
@@ -169,6 +172,8 @@ export default function UpdateProject({ onCloseDrawer, projectIdUpdate }: IUpdat
 				type: 'success',
 				msg: dataUpProject?.message as string,
 			})
+			
+			refetchAllProjects()
 		}
 	}, [statusUpProject])
 

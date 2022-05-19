@@ -37,14 +37,16 @@ export const selectFilter = (columns: string[]) => {
 	}
 }
 
-export const arrayFilter = (columns: string[]) => {
-	return (rows: Row[], _: string, filterValue: Array<any>) => {
+export const arrayFilter = (columns: string[], fieldColumn: string) => {
+	return (rows: Row[], _: string, filterValue: string | number) => {
 		if (!filterValue) {
 			return rows
 		}
 		return rows.filter((row) => {
 			const data = getData(columns, row)
-			return filterValue.includes(data)
+			return data.every((field: any) => {
+				return field[fieldColumn] == filterValue
+			})
 		})
 	}
 }

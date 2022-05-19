@@ -69,9 +69,6 @@ const Contracts: NextLayout = () => {
 		filterValue: '',
 	})
 
-	// get contract types to select to filter
-	const [cTypesFilter, setCTypesFilter] = useState<IOption[]>([])
-
 	// get client to select to filter
 	const [clientsFilter, setClientsFilter] = useState<IOption[]>([])
 
@@ -110,20 +107,6 @@ const Contracts: NextLayout = () => {
 	const { isOpen: isOpenFilter, onOpen: onOpenFilter, onClose: onCloseFilter } = useDisclosure()
 
 	//User effect ---------------------------------------------------------------
-
-	// set contract Types Filter
-	useEffect(() => {
-		if (allContractTypes) {
-			setCTypesFilter(
-				allContractTypes.contractTypes?.map((contractType) => {
-					return {
-						label: contractType.name,
-						value: contractType.id,
-					}
-				}) as IOption[]
-			)
-		}
-	}, [allContractTypes])
 
 	// set client to filter
 	useEffect(() => {
@@ -439,16 +422,20 @@ const Contracts: NextLayout = () => {
 								}
 								type={'text'}
 							/>
-
-							<Select
-								options={cTypesFilter}
-								handleSearch={(data: IFilter) => {
-									setFilter(data)
-								}}
-								columnId={'contract_type'}
-								label="Contract type"
-								placeholder="Select type"
-							/>
+							{allContractTypes && (
+								<Select
+									options={allContractTypes.contractTypes?.map((type) => ({
+										label: type.name,
+										value: type.id,
+									}))}
+									handleSearch={(data: IFilter) => {
+										setFilter(data)
+									}}
+									columnId={'contract_type'}
+									label="Contract type"
+									placeholder="Select type"
+								/>
+							)}
 							<DateRange
 								handleSelect={(date: { from: Date; to: Date }) => {
 									setFilter({

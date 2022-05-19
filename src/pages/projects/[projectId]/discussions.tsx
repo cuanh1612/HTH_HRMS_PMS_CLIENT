@@ -5,6 +5,7 @@ import { GetServerSideProps } from 'next'
 import { useRouter } from 'next/router'
 import { allProjectDiscussionRoomsQuery } from 'queries/projectDiscussionRoom'
 import { useContext, useEffect } from 'react'
+import ProjectDiscussionCategory from 'src/pages/project-discussion-categories'
 import {
 	ProjectDisucssionRoomMutaionResponse,
 	projectMutaionResponse,
@@ -34,8 +35,8 @@ export default function Discussions({ allDiscussionRooms }: IDiscussionsProps) {
 	} = useDisclosure()
 
 	//Query ---------------------------------------------------------------------
-	const { data: dataAllProjectDisucssionRooms, mutate: refetchAllProjectDiscussionRooms } =
-		allProjectDiscussionRoomsQuery(isAuthenticated, Number(projectId))
+	// const { data: dataAllProjectDisucssionRooms, mutate: refetchAllProjectDiscussionRooms } =
+	// 	allProjectDiscussionRoomsQuery(isAuthenticated, Number(projectId))
 
 	//User effect ---------------------------------------------------------------
 	//Handle check loged in
@@ -84,7 +85,7 @@ export default function Discussions({ allDiscussionRooms }: IDiscussionsProps) {
 				onClose={onCloseAddDiscussionCategory}
 				title="Discussion Category"
 			>
-				<AddDiscussion />
+				<ProjectDiscussionCategory />
 			</Modal>
 		</>
 	)

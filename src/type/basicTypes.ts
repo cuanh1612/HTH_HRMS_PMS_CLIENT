@@ -339,4 +339,5 @@ export interface projectDiscussionRoomType {
 export interface projectDiscussionCategoryType {
 	id: number
 	name: string
+	color: string
 }

@@ -424,3 +424,8 @@ export type createProDiscussionCategoryForm = {
 	description: string
 	project: number
 }
+
+export type createProjectDiscussionCategoryForm = {
+	name: string
+	color: string
+}

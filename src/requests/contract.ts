@@ -1,6 +1,6 @@
 import { createContractForm, updateContractForm } from 'type/form/basicFormType'
 import { contractMutaionResponse } from 'type/mutationResponses'
-import { getData, postData, putData } from 'utils/fetchData'
+import { deleteData, getData, postData, putData } from 'utils/fetchData'
 
 //Function handle create contract
 export async function createContractRequest(inputCreate: createContractForm) {
@@ -35,3 +35,28 @@ export async function updateContractRequest({
 
 	return resultFetch
 }
+
+//Function handle get all employees
+export const allContractsRequest = async (url: string) => {
+	return await getData<contractMutaionResponse>({
+		url: `http://localhost:4000/api/${url}`,
+	})
+}
+
+// Handle to delete many contracts
+export const deleteContractsRequest = async (ids: number[]) => {
+	return await postData<contractMutaionResponse>({
+		url: `http://localhost:4000/api/contracts/delete-many`,
+		body: {
+			contracts: ids,
+		},
+	})
+}
+
+//Handle to delete contract
+export const deleteContractRequest = async (id: string | number) => {
+	return await deleteData<contractMutaionResponse>({
+		url: `http://localhost:4000/api/contracts/${id}`,
+	})
+}
+

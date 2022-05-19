@@ -17,14 +17,16 @@ import 'react-quill/dist/quill.snow.css'
 import { updateDiscussionForm } from 'type/form/basicFormType'
 import { GetStaticPaths, GetStaticProps } from 'next'
 import { contractMutaionResponse } from 'type/mutationResponses'
+import { NextLayout } from 'type/element/layout'
+import { ContractLayout } from 'components/layouts/Contract'
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
 
-export default function Discussion() {
+const Discussion:NextLayout = ()=> {
 	const { isAuthenticated, handleLoading, setToast, currentUser, socket } =
 		useContext(AuthContext)
 	const router = useRouter()
-	const { contractId } = router.query
+	const { discussionId } = router.query
 
 	//state ---------------------------------------------------------------------
 	const [content, setContent] = useState<string>('')
@@ -35,7 +37,7 @@ export default function Discussion() {
 	//Query ----------------------------------------------------------------------
 	const { data: dataAllDiscussion, mutate: refetchAllDiscussions } = allDiscussionsQuery(
 		isAuthenticated,
-		Number(contractId)
+		Number(discussionId)
 	)
 	console.log(dataAllDiscussion)
 
@@ -53,8 +55,8 @@ export default function Discussion() {
 	//Join room socket
 	useEffect(() => {
 		//Join room
-		if (socket && contractId) {
-			socket.emit('joinRoomDiscussionContract', contractId)
+		if (socket && discussionId) {
+			socket.emit('joinRoomDiscussionContract', discussionId)
 
 			socket.on('getNewDiscussion', () => {
 				refetchAllDiscussions()
@@ -63,13 +65,13 @@ export default function Discussion() {
 
 		//Leave room
 		function leaveRoom() {
-			if (socket && contractId) {
-				socket.emit('leaveRoomDiscussionContract', contractId)
+			if (socket && discussionId) {
+				socket.emit('leaveRoomDiscussionContract', discussionId)
 			}
 		}
 
 		return leaveRoom
-	}, [socket, contractId])
+	}, [socket, discussionId])
 
 	//Handle check loged in
 	useEffect(() => {
@@ -95,8 +97,8 @@ export default function Discussion() {
 			refetchAllDiscussions()
 
 			//Emit to other user join room
-			if (socket && contractId) {
-				socket.emit('newDiscussion', contractId)
+			if (socket && discussionId) {
+				socket.emit('newDiscussion', discussionId)
 			}
 		}
 	}, [statusCreDiscussion])
@@ -112,8 +114,8 @@ export default function Discussion() {
 			refetchAllDiscussions()
 
 			//Emit to other user join room
-			if (socket && contractId) {
-				socket.emit('newDiscussion', contractId)
+			if (socket && discussionId) {
+				socket.emit('newDiscussion', discussionId)
 			}
 		}
 	}, [statusDeleteDiscussion])
@@ -129,8 +131,8 @@ export default function Discussion() {
 			refetchAllDiscussions()
 
 			//Emit to other user join room
-			if (socket && contractId) {
-				socket.emit('newDiscussion', contractId)
+			if (socket && discussionId) {
+				socket.emit('newDiscussion', discussionId)
 			}
 		}
 	}, [statusUpDiscussion])
@@ -161,7 +163,7 @@ export default function Discussion() {
 						: {
 								employee: currentUser.id,
 						  }),
-					contract: Number(contractId),
+					contract: Number(discussionId),
 				})
 			}
 		}
@@ -311,7 +313,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 	// Get the paths we want to pre-render based on leave
 	const paths = contracts.map((contract: any) => ({
-		params: { contractId: String(contract.id) },
+		params: { discussionId: String(contract.id) },
 	}))
 
 	// We'll pre-render only these paths at build time.
@@ -319,3 +321,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 	// on-demand if the path doesn't exist.
 	return { paths, fallback: false }
 }
+
+Discussion.getLayout = ContractLayout
+
+export default Discussion

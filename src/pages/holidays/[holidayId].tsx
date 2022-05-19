@@ -14,14 +14,18 @@ export interface IDetailHolidayProps {
 	onCloseDrawer?: () => void
 	holidayIdProp: number | null
 }
-
+var isUseLayout = false
 export default function DetailHoliday({ onCloseDrawer, holidayIdProp }: IDetailHolidayProps) {
 	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
 	const router = useRouter()
 	const { holidayId: holidayIdRouter } = router.query
 
+	useEffect(() => {
+		isUseLayout = true
+	}, [holidayIdRouter])
+
 	//Setup drawer --------------------------------------------------------------
-	const { isOpen: isOpenUpdate, onOpen: onOpenUpdate, onClose: onCloseUpdate } = useDisclosure()
+	const { isOpen: isOpenUpdate, onOpen: onOpenUpdate } = useDisclosure()
 
 	//Query ---------------------------------------------------------------------
 	const { data: dataDetailHoliday } = detailHolidayQuery(
@@ -46,11 +50,11 @@ export default function DetailHoliday({ onCloseDrawer, holidayIdProp }: IDetailH
 	const onDeleteHoliday = () => {
 		if(!holidayIdProp && !holidayIdRouter){
 			setToast({
-				msg: "Not found holiday to delete",
-				type: "warning"
+				msg: 'Not found holiday to delete',
+				type: 'warning',
 			})
 		}
-		mutateDelHolidays(holidayIdProp || holidayIdRouter as string)
+		mutateDelHolidays(holidayIdProp || (holidayIdRouter as string))
 	}
 
 	//User effect ---------------------------------------------------------------
@@ -96,7 +100,11 @@ export default function DetailHoliday({ onCloseDrawer, holidayIdProp }: IDetailH
 								<Button colorScheme="teal" variant="ghost" onClick={onOpenUpdate}>
 									Edit
 								</Button>
-								<Button colorScheme="teal" variant="ghost" onClick={onDeleteHoliday}>
+								<Button
+									colorScheme="teal"
+									variant="ghost"
+									onClick={onDeleteHoliday}
+								>
 									Delete
 								</Button>
 							</HStack>
@@ -166,4 +174,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 	// { fallback: blocking } will server-render pages
 	// on-demand if the path doesn't exist.
 	return { paths, fallback: false }
+}
+
+if (isUseLayout) {
 }

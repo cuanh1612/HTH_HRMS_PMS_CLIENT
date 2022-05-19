@@ -1,4 +1,4 @@
-import { createProjectForm, createProjetCategoryForm } from 'type/form/basicFormType'
+import { createProjetCategoryForm } from 'type/form/basicFormType'
 import { ProjectCategoryMutaionResponse } from 'type/mutationResponses'
 import { deleteData, getData, postData, putData } from 'utils/fetchData'
 

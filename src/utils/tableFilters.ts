@@ -12,7 +12,7 @@ const getData = (columns: string[], row: Row) => {
 }
 
 export const textFilter = (columns: string[]) => {
-	return (rows: Row[], id: string, filterValue: string) => {
+	return (rows: Row[], _: string, filterValue: string) => {
 		if (!filterValue) {
 			return rows
 		}
@@ -26,7 +26,7 @@ export const textFilter = (columns: string[]) => {
 }
 
 export const selectFilter = (columns: string[]) => {
-	return (rows: Row[], id: string, filterValue: string) => {
+	return (rows: Row[], _: string, filterValue: string) => {
 		if (!filterValue) {
 			return rows
 		}
@@ -37,14 +37,16 @@ export const selectFilter = (columns: string[]) => {
 	}
 }
 
-export const arrayFilter = (columns: string[]) => {
-	return (rows: Row[], id: string, filterValue: Array<any>) => {
+export const arrayFilter = (columns: string[], fieldColumn: string) => {
+	return (rows: Row[], _: string, filterValue: string | number) => {
 		if (!filterValue) {
 			return rows
 		}
 		return rows.filter((row) => {
 			const data = getData(columns, row)
-			return filterValue.includes(data)
+			return data.every((field: any) => {
+				return field[fieldColumn] == filterValue
+			})
 		})
 	}
 }
@@ -52,7 +54,7 @@ export const arrayFilter = (columns: string[]) => {
 export const dateFilter = (columns: string[]) => {
 	return (
 		rows: Row[],
-		id: string,
+		_: string,
 		filterValue: {
 			from: Date
 			to: Date
@@ -83,7 +85,7 @@ export const dateFilter = (columns: string[]) => {
 }
 
 export const yearFilter = (columns: string[]) => {
-	return (rows: Row[], id: string, filterValue: number) => {
+	return (rows: Row[], _: string, filterValue: number) => {
 		if (!filterValue) {
 			return rows
 		}
@@ -99,7 +101,7 @@ export const yearFilter = (columns: string[]) => {
 }
 
 export const monthFilter = (columns: string[]) => {
-	return (rows: Row[], id: string, filterValue: number) => {
+	return (rows: Row[], _: string, filterValue: number) => {
 		if (!filterValue) {
 			return rows
 		}

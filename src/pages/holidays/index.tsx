@@ -59,7 +59,7 @@ const Holiday: NextLayout = () => {
 	const { isOpen: isOpenFilter, onOpen: onOpenFilter, onClose: onCloseFilter } = useDisclosure()
 
 	//State ---------------------------------------------------------------------
-	const [holidayIdDetail, setHolidayIdDetail] = useState<number | null>(2)
+	const [holidayIdDetail, setHolidayIdDetail] = useState<number | null>(null)
 
 	const [holidayIdUpdate, setHolidayIdUpdate] = useState<number | null>(1)
 	// set loading table
@@ -103,15 +103,16 @@ const Holiday: NextLayout = () => {
 	}, [isAuthenticated])
 
 	//Function -------------------------------------------------------------------
-	const handleOpenDetailHoliday = () => {
-		window.history.pushState({}, '', `/holidays/${holidayIdDetail}`)
-		onOpenDetail()
-	}
-
 	const handleCloseDetailHoliday = () => {
 		router.push('/holidays', undefined, { shallow: true })
 		onCloseDetail()
 	}
+
+	useEffect(()=> {
+		if(holidayIdDetail) {
+			window.history.pushState({}, '', `/holidays/${holidayIdDetail}`)
+		}
+	}, [holidayIdDetail])
 	
 	// check is successfully delete many
 	useEffect(() => {
@@ -158,7 +159,7 @@ const Holiday: NextLayout = () => {
 					Cell: ({ value }) => {
 						const date = new Date(value)
 						return (
-							<Text>{`${date.getDate()}-${date.getMonth()}-${date.getFullYear()}`}</Text>
+							<Text>{`${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`}</Text>
 						)
 					},
 				},
@@ -202,7 +203,10 @@ const Holiday: NextLayout = () => {
 								<MdOutlineMoreVert />
 							</MenuButton>
 							<MenuList>
-								<MenuItem icon={<IoEyeOutline fontSize={'15px'} />}>View</MenuItem>
+								<MenuItem onClick={()=> {
+									setHolidayIdDetail(row.values['id'])
+									onOpenDetail()
+								}} icon={<IoEyeOutline fontSize={'15px'} />}>View</MenuItem>
 								<MenuItem
 									onClick={() => {
 										setHolidayIdUpdate(row.values['id'])
@@ -229,7 +233,7 @@ const Holiday: NextLayout = () => {
 		},
 	]
 
-	// set loading == false when get all employees successfully
+	// set loading == false when get all holidays successfully
 	useEffect(() => {
 		if (allHolidays) {
 			setIsloading(false)
@@ -243,9 +247,6 @@ const Holiday: NextLayout = () => {
 			</Button>
 			<Button disabled={!dataSl || dataSl.length == 0 ? true : false} onClick={onOpenDlMany}>
 				Delete all
-			</Button>
-			<Button colorScheme="blue" onClick={() => handleOpenDetailHoliday()}>
-				open detail holiday
 			</Button>
 			<Button
 				onClick={() => {

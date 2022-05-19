@@ -10,7 +10,6 @@ import {
 	Slider,
 	SliderFilledTrack,
 	SliderMark,
-	SliderThumb,
 	SliderTrack,
 	Text,
 	useDisclosure,
@@ -21,17 +20,15 @@ import { Input } from 'components/form/Input'
 import { InputNumber } from 'components/form/InputNumber'
 import { Select } from 'components/form/Select'
 import SelectCustom from 'components/form/SelectCustom'
-import SelectMany from 'components/form/SelectMany'
 import Loading from 'components/Loading'
 import Modal from 'components/modal/Modal'
 import { AuthContext } from 'contexts/AuthContext'
-import { createProjectMutation, updateProjectMutation } from 'mutations/project'
+import { updateProjectMutation } from 'mutations/project'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 import { allClientsQuery } from 'queries/client'
 import { allDepartmentsQuery } from 'queries/department'
-import { allEmployeesQuery } from 'queries/employee'
-import { detailProjectQuery } from 'queries/project'
+import { allProjectsQuery, detailProjectQuery } from 'queries/project'
 import { allProjectCategoriesQuery } from 'queries/projectCategory'
 import { useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -41,7 +38,7 @@ import { MdOutlineDriveFileRenameOutline } from 'react-icons/md'
 import 'react-quill/dist/quill.bubble.css'
 import 'react-quill/dist/quill.snow.css'
 import { IOption } from 'type/basicTypes'
-import { createProjectForm, updateProjectForm } from 'type/form/basicFormType'
+import {updateProjectForm } from 'type/form/basicFormType'
 import { dataCurrency, dataProjectStatus } from 'utils/basicData'
 import { createProjectValidate } from 'utils/validate'
 import Department from '../departments'
@@ -91,6 +88,9 @@ export default function UpdateProject({ onCloseDrawer, projectIdUpdate }: IUpdat
 
 	// get detail project
 	const { data: dataDetailProject } = detailProjectQuery(isAuthenticated, projectIdUpdate)
+
+	// refetch all Project
+	const { mutate: refetchAllProjects } = allProjectsQuery(isAuthenticated)
 
 	//mutation -------------------------------------------------------------------
 	const [mutateUpProject, { status: statusUpProject, data: dataUpProject }] =
@@ -172,6 +172,8 @@ export default function UpdateProject({ onCloseDrawer, projectIdUpdate }: IUpdat
 				type: 'success',
 				msg: dataUpProject?.message as string,
 			})
+			
+			refetchAllProjects()
 		}
 	}, [statusUpProject])
 

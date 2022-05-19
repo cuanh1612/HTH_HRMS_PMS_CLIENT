@@ -1,6 +1,4 @@
 export const compareTime = (inClock: string, outClock: string) => {
-	console.log(inClock, outClock)
-
 	const inClockSplit = inClock.split(' ')
 	const outClockSplit = outClock.split(' ')
 	if (inClockSplit[1] == 'PM' && outClockSplit[1] == 'AM') {
@@ -19,6 +17,7 @@ export const compareTime = (inClock: string, outClock: string) => {
 	) {
 		return true
 	}
+	return false
 }
 
 export const compareDateTime = (date1: Date, date2: Date, inClock: string, outClock: string) => {
@@ -47,6 +46,7 @@ export const compareDateTime = (date1: Date, date2: Date, inClock: string, outCl
 	if (new Date(date1).toLocaleString() > new Date(date2).toLocaleString()) {
 		return true
 	}
+	return false
 }
 
 export const setTime = (time: string) => {

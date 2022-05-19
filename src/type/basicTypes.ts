@@ -283,6 +283,12 @@ export interface UserAttendance {
 	date: Date
 }
 
+export interface IContractUrls {
+	summary: string
+	discussion: string
+	files: string
+}
+
 export interface projectFileType {
 	id: number
 	url: string

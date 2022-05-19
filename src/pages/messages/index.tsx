@@ -19,9 +19,7 @@ import Loading from 'components/Loading'
 import Drawer from 'components/Drawer'
 import { deleteConversationMutation } from 'mutations/conversation'
 
-export interface IMessagesProps {}
-
-export default function Messages(props: IMessagesProps) {
+export default function Messages() {
 	const { isAuthenticated, handleLoading, setToast, currentUser, socket } =
 		useContext(AuthContext)
 	const router = useRouter()
@@ -60,7 +58,7 @@ export default function Messages(props: IMessagesProps) {
 	//mutation ----------------------------------------------------------
 	const [
 		mutateCreConversationReply,
-		{ status: statusCreConversationReply, data: dataCreConversationReply },
+		{ status: statusCreConversationReply },
 	] = createConversationReplyMutation(setToast)
 
 	const [

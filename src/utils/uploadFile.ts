@@ -28,7 +28,7 @@ export const uploadFile = async ({ files, tags, folder, options, upload_preset, 
 				tags.map((tag: any) => {
 					formData.append('tags[]', tag)
 				})
-
+				console.log( String(process.env.NEXT_PUBLIC_API_URL_IMG), String(process.env.NEXT_PUBLIC_API_URL_RAW))
 				const result = await fetch(
 					!raw
 						? String(process.env.NEXT_PUBLIC_API_URL_IMG)
@@ -89,7 +89,7 @@ export const uploadBase64 = async (upload_preset: string, file: string, tags?: S
 async function parseURI(d: Blob) {
 	var reader = new FileReader()
 	reader.readAsDataURL(d)
-	return new Promise((res, rej) => {
+	return new Promise((res) => {
 		reader.onload = (e) => {
 			if (e.target) {
 				res(e.target.result)

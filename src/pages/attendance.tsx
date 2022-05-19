@@ -674,7 +674,7 @@ const attendance: NextLayout = () => {
 										name={'department'}
 										options={[
 											{
-												label: 'all',
+												label: <Text color={colorMode== 'light' ? 'black' : 'white'}>all</Text>,
 												value: '',
 											},
 											...employees,

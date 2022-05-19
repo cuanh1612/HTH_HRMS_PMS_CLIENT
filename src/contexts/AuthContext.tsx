@@ -7,9 +7,9 @@ import {
 	SetStateAction,
 	useCallback,
 	useEffect,
-	useState
+	useState,
 } from 'react'
-import { employeeType, TToast } from 'type/basicTypes'
+import { employeeType, IContractUrls, TToast } from 'type/basicTypes'
 import JWTManager from 'utils/jwt'
 
 // custom loading
@@ -37,6 +37,8 @@ interface IAuthContext {
 	setToast: TToast
 	handleLoading: (isLoading: boolean) => void
 	socket: Socket<DefaultEventsMap, DefaultEventsMap> | null
+	setContractUrls: (id: string | number) => void
+	contractUrls?: IContractUrls
 }
 
 const defaultIsAuthenticated = null
@@ -51,6 +53,7 @@ export const AuthContext = createContext<IAuthContext>({
 	setToast: () => {},
 	handleLoading: () => {},
 	socket: null,
+	setContractUrls: () => {}
 })
 
 const AuthContextProvider = ({ children }: { children: ReactNode }) => {
@@ -83,6 +86,17 @@ const AuthContextProvider = ({ children }: { children: ReactNode }) => {
 	const handleLoading = (isLoading: boolean) => {
 		setLoading(isLoading)
 	}
+
+	const ContractUrlsHandle = (id: string | number) => {
+		if (id) {
+			setContractUrls({
+				discussion: `/contracts/${id}`,
+				files: `/contracts/files/${id}`,
+				summary: `/contracts/summary/${id}`,
+			})
+		}
+	}
+	const [contractUrls, setContractUrls] = useState<IContractUrls>()
 
 	//mutation
 	const { data: dataCurrentUser } = currentUserQuery(isAuthenticated)
@@ -138,7 +152,7 @@ const AuthContextProvider = ({ children }: { children: ReactNode }) => {
 
 	//Add new user socket
 	useEffect(() => {
-		if(socket && currentUser){
+		if (socket && currentUser) {
 			socket.emit('newUser', currentUser.email)
 		}
 	}, [socket, currentUser])
@@ -153,6 +167,8 @@ const AuthContextProvider = ({ children }: { children: ReactNode }) => {
 		setToast,
 		handleLoading,
 		socket,
+		contractUrls,
+		setContractUrls: ContractUrlsHandle
 	}
 
 	return (

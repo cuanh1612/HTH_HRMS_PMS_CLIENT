@@ -1,5 +1,5 @@
 import { AxiosError } from 'axios'
-import { detailProjectRequest } from 'requests/project'
+import { allProjectsRequest, detailProjectRequest } from 'requests/project'
 import useSWR from 'swr'
 import { projectMutaionResponse } from 'type/mutationResponses'
 
@@ -16,3 +16,16 @@ export const detailProjectQuery = (
 		}
 	)
 }
+
+export const allProjectsQuery = (isAuthenticated: boolean | null) => {
+	return useSWR<projectMutaionResponse, AxiosError>(
+		isAuthenticated ? 'projects': null,
+		allProjectsRequest,
+		{
+			errorRetryCount: 2,
+			revalidateOnFocus: false,
+		}
+	)
+}
+
+

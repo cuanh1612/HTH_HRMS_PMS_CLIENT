@@ -1,9 +1,10 @@
-import { Box, Button, useDisclosure, VStack } from '@chakra-ui/react'
+import { Box, Button, HStack, useDisclosure, VStack } from '@chakra-ui/react'
 import Modal from 'components/modal/Modal'
 import { AuthContext } from 'contexts/AuthContext'
 import { GetServerSideProps } from 'next'
 import { useRouter } from 'next/router'
 import { useContext, useEffect } from 'react'
+import { AiOutlineEdit, AiOutlinePlusCircle } from 'react-icons/ai'
 import ProjectDiscussionCategory from 'src/pages/project-discussion-categories'
 import {
 	ProjectDisucssionRoomMutaionResponse,
@@ -34,8 +35,8 @@ export default function Discussions({ allDiscussionRooms }: IDiscussionsProps) {
 	} = useDisclosure()
 
 	//Query ---------------------------------------------------------------------
-	// const { data: dataAllProjectDisucssionRooms, mutate: refetchAllProjectDiscussionRooms } =
-	// 	allProjectDiscussionRoomsQuery(isAuthenticated, Number(projectId))
+	const { data: dataAllProjectDisucssionRooms, mutate: refetchAllProjectDiscussionRooms } =
+		allProjectDiscussionRoomsQuery(isAuthenticated, Number(projectId))
 
 	//User effect ---------------------------------------------------------------
 	//Handle check loged in
@@ -52,7 +53,7 @@ export default function Discussions({ allDiscussionRooms }: IDiscussionsProps) {
 	return (
 		<>
 			<Box p={10} bgColor={'#f2f4f7'} minHeight={'100vh'}>
-				<VStack
+				<HStack
 					align={'start'}
 					w="full"
 					bgColor={'white'}
@@ -60,8 +61,14 @@ export default function Discussions({ allDiscussionRooms }: IDiscussionsProps) {
 					borderRadius={5}
 					spacing={5}
 				>
-					<Button onClick={onOpenAddDiscussion}>New Discussion</Button>
-					<Button onClick={onOpenAddDiscussionCategory}>New Category</Button>
+					<Button leftIcon={<AiOutlinePlusCircle/>} onClick={onOpenAddDiscussion} colorScheme='blue'>New Discussion</Button>
+					<Button leftIcon={<AiOutlineEdit/>} onClick={onOpenAddDiscussionCategory}>New Category</Button>
+				</HStack>
+
+				<VStack>
+					<HStack w={"full"}>
+						
+					</HStack>
 				</VStack>
 			</Box>
 

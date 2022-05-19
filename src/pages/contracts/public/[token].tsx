@@ -492,27 +492,4 @@ export default function PublickContract() {
 	)
 }
 
-export const getStaticProps: GetStaticProps = async () => {
-	return {
-		props: {},
-		// Next.js will attempt to re-generate the page:
-		// - When a request comes in
-		// - At most once every 10 seconds
-		revalidate: 10, // In seconds
-	}
-}
-
-export const getStaticPaths: GetStaticPaths = async () => {
-	const res = await fetch('http://localhost:4000/api/contracts').then((result) => result.json())
-	const contracts = res.contracts
-
-	// Get the paths we want to pre-render based on leave
-	const paths = contracts.map((contract: any) => ({
-		params: { contractId: String(contract.id) },
-	}))
-
-	// We'll pre-render only these paths at build time.
-	// { fallback: blocking } will server-render pages
-	// on-demand if the path doesn't exist.
-	return { paths, fallback: false }
-}
+export 

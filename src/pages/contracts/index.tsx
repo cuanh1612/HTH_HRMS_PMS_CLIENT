@@ -26,7 +26,11 @@ import SelectCustom from 'components/filter/SelectCustomer'
 import { ClientLayout } from 'components/layouts'
 import Table from 'components/Table'
 import { AuthContext } from 'contexts/AuthContext'
-import { deleteContractMutation, deleteContractsMutation } from 'mutations/contract'
+import {
+	deleteContractMutation,
+	deleteContractsMutation,
+	publicLinkContractMutation,
+} from 'mutations/contract'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { allClientsQuery } from 'queries/client'
@@ -89,6 +93,9 @@ const Contracts: NextLayout = () => {
 
 	// delete holiday
 	const [mutateDeleteContract, { status: statusDl }] = deleteContractMutation(setToast)
+
+	// get public link
+	const [mutateGetPublic, { data: contractToken, status: statusToken }] = publicLinkContractMutation(setToast)
 
 	//Setup drawer --------------------------------------------------------------
 	const { isOpen: isOpenAdd, onOpen: onOpenAdd, onClose: onCloseAdd } = useDisclosure()
@@ -170,6 +177,12 @@ const Contracts: NextLayout = () => {
 			refetchAllContracts()
 		}
 	}, [statusDl])
+
+	useEffect(() => {
+		if(statusToken == 'success' && contractToken) {
+			router.push(`/contracts/public/${contractToken.token}`)
+		}
+	}, [statusToken])
 
 	// header ----------------------------------------
 	const columns: TColumn[] = [
@@ -300,14 +313,15 @@ const Contracts: NextLayout = () => {
 										view
 									</MenuItem>
 								</Link>
-								<Link
-									key={row.values['id']}
-									href={`/contracts/public/${row.values['id']}`}
+
+								<MenuItem
+									onClick={() => {
+										mutateGetPublic(row.values['id'])
+									}}
+									icon={<BiLinkAlt fontSize={'15px'} />}
 								>
-									<MenuItem icon={<BiLinkAlt fontSize={'15px'} />}>
-										Public Link
-									</MenuItem>
-								</Link>
+									Public Link
+								</MenuItem>
 								<MenuItem
 									onClick={() => {
 										setContractIdUpdate(row.values['id'])

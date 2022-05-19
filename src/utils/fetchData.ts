@@ -11,6 +11,7 @@ axios.defaults.withCredentials = true
 
 //Post api
 export const postData = async <T = any>({ url, body }: IPropsFetchData) => {
+	
 	const token = JWTManager.getToken()
 	return await axios
 		.post(url, body, {

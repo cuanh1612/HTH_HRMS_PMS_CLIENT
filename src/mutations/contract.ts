@@ -1,4 +1,4 @@
-import { createContractRequest, deleteContractRequest, deleteContractsRequest, updateContractRequest } from 'requests/contract'
+import { createContractRequest, deleteContractRequest, deleteContractsRequest, publicLinkRequest, updateContractRequest } from 'requests/contract'
 import { TToast } from 'type/basicTypes'
 import useMutation from 'use-mutation'
 
@@ -41,6 +41,18 @@ export const deleteContractMutation = (setToast: TToast) => {
 // delete many
 export const deleteContractsMutation = (setToast: TToast) => {
 	return useMutation(deleteContractsRequest, {
+		onFailure({ error }) {
+			setToast({
+				msg: error.message,
+				type: 'error',
+			})
+		},
+	})
+}
+
+// get public link
+export const publicLinkContractMutation = (setToast: TToast) => {
+	return useMutation(publicLinkRequest, {
 		onFailure({ error }) {
 			setToast({
 				msg: error.message,

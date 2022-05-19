@@ -39,7 +39,7 @@ export default function SelectCustom({
 
 	return (
 		<>
-			<FormControl isRequired={required}>
+			<FormControl isRequired={required} zIndex={3}>
 				<FormLabel color={'gray.400'} fontWeight={'normal'} htmlFor={name}>
 					{label}
 				</FormLabel>

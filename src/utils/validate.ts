@@ -123,3 +123,23 @@ export const createProjectValidate = yup.object({
 	start_date: yup.date().required('Please select start on date project'),
 	deadline: yup.date().required('Please select deadline event'),
 })
+
+
+export const updateSalaryValidate = yup.object({
+	amount: yup.number().min(1).required('Please enter field amount salary'),
+	date: yup.date().required('Please select start on date project'),
+	type: yup.string().required('Please select value type'),
+})
+
+export const createNoticeBoardValidate = yup.object({
+	heading: yup.string().required('Please enter field heading notice board'),
+})
+
+export const updateNoticeBoardValidate = yup.object({
+	heading: yup.string().required('Please enter field heading notice board'),
+})
+
+export const CreateProjectDiscussionRoomValidate = yup.object({
+	title: yup.string().required('Please enter field title'),
+})
+

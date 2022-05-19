@@ -389,3 +389,38 @@ export type createProjectFileForm = {
 	}[]
 	project: number
 }
+
+export type updateSalaryForm = {
+	amount: number
+	type: 'Increment' | 'Decrement' | undefined
+	date: Date
+	employee: number
+}
+
+export type createNoticeBoardForm = {
+	notice_to: string
+	heading: string
+	details: string
+}
+
+export type updateNoticeBoardForm = {
+	notice_to: string
+	heading: string
+	details: string
+}
+
+export type createProjectDiscussionRoomForm = {
+	project_discussion_category: number
+	category: number
+	title: string
+	description: string
+	project: number
+}
+
+export type createProDiscussionCategoryForm = {
+	project_discussion_category: number
+	category: number
+	title: string
+	description: string
+	project: number
+}

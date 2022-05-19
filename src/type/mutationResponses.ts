@@ -15,9 +15,13 @@ import {
 	holidayType,
 	leaveType,
 	leaveTypeType,
+	noticeBoardType,
 	projectCategoryType,
+	projectDiscussionCategoryType,
+	projectDiscussionRoomType,
 	projectFileType,
 	projectType,
+	salaryType,
 	signType,
 	userType,
 } from './basicTypes'
@@ -150,5 +154,27 @@ export interface projectMutaionResponse {
 export interface projectFileMutaionResponse extends commonResponse {
 	projectFile?: projectFileType
 	projectFiles?: projectFileType[]
+	[index: string]: any
+}
+
+export interface SalaryMutaionResponse extends commonResponse {
+	salary?: salaryType
+	historySalary: employeeType
+	salaries?: employeeType[]
+}
+
+export interface NoticeBoardMutaionResponse extends commonResponse {
+	noticeBoard?: noticeBoardType
+	noticeBoards?: noticeBoardType
+}
+
+export interface ProjectDisucssionRoomMutaionResponse extends commonResponse {
+	projectDisucssionRoom?: projectDiscussionRoomType
+	projectDisucssionRooms?: projectDiscussionRoomType
+}
+
+export interface projectDisucssionCategoryMutaionResponse extends commonResponse {
+	projectDiscussionCategory?: projectDiscussionCategoryType
+	projectDiscussionCategories?: projectDiscussionCategoryType[]
 	[index: string]: any
 }

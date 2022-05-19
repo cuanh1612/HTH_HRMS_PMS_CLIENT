@@ -41,6 +41,7 @@ export interface employeeType {
 	id: number
 	role: string
 	attendances: attendanceType[]
+	salaries: salaryType[]
 }
 
 export interface departmentType {
@@ -289,4 +290,47 @@ export interface projectFileType {
 	public_id: string
 	contract: contractType
 	createdAt: Date
+}
+
+export interface salaryType {
+	id: number
+	date: Date
+	type: 'Increment' | 'Decrement' | '' | undefined 
+	employee: employeeType
+	amount: number
+	[index: string]: any
+}
+
+export interface noticeBoardType {
+	id: number
+	heading: string
+	notice_to: string
+	details: string
+	[index: string]: any
+}
+
+export interface projectDiscussionCategoryType {
+	id: number
+	name: string
+	[index: string]: any
+}
+
+export interface projectDiscussionReplyType {
+	id: number
+	employee: employeeType
+	reply: string
+}
+
+export interface projectDiscussionRoomType {
+	id: number
+	project_discussion_replies: projectDiscussionReplyType[]
+	project_discussion_category: projectDiscussionCategoryType
+	project: projectType
+	title: String
+	[index: string]: any
+}
+
+export interface projectDiscussionCategoryType {
+	id: number
+	name: string
 }

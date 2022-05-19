@@ -60,7 +60,7 @@ export const deleteContractRequest = async (id: string | number) => {
 	})
 }
 
-//get public link
+//get public token
 export async function  publicLinkRequest(idContract: string | number) {
 
 	const resultFetch = await postData<contractMutaionResponse>({
@@ -72,4 +72,15 @@ export async function  publicLinkRequest(idContract: string | number) {
 
 	return resultFetch
 }
+
+//get public contract
+export async function  publicContractRequest(token: string | number) {
+
+	const resultFetch = await getData<contractMutaionResponse>({
+		url: `http://localhost:4000/api/contracts/public/${token}`,
+	})
+
+	return resultFetch
+}
+
 

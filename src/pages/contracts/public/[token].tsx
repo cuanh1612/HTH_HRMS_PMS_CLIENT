@@ -31,10 +31,9 @@ import { AuthContext } from 'contexts/AuthContext'
 import { convert } from 'html-to-text'
 import jsPDF from 'jspdf'
 import { createSignMutation } from 'mutations/sign'
-import { GetStaticPaths, GetStaticProps } from 'next'
+import { GetServerSideProps  } from 'next'
 import Link from 'next/link'
-import { useRouter } from 'next/router'
-import { detailContractQuery } from 'queries/contract'
+import { publicContractQuery } from 'queries/contract'
 import { useContext, useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { AiOutlineCheck, AiOutlineDownload, AiOutlineMail } from 'react-icons/ai'
@@ -42,14 +41,13 @@ import { MdOutlineDriveFileRenameOutline } from 'react-icons/md'
 import SignaturePad from 'react-signature-canvas'
 import { SWRConfig } from 'swr'
 import { createSignatureForm } from 'type/form/basicFormType'
+import { contractMutaionResponse } from 'type/mutationResponses'
 import { signBase64Empaty } from 'utils/basicData'
 import { getDataBlob, uploadBase64 } from 'utils/uploadFile'
 import { CreateSignatureValidate } from 'utils/validate'
 
-export default function PublickContract() {
-	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
-	const router = useRouter()
-	const { contractId } = router.query
+export default function PublickContract({result, token}: {result: contractMutaionResponse, token: string }) {
+	const { handleLoading, setToast } = useContext(AuthContext)
 
 	//state ------------------------------------------------------------
 	const [isUpSignImg, setIsUpSignImg] = useState<boolean>(false)
@@ -69,10 +67,7 @@ export default function PublickContract() {
 		createSignMutation(setToast)
 
 	//Query ------------------------------------------------------------
-	const { data: dataDetailContract, mutate: refetchDetailContract } = detailContractQuery(
-		isAuthenticated,
-		Number(contractId)
-	)
+	const { data: dataDetailContract, mutate: refetchDetailContract } = publicContractQuery(token)
 
 	// setForm and submit form create new sign -------------------------
 	const formSetting = useForm<createSignatureForm>({
@@ -106,9 +101,9 @@ export default function PublickContract() {
 				const uploadedSign = await uploadBase64('sign-huprom', signBase64, [values.email])
 				setIsUpSignImg(false)
 
-				if (contractId) {
+				if (result.contract?.id) {
 					mutateCreSign({
-						contract: parseInt(contractId as string),
+						contract: result.contract.id,
 						last_name: values.last_name,
 						first_name: values.first_name,
 						public_id: uploadedSign.public_id as string,
@@ -134,7 +129,7 @@ export default function PublickContract() {
 	//Handle loading page
 	useEffect(() => {
 		handleLoading(false)
-	}, [isAuthenticated])
+	}, [])
 
 	//Notice when signed
 	useEffect(() => {
@@ -161,7 +156,7 @@ export default function PublickContract() {
 		} else {
 			var doc = new jsPDF('p', 'pt')
 
-			doc.text(`Contract #${contractId}`, 20, 20)
+			doc.text(`Contract #${result.contract?.id}`, 20, 20)
 			doc.setFontSize(12)
 			doc.text('HUPROM', 20, 60)
 			doc.text('xx Nguyen Xi Street - Gia Lai - Viet Nam', 20, 80)
@@ -169,7 +164,7 @@ export default function PublickContract() {
 			doc.setFontSize(14)
 			doc.text('Main Contract', 20, 140)
 			doc.setFontSize(12)
-			doc.text(`Contract Number: #${contractId}`, 20, 170)
+			doc.text(`Contract Number: #${result.contract?.id}`, 20, 170)
 			doc.text(`Start Date: ${dataDetailContract?.contract?.start_date}`, 20, 190)
 			doc.text(`End Date: ${dataDetailContract?.contract?.end_date}`, 20, 210)
 			doc.setFontSize(14)
@@ -227,7 +222,9 @@ export default function PublickContract() {
 	return (
 		<SWRConfig
 			value={{
-				fallback: {},
+				fallback: {
+					[token]: result
+				},
 			}}
 		>
 			<Box bgColor={'#f2f4f7'} minHeight={'100vh'} p={10}>
@@ -492,4 +489,26 @@ export default function PublickContract() {
 	)
 }
 
-export 
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+	const getAccessToken: contractMutaionResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/contracts/public/${context.query.token}`, {
+		method: 'GET',
+		headers: {
+			cookie: context.req.headers.cookie,
+		} as HeadersInit,
+	}).then((e) => e.json())
+
+	if(!getAccessToken.success) {
+		return {
+			notFound: true
+		}
+	}
+
+	return {
+		props: {
+			result: getAccessToken,
+			token:  context.query.token
+		},
+	}
+}
+

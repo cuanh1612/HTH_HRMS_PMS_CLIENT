@@ -32,7 +32,7 @@ export interface IAddNoticeBoardProps {
 }
 
 export default function AddNoticeBoard({ onCloseDrawer }: IAddNoticeBoardProps) {
-	const { isAuthenticated, handleLoading, setToast, currentUser } = useContext(AuthContext)
+	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
 	const router = useRouter()
 
 	//State ----------------------------------------------------------------------

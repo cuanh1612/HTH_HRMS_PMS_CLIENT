@@ -1,4 +1,3 @@
-import { createProjectRequest } from 'requests/project'
 import { deleteSalaryRequest, updateSalaryRequest } from 'requests/salary'
 import { TToast } from 'type/basicTypes'
 import useMutation from 'use-mutation'

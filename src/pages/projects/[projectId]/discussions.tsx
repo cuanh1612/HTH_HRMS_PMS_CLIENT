@@ -3,7 +3,6 @@ import Modal from 'components/modal/Modal'
 import { AuthContext } from 'contexts/AuthContext'
 import { GetServerSideProps } from 'next'
 import { useRouter } from 'next/router'
-import { allProjectDiscussionRoomsQuery } from 'queries/projectDiscussionRoom'
 import { useContext, useEffect } from 'react'
 import ProjectDiscussionCategory from 'src/pages/project-discussion-categories'
 import {

@@ -1,5 +1,5 @@
 import { AxiosError } from 'axios'
-import { allContractsRequest, detailContractRequest } from 'requests/contract'
+import { allContractsRequest, detailContractRequest, publicContractRequest } from 'requests/contract'
 import useSWR from 'swr'
 import { contractMutaionResponse } from 'type/mutationResponses'
 
@@ -12,7 +12,7 @@ export const detailContractQuery = (
 		detailContractRequest,
 		{
 			errorRetryCount: 2,
-			revalidateOnFocus: false,
+			revalidateOnFocus: false
 		}
 	)
 }
@@ -23,6 +23,17 @@ export const allContractsQuery = (
 	return useSWR<contractMutaionResponse, AxiosError>(
 		isAuthenticated ? `contracts` : null,
 		allContractsRequest,
+		{
+			errorRetryCount: 2,
+			revalidateOnFocus: false,
+		}
+	)
+}
+
+export const publicContractQuery = (token: string) => {
+	return useSWR<contractMutaionResponse, AxiosError>(
+		token,
+		publicContractRequest,
 		{
 			errorRetryCount: 2,
 			revalidateOnFocus: false,

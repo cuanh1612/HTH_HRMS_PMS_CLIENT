@@ -17,7 +17,7 @@ export default function Column({ column, index }: { column: Column; index: numbe
 	const { colorMode } = useColorMode()
 	return (
 		<Draggable draggableId={`${column.id}`} index={index}>
-			{(provided, snapShot) => (
+			{(provided) => (
 				<Box
 					marginRight={10}
 					bg={colorMode == 'dark' ? '#3a4f781f' : 'white'}

@@ -1,26 +1,32 @@
-import { Box, Button, HStack, useDisclosure, VStack } from '@chakra-ui/react'
+import { Avatar, Box, Button, HStack, Text, useDisclosure, VStack } from '@chakra-ui/react'
+import Drawer from 'components/Drawer'
 import Modal from 'components/modal/Modal'
+import ProjectDiscussionItem from 'components/projectDiscussion/projectDiscussionItem'
 import { AuthContext } from 'contexts/AuthContext'
 import { GetServerSideProps } from 'next'
 import { useRouter } from 'next/router'
 import { allProjectDiscussionRoomsQuery } from 'queries/projectDiscussionRoom'
-import { useContext, useEffect } from 'react'
-import { AiOutlineEdit, AiOutlinePlusCircle } from 'react-icons/ai'
+import { useContext, useEffect, useState } from 'react'
+import { AiOutlineComment, AiOutlineEdit, AiOutlinePlusCircle } from 'react-icons/ai'
 import ProjectDiscussionCategory from 'src/pages/project-discussion-categories'
 import {
 	ProjectDisucssionRoomMutaionResponse,
 	projectMutaionResponse,
 } from 'type/mutationResponses'
-import AddDiscussion from './add-discussion'
+import AddDiscussion from '../add-discussion'
+import DetailDiscussion from './[discussionId]'
 
 export interface IDiscussionsProps {
 	allDiscussionRooms: ProjectDisucssionRoomMutaionResponse
 }
 
-export default function Discussions({ allDiscussionRooms }: IDiscussionsProps) {
-	const { isAuthenticated, handleLoading, setToast, socket } = useContext(AuthContext)
+export default function Discussions({}: IDiscussionsProps) {
+	const { isAuthenticated, handleLoading } = useContext(AuthContext)
 	const router = useRouter()
 	const { projectId } = router.query
+
+	//state ----------------------------------------------------------------------
+	const [discussionId, setDiscussionId] = useState<number>()
 
 	//Setup modal ----------------------------------------------------------------
 	const {
@@ -35,9 +41,17 @@ export default function Discussions({ allDiscussionRooms }: IDiscussionsProps) {
 		onClose: onCloseAddDiscussionCategory,
 	} = useDisclosure()
 
+	const {
+		isOpen: isOpenDetailDiscussion,
+		onOpen: onOpenDetailDiscussion,
+		onClose: onCloseDetailDiscussion,
+	} = useDisclosure()
+
 	//Query ---------------------------------------------------------------------
-	const { data: dataAllProjectDisucssionRooms, mutate: refetchAllProjectDiscussionRooms } =
+	const { data: dataAllProjectDisucssionRooms } =
 		allProjectDiscussionRoomsQuery(isAuthenticated, Number(projectId))
+
+	console.log(dataAllProjectDisucssionRooms)
 
 	//User effect ---------------------------------------------------------------
 	//Handle check loged in
@@ -51,10 +65,16 @@ export default function Discussions({ allDiscussionRooms }: IDiscussionsProps) {
 		}
 	}, [isAuthenticated])
 
+	//handle select discussion to open drawer
+	const onChangeSelectDiscussion = (discussionId: number) => {
+		setDiscussionId(discussionId)
+		onOpenDetailDiscussion()
+	}
+
 	return (
 		<>
 			<Box p={10} bgColor={'#f2f4f7'} minHeight={'100vh'}>
-				<HStack
+				<VStack
 					align={'start'}
 					w="full"
 					bgColor={'white'}
@@ -62,14 +82,29 @@ export default function Discussions({ allDiscussionRooms }: IDiscussionsProps) {
 					borderRadius={5}
 					spacing={5}
 				>
-					<Button leftIcon={<AiOutlinePlusCircle/>} onClick={onOpenAddDiscussion} colorScheme='blue'>New Discussion</Button>
-					<Button leftIcon={<AiOutlineEdit/>} onClick={onOpenAddDiscussionCategory}>New Category</Button>
-				</HStack>
-
-				<VStack>
-					<HStack w={"full"}>
-						
+					<HStack spacing={5}>
+						<Button
+							leftIcon={<AiOutlinePlusCircle />}
+							onClick={onOpenAddDiscussion}
+							colorScheme="blue"
+						>
+							New Discussion
+						</Button>
+						<Button leftIcon={<AiOutlineEdit />} onClick={onOpenAddDiscussionCategory}>
+							New Category
+						</Button>
 					</HStack>
+
+					<VStack w={'100%'}>
+						{dataAllProjectDisucssionRooms?.projectDiscussionRooms &&
+							dataAllProjectDisucssionRooms.projectDiscussionRooms.map(
+								(discussionRoom) => (
+									<>
+										<ProjectDiscussionItem key={discussionRoom.id} discussionRoom={discussionRoom} onClick={onChangeSelectDiscussion}/>
+									</>
+								)
+							)}
+					</VStack>
 				</VStack>
 			</Box>
 
@@ -94,6 +129,11 @@ export default function Discussions({ allDiscussionRooms }: IDiscussionsProps) {
 			>
 				<ProjectDiscussionCategory />
 			</Modal>
+
+			{/* drawer to show detail discussion */}
+			<Drawer size="xl" title="Discussion" onClose={onCloseDetailDiscussion} isOpen={isOpenDetailDiscussion}>
+				<DetailDiscussion onCloseDrawer={onCloseDetailDiscussion} discussionIdProp={discussionId}/>
+			</Drawer>
 		</>
 	)
 }

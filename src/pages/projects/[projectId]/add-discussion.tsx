@@ -9,6 +9,7 @@ import { GetServerSideProps } from 'next'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 import { allProjectDiscussionCategoryQuery } from 'queries/projectDiscussionCategory'
+import { allProjectDiscussionRoomsQuery } from 'queries/projectDiscussionRoom'
 import { useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { AiOutlineCheck } from 'react-icons/ai'
@@ -17,7 +18,10 @@ import 'react-quill/dist/quill.bubble.css'
 import 'react-quill/dist/quill.snow.css'
 import { useSWRConfig } from 'swr'
 import { IOption } from 'type/basicTypes'
-import { createProDiscussionCategoryForm, createProjectDiscussionRoomForm } from 'type/form/basicFormType'
+import {
+	createProDiscussionCategoryForm,
+	createProjectDiscussionRoomForm,
+} from 'type/form/basicFormType'
 import { projectMutaionResponse } from 'type/mutationResponses'
 import { CreateProjectDiscussionRoomValidate } from 'utils/validate'
 
@@ -28,7 +32,7 @@ export interface IAddDiscussionProps {}
 export default function AddDiscussion({}: IAddDiscussionProps) {
 	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
 	const router = useRouter()
-    const {projectId} = router.query
+	const { projectId } = router.query
 	const { mutate } = useSWRConfig()
 
 	//State -------------------------------------------------------------
@@ -38,6 +42,10 @@ export default function AddDiscussion({}: IAddDiscussionProps) {
 	//Query ----------------------------------------------------------------------
 	const { data: dataAllDiscussionCategories } = allProjectDiscussionCategoryQuery(isAuthenticated)
 
+	const { mutate: refetchAllDiscussionRooms } = allProjectDiscussionRoomsQuery(
+		isAuthenticated,
+		Number(projectId)
+	)
 
 	//Mutation -----------------------------------------------------------
 	const [
@@ -47,8 +55,8 @@ export default function AddDiscussion({}: IAddDiscussionProps) {
 
 	// setForm and submit form create new project discussion room --------
 	const formSetting = useForm<createProjectDiscussionRoomForm>({
-		defaultValues: { 
-            project_discussion_category: undefined,
+		defaultValues: {
+			project_discussion_category: undefined,
 			title: '',
 		},
 		resolver: yupResolver(CreateProjectDiscussionRoomValidate),
@@ -58,9 +66,9 @@ export default function AddDiscussion({}: IAddDiscussionProps) {
 
 	//Function -----------------------------------------------------------
 	const onSubmitLeaveType = (value: createProDiscussionCategoryForm) => {
-        value.description = description
-        value.project = Number(projectId)
-        mutateCreProjectDiscussionRoomType(value)
+		value.description = description
+		value.project = Number(projectId)
+		mutateCreProjectDiscussionRoomType(value)
 	}
 
 	const onChangeDescription = (value: string) => {
@@ -97,7 +105,7 @@ export default function AddDiscussion({}: IAddDiscussionProps) {
 					})
 
 					//Refetch data all project discussion rooms
-					mutate('project-discussion-rooms')
+					refetchAllDiscussionRooms()
 				}
 				break
 

@@ -332,7 +332,9 @@ export interface projectDiscussionRoomType {
 	project_discussion_replies: projectDiscussionReplyType[]
 	project_discussion_category: projectDiscussionCategoryType
 	project: projectType
+	assigner: employeeType
 	title: String
+	createdAt: Date
 	[index: string]: any
 }
 
@@ -340,4 +342,12 @@ export interface projectDiscussionCategoryType {
 	id: number
 	name: string
 	color: string
+}
+
+export interface projectDiscussionReplyType {
+	id: number
+	employee: employeeType
+	project_discussion_room: projectDiscussionRoomType
+	reply: string
+	[index: string]: any
 }

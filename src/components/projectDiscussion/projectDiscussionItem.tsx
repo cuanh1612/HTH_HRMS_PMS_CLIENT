@@ -1,13 +1,33 @@
-import { Avatar, Box, HStack, Text, VStack } from "@chakra-ui/react";
-import { AiOutlineComment } from "react-icons/ai";
-import { projectDiscussionRoomType } from "type/basicTypes";
+import {
+	Avatar,
+	Box,
+	HStack,
+	Menu,
+	MenuButton,
+	MenuItem,
+	MenuList,
+	Text,
+	VStack,
+} from '@chakra-ui/react'
+import { AiOutlineComment } from 'react-icons/ai'
+import { BsThreeDots } from 'react-icons/bs'
+import { projectDiscussionRoomType } from 'type/basicTypes'
+import { ProjectDisucssionRoomMutaionResponse } from 'type/mutationResponses'
+import moment from 'moment'
 
 export interface IProjectDiscussionItemProps {
-    discussionRoom: projectDiscussionRoomType
-    onClick: (discussionRoomId: number) => void
+	discussionRoom: projectDiscussionRoomType
+	onClick: (discussionRoomId: number) => void
+	onDelete: (input: {
+		ProjectDiscussionRoomId: number
+	}) => Promise<ProjectDisucssionRoomMutaionResponse | undefined>
 }
 
-export default function ProjectDiscussionItem({discussionRoom, onClick}: IProjectDiscussionItemProps) {
+export default function ProjectDiscussionItem({
+	discussionRoom,
+	onClick,
+	onDelete,
+}: IProjectDiscussionItemProps) {
 	return (
 		<HStack
 			w={'100%'}
@@ -34,7 +54,7 @@ export default function ProjectDiscussionItem({discussionRoom, onClick}: IProjec
 					</Text>
 					<Text fontSize={12}>{discussionRoom.assigner.name}</Text>
 					<Text fontSize={12} color={'gray.400'}>
-						posted on {discussionRoom.createdAt}
+						posted on {moment(discussionRoom.createdAt).fromNow()}
 					</Text>
 				</VStack>
 			</HStack>
@@ -48,6 +68,19 @@ export default function ProjectDiscussionItem({discussionRoom, onClick}: IProjec
 					<AiOutlineComment />
 					<Text>{discussionRoom.project_discussion_replies.length || 0}</Text>
 				</HStack>
+
+				<Menu isLazy>
+					<MenuButton>
+						<BsThreeDots />
+					</MenuButton>
+					<MenuList>
+						<MenuItem
+							onClick={() => onDelete({ ProjectDiscussionRoomId: discussionRoom.id })}
+						>
+							Delete
+						</MenuItem>
+					</MenuList>
+				</Menu>
 			</VStack>
 		</HStack>
 	)

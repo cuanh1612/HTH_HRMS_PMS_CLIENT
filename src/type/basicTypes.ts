@@ -349,5 +349,6 @@ export interface projectDiscussionReplyType {
 	employee: employeeType
 	project_discussion_room: projectDiscussionRoomType
 	reply: string
+	createdAt: Date
 	[index: string]: any
 }

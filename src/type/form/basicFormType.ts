@@ -429,3 +429,14 @@ export type createProjectDiscussionCategoryForm = {
 	name: string
 	color: string
 }
+
+export type createProjectDiscussionReplyForm = {
+	reply: string
+	project: number
+	 project_discussion_room: number
+}
+
+export type updateProjectDiscussionReplyForm = {
+	reply: string
+	discussionReplyId: string | number
+}

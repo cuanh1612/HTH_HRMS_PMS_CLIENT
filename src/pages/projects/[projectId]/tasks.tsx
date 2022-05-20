@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-export default function Tasks () {
-=======
 import { GetStaticPaths, GetStaticProps } from 'next';
 import * as React from 'react';
 import { projectMutaionResponse } from 'type/mutationResponses';
@@ -9,7 +6,6 @@ export interface ITasksProps {
 }
 
 export default function Tasks (props: ITasksProps) {
->>>>>>> 7b2405ef51ed4d59540a2fbd8b33f54bff27da14
   return (
     <div>
       

@@ -16,24 +16,24 @@ import { AiOutlineCheck } from 'react-icons/ai'
 import { MdOutlineDriveFileRenameOutline } from 'react-icons/md'
 import 'react-quill/dist/quill.bubble.css'
 import 'react-quill/dist/quill.snow.css'
-import { useSWRConfig } from 'swr'
 import { IOption } from 'type/basicTypes'
 import {
 	createProDiscussionCategoryForm,
-	createProjectDiscussionRoomForm,
+	createProjectDiscussionRoomForm
 } from 'type/form/basicFormType'
 import { projectMutaionResponse } from 'type/mutationResponses'
 import { CreateProjectDiscussionRoomValidate } from 'utils/validate'
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
 
-export interface IAddDiscussionProps {}
+export interface IAddDiscussionProps {
+	onCloseModal?: () => void
+}
 
-export default function AddDiscussion({}: IAddDiscussionProps) {
-	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
+export default function AddDiscussion({onCloseModal}: IAddDiscussionProps) {
+	const { isAuthenticated, handleLoading, setToast, socket } = useContext(AuthContext)
 	const router = useRouter()
 	const { projectId } = router.query
-	const { mutate } = useSWRConfig()
 
 	//State -------------------------------------------------------------
 	const [description, setDescription] = useState<string>('')
@@ -99,10 +99,13 @@ export default function AddDiscussion({}: IAddDiscussionProps) {
 						msg: dataCreProjectDiscussionRoomType?.message,
 					})
 
-					//Set data form
-					formSetting.reset({
-						title: '',
-					})
+					if(onCloseModal){
+						onCloseModal()
+					}
+
+					if(socket && projectId){
+						socket.emit('newProjectDiscussion', projectId)
+					}
 
 					//Refetch data all project discussion rooms
 					refetchAllDiscussionRooms()

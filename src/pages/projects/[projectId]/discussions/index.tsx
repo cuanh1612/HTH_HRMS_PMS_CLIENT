@@ -1,17 +1,18 @@
-import { Avatar, Box, Button, HStack, Text, useDisclosure, VStack } from '@chakra-ui/react'
+import { Box, Button, HStack, useDisclosure, VStack } from '@chakra-ui/react'
 import Drawer from 'components/Drawer'
 import Modal from 'components/modal/Modal'
 import ProjectDiscussionItem from 'components/projectDiscussion/projectDiscussionItem'
 import { AuthContext } from 'contexts/AuthContext'
+import { deleteProjectDiscussionRoomMutation } from 'mutations/projectDiscussionRoom'
 import { GetServerSideProps } from 'next'
 import { useRouter } from 'next/router'
 import { allProjectDiscussionRoomsQuery } from 'queries/projectDiscussionRoom'
 import { useContext, useEffect, useState } from 'react'
-import { AiOutlineComment, AiOutlineEdit, AiOutlinePlusCircle } from 'react-icons/ai'
+import { AiOutlineEdit, AiOutlinePlusCircle } from 'react-icons/ai'
 import ProjectDiscussionCategory from 'src/pages/project-discussion-categories'
 import {
 	ProjectDisucssionRoomMutaionResponse,
-	projectMutaionResponse,
+	projectMutaionResponse
 } from 'type/mutationResponses'
 import AddDiscussion from '../add-discussion'
 import DetailDiscussion from './[discussionId]'
@@ -21,7 +22,7 @@ export interface IDiscussionsProps {
 }
 
 export default function Discussions({}: IDiscussionsProps) {
-	const { isAuthenticated, handleLoading } = useContext(AuthContext)
+	const { isAuthenticated, handleLoading, setToast, socket } = useContext(AuthContext)
 	const router = useRouter()
 	const { projectId } = router.query
 
@@ -48,10 +49,14 @@ export default function Discussions({}: IDiscussionsProps) {
 	} = useDisclosure()
 
 	//Query ---------------------------------------------------------------------
-	const { data: dataAllProjectDisucssionRooms } =
+	const { data: dataAllProjectDisucssionRooms, mutate: refetchAllDiscussionRooms } =
 		allProjectDiscussionRoomsQuery(isAuthenticated, Number(projectId))
 
-	console.log(dataAllProjectDisucssionRooms)
+	//Mutation ------------------------------------------------------------------
+	const [
+		mutateDeProjectDiscussionRoomType,
+		{ status: statusDeProjectDiscussionRoomType, data: dataDeProjectDiscussionRoomType },
+	] = deleteProjectDiscussionRoomMutation(setToast)
 
 	//User effect ---------------------------------------------------------------
 	//Handle check loged in
@@ -64,6 +69,52 @@ export default function Discussions({}: IDiscussionsProps) {
 			}
 		}
 	}, [isAuthenticated])
+
+	//Join room socket
+	useEffect(() => {
+		//Join room
+		if (socket && projectId) {
+			socket.emit('joinRoomProject', projectId)
+
+			socket.on('getNewProjectDiscussion', () => {
+				refetchAllDiscussionRooms()
+			})
+		}
+
+		//Leave room
+		function leaveRoom() {
+			if (socket && discussionId) {
+				socket.emit('leaveRoomProject', projectId)
+			}
+		}
+
+		return leaveRoom
+	}, [socket, projectId])
+
+	//Notice when create success
+	useEffect(() => {
+		switch (statusDeProjectDiscussionRoomType) {
+			case 'success':
+				if (dataDeProjectDiscussionRoomType) {
+					//Notice
+					setToast({
+						type: 'success',
+						msg: dataDeProjectDiscussionRoomType?.message,
+					})
+
+					if (socket && projectId) {
+						socket.emit('newProjectDiscussion', projectId)
+					}
+
+					//Refetch data all project discussion rooms
+					refetchAllDiscussionRooms()
+				}
+				break
+
+			default:
+				break
+		}
+	}, [statusDeProjectDiscussionRoomType])
 
 	//handle select discussion to open drawer
 	const onChangeSelectDiscussion = (discussionId: number) => {
@@ -100,7 +151,12 @@ export default function Discussions({}: IDiscussionsProps) {
 							dataAllProjectDisucssionRooms.projectDiscussionRooms.map(
 								(discussionRoom) => (
 									<>
-										<ProjectDiscussionItem key={discussionRoom.id} discussionRoom={discussionRoom} onClick={onChangeSelectDiscussion}/>
+										<ProjectDiscussionItem
+											onDelete={mutateDeProjectDiscussionRoomType}
+											key={discussionRoom.id}
+											discussionRoom={discussionRoom}
+											onClick={onChangeSelectDiscussion}
+										/>
 									</>
 								)
 							)}
@@ -116,7 +172,7 @@ export default function Discussions({}: IDiscussionsProps) {
 				onClose={onCloseAddDiscussion}
 				title="Add New Discussion"
 			>
-				<AddDiscussion />
+				<AddDiscussion onCloseModal={onCloseAddDiscussion} />
 			</Modal>
 
 			{/* Modal add new discussion category */}
@@ -131,8 +187,16 @@ export default function Discussions({}: IDiscussionsProps) {
 			</Modal>
 
 			{/* drawer to show detail discussion */}
-			<Drawer size="xl" title="Discussion" onClose={onCloseDetailDiscussion} isOpen={isOpenDetailDiscussion}>
-				<DetailDiscussion onCloseDrawer={onCloseDetailDiscussion} discussionIdProp={discussionId}/>
+			<Drawer
+				size="xl"
+				title="Discussion"
+				onClose={onCloseDetailDiscussion}
+				isOpen={isOpenDetailDiscussion}
+			>
+				<DetailDiscussion
+					onCloseDrawer={onCloseDetailDiscussion}
+					discussionIdProp={discussionId}
+				/>
 			</Drawer>
 		</>
 	)

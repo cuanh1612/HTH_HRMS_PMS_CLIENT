@@ -15,7 +15,10 @@ export async function changePositionRequest({
 	status1,
 	status2
 }: {
-	[index: string]: number
+	id1: number
+	id2?: number
+	status1: number
+	status2: number
 }) {
 	const resultFetch = await putData<commonResponse>({
 		url: `http://localhost:4000/api/tasks/position`,

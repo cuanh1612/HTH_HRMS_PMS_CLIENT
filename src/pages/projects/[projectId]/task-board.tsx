@@ -26,7 +26,7 @@ import {
 	deleteStatusColumnMutation,
 	updateStatusColumnMutation,
 } from 'mutations/status'
-import {changePositionMutation as changePositionTaskMutation} from 'mutations/task'
+import { changePositionMutation as changePositionTaskMutation } from 'mutations/task'
 import { IoIosAdd } from 'react-icons/io'
 import Modal from 'components/modal/Modal'
 import { useForm } from 'react-hook-form'
@@ -63,8 +63,8 @@ const taskBoard: NextLayout = () => {
 	// change position status column
 	const [changePosition] = changePositionMutation(setToast)
 
-		// change position task column
-		const [changeTaskPosition] = changePositionTaskMutation(setToast)
+	// change position task column
+	const [changeTaskPosition] = changePositionTaskMutation(setToast)
 
 	// create status column
 	const [createColumn, { data: dataCreateColumn, status: createColumnStatus }] =
@@ -223,12 +223,12 @@ const taskBoard: NextLayout = () => {
 				if (column?.tasks) {
 					const task1 = column.tasks[Number(source.index)]
 					const task2 = column.tasks[Number(destination.index)]
-					
+
 					column.tasks.splice(source.index, 1)
 					column.tasks.splice(destination.index, 0, task1)
 
-					const data = columns.map(item=> {
-						if(item.id == Number(column.id)) {
+					const data = columns.map((item) => {
+						if (item.id == Number(column.id)) {
 							return column
 						}
 						return item
@@ -241,38 +241,43 @@ const taskBoard: NextLayout = () => {
 						status2: column.id,
 					})
 				}
-
-				// const getTask1 = column.task[source.index]
-				// column.task.splice(source.index, 1)
-				// column.task.splice(destination.index, 0, getTask1)
-
-				// const data = columns?.map((e) => {
-				// 	if (e.id == column.id) {
-				// 		return column
-				// 	}
-				// 	return e
-				// })
-				// setColumns(data)
 			} else {
-				// const column1 = columns?.find((value: any) => {
-				// 	return value.id == source.droppableId
-				// })
-				// const column2 = columns?.find((value: any) => {
-				// 	return value.id == destination.droppableId
-				// })
-				// const getTask1 = column1.task[source.index]
-				// column1.task.splice(source.index, 1)
-				// column2.task.splice(destination.index, 0, getTask1)
-				// const data = columns?.map((e) => {
-				// 	if (e.id == column1.id) {
-				// 		return column1
-				// 	}
-				// 	if (e.id == column2.id) {
-				// 		return column2
-				// 	}
-				// 	return e
-				// })
-				// setColumns(data)
+				const column1 = columns?.find((value: any) => {
+					return value.id == source.droppableId
+				})
+				const column2 = columns?.find((value: any) => {
+					return value.id == destination.droppableId
+				})
+				if (column1?.tasks && column2?.tasks) {
+					const task1 = column1?.tasks[source.index]
+					const task2 = column2?.tasks[destination.index]
+					column1.tasks.splice(source.index, 1)
+					column2.tasks.splice(destination.index, 0, task1)
+					const data = columns?.map((e) => {
+						if (e.id == column1.id) {
+							return column1
+						}
+						if (e.id == column2.id) {
+							return column2
+						}
+						return e
+					})
+					setColumns(data)
+					if(!task2) {
+						changeTaskPosition({
+							id1: task1.id,
+							status1: column1.id,
+							status2: column2.id,
+						})
+						return 
+					}
+					changeTaskPosition({
+						id1: task1.id,
+						id2: task2.id,
+						status1: column1.id,
+						status2: column2.id,
+					})
+				}
 			}
 		}
 

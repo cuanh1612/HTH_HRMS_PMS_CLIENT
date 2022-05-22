@@ -1,7 +1,11 @@
-import { changePositionRequest } from "requests/task"
-import { deleteTaskRequest } from "requests/task"
-import { TToast } from "type/basicTypes"
-import useMutation from "use-mutation"
+import {
+	changePositionRequest,
+	createTaskRequest,
+	deleteTaskRequest,
+	updateTaskRequest,
+} from 'requests/task'
+import { TToast } from 'type/basicTypes'
+import useMutation from 'use-mutation'
 
 // delete one
 export const deleteTaskMutation = (setToast: TToast) => {
@@ -18,6 +22,30 @@ export const deleteTaskMutation = (setToast: TToast) => {
 //update position of task
 export const changePositionMutation = (setToast: TToast) => {
 	return useMutation(changePositionRequest, {
+		onFailure({ error }) {
+			setToast({
+				msg: error.message,
+				type: 'error',
+			})
+		},
+	})
+}
+
+//create
+export const createTaskMutation = (setToast: TToast) => {
+	return useMutation(createTaskRequest, {
+		onFailure({ error }) {
+			setToast({
+				msg: error.message,
+				type: 'error',
+			})
+		},
+	})
+}
+
+//update
+export const updateTaskMutation = (setToast: TToast) => {
+	return useMutation(updateTaskRequest, {
 		onFailure({ error }) {
 			setToast({
 				msg: error.message,

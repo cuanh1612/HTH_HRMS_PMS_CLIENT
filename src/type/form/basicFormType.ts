@@ -478,3 +478,22 @@ export type createProjectTaskForm = {
 		url: string
 	}[]
 }
+
+export type updateProjectTaskForm = {
+	task_category: number
+	project: number
+	employees: number[]
+	status: number
+	id: number
+	name: string
+	start_date: Date
+	deadline: Date
+	index: number
+	description: string
+	priority: string
+	task_files: {
+		name: string
+		public_id: string
+		url: string
+	}[]
+}

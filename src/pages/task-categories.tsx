@@ -31,9 +31,9 @@ import { ChangeEventHandler, useContext, useEffect, useState } from 'react'
 import { AiOutlineCheck } from 'react-icons/ai'
 import { MdDeleteOutline } from 'react-icons/md'
 
-export interface IClientCategoryProps {}
+export interface ITaskCategoryProps {}
 
-export default function ClientCategory({}: IClientCategoryProps) {
+export default function TaskCategory({}: ITaskCategoryProps) {
 	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
 	const router = useRouter()
 
@@ -50,6 +50,8 @@ export default function ClientCategory({}: IClientCategoryProps) {
 
 	//Query -------------------------------------------------------------
 	const { data: dataTaskCategories, mutate: refetchTaskCategories } = allTaskCategoriesQuery()
+	console.log(dataTaskCategories);
+	
 
 	//Useeffect ---------------------------------------------------------
 	//Handle check loged in
@@ -137,18 +139,18 @@ export default function ClientCategory({}: IClientCategoryProps) {
 		}
 	}
 
-	//Handle delete client category
-	const onDelete = (clientCategoryId: number) => {
+	//Handle delete task category
+	const onDelete = (taskCategoryId: number) => {
 		mutateDeleCategory({
-			clientCategoryId,
+			taskCategoryId,
 		})
 	}
 
 	//Handle update client category
-	const onUpdate = (clientCategoryId: number, oldName: string, newName: string) => {
+	const onUpdate = (taskCategoryId: number, oldName: string, newName: string) => {
 		if (oldName !== newName) {
 			mutateUpCategory({
-				clientCategoryId,
+				taskCategoryId,
 				name: newName,
 			})
 		}
@@ -168,19 +170,19 @@ export default function ClientCategory({}: IClientCategoryProps) {
 								</Tr>
 							</Thead>
 							<Tbody>
-								{dataClientCategories?.clientCategories &&
-									dataClientCategories.clientCategories.map((category) => (
-										<Tr key={category.id}>
-											<Td>{category.id}</Td>
+								{dataTaskCategories?.taskCategories &&
+									dataTaskCategories.taskCategories.map((taskCategory) => (
+										<Tr key={taskCategory.id}>
+											<Td>{taskCategory.id}</Td>
 											<Td>
-												<Editable defaultValue={category.name}>
+												<Editable defaultValue={taskCategory.name}>
 													<EditablePreview />
 													<EditableInput
 														paddingLeft={2}
 														onBlur={(e) => {
 															onUpdate(
-																category.id,
-																category.name,
+																taskCategory.id,
+																taskCategory.name,
 																e.target.value
 															)
 														}}
@@ -190,7 +192,7 @@ export default function ClientCategory({}: IClientCategoryProps) {
 											<Td isNumeric>
 												<ButtonIcon
 													ariaLabel="button-delete"
-													handle={() => onDelete(category.id)}
+													handle={() => onDelete(taskCategory.id)}
 													icon={<MdDeleteOutline />}
 												/>
 											</Td>
@@ -198,7 +200,7 @@ export default function ClientCategory({}: IClientCategoryProps) {
 									))}
 							</Tbody>
 						</Table>
-						{(statusDeleCategory === 'running' || statusUpCategory === 'running') && (
+						{(statusDeleTaskCategory === 'running' || statusUpTaskCategory === 'running') && (
 							<Loading />
 						)}
 					</TableContainer>
@@ -229,7 +231,7 @@ export default function ClientCategory({}: IClientCategoryProps) {
 								mt={6}
 								type="submit"
 								onClick={onSubmit}
-								isLoading={statusCreCategory === 'running' ? true : false}
+								isLoading={statusCreTaskCategory === 'running' ? true : false}
 							>
 								Save
 							</Button>

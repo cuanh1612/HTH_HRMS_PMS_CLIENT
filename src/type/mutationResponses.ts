@@ -27,6 +27,7 @@ import {
 	signType,
 	statusType,
 	taskCategoryType,
+	taskType,
 	userType,
 } from './basicTypes'
 
@@ -192,4 +193,9 @@ export interface ProjectNoteMutaionResponse extends commonResponse {
 export interface TaskCategoryMutaionResponse extends commonResponse {
 	taskCategory?: taskCategoryType
 	taskCategories?: taskCategoryType[]
+}
+
+export interface TaskMutaionResponse extends commonResponse {
+	task?: taskType
+	tasks?: taskType[]
 }

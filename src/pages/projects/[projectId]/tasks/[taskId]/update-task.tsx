@@ -16,10 +16,10 @@ import { Select } from 'components/form/Select'
 import SelectMany from 'components/form/SelectMany'
 import Modal from 'components/modal/Modal'
 import { AuthContext } from 'contexts/AuthContext'
-import { createTaskMutation } from 'mutations/task'
+import { updateTaskMutation } from 'mutations/task'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
-import { detailProjectQuery } from 'queries/project'
+import { detailTaskQuery } from 'queries/task'
 import { allTaskCategoriesQuery } from 'queries/taskCategory'
 import { useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -30,25 +30,26 @@ import 'react-quill/dist/quill.bubble.css'
 import 'react-quill/dist/quill.snow.css'
 import TaskCategory from 'src/pages/task-categories'
 import { IOption } from 'type/basicTypes'
-import { createProjectTaskForm } from 'type/form/basicFormType'
-import { CreateProjectTaskValidate } from 'utils/validate'
+import { updateProjectTaskForm } from 'type/form/basicFormType'
+import { UpdateProjectTaskValidate } from 'utils/validate'
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
 
-export interface IAddTaskProps {
+export interface IUpdateTaskProps {
 	onCloseDrawer?: () => void
-	statusId?: string | number
+	taskIdProp?: string | number
 }
 
-export default function AddTask({onCloseDrawer, statusId}: IAddTaskProps) {
+export default function UpdateTask({ onCloseDrawer, taskIdProp }: IUpdateTaskProps) {
 	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
 	const router = useRouter()
-	const { projectId } = router.query
+	const { taskId: taskIdRouter } = router.query
 
 	//state -------------------------------------------------------------
 	const [optionTaskCategories, setOptionTaskCategories] = useState<IOption[]>([])
 	const [optionEmployees, setOptionEmployees] = useState<IOption[]>([])
 	const [description, setDescription] = useState<string>('')
+	const [selectedOptionEmployees, setSelectedOptionEmployees] = useState<IOption[]>([])
 
 	//Setup modal -------------------------------------------------------
 	const {
@@ -59,14 +60,18 @@ export default function AddTask({onCloseDrawer, statusId}: IAddTaskProps) {
 
 	//Query -------------------------------------------------------------
 	const { data: dataTaskCategories } = allTaskCategoriesQuery()
-	const { data: dataDetailProject } = detailProjectQuery(isAuthenticated, projectId as string)
+	const { data: dataDetailTask } = detailTaskQuery(
+		isAuthenticated,
+		taskIdProp || (taskIdRouter as string)
+	)
+
+	console.log(dataDetailTask)
 
 	//mutation -----------------------------------------------------------
-	const [mutateCreTask, { status: statusCreTask, data: dataCreTask }] =
-		createTaskMutation(setToast)
+	const [mutateUpTask, { status: statusUpTask, data: dataUpTask }] = updateTaskMutation(setToast)
 
-	// setForm and submit form create new task discussion room -----------
-	const formSetting = useForm<createProjectTaskForm>({
+	// setForm and submit form update new task discussion room -----------
+	const formSetting = useForm<updateProjectTaskForm>({
 		defaultValues: {
 			name: '',
 			task_category: undefined,
@@ -74,26 +79,18 @@ export default function AddTask({onCloseDrawer, statusId}: IAddTaskProps) {
 			deadline: undefined,
 			employees: [],
 		},
-		resolver: yupResolver(CreateProjectTaskValidate),
+		resolver: yupResolver(UpdateProjectTaskValidate),
 	})
 
 	const { handleSubmit } = formSetting
 
 	//Function -----------------------------------------------------------
-	const onSubmitTask = (value: createProjectTaskForm) => {
-		if (!projectId) {
-			setToast({
-				msg: 'Not found project to add new task',
-				type: 'error',
-			})
-		} else {
-			if(statusId){
-				value.status = Number(statusId)
-			}
-			value.project = Number(projectId as string)
-			value.description = description
-			mutateCreTask(value)
-		}
+	const onSubmitTask = (values: updateProjectTaskForm) => {
+		values.description = description
+		mutateUpTask({
+			inputUpdate: values,
+			taskId: taskIdProp || (taskIdRouter as string),
+		})
 	}
 
 	const onChangeDescription = (value: string) => {
@@ -112,28 +109,25 @@ export default function AddTask({onCloseDrawer, statusId}: IAddTaskProps) {
 		}
 	}, [isAuthenticated])
 
-	//Note when request success
+	//Set data form when have data detail task
 	useEffect(() => {
-		if (statusCreTask === 'success') {
-			//Close drawer when using drawer
-			if (onCloseDrawer) {
-				onCloseDrawer()
-			}
+		if (dataDetailTask?.task) {
+			setDescription(dataDetailTask.task.description)
 
-			setToast({
-				type: 'success',
-				msg: dataCreTask?.message as string,
+			formSetting.reset({
+				name: dataDetailTask.task.name,
+				start_date: dataDetailTask.task.start_date,
+				deadline: dataDetailTask.task.deadline,
+				task_category: dataDetailTask.task.task_category.id,
+                employees: dataDetailTask.task.employees.map(employee => employee.id)
 			})
 		}
-	}, [statusCreTask])
 
-
-	//Set data option employees state
-	useEffect(() => {
-		if (dataDetailProject?.project && dataDetailProject.project.employees) {
+		//Set data option employees state
+		if (dataDetailTask?.task?.project && dataDetailTask.task.project.employees) {
 			let newOptionEmployees: IOption[] = []
 
-			dataDetailProject.project.employees.map((employee) => {
+			dataDetailTask.task.project.employees.map((employee) => {
 				newOptionEmployees.push({
 					label: (
 						<>
@@ -153,7 +147,47 @@ export default function AddTask({onCloseDrawer, statusId}: IAddTaskProps) {
 
 			setOptionEmployees(newOptionEmployees)
 		}
-	}, [dataDetailProject])
+
+		//Set data option employees selected state
+		if (dataDetailTask?.task?.employees) {
+			let newOptionSelectedEmployees: IOption[] = []
+
+			dataDetailTask.task.employees.map((employee) => {
+				newOptionSelectedEmployees.push({
+					label: (
+						<>
+							<HStack>
+								<Avatar
+									size={'xs'}
+									name={employee.name}
+									src={employee.avatar?.url}
+								/>
+								<Text>{employee.email}</Text>
+							</HStack>
+						</>
+					),
+					value: employee.id,
+				})
+			})
+
+			setSelectedOptionEmployees(newOptionSelectedEmployees)
+		}
+	}, [dataDetailTask])
+
+	//Note when request success
+	useEffect(() => {
+		if (statusUpTask === 'success') {
+			//Close drawer when using drawer
+			if (onCloseDrawer) {
+				onCloseDrawer()
+			}
+
+			setToast({
+				type: 'success',
+				msg: dataUpTask?.message as string,
+			})
+		}
+	}, [statusUpTask])
 
 	//Set data option task categories when have data from request
 	useEffect(() => {
@@ -204,7 +238,7 @@ export default function AddTask({onCloseDrawer, statusId}: IAddTaskProps) {
 						<Text color={'gray.400'}>Project</Text>
 						<InputChakra
 							type={'text'}
-							value={dataDetailProject?.project?.name}
+							value={dataDetailTask?.task?.project.name}
 							disabled
 						/>
 					</VStack>
@@ -239,6 +273,7 @@ export default function AddTask({onCloseDrawer, statusId}: IAddTaskProps) {
 						name={'employees'}
 						required={true}
 						options={optionEmployees}
+						selectedOptions={selectedOptionEmployees}
 					/>
 				</GridItem>
 

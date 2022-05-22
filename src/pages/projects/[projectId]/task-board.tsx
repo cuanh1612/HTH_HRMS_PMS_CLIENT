@@ -42,13 +42,14 @@ import { deleteTaskMutation } from 'mutations/task'
 import { projectDetailQuery } from 'queries/project'
 import Drawer from 'components/Drawer'
 import AddTask from './tasks/add-tasks'
+import UpdateTask from './tasks/[taskId]/update-task'
 
 const taskBoard: NextLayout = () => {
 	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
 	const [columns, setColumns] = useState<statusType[]>([])
 	const [isUpdate, setIsUpdate] = useState(false)
 	const [columnId, setColumnId] = useState<string>()
-	const [taskId, setTaskId] = useState<string>()
+	const [taskId, setTaskId] = useState<string | number>(1)
 	const [statusIdShow, setStatusIdShow] = useState<number>(1)
 
 	const { colorMode } = useColorMode()
@@ -61,6 +62,13 @@ const taskBoard: NextLayout = () => {
 		isOpen: isOpenAddTask,
 		onOpen: onOpenAddTask,
 		onClose: onCloseAddTask,
+	} = useDisclosure()
+
+	// set open update task
+	const {
+		isOpen: isOpenUpdateTask,
+		onOpen: onOpenUpdateTask,
+		onClose: onCloseUpdateTask,
 	} = useDisclosure()
 
 	// get all status tasks
@@ -253,38 +261,43 @@ const taskBoard: NextLayout = () => {
 						status2: column.id,
 					})
 				}
-
-				// const getTask1 = column.task[source.index]
-				// column.task.splice(source.index, 1)
-				// column.task.splice(destination.index, 0, getTask1)
-
-				// const data = columns?.map((e) => {
-				// 	if (e.id == column.id) {
-				// 		return column
-				// 	}
-				// 	return e
-				// })
-				// setColumns(data)
 			} else {
-				// const column1 = columns?.find((value: any) => {
-				// 	return value.id == source.droppableId
-				// })
-				// const column2 = columns?.find((value: any) => {
-				// 	return value.id == destination.droppableId
-				// })
-				// const getTask1 = column1.task[source.index]
-				// column1.task.splice(source.index, 1)
-				// column2.task.splice(destination.index, 0, getTask1)
-				// const data = columns?.map((e) => {
-				// 	if (e.id == column1.id) {
-				// 		return column1
-				// 	}
-				// 	if (e.id == column2.id) {
-				// 		return column2
-				// 	}
-				// 	return e
-				// })
-				// setColumns(data)
+				const column1 = columns?.find((value: any) => {
+					return value.id == source.droppableId
+				})
+				const column2 = columns?.find((value: any) => {
+					return value.id == destination.droppableId
+				})
+				if (column1?.tasks && column2?.tasks) {
+					const task1 = column1?.tasks[source.index]
+					const task2 = column2?.tasks[destination.index]
+					column1.tasks.splice(source.index, 1)
+					column2.tasks.splice(destination.index, 0, task1)
+					const data = columns?.map((e) => {
+						if (e.id == column1.id) {
+							return column1
+						}
+						if (e.id == column2.id) {
+							return column2
+						}
+						return e
+					})
+					setColumns(data)
+					if(!task2) {
+						changeTaskPosition({
+							id1: task1.id,
+							status1: column1.id,
+							status2: column2.id,
+						})
+						return 
+					}
+					changeTaskPosition({
+						id1: task1.id,
+						id2: task2.id,
+						status1: column1.id,
+						status2: column2.id,
+					})
+				}
 			}
 		}
 
@@ -314,6 +327,7 @@ const taskBoard: NextLayout = () => {
 	return (
 		<Box>
 			<Button onClick={onOpenAddTask}>Add task Incomplete</Button>
+			<Button onClick={onOpenUpdateTask}>Update Task</Button>
 			<HStack
 				divider={
 					<StackDivider borderColor={colorMode == 'light' ? 'gray.200' : 'gray.700'} />
@@ -467,6 +481,15 @@ const taskBoard: NextLayout = () => {
 				isOpen={isOpenAddTask}
 			>
 				<AddTask statusId={statusIdShow} onCloseDrawer={onCloseAddTask} />
+			</Drawer>
+
+			<Drawer
+				size="xl"
+				title="Update Task"
+				onClose={onCloseUpdateTask}
+				isOpen={isOpenUpdateTask}
+			>
+				<UpdateTask taskIdProp={taskId} onCloseDrawer={onCloseUpdateTask} />
 			</Drawer>
 		</Box>
 	)

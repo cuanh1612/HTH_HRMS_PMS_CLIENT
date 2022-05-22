@@ -8,17 +8,19 @@ import {
 	Input as InputChakra,
 	Text,
 	useDisclosure,
-	VStack,
+	VStack
 } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Input } from 'components/form/Input'
 import { Select } from 'components/form/Select'
+import SelectCustom from 'components/form/SelectCustom'
 import SelectMany from 'components/form/SelectMany'
 import Modal from 'components/modal/Modal'
 import { AuthContext } from 'contexts/AuthContext'
 import { updateTaskMutation } from 'mutations/task'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
+import { allStatusQuery } from 'queries/status'
 import { detailTaskQuery } from 'queries/task'
 import { allTaskCategoriesQuery } from 'queries/taskCategory'
 import { useContext, useEffect, useState } from 'react'
@@ -43,11 +45,13 @@ export interface IUpdateTaskProps {
 export default function UpdateTask({ onCloseDrawer, taskIdProp }: IUpdateTaskProps) {
 	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
 	const router = useRouter()
-	const { taskId: taskIdRouter } = router.query
+	const { taskId: taskIdRouter, projectId } = router.query
 
 	//state -------------------------------------------------------------
 	const [optionTaskCategories, setOptionTaskCategories] = useState<IOption[]>([])
 	const [optionEmployees, setOptionEmployees] = useState<IOption[]>([])
+	const [optionStatus, setOptionStatus] = useState<IOption[]>([])
+	const [selectedStatus, setSelectedStatus] = useState<IOption>()
 	const [description, setDescription] = useState<string>('')
 	const [selectedOptionEmployees, setSelectedOptionEmployees] = useState<IOption[]>([])
 
@@ -64,6 +68,7 @@ export default function UpdateTask({ onCloseDrawer, taskIdProp }: IUpdateTaskPro
 		isAuthenticated,
 		taskIdProp || (taskIdRouter as string)
 	)
+	const { data: dataAllStatus } = allStatusQuery(isAuthenticated, projectId)
 
 	//mutation -----------------------------------------------------------
 	const [mutateUpTask, { status: statusUpTask, data: dataUpTask }] = updateTaskMutation(setToast)
@@ -76,6 +81,7 @@ export default function UpdateTask({ onCloseDrawer, taskIdProp }: IUpdateTaskPro
 			start_date: undefined,
 			deadline: undefined,
 			employees: [],
+			status: undefined,
 		},
 		resolver: yupResolver(UpdateProjectTaskValidate),
 	})
@@ -84,11 +90,19 @@ export default function UpdateTask({ onCloseDrawer, taskIdProp }: IUpdateTaskPro
 
 	//Function -----------------------------------------------------------
 	const onSubmitTask = (values: updateProjectTaskForm) => {
-		values.description = description
-		mutateUpTask({
-			inputUpdate: values,
-			taskId: taskIdProp || (taskIdRouter as string),
-		})
+		if (!projectId) {
+			setToast({
+				msg: 'Not found project to add new task',
+				type: 'error',
+			})
+		} else {
+			values.project = Number(projectId as string)
+			values.description = description
+			mutateUpTask({
+				inputUpdate: values,
+				taskId: taskIdProp || (taskIdRouter as string),
+			})
+		}
 	}
 
 	const onChangeDescription = (value: string) => {
@@ -117,7 +131,8 @@ export default function UpdateTask({ onCloseDrawer, taskIdProp }: IUpdateTaskPro
 				start_date: dataDetailTask.task.start_date,
 				deadline: dataDetailTask.task.deadline,
 				task_category: dataDetailTask.task.task_category.id,
-                employees: dataDetailTask.task.employees.map(employee => employee.id)
+				employees: dataDetailTask.task.employees.map((employee) => employee.id),
+				status: dataDetailTask.task.status.id,
 			})
 		}
 
@@ -171,6 +186,23 @@ export default function UpdateTask({ onCloseDrawer, taskIdProp }: IUpdateTaskPro
 			setSelectedOptionEmployees(newOptionSelectedEmployees)
 		}
 	}, [dataDetailTask])
+
+	//Set option select status when have data all status
+	useEffect(() => {
+		if (dataAllStatus?.statuses) {
+			//Set data option satuses state
+			let newOptionStatus: IOption[] = []
+
+			dataAllStatus.statuses.map((status) => {
+				newOptionStatus.push({
+					label: status.title,
+					value: status.id,
+				})
+			})
+
+			setOptionStatus(newOptionStatus)
+		}
+	}, [dataAllStatus])
 
 	//Note when request success
 	useEffect(() => {
@@ -260,6 +292,16 @@ export default function UpdateTask({ onCloseDrawer, taskIdProp }: IUpdateTaskPro
 						icon={<BsCalendarDate fontSize={'20px'} color="gray" opacity={0.6} />}
 						form={formSetting}
 						type="date"
+						required
+					/>
+				</GridItem>
+
+				<GridItem w="100%" colSpan={[2, 1]}>
+					<SelectCustom
+						name="status"
+						label="Status"
+						form={formSetting}
+						options={optionStatus}
 						required
 					/>
 				</GridItem>

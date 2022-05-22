@@ -15,6 +15,7 @@ import {
 	Divider,
 	StackDivider,
 	Tooltip,
+	Button,
 } from '@chakra-ui/react'
 import Column from 'components/board/Column'
 import { useRouter } from 'next/router'
@@ -26,7 +27,7 @@ import {
 	deleteStatusColumnMutation,
 	updateStatusColumnMutation,
 } from 'mutations/status'
-import {changePositionMutation as changePositionTaskMutation} from 'mutations/task'
+import { changePositionMutation as changePositionTaskMutation } from 'mutations/task'
 import { IoIosAdd } from 'react-icons/io'
 import Modal from 'components/modal/Modal'
 import { useForm } from 'react-hook-form'
@@ -39,6 +40,8 @@ import { AiOutlineBgColors } from 'react-icons/ai'
 import AlertDialog from 'components/AlertDialog'
 import { deleteTaskMutation } from 'mutations/task'
 import { projectDetailQuery } from 'queries/project'
+import Drawer from 'components/Drawer'
+import AddTask from './tasks/add-tasks'
 
 const taskBoard: NextLayout = () => {
 	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
@@ -46,10 +49,19 @@ const taskBoard: NextLayout = () => {
 	const [isUpdate, setIsUpdate] = useState(false)
 	const [columnId, setColumnId] = useState<string>()
 	const [taskId, setTaskId] = useState<string>()
+	const [statusIdShow, setStatusIdShow] = useState<number>(1)
 
 	const { colorMode } = useColorMode()
 
 	const { query } = useRouter()
+
+	//Modal -------------------------------------------------------------
+	// set open add task
+	const {
+		isOpen: isOpenAddTask,
+		onOpen: onOpenAddTask,
+		onClose: onCloseAddTask,
+	} = useDisclosure()
 
 	// get all status tasks
 	const { data: allStatusTasks, mutate: refetchStatusTasks } = allStatusTasksQuery(
@@ -63,8 +75,8 @@ const taskBoard: NextLayout = () => {
 	// change position status column
 	const [changePosition] = changePositionMutation(setToast)
 
-		// change position task column
-		const [changeTaskPosition] = changePositionTaskMutation(setToast)
+	// change position task column
+	const [changeTaskPosition] = changePositionTaskMutation(setToast)
 
 	// create status column
 	const [createColumn, { data: dataCreateColumn, status: createColumnStatus }] =
@@ -223,12 +235,12 @@ const taskBoard: NextLayout = () => {
 				if (column?.tasks) {
 					const task1 = column.tasks[Number(source.index)]
 					const task2 = column.tasks[Number(destination.index)]
-					
+
 					column.tasks.splice(source.index, 1)
 					column.tasks.splice(destination.index, 0, task1)
 
-					const data = columns.map(item=> {
-						if(item.id == Number(column.id)) {
+					const data = columns.map((item) => {
+						if (item.id == Number(column.id)) {
 							return column
 						}
 						return item
@@ -301,6 +313,7 @@ const taskBoard: NextLayout = () => {
 
 	return (
 		<Box>
+			<Button onClick={onOpenAddTask}>Add task Incomplete</Button>
 			<HStack
 				divider={
 					<StackDivider borderColor={colorMode == 'light' ? 'gray.200' : 'gray.700'} />
@@ -446,6 +459,15 @@ const taskBoard: NextLayout = () => {
 				isOpen={isOpenDialogDlTask}
 				onClose={onCloseDlTask}
 			/>
+
+			<Drawer
+				size="xl"
+				title="Add New Task"
+				onClose={onCloseAddTask}
+				isOpen={isOpenAddTask}
+			>
+				<AddTask statusId={statusIdShow} onCloseDrawer={onCloseAddTask} />
+			</Drawer>
 		</Box>
 	)
 }

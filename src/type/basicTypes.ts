@@ -386,3 +386,9 @@ export interface projectNoteType {
 	createdAt: Date
 	[index: string]: any
 }
+
+export interface taskCategoryType {
+	id: number
+	name: string
+	[index: string]: any
+}

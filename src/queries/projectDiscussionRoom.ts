@@ -16,3 +16,17 @@ export const allProjectDiscussionRoomsQuery = (
 		}
 	)
 }
+
+export const detailProjectDiscussionRoomQuery = (
+	isAuthenticated: boolean | null,
+	projectDiscussionRoomId: number | null
+) => {
+	return useSWR<ProjectDisucssionRoomMutaionResponse, AxiosError>(
+		isAuthenticated && projectDiscussionRoomId ? `project-discussion-rooms/${projectDiscussionRoomId}` : null,
+		allProjectDiscussionRoomsRequest,
+		{
+			errorRetryCount: 2,
+			revalidateOnFocus: false,
+		}
+	)
+}

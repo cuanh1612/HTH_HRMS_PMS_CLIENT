@@ -40,7 +40,7 @@ import { useRouter } from 'next/router'
 // get all employees
 import { allEmployeesQuery } from 'queries/employee'
 
-import { useContext, useEffect, useState } from 'react'
+import { ChangeEventHandler, useContext, useEffect, useState } from 'react'
 
 // icons
 import { AiOutlineCaretDown, AiOutlineCaretUp, AiOutlineSearch } from 'react-icons/ai'

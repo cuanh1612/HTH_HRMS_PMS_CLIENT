@@ -18,8 +18,10 @@ import {
 	noticeBoardType,
 	projectCategoryType,
 	projectDiscussionCategoryType,
+	projectDiscussionReplyType,
 	projectDiscussionRoomType,
 	projectFileType,
+	projectNoteType,
 	projectType,
 	salaryType,
 	signType,
@@ -166,12 +168,22 @@ export interface NoticeBoardMutaionResponse extends commonResponse {
 }
 
 export interface ProjectDisucssionRoomMutaionResponse extends commonResponse {
-	projectDisucssionRoom?: projectDiscussionRoomType
-	projectDisucssionRooms?: projectDiscussionRoomType
+	projectDiscussionRoom?: projectDiscussionRoomType
+	projectDiscussionRooms?: projectDiscussionRoomType[]
 }
 
 export interface projectDisucssionCategoryMutaionResponse extends commonResponse {
 	projectDiscussionCategory?: projectDiscussionCategoryType
 	projectDiscussionCategories?: projectDiscussionCategoryType[]
 	[index: string]: any
+}
+
+export interface projectdiscussionReplyMutaionResponse extends commonResponse {
+	projectDiscussionReply?: projectDiscussionReplyType
+	projectDiscussionReplies?: projectDiscussionReplyType[]
+}
+
+export interface ProjectNoteMutaionResponse extends commonResponse {
+	projectNote?: projectNoteType
+	projectNotes?: projectNoteType[]
 }

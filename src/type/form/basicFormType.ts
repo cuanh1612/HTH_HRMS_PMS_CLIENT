@@ -434,3 +434,24 @@ export type createProjectDiscussionCategoryForm = {
 	name: string
 	color: string
 }
+
+export type createProjectDiscussionReplyForm = {
+	reply: string
+	project: number
+	 project_discussion_room: number
+}
+
+export type updateProjectDiscussionReplyForm = {
+	reply: string
+	discussionReplyId: string | number
+}
+
+export type createProjectNoteForm = {
+	title: string
+	note_type: "Public" | "Private"
+	employees: number[]
+	visible_to_client: boolean
+	ask_re_password: boolean
+	detail: string
+	project: number
+}

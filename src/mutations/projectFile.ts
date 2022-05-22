@@ -14,7 +14,7 @@ export const createProjectFileMutation = (setToast: TToast) => {
 	})
 }
 
-//create
+//delete
 export const deleteProjectFileMutation = (setToast: TToast) => {
 	return useMutation(deleteProjectFileRequest, {
 		onFailure({ error }) {

@@ -239,26 +239,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 		}
 	}
 
-	//Get all discussion room by project
-	const allDiscussions: ProjectDisucssionRoomMutaionResponse = await fetch(
-		`${process.env.NEXT_PUBLIC_API_URL}/api/project-discussion-rooms/project/${context.query.projectId}`,
-		{
-			method: 'GET',
-			headers: {
-				authorization: `Bear ${getAccessToken.accessToken}`,
-			} as HeadersInit,
-		}
-	).then((e) => e.json())
-
-	if (!allDiscussions.success) {
-		return {
-			notFound: true,
-		}
-	}
-
 	return {
 		props: {
-			allDiscussionRooms: allDiscussions,
 		},
 	}
 }

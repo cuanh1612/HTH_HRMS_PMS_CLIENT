@@ -352,3 +352,16 @@ export interface projectDiscussionReplyType {
 	createdAt: Date
 	[index: string]: any
 }
+
+export interface projectNoteType {
+	id: number
+	note_type: string
+	employees?: employeeType[]
+	project: projectType
+	detail?: string
+	title: String
+	visible_to_client: boolean
+	ask_re_password: boolean
+	createdAt: Date
+	[index: string]: any
+}

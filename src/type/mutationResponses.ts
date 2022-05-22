@@ -21,6 +21,7 @@ import {
 	projectDiscussionReplyType,
 	projectDiscussionRoomType,
 	projectFileType,
+	projectNoteType,
 	projectType,
 	salaryType,
 	signType,
@@ -183,4 +184,9 @@ export interface projectDisucssionCategoryMutaionResponse extends commonResponse
 export interface projectdiscussionReplyMutaionResponse extends commonResponse {
 	projectDiscussionReply?: projectDiscussionReplyType
 	projectDiscussionReplies?: projectDiscussionReplyType[]
+}
+
+export interface ProjectNoteMutaionResponse extends commonResponse {
+	projectNote?: projectNoteType
+	projectNotes?: projectNoteType[]
 }

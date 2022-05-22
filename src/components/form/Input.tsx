@@ -7,6 +7,7 @@ import {
 	FormHelperText,
 	useColorModeValue,
 	useColorMode,
+	Text,
 } from '@chakra-ui/react'
 import { Controller, UseFormReturn } from 'react-hook-form'
 import { IInput } from 'type/element/commom'
@@ -29,10 +30,10 @@ export const Input = ({
 			control={form?.control}
 			name={name}
 			render={({ field }) => (
-				<FormControl color={'gray.400'} isRequired={required}>
+				<FormControl color={'gray.400'}>
 					{label && (
 						<FormLabel fontWeight={'normal'} htmlFor={name}>
-							{label}
+							{label} { required && <Text as='span' color={'red'}>*</Text>}
 						</FormLabel>
 					)}
 					<InputGroup>

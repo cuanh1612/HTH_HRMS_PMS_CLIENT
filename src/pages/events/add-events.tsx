@@ -7,7 +7,7 @@ import {
 	GridItem,
 	HStack,
 	Text,
-	VStack
+	VStack,
 } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Input } from 'components/form/Input'
@@ -22,6 +22,7 @@ import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 import { allClientsQuery } from 'queries/client'
 import { allEmployeesQuery } from 'queries/employee'
+import { allEventsQuery } from 'queries/event'
 import { useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { AiOutlineBgColors, AiOutlineCheck } from 'react-icons/ai'
@@ -57,6 +58,9 @@ export default function AddEvent({ onCloseDrawer }: IAddEventProps) {
 
 	// get all clients
 	const { data: allClients } = allClientsQuery(isAuthenticated)
+
+	// refetch all event
+	const { mutate: refetchAllEvents } = allEventsQuery(isAuthenticated)
 
 	//mutation -------------------------------------------------------------------
 	const [mutateCreEvent, { status: statusCreEvent, data: dataCreEvent }] =
@@ -136,6 +140,8 @@ export default function AddEvent({ onCloseDrawer }: IAddEventProps) {
 				type: 'success',
 				msg: dataCreEvent?.message as string,
 			})
+
+			refetchAllEvents()
 		}
 	}, [statusCreEvent])
 
@@ -193,7 +199,11 @@ export default function AddEvent({ onCloseDrawer }: IAddEventProps) {
 				values.cycles = Number(values.cycles)
 			}
 
-			mutateCreEvent(values)
+			mutateCreEvent({
+				...values,
+				starts_on_date: new Date(values.starts_on_date).toLocaleDateString(),
+				ends_on_date: new Date(values.ends_on_date).toLocaleDateString(),
+			})
 		}
 	}
 

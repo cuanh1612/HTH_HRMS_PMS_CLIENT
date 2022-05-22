@@ -9,7 +9,7 @@ import { updateEventMutation } from 'mutations/event'
 import dynamic from 'next/dynamic'
 import { allClientsQuery } from 'queries/client'
 import { allEmployeesQuery } from 'queries/employee'
-import { detailEventQuery } from 'queries/event'
+import { allEventsQuery, detailEventQuery } from 'queries/event'
 import { useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { AiOutlineBgColors, AiOutlineCheck } from 'react-icons/ai'
@@ -44,6 +44,9 @@ export default function UpdateEvent({ onCloseDrawer, eventIdUpdate }: IUpdateEve
 	// get all employees
 	const { data: allEmployees } = allEmployeesQuery(isAuthenticated)
 
+	// refetch all event
+	const { mutate: refetchAllEvents } = allEventsQuery(isAuthenticated)
+
 	// get all clients
 	const { data: allClients } = allClientsQuery(isAuthenticated)
 
@@ -70,7 +73,6 @@ export default function UpdateEvent({ onCloseDrawer, eventIdUpdate }: IUpdateEve
 
 	const { handleSubmit } = formSetting
 
-
 	//Onsubmit handle update event
 	const onSubmit = async (values: updateEventForm) => {
 		if (!description) {
@@ -82,7 +84,11 @@ export default function UpdateEvent({ onCloseDrawer, eventIdUpdate }: IUpdateEve
 			if (eventIdUpdate) {
 				mutateUpEvent({
 					eventId: eventIdUpdate,
-					inputUpdate: values,
+					inputUpdate: {
+						...values,
+						starts_on_date: new Date(values.starts_on_date).toLocaleDateString(),
+						ends_on_date: new Date(values.ends_on_date).toLocaleDateString(),
+					},
 				})
 			} else {
 				setToast({
@@ -155,6 +161,7 @@ export default function UpdateEvent({ onCloseDrawer, eventIdUpdate }: IUpdateEve
 				type: 'success',
 				msg: dataUpEvent?.message as string,
 			})
+			refetchAllEvents()
 		}
 	}, [statusUpEvent])
 
@@ -170,7 +177,11 @@ export default function UpdateEvent({ onCloseDrawer, eventIdUpdate }: IUpdateEve
 						label: (
 							<>
 								<HStack>
-									<Avatar size={'xs'} name={employee.name} src={employee.avatar?.url} />
+									<Avatar
+										size={'xs'}
+										name={employee.name}
+										src={employee.avatar?.url}
+									/>
 									<Text>{employee.email}</Text>
 								</HStack>
 							</>
@@ -191,7 +202,11 @@ export default function UpdateEvent({ onCloseDrawer, eventIdUpdate }: IUpdateEve
 						label: (
 							<>
 								<HStack>
-									<Avatar size={'xs'} name={client.name} src={client.avatar?.url} />
+									<Avatar
+										size={'xs'}
+										name={client.name}
+										src={client.avatar?.url}
+									/>
 									<Text>{client.email}</Text>
 								</HStack>
 							</>
@@ -229,7 +244,7 @@ export default function UpdateEvent({ onCloseDrawer, eventIdUpdate }: IUpdateEve
 
 			//Set date description
 			setDescription(dataDetailEvent.event.description)
-		
+
 			//set data form
 			formSetting.reset({
 				name: dataDetailEvent.event.name,
@@ -246,7 +261,7 @@ export default function UpdateEvent({ onCloseDrawer, eventIdUpdate }: IUpdateEve
 		}
 	}, [dataDetailEvent])
 
-	useEffect(()=> {
+	useEffect(() => {
 		console.log(formSetting.getValues())
 	}, [formSetting])
 

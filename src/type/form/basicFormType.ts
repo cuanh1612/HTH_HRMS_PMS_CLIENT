@@ -17,6 +17,11 @@ export type logoutForm = {
 	userId: string
 }
 
+export type statusForm = {
+	title: string
+	color: string
+}
+
 export type createEmployeeForm = {
 	employeeId: string
 	email: string
@@ -310,8 +315,8 @@ export type createEventForm = {
 	typeRepeat: 'Day' | 'Week' | 'Month' | 'Year'
 	cycles?: number
 	isRepeat: boolean
-	starts_on_date: Date
-	ends_on_date: Date
+	starts_on_date: string
+	ends_on_date: string
 	name: string
 	color: string
 	where: string
@@ -327,8 +332,8 @@ export type updateEventForm = {
 	typeRepeat: 'Day' | 'Week' | 'Month' | 'Year'
 	cycles?: number
 	isRepeat: boolean
-	starts_on_date: Date
-	ends_on_date: Date
+	starts_on_date: string | Date
+	ends_on_date: string | Date
 	name: string
 	color: string
 	where: string

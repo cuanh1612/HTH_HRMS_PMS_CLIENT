@@ -20,9 +20,10 @@ export interface IModalProps {
 	size: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' | '5xl' | '6xl' | 'full'
 	title: string
 	onOk?: () => void
+	form?: string
 }
 
-export default function Modal({ isOpen, onClose, children, size, title, onOk }: IModalProps) {
+export default function Modal({ isOpen, onClose, children, size, title, onOk, form}: IModalProps) {
 	return (
 		<>
 			<ModalChkra size={size} isOpen={isOpen} onClose={onClose}>
@@ -43,9 +44,14 @@ export default function Modal({ isOpen, onClose, children, size, title, onOk }: 
 							{onOk && (
 								<Button
 									onClick={() => {
-										onOk()
-										onClose()
+										if(!form) {
+											onClose()
+											onOk()
+										}
+								
 									}}
+									form={form}
+									type={!form ? 'button' : 'submit'}
 									colorScheme={'teal'}
 									leftIcon={<AiOutlineCheck />}
 								>

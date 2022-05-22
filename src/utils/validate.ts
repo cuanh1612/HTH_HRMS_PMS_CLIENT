@@ -143,3 +143,8 @@ export const CreateProjectDiscussionRoomValidate = yup.object({
 	title: yup.string().required('Please enter field title'),
 })
 
+export const CreateStatusColumnValidate = yup.object({
+	title: yup.string().required('Please enter field title'),
+	color: yup.string().required('Please enter field color'),
+})
+

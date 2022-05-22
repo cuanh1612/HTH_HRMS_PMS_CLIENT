@@ -28,4 +28,21 @@ export const allProjectsQuery = (isAuthenticated: boolean | null) => {
 	)
 }
 
+export const projectDetailQuery = (isAuthenticated: boolean | null, idProject: string | number) => {
+	return useSWR<projectMutaionResponse, AxiosError>(
+		isAuthenticated && idProject ? `projects/${idProject}`: null,
+		detailProjectRequest,
+		{
+			errorRetryCount: 2,
+			revalidateOnFocus: false,
+		}
+	)
+}
+
+
+
+
+
+
+
 

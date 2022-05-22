@@ -14,9 +14,29 @@ export const detailLeaveQuery = (leaveId: number | string | null | undefined) =>
 	)
 }
 
-export const allLeaveQuery = (isAuthenticated: boolean | null, date?: Date) => {
+export const allLeaveQuery = (
+	isAuthenticated: boolean | null,
+	employee?: string,
+	leaveType?: string,
+	status?: string
+) => {
+	const fieldUrl: string[] = []
+	employee && fieldUrl.push(`employee=${employee}`)
+	leaveType && fieldUrl.push(`leaveType=${leaveType}`)
+	status && fieldUrl.push(`status=${status}`)
+
+	var url = ''
+
+	for (let index = 0; index < fieldUrl.length; index++) {
+		if (index == 0) {
+			url += `?${fieldUrl[index]}`
+		} else {
+			url += `&${fieldUrl[index]}`
+		}
+	}
+
 	return useSWR<leaveMutaionResponse, AxiosError>(
-		isAuthenticated ? (date ?  `leaves?date=${date.toLocaleString()}`: 'leaves') : null,
+		isAuthenticated ? (url ? `leaves${url}` : 'leaves') : null,
 		allLeavesRequest,
 		{
 			errorRetryCount: 2,

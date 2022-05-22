@@ -44,7 +44,7 @@ export default function Discussions({ allDiscussionRooms }: IDiscussionsProps) {
 		if (isAuthenticated) {
 			handleLoading(false)
 		} else {
-			if (isAuthenticated === false) {
+			if (isAuthenticated === false) { 
 				router.push('/login')
 			}
 		}

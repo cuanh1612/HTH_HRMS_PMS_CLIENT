@@ -20,7 +20,7 @@ export const compareTime = (inClock: string, outClock: string) => {
 	return false
 }
 
-export const compareDateTime = (date1: Date, date2: Date, inClock: string, outClock: string) => {
+export const compareDateTime = (date1: string, date2: string, inClock: string, outClock: string) => {
 	console.log(inClock, outClock)
 	if (new Date(date1).toLocaleString() == new Date(date2).toLocaleString()) {
 		const inClockSplit = inClock.split(' ')

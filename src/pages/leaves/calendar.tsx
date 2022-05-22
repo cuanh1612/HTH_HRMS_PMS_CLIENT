@@ -21,6 +21,8 @@ import {
 	Drawer as CDrawer,
 	useColorMode,
 	useColorModeValue,
+	Avatar,
+	Text,
 } from '@chakra-ui/react'
 
 import { allLeaveQuery } from 'queries/leave'
@@ -33,9 +35,18 @@ import { MdOutlineNavigateBefore, MdOutlineNavigateNext } from 'react-icons/md'
 import Drawer from 'components/Drawer'
 import UpdateLeaves from './update-leaves'
 import AddLeaves from './add-leaves'
+import { useRouter } from 'next/router'
+import { allEmployeesQuery } from 'queries/employee'
+import { allLeaveTypesQuery } from 'queries/leaveType'
+import { Select } from 'components/filter/Select'
+import { IFilter } from 'type/tableTypes'
+import { IOption } from 'type/basicTypes'
+import SelectCustom from 'components/filter/SelectCustomer'
 
 const calendar: NextLayout = () => {
 	const { colorMode } = useColorMode()
+
+	const router = useRouter()
 	// style
 	const dayHeader = useColorModeValue('dayHeader', 'dayHeader--dark')
 
@@ -48,20 +59,32 @@ const calendar: NextLayout = () => {
 	const { isAuthenticated, handleLoading } = useContext(AuthContext)
 	const [calendar, setCalendar] = useState<Calendar>()
 	const [data, setData] = useState<EventInput[]>([])
+	const [employeesFilter, setEmployeesFilter] = useState<IOption[]>([])
+	const [employee, setEmployee] = useState<string>()
+	const [type, setType] = useState<string>()
+	const [status, setStatus] = useState<string>()
 
 	const { isOpen: isOpenUpdate, onOpen: onOpenUpdate, onClose: onCloseUpdate } = useDisclosure()
 	const { isOpen: isOpenAdd, onOpen: onOpenAdd, onClose: onCloseAdd } = useDisclosure()
 	// set isOpen of dialog to filters
-	const { isOpen: isOpenFilter, onClose: onCloseFilter } = useDisclosure()
+	const { isOpen: isOpenFilter, onClose: onCloseFilter, onOpen: onOpenFilter } = useDisclosure()
 	const [leaveIdUpdate, setLeaveIdUpdate] = useState<number | null>(30)
+
+	// query
+	const { data: allLeaves } = allLeaveQuery(isAuthenticated, employee, type, status)
+
+	const { data: allEmployees } = allEmployeesQuery(isAuthenticated)
+	const { data: allLeaveTypes } = allLeaveTypesQuery()
 
 	useEffect(() => {
 		if (isAuthenticated) {
 			handleLoading(false)
+		} else {
+			if (isAuthenticated === false) {
+				router.push('/login')
+			}
 		}
 	}, [isAuthenticated])
-
-	const { data: allLeaves } = allLeaveQuery(isAuthenticated)
 
 	useEffect(() => {
 		if (allLeaves) {
@@ -130,6 +153,32 @@ const calendar: NextLayout = () => {
 		}
 	}, [calendar])
 
+	// set employee to filter
+	useEffect(() => {
+		if (allEmployees?.employees) {
+			const valuesFilter = allEmployees.employees.map(
+				(employee): IOption => ({
+					label: (
+						<>
+							<HStack>
+								<Avatar
+									size={'xs'}
+									name={employee.name}
+									src={employee.avatar?.url}
+								/>
+								<Text color={colorMode == 'dark' ? 'white' : 'black'}>
+									{employee.name}
+								</Text>
+							</HStack>
+						</>
+					),
+					value: String(employee.id),
+				})
+			)
+			setEmployeesFilter(valuesFilter)
+		}
+	}, [allEmployees, colorMode])
+
 	return (
 		<Box>
 			<HStack paddingBlock={'5'} justifyContent={'space-between'}>
@@ -165,6 +214,24 @@ const calendar: NextLayout = () => {
 						onClick={() => calendar?.changeView('dayGridMonth')}
 					>
 						Month
+					</Button>
+					<Button
+						color={'white'}
+						bg={'hu-Green.normal'}
+						onClick={() => {
+							onOpenFilter()
+						}}
+					>
+						filter
+					</Button>
+					<Button
+						onClick={() => {
+							setEmployee(undefined)
+							setStatus(undefined)
+							setType(undefined)
+						}}
+					>
+						reset filter
 					</Button>
 				</ButtonGroup>
 
@@ -206,21 +273,32 @@ const calendar: NextLayout = () => {
 
 					<DrawerBody>
 						<VStack spacing={5}>
-							{/* <Input
-								handleSearch={(data: IFilter) => {
-									setFilter(data)
-								}}
-								columnId={'email'}
-								label="Email"
-								placeholder="Enter email"
-								required={false}
-								icon={
-									<AiOutlineSearch fontSize={'20px'} color="gray" opacity={0.6} />
-								}
-								type={'text'}
-							/> */}
+							{employeesFilter && (
+								<SelectCustom
+									handleSearch={(field: any) => {
+										setEmployee(String(field.value))
+									}}
+									label={'Employee'}
+									name={'employee'}
+									options={[
+										{
+											label: (
+												<Text
+													color={colorMode == 'light' ? 'black' : 'white'}
+												>
+													all
+												</Text>
+											),
+											value: '',
+										},
 
-							{/* <Select
+										...employeesFilter,
+									]}
+									required={false}
+								/>
+							)}
+
+							<Select
 								options={[
 									{
 										label: 'Pending',
@@ -236,70 +314,27 @@ const calendar: NextLayout = () => {
 									},
 								]}
 								handleSearch={(data: IFilter) => {
-									setFilter(data)
+									setStatus(data.filterValue)
 								}}
 								columnId={'status'}
 								label="Leave status"
 								placeholder="Select status"
 								required={false}
 							/>
-							<Select
-								options={[
-									{
-										label: String(year - 2),
-										value: String(year - 2),
-									},
-									{
-										label: String(year - 1),
-										value: String(year - 1),
-									},
-									{
-										label: String(year),
-										value: String(year),
-									},
-									{
-										label: String(year + 1),
-										value: String(year + 1),
-									},
-								]}
-								handleSearch={(data: IFilter) => {
-									setFilter(data)
-								}}
-								columnId={'year'}
-								label="Year"
-								placeholder="Select year"
-								required={false}
-							/> */}
 
-							{/* <Select
-								options={leaveTypes}
+							<Select
+								options={allLeaveTypes?.leaveTypes?.map((leaveType) => ({
+									label: leaveType.name,
+									value: leaveType.id,
+								}))}
 								handleSearch={(data: IFilter) => {
-									setFilter(data)
+									setType(data.filterValue)
 								}}
 								columnId={'leave_type'}
 								label="Leave type"
 								placeholder="Select type"
 								required={false}
-							/> */}
-
-							{/* <DateRange
-								handleSelect={(date: { from: Date; to: Date }) => {
-									setFilter({
-										columnId: 'date',
-										filterValue: date,
-									})
-								}}
-								label="Select date"
 							/>
-							<SelectUser
-								handleSearch={(data: IFilter) => {
-									setFilter(data)
-								}}
-								columnId={'id'}
-								required={false}
-								label={'User'}
-								peoples={dataUsersSl}
-							/> */}
 						</VStack>
 					</DrawerBody>
 				</DrawerContent>

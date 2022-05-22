@@ -254,6 +254,27 @@ export interface projectFileType {
 	createdAt: Date
 }
 
+export interface taskType {
+	id: number
+	name: string
+	start_date?: Date
+	deadline: Date
+	employees: employeeType[]
+	description: string
+	priority: string
+	[index: string]: any
+}
+
+export interface statusType {
+	id: number
+	color: string
+	index: number
+	root: boolean
+	title: string
+	tasks?: taskType[]
+	
+}
+
 export interface projectType {
 	id: number
 	project_category?: projectCategoryType

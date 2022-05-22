@@ -23,6 +23,7 @@ import {
 	projectType,
 	salaryType,
 	signType,
+	statusType,
 	userType,
 } from './basicTypes'
 
@@ -128,13 +129,9 @@ export interface contractFileMutaionResponse extends commonResponse {
 	[index: string]: any
 }
 
-export interface eventMutaionResponse {
-	code: number
-	success: boolean
-	message: string
+export interface eventMutaionResponse  extends commonResponse {
 	event?: eventType
-	events?: eventType[]
-	[index: string]: any
+	Events?: eventType[]
 }
 
 export interface ProjectCategoryMutaionResponse extends commonResponse {
@@ -142,19 +139,19 @@ export interface ProjectCategoryMutaionResponse extends commonResponse {
 	projectCategories?: projectCategoryType[]
 }
 
-export interface projectMutaionResponse {
-	code: number
-	success: boolean
-	message: string
+export interface projectMutaionResponse extends commonResponse {
 	project?: projectType
 	projects?: projectType[]
-	[index: string]: any
+}
+
+export interface statusMutaionResponse extends commonResponse  {
+	status?: statusType
+	statuses?: statusType[]
 }
 
 export interface projectFileMutaionResponse extends commonResponse {
 	projectFile?: projectFileType
 	projectFiles?: projectFileType[]
-	[index: string]: any
 }
 
 export interface SalaryMutaionResponse extends commonResponse {

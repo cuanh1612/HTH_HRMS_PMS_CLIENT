@@ -34,3 +34,10 @@ export async function updateEventRequest({
 
 	return resultFetch
 }
+
+//Function handle get all events
+export const allEventsRequest = async (url: string) => {
+	return await getData<eventMutaionResponse>({
+		url: `http://localhost:4000/api/${url}`,
+	})
+}

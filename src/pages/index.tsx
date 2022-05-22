@@ -36,24 +36,22 @@ const Column = ({ data, index }: any) => {
 		<Draggable draggableId={data.id} index={index}>
 			{(provided) => (
 				<div
-        {
-          ...provided.draggableProps
-        }
-        style={{
-          margin: '8px',
-          border: '1px solid red',
-          borderRadius: '2px',
-          width: 300,
-          minWidth: 300,
-          ...provided.draggableProps.style
-        }}
-        ref={provided.innerRef}
+					{...provided.draggableProps}
+					style={{
+						margin: '8px',
+						border: '1px solid red',
+						borderRadius: '2px',
+						width: 300,
+						minWidth: 300,
+						...provided.draggableProps.style,
+					}}
+					ref={provided.innerRef}
 				>
 					<h3
 						style={{
 							padding: 8,
 						}}
-            {...provided.dragHandleProps}
+						{...provided.dragHandleProps}
 					>
 						{data.title}
 					</h3>
@@ -88,18 +86,18 @@ export default function index() {
 	const [columns, setColumns] = useState<Array<any>>()
 	const onDragEnd = (result: DropResult) => {
 		if (result.destination) {
-      const destination = result.destination
+			const destination = result.destination
 			const source = result.source
-      if(destination.droppableId == 'ALL-COLUMNS') {
-        if(columns) {
-          const column = columns[source.index]
-          const data = [...columns]
-          data?.splice(source.index, 1)
-          data?.splice(destination.index, 0, column)
-          setColumns(data)
-        }
-        return
-      }
+			if (destination.droppableId == 'ALL-COLUMNS') {
+				if (columns) {
+					const column = columns[source.index]
+					const data = [...columns]
+					data?.splice(source.index, 1)
+					data?.splice(destination.index, 0, column)
+					setColumns(data)
+				}
+				return
+			}
 			if (
 				destination.droppableId == source.droppableId &&
 				destination.index == source.index
@@ -164,32 +162,32 @@ export default function index() {
 						{
 							id: 'task-1',
 							content: 'task-1',
-							description: 'hello everyone, to day i fell very good'
+							description: 'hello everyone, to day i fell very good',
 						},
 						{
 							id: 'task-2',
 							content: 'task-2',
-							description: 'hello everyone, to day i fell very good'
+							description: 'hello everyone, to day i fell very good',
 						},
 						{
 							id: 'task-3',
 							content: 'task-3',
-							description: 'hello everyone, to day i fell very good'
+							description: 'hello everyone, to day i fell very good',
 						},
 						{
 							id: 'task-4',
 							content: 'task-4',
-							description: 'hello everyone, to day i fell very good'
+							description: 'hello everyone, to day i fell very good',
 						},
 						{
 							id: 'task-6',
 							content: 'task-6',
-							description: 'hello everyone, to day i fell very good'
+							description: 'hello everyone, to day i fell very good',
 						},
 						{
 							id: 'task-7',
 							content: 'task-7',
-							description: 'hello everyone, to day i fell very good'
+							description: 'hello everyone, to day i fell very good',
 						},
 					],
 				},
@@ -199,42 +197,7 @@ export default function index() {
 					title: 'column 2',
 					task: [],
 				},
-        {
-					id: 'column-8',
-					index: 2,
-					title: 'column 2',
-					task: [],
-				},
-        {
-					id: 'column-7',
-					index: 2,
-					title: 'column 2',
-					task: [],
-				},
-        {
-					id: 'column-6',
-					index: 2,
-					title: 'column 2',
-					task: [],
-				},
-        {
-					id: 'column-5',
-					index: 2,
-					title: 'column 2',
-					task: [],
-				},
-        {
-					id: 'column-4',
-					index: 2,
-					title: 'column 2',
-					task: [],
-				},
-        {
-					id: 'column-3',
-					index: 2,
-					title: 'column 2',
-					task: [],
-				},
+				
 			])
 		})
 	}, [])
@@ -257,16 +220,24 @@ export default function index() {
 			}}
 		>
 			<DragDropContext onDragEnd={onDragEnd}>
-				<Droppable isCombineEnabled={true} droppableId="ALL-COLUMNS" direction="horizontal" type="task">
+				<Droppable
+					isCombineEnabled={true}
+					droppableId="ALL-COLUMNS"
+					direction="horizontal"
+					type="task"
+				>
 					{(provided) => (
-						<div {...provided.droppableProps} style={{display: 'flex', overflow: 'auto'}} ref={provided.innerRef}>
+						<div
+							{...provided.droppableProps}
+							style={{ display: 'flex', overflow: 'auto' }}
+							ref={provided.innerRef}
+						>
 							{columns &&
 								columns.map((e: any, key: number) => {
-									return <Column key={e.id} data={e} index={key}/>
+									return <Column key={key} data={e} index={key} />
 								})}
 
 							{provided.placeholder}
-
 						</div>
 					)}
 				</Droppable>

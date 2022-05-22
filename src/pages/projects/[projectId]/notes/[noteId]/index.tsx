@@ -39,7 +39,7 @@ export default function DetailProjectNote({ noteIdProp }: IDetailNoteProps) {
 			<Box pos="relative" p={6} h="auto" as={'form'}>
 				<VStack pos="relative" align={'start'} spacing={4}>
 					<Text fontWeight={'semibold'}>
-						Project Note Detail {dataDetailNote?.projectNote?.id}
+						Project Note Detail #{dataDetailNote?.projectNote?.id}
 					</Text>
 					<Grid w={'full'} templateColumns="repeat(3, 1fr)" gap={7}>
 						<GridItem colSpan={[3, 1]} color={'gray.400'}>

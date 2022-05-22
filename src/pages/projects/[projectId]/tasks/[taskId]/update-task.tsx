@@ -65,8 +65,6 @@ export default function UpdateTask({ onCloseDrawer, taskIdProp }: IUpdateTaskPro
 		taskIdProp || (taskIdRouter as string)
 	)
 
-	console.log(dataDetailTask)
-
 	//mutation -----------------------------------------------------------
 	const [mutateUpTask, { status: statusUpTask, data: dataUpTask }] = updateTaskMutation(setToast)
 

@@ -55,3 +55,15 @@ export const currentUserRequest = async (url: string) => {
 		url: `http://localhost:4000/api/auth/${url}`,
 	})
 }
+
+
+//Function handle re enter password
+export async function reEnterPasswordRequest(inputReEnterPassword: {email: string, password: string}) {
+	const resultFetch = await postData<authMutaionResponse>({
+		url: 'http://localhost:4000/api/auth/ask-re-enter-password',
+		body: inputReEnterPassword,
+	})
+
+	return resultFetch
+}
+

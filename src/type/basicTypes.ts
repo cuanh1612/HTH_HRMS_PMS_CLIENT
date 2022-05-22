@@ -369,7 +369,7 @@ export interface projectNoteType {
 	employees?: employeeType[]
 	project: projectType
 	detail?: string
-	title: String
+	title: string
 	visible_to_client: boolean
 	ask_re_password: boolean
 	createdAt: Date

@@ -460,6 +460,16 @@ export type createProjectNoteForm = {
 	project: number
 }
 
+export type updateProjectNoteForm = {
+	title: string
+	note_type: 'Public' | 'Private'
+	employees: number[]
+	visible_to_client: boolean
+	ask_re_password: boolean
+	detail: string
+	project: number
+}
+
 export type createProjectTaskForm = {
 	task_category: number
 	project: number

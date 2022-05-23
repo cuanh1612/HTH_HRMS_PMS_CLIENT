@@ -10,19 +10,19 @@ import {
 	RadioGroup,
 	Stack,
 	Text,
-	VStack
+	VStack,
 } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Input } from 'components/form/Input'
 import SelectMany from 'components/form/SelectMany'
 import Loading from 'components/Loading'
 import { AuthContext } from 'contexts/AuthContext'
-import { createProjectNoteMutation } from 'mutations/projectNote'
-import { GetServerSideProps } from 'next'
+import { updateProjectNoteMutation } from 'mutations/projectNote'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 import { allEmployeesQuery } from 'queries/employee'
 import { detailProjectQuery } from 'queries/project'
+import { detailProjectNoteRoomQuery } from 'queries/projectNote'
 import { useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { AiOutlineCheck } from 'react-icons/ai'
@@ -30,24 +30,25 @@ import { MdOutlineSubtitles } from 'react-icons/md'
 import 'react-quill/dist/quill.bubble.css'
 import 'react-quill/dist/quill.snow.css'
 import { IOption } from 'type/basicTypes'
-import { createProjectNoteForm } from 'type/form/basicFormType'
-import { projectMutaionResponse } from 'type/mutationResponses'
-import { CreateProjectNoteValidate } from 'utils/validate'
+import { updateProjectNoteForm } from 'type/form/basicFormType'
+import { UpdateProjectNoteValidate } from 'utils/validate'
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
 
-export interface IAddNoteProps {
-	onCloseDrawer: () => void
+export interface IUpdateNoteProps {
+	onCloseDrawer?: () => void
+	noteIdProp?: string | number
 }
 
-export default function AddNote({ onCloseDrawer }: IAddNoteProps) {
-	const { isAuthenticated, handleLoading, setToast, currentUser } = useContext(AuthContext)
+export default function UpdateNote({ onCloseDrawer, noteIdProp }: IUpdateNoteProps) {
+	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
 	const router = useRouter()
-	const { projectId } = router.query
+	const { noteId: noteIdRouter, projectId } = router.query
 
 	//State ----------------------------------------------------------------------
 	const [detail, setDetail] = useState<string>('')
 	const [optionEmployees, setOptionEmployees] = useState<IOption[]>([])
+	const [selectedOptionEmployees, setSelectedOptionEmployees] = useState<IOption[]>([])
 	const [noteType, setNoteType] = useState<'Public' | 'Private'>('Public')
 	const [visibleToClient, setVisibleToClient] = useState<boolean>(false)
 	const [askRePassword, setAskRePassword] = useState<boolean>(false)
@@ -56,9 +57,51 @@ export default function AddNote({ onCloseDrawer }: IAddNoteProps) {
 	// get data detail project
 	const { data: dataDetailProject } = detailProjectQuery(isAuthenticated, projectId as string)
 
+	//Get detail project note
+	const { data: dataDetailNote } = detailProjectNoteRoomQuery(
+		isAuthenticated,
+		Number(noteIdProp || noteIdRouter)
+	)
+	console.log(dataDetailNote)
+
 	//mutation -------------------------------------------------------------------
-	const [mutateCreProjectNote, { status: statusCreProjectNote, data: dataCreProjectNote }] =
-		createProjectNoteMutation(setToast)
+	const [mutateUpProjectNote, { status: statusUpProjectNote, data: dataUpProjectNote }] =
+		updateProjectNoteMutation(setToast)
+
+	// setForm and submit form update project note -------------------------------
+	const formSetting = useForm<updateProjectNoteForm>({
+		defaultValues: {
+			title: '',
+			employees: [],
+		},
+		resolver: yupResolver(UpdateProjectNoteValidate),
+	})
+
+	const { handleSubmit } = formSetting
+
+	const onSubmit = async (values: updateProjectNoteForm) => {
+		if (!projectId) {
+			setToast({
+				msg: 'Not found project to update project note',
+				type: 'error',
+			})
+		} else {
+			values.detail = detail
+			values.visible_to_client = visibleToClient
+			values.ask_re_password = askRePassword
+			values.note_type = noteType
+			values.project = Number(projectId)
+			mutateUpProjectNote({
+				inputCreate: values,
+				projectNoteId: noteIdProp || (noteIdRouter as string),
+			})
+		}
+	}
+
+	//Funtion -------------------------------------------------------------------
+	const onChangeDetail = (value: string) => {
+		setDetail(value)
+	}
 
 	//User effect ---------------------------------------------------------------
 	//Handle check loged in
@@ -71,6 +114,46 @@ export default function AddNote({ onCloseDrawer }: IAddNoteProps) {
 			}
 		}
 	}, [isAuthenticated])
+
+	//Set data form when have data detail note
+	useEffect(() => {
+		if (dataDetailNote && dataDetailNote.projectNote) {
+			setDetail(dataDetailNote.projectNote?.detail || '')
+			setVisibleToClient(dataDetailNote.projectNote.visible_to_client || false)
+			setAskRePassword(dataDetailNote.projectNote.ask_re_password || false)
+			setNoteType((dataDetailNote.projectNote.note_type as 'Public' | 'Private') || 'Public')
+
+            formSetting.reset({
+                title: dataDetailNote.projectNote.title || '',
+                employees: dataDetailNote.projectNote.employees?.map((employee) => employee.id) || [],
+            })
+
+            if(dataDetailNote.projectNote.employees){
+                let newSelectedOptionEmployees: IOption[] = []
+
+                dataDetailNote.projectNote.employees.map((employee) => {
+                    newSelectedOptionEmployees.push({
+                        label: (
+                            <>
+                                <HStack>
+                                    <Avatar
+                                        size={'xs'}
+                                        name={employee.name}
+                                        src={employee.avatar?.url}
+                                    />
+                                    <Text>{employee.email}</Text>
+                                </HStack>
+                            </>
+                        ),
+                        value: employee.id,
+                    })
+                })
+    
+                setSelectedOptionEmployees(newSelectedOptionEmployees)
+            }
+		}
+
+	}, [dataDetailNote])
 
 	//Set data option employees state
 	useEffect(() => {
@@ -101,7 +184,7 @@ export default function AddNote({ onCloseDrawer }: IAddNoteProps) {
 
 	//Note when request success
 	useEffect(() => {
-		if (statusCreProjectNote === 'success') {
+		if (statusUpProjectNote === 'success') {
 			//Close drawer when using drawer
 			if (onCloseDrawer) {
 				onCloseDrawer()
@@ -109,43 +192,10 @@ export default function AddNote({ onCloseDrawer }: IAddNoteProps) {
 
 			setToast({
 				type: 'success',
-				msg: dataCreProjectNote?.message as string,
+				msg: dataUpProjectNote?.message as string,
 			})
 		}
-	}, [statusCreProjectNote])
-
-	// setForm and submit form create new project note -------------------------------
-	const formSetting = useForm<createProjectNoteForm>({
-		defaultValues: {
-			detail: '',
-			title: '',
-			employees: [],
-		},
-		resolver: yupResolver(CreateProjectNoteValidate),
-	})
-
-	const { handleSubmit } = formSetting
-
-	const onSubmit = async (values: createProjectNoteForm) => {
-		if (!projectId) {
-			setToast({
-				msg: 'Not found project to add new project note',
-				type: 'error',
-			})
-		} else {
-			values.detail = detail
-			values.visible_to_client = visibleToClient
-			values.ask_re_password = askRePassword
-			values.note_type = noteType
-			values.project = Number(projectId)
-			mutateCreProjectNote(values)
-		}
-	}
-
-	//Funtion -------------------------------------------------------------------
-	const onChangeDetail = (value: string) => {
-		setDetail(value)
-	}
+	}, [statusUpProjectNote])
 
 	return (
 		<>
@@ -189,6 +239,7 @@ export default function AddNote({ onCloseDrawer }: IAddNoteProps) {
 									name={'employees'}
 									required={true}
 									options={optionEmployees}
+                                    selectedOptions={selectedOptionEmployees}
 								/>
 							</GridItem>
 
@@ -262,50 +313,8 @@ export default function AddNote({ onCloseDrawer }: IAddNoteProps) {
 				>
 					Save
 				</Button>
-				{statusCreProjectNote == 'running' && <Loading />}
+				{statusUpProjectNote == 'running' && <Loading />}
 			</Box>
 		</>
 	)
-}
-
-export const getServerSideProps: GetServerSideProps = async (context) => {
-	//Get accesstoken
-	const getAccessToken: { accessToken: string; code: number; message: string; success: boolean } =
-		await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/refresh_token`, {
-			method: 'GET',
-			headers: {
-				cookie: context.req.headers.cookie,
-			} as HeadersInit,
-		}).then((e) => e.json())
-
-	//Redirect login page when error
-	if (getAccessToken.code !== 200) {
-		return {
-			redirect: {
-				destination: '/login',
-				permanent: false,
-			},
-		}
-	}
-
-	//Check assigned
-	const checkAsignedProject: projectMutaionResponse = await fetch(
-		`${process.env.NEXT_PUBLIC_API_URL}/api/projects/${context.query.projectId}/check-asigned`,
-		{
-			method: 'GET',
-			headers: {
-				authorization: `Bear ${getAccessToken.accessToken}`,
-			} as HeadersInit,
-		}
-	).then((e) => e.json())
-
-	if (!checkAsignedProject.success) {
-		return {
-			notFound: true,
-		}
-	}
-
-	return {
-		props: {},
-	}
 }

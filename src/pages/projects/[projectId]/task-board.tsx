@@ -15,6 +15,7 @@ import {
 	Divider,
 	StackDivider,
 	Tooltip,
+	Button,
 } from '@chakra-ui/react'
 import Column from 'components/board/Column'
 import { useRouter } from 'next/router'
@@ -39,17 +40,36 @@ import { AiOutlineBgColors } from 'react-icons/ai'
 import AlertDialog from 'components/AlertDialog'
 import { deleteTaskMutation } from 'mutations/task'
 import { projectDetailQuery } from 'queries/project'
+import Drawer from 'components/Drawer'
+import AddTask from './tasks/add-tasks'
+import UpdateTask from './tasks/[taskId]/update-task'
 
 const taskBoard: NextLayout = () => {
 	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
 	const [columns, setColumns] = useState<statusType[]>([])
 	const [isUpdate, setIsUpdate] = useState(false)
 	const [columnId, setColumnId] = useState<string>()
-	const [taskId, setTaskId] = useState<string>()
+	const [taskId, setTaskId] = useState<string | number>(1)
+	const [statusIdShow, setStatusIdShow] = useState<number>(1)
 
 	const { colorMode } = useColorMode()
 
 	const { query } = useRouter()
+
+	//Modal -------------------------------------------------------------
+	// set open add task
+	const {
+		isOpen: isOpenAddTask,
+		onOpen: onOpenAddTask,
+		onClose: onCloseAddTask,
+	} = useDisclosure()
+
+	// set open update task
+	const {
+		isOpen: isOpenUpdateTask,
+		onOpen: onOpenUpdateTask,
+		onClose: onCloseUpdateTask,
+	} = useDisclosure()
 
 	// get all status tasks
 	const { data: allStatusTasks, mutate: refetchStatusTasks } = allStatusTasksQuery(
@@ -306,6 +326,8 @@ const taskBoard: NextLayout = () => {
 
 	return (
 		<Box>
+			<Button onClick={onOpenAddTask}>Add task Incomplete</Button>
+			<Button onClick={onOpenUpdateTask}>Update Task</Button>
 			<HStack
 				divider={
 					<StackDivider borderColor={colorMode == 'light' ? 'gray.200' : 'gray.700'} />
@@ -451,6 +473,24 @@ const taskBoard: NextLayout = () => {
 				isOpen={isOpenDialogDlTask}
 				onClose={onCloseDlTask}
 			/>
+
+			<Drawer
+				size="xl"
+				title="Add New Task"
+				onClose={onCloseAddTask}
+				isOpen={isOpenAddTask}
+			>
+				<AddTask statusId={statusIdShow} onCloseDrawer={onCloseAddTask} />
+			</Drawer>
+
+			<Drawer
+				size="xl"
+				title="Update Task"
+				onClose={onCloseUpdateTask}
+				isOpen={isOpenUpdateTask}
+			>
+				<UpdateTask taskIdProp={taskId} onCloseDrawer={onCloseUpdateTask} />
+			</Drawer>
 		</Box>
 	)
 }

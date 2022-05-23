@@ -1,0 +1,309 @@
+import {
+	Avatar,
+	Box,
+	Button,
+	Grid,
+	GridItem,
+	HStack,
+	Input as InputChakra,
+	Text,
+	useDisclosure,
+	VStack,
+} from '@chakra-ui/react'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { Input } from 'components/form/Input'
+import { Select } from 'components/form/Select'
+import SelectMany from 'components/form/SelectMany'
+import Modal from 'components/modal/Modal'
+import { AuthContext } from 'contexts/AuthContext'
+import { createTaskMutation } from 'mutations/task'
+import dynamic from 'next/dynamic'
+import { useRouter } from 'next/router'
+import { detailProjectQuery } from 'queries/project'
+import { allTaskCategoriesQuery } from 'queries/taskCategory'
+import { useContext, useEffect, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { AiOutlineCheck } from 'react-icons/ai'
+import { BsCalendarDate } from 'react-icons/bs'
+import { MdOutlineSubtitles } from 'react-icons/md'
+import 'react-quill/dist/quill.bubble.css'
+import 'react-quill/dist/quill.snow.css'
+import TaskCategory from 'src/pages/task-categories'
+import { IOption } from 'type/basicTypes'
+import { createProjectTaskForm } from 'type/form/basicFormType'
+import { CreateProjectTaskValidate } from 'utils/validate'
+
+const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
+
+export interface IAddTaskProps {
+	onCloseDrawer?: () => void
+	statusId?: string | number
+}
+
+export default function AddTask({onCloseDrawer, statusId}: IAddTaskProps) {
+	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
+	const router = useRouter()
+	const { projectId } = router.query
+
+	//state -------------------------------------------------------------
+	const [optionTaskCategories, setOptionTaskCategories] = useState<IOption[]>([])
+	const [optionEmployees, setOptionEmployees] = useState<IOption[]>([])
+	const [description, setDescription] = useState<string>('')
+
+	//Setup modal -------------------------------------------------------
+	const {
+		isOpen: isOpenTaskCategory,
+		onOpen: onOpenTaskCategory,
+		onClose: onCloseTaskCategory,
+	} = useDisclosure()
+
+	//Query -------------------------------------------------------------
+	const { data: dataTaskCategories } = allTaskCategoriesQuery()
+	const { data: dataDetailProject } = detailProjectQuery(isAuthenticated, projectId as string)
+
+	//mutation -----------------------------------------------------------
+	const [mutateCreTask, { status: statusCreTask, data: dataCreTask }] =
+		createTaskMutation(setToast)
+
+	// setForm and submit form create new task discussion room -----------
+	const formSetting = useForm<createProjectTaskForm>({
+		defaultValues: {
+			name: '',
+			task_category: undefined,
+			start_date: undefined,
+			deadline: undefined,
+			employees: [],
+		},
+		resolver: yupResolver(CreateProjectTaskValidate),
+	})
+
+	const { handleSubmit } = formSetting
+
+	//Function -----------------------------------------------------------
+	const onSubmitTask = (value: createProjectTaskForm) => {
+		if (!projectId) {
+			setToast({
+				msg: 'Not found project to add new task',
+				type: 'error',
+			})
+		} else {
+			if(statusId){
+				value.status = Number(statusId)
+			}
+			value.project = Number(projectId as string)
+			value.description = description
+			mutateCreTask(value)
+		}
+	}
+
+	const onChangeDescription = (value: string) => {
+		setDescription(value)
+	}
+
+	//User effect ---------------------------------------------------------------
+	//Handle check loged in
+	useEffect(() => {
+		if (isAuthenticated) {
+			handleLoading(false)
+		} else {
+			if (isAuthenticated === false) {
+				router.push('/login')
+			}
+		}
+	}, [isAuthenticated])
+
+	//Note when request success
+	useEffect(() => {
+		if (statusCreTask === 'success') {
+			//Close drawer when using drawer
+			if (onCloseDrawer) {
+				onCloseDrawer()
+			}
+
+			setToast({
+				type: 'success',
+				msg: dataCreTask?.message as string,
+			})
+		}
+	}, [statusCreTask])
+
+
+	//Set data option employees state
+	useEffect(() => {
+		if (dataDetailProject?.project && dataDetailProject.project.employees) {
+			let newOptionEmployees: IOption[] = []
+
+			dataDetailProject.project.employees.map((employee) => {
+				newOptionEmployees.push({
+					label: (
+						<>
+							<HStack>
+								<Avatar
+									size={'xs'}
+									name={employee.name}
+									src={employee.avatar?.url}
+								/>
+								<Text>{employee.email}</Text>
+							</HStack>
+						</>
+					),
+					value: employee.id,
+				})
+			})
+
+			setOptionEmployees(newOptionEmployees)
+		}
+	}, [dataDetailProject])
+
+	//Set data option task categories when have data from request
+	useEffect(() => {
+		if (dataTaskCategories?.taskCategories) {
+			const newOptionTaskCategories: IOption[] = dataTaskCategories.taskCategories.map(
+				(taskCategory) => {
+					return {
+						value: taskCategory.id.toString(),
+						label: taskCategory.name,
+					}
+				}
+			)
+
+			setOptionTaskCategories(newOptionTaskCategories)
+		}
+	}, [dataTaskCategories])
+
+	return (
+		<Box pos="relative" p={6} as={'form'} h="auto" onSubmit={handleSubmit(onSubmitTask)}>
+			<Grid templateColumns="repeat(2, 1fr)" gap={6}>
+				<GridItem w="100%" colSpan={[2, 1]}>
+					<Input
+						name="name"
+						label="Task Name"
+						icon={<MdOutlineSubtitles fontSize={'20px'} color="gray" opacity={0.6} />}
+						form={formSetting}
+						placeholder="Enter Note Title"
+						type="text"
+						required
+					/>
+				</GridItem>
+
+				<GridItem w="100%" colSpan={[2, 1]}>
+					<Select
+						name="task_category"
+						label="Task Category"
+						required={false}
+						form={formSetting}
+						placeholder={'Select Task Category'}
+						options={optionTaskCategories}
+						isModal={true}
+						onOpenModal={onOpenTaskCategory}
+					/>
+				</GridItem>
+
+				<GridItem w="100%" colSpan={[2, 1]}>
+					<VStack align={'start'}>
+						<Text color={'gray.400'}>Project</Text>
+						<InputChakra
+							type={'text'}
+							value={dataDetailProject?.project?.name}
+							disabled
+						/>
+					</VStack>
+				</GridItem>
+
+				<GridItem w="100%" colSpan={[2, 1]}>
+					<Input
+						name="start_date"
+						label="Start Date"
+						icon={<BsCalendarDate fontSize={'20px'} color="gray" opacity={0.6} />}
+						form={formSetting}
+						type="date"
+						required
+					/>
+				</GridItem>
+
+				<GridItem w="100%" colSpan={[2, 1]}>
+					<Input
+						name="deadline"
+						label="Due Date"
+						icon={<BsCalendarDate fontSize={'20px'} color="gray" opacity={0.6} />}
+						form={formSetting}
+						type="date"
+						required
+					/>
+				</GridItem>
+
+				<GridItem w="100%" colSpan={[2]}>
+					<SelectMany
+						form={formSetting}
+						label={'Select Employee'}
+						name={'employees'}
+						required={true}
+						options={optionEmployees}
+					/>
+				</GridItem>
+
+				<GridItem w="100%" colSpan={2}>
+					<VStack align={'start'}>
+						<Text fontWeight={'normal'} color={'gray.400'}>
+							Description
+						</Text>
+						<ReactQuill
+							placeholder="Enter you text"
+							modules={{
+								toolbar: [
+									['bold', 'italic', 'underline', 'strike'], // toggled buttons
+									['blockquote', 'code-block'],
+
+									[{ header: 1 }, { header: 2 }], // custom button values
+									[{ list: 'ordered' }, { list: 'bullet' }],
+									[{ script: 'sub' }, { script: 'super' }], // superscript/subscript
+									[{ indent: '-1' }, { indent: '+1' }], // outdent/indent
+									[{ direction: 'rtl' }], // text direction
+
+									[{ size: ['small', false, 'large', 'huge'] }], // custom dropdown
+									[{ header: [1, 2, 3, 4, 5, 6, false] }],
+
+									[{ color: [] }, { background: [] }], // dropdown with defaults from theme
+									[{ font: [] }],
+									[{ align: [] }],
+
+									['clean'], // remove formatting button
+								],
+							}}
+							value={description}
+							onChange={onChangeDescription}
+						/>
+					</VStack>
+				</GridItem>
+			</Grid>
+
+			<Button
+				color={'white'}
+				bg={'hu-Green.normal'}
+				transform="auto"
+				_hover={{ bg: 'hu-Green.normalH', scale: 1.05 }}
+				_active={{
+					bg: 'hu-Green.normalA',
+					scale: 1,
+				}}
+				leftIcon={<AiOutlineCheck />}
+				mt={6}
+				type="submit"
+			>
+				Save
+			</Button>
+			{/* {statusCreProjectNote == 'running' && <Loading />} */}
+
+			{/* Modal department and designation */}
+			<Modal
+				size="3xl"
+				isOpen={isOpenTaskCategory}
+				onOpen={onOpenTaskCategory}
+				onClose={onCloseTaskCategory}
+				title="Task Category"
+			>
+				<TaskCategory />
+			</Modal>
+		</Box>
+	)
+}

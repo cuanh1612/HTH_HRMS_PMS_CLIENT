@@ -118,6 +118,10 @@ export type createCategoryForm = {
 	name: string
 }
 
+export type createTaskCategoryForm = {
+	name: string
+}
+
 export type createSubCategoryForm = {
 	name: string
 	client_category: number
@@ -446,7 +450,7 @@ export type createProjectDiscussionCategoryForm = {
 export type createProjectDiscussionReplyForm = {
 	reply: string
 	project: number
-	 project_discussion_room: number
+	project_discussion_room: number
 }
 
 export type updateProjectDiscussionReplyForm = {
@@ -456,10 +460,58 @@ export type updateProjectDiscussionReplyForm = {
 
 export type createProjectNoteForm = {
 	title: string
-	note_type: "Public" | "Private"
+	note_type: 'Public' | 'Private'
 	employees: number[]
 	visible_to_client: boolean
 	ask_re_password: boolean
 	detail: string
 	project: number
+}
+
+export type updateProjectNoteForm = {
+	title: string
+	note_type: 'Public' | 'Private'
+	employees: number[]
+	visible_to_client: boolean
+	ask_re_password: boolean
+	detail: string
+	project: number
+}
+
+export type createProjectTaskForm = {
+	task_category: number
+	project: number
+	employees: number[]
+	status: number
+	id: number
+	name: string
+	start_date: Date
+	deadline: Date
+	index: number
+	description: string
+	priority: string
+	task_files: {
+		name: string
+		public_id: string
+		url: string
+	}[]
+}
+
+export type updateProjectTaskForm = {
+	task_category: number
+	project: number
+	employees: number[]
+	status: number
+	id: number
+	name: string
+	start_date: Date
+	deadline: Date
+	index: number
+	description: string
+	priority: string
+	task_files: {
+		name: string
+		public_id: string
+		url: string
+	}[]
 }

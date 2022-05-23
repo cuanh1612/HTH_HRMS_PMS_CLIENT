@@ -30,6 +30,14 @@ export type milestoneForm = {
     summary: string
 }
 
+export interface EmployeesNotInProjectForm {
+	employees:  number[]
+}
+
+export interface EmployeesByDepartmentProjectForm {
+	departments:  number[]
+}
+
 export type createEmployeeForm = {
 	employeeId: string
 	email: string

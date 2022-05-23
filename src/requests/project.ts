@@ -1,4 +1,4 @@
-import { createProjectForm, updateProjectForm } from 'type/form/basicFormType'
+import { createProjectForm, updateProjectForm, EmployeesNotInProjectForm, EmployeesByDepartmentProjectForm } from 'type/form/basicFormType'
 import { employeeMutaionResponse, projectMutaionResponse } from 'type/mutationResponses'
 import { deleteData, getData, postData, putData } from 'utils/fetchData'
 
@@ -17,6 +17,46 @@ export const detailProjectRequest = async (url: string) => {
 	return await getData<projectMutaionResponse>({
 		url: `http://localhost:4000/api/${url}`,
 	})
+}
+
+//Function handle get employees not in project
+export const employeesNotInProjectRequest = async (url: string) => {
+	return await getData<employeeMutaionResponse>({
+		url: `http://localhost:4000/api/${url}`,
+	})
+}
+
+//Function handle assign employee
+export async function assignEmployeeRequest({
+	inputUpdate,
+	projectId,
+}: {
+	inputUpdate: EmployeesNotInProjectForm
+	projectId?: string | string[] | number 
+}) {
+	const resultFetch = await putData<projectMutaionResponse>({
+		url: `http://localhost:4000/api/projects/assign-employee/${projectId}`,
+		body: inputUpdate,
+	})
+
+	return resultFetch
+}
+
+
+//Function handle update project
+export async function assignEmplByDepartmentRequest({
+	inputUpdate,
+	projectId,
+}: {
+	inputUpdate: EmployeesByDepartmentProjectForm
+	projectId?: string | string[] | number 
+}) {
+	const resultFetch = await putData<projectMutaionResponse>({
+		url: `http://localhost:4000/api/projects/assign-employee/department/${projectId}`,
+		body: inputUpdate,
+	})
+
+	return resultFetch
 }
 
 //Function handle get all employees in project

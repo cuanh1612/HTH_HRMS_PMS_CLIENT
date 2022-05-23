@@ -3,7 +3,6 @@ import {
 	Button,
 	ButtonGroup,
 	HStack,
-	IconButton,
 	Menu,
 	MenuButton,
 	MenuItem,
@@ -41,18 +40,21 @@ import { milestoneValidate } from 'utils/validate'
 const milestones: NextLayout = () => {
 	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
 	const router = useRouter()
+	const { projectId } = router.query
 
 	// set loading table
 	const [isLoading, setIsloading] = useState(true)
 	const [idMilestone, setIdMilestone] = useState<string | number>()
 	const [isUpdate, setIsUpdate] = useState(false)
 
+	// open modal to update, create milestone
 	const { isOpen: isOpenModal, onClose: onCloseModal, onOpen: onOpenModal } = useDisclosure()
+
+	// open modal to show detail milestone
+	const { isOpen: isOpenDetail, onClose: onCloseDetail, onOpen: onOpenDetail } = useDisclosure()
 
 	// set isOpen of dialog to delete one
 	const { isOpen: isOpenDialogDl, onOpen: onOpenDl, onClose: onCloseDl } = useDisclosure()
-
-	const { projectId } = router.query
 
 	// get all milestone by project
 	const { data: allMilestone, mutate: refetchAllMilestones } = milestonesByProjectQuery(
@@ -279,7 +281,7 @@ const milestones: NextLayout = () => {
 				size={'xl'}
 				onClose={onCloseModal}
 				onOpen={onOpenModal}
-				title={'add milestone'}
+				title={isUpdate ? 'Update milestone': 'Add milestone'}
 				isOpen={isOpenModal}
 				form={'milestone'}
 			>
@@ -369,6 +371,20 @@ const milestones: NextLayout = () => {
 				isOpen={isOpenDialogDl}
 				onClose={onCloseDl}
 			/>
+
+			{/* view detail milestone */}
+			<Modal
+				size={'2xl'}
+				onClose={onCloseDetail}
+				onOpen={onOpenDetail}
+				title={'Detail mile stone'}
+				isOpen={!isOpenDetail}
+			>
+				<HStack>
+					
+				</HStack>
+			</Modal>
+
 		</div>
 	)
 }

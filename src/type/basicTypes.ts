@@ -16,6 +16,12 @@ export interface attendanceType {
 	[index: string]: any
 }
 
+export interface Hourly_rate_project {
+	id: number
+	hourly_rate: number
+	[index: string]: any 
+}
+
 export interface employeeType {
 	employeeId: number
 	email: string
@@ -42,6 +48,8 @@ export interface employeeType {
 	role: string
 	attendances: attendanceType[]
 	salaries: salaryType[]
+	hourly_rate_project: Hourly_rate_project
+
 }
 
 export interface departmentType {
@@ -82,6 +90,16 @@ export interface leaveType {
 	reason: string
 	date: Date
 	[index: string]: any
+}
+
+export interface milestoneType {
+	id: number
+	title: string
+    cost: number
+    addtobudget: boolean | number
+    status: boolean | number
+    summary: string
+	tasks: taskType[]
 }
 
 export interface signType {
@@ -205,7 +223,7 @@ export interface contractFileType {
 }
 
 export interface IOption {
-	value: string | number
+	value: string | number 
 	label: string | ReactNode
 }
 
@@ -294,6 +312,7 @@ export interface projectType {
 	currency: 'USD' | 'GBP' | 'EUR' | 'INR' | 'VND'
 	Progress: number
 	project_files?: projectFileType[]
+	project_Admin: employeeType
 }
 
 export interface UserAttendance {

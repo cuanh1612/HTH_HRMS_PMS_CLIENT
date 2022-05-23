@@ -29,7 +29,7 @@ export const InputNumber = ({
 					<FormLabel fontWeight={'normal'} htmlFor={name}>
 						{label}
 					</FormLabel>
-					<NumberInput background={'#ffffff10'} id={name} {...field} min={min}>
+					<NumberInput background={'#ffffff10'} precision={2} id={name} {...field} min={min}>
 						<NumberInputField />
 						<NumberInputStepper>
 							<NumberIncrementStepper />

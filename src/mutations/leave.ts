@@ -26,6 +26,7 @@ export const updateLeaveMutation = (setToast: TToast) => {
 	})
 }
 
+
 //update status
 export const updateStatusMutation = (setToast: TToast) => {
 	return useMutation(updateStatusRequest, {
@@ -49,7 +50,6 @@ export const deleteLeaveMutation = (setToast: TToast) => {
 		},
 	})
 }
-
 
 // delete many
 export const deleteLeavesMutation = (setToast: TToast) => {

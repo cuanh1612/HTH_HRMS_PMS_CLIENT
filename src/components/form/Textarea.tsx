@@ -1,5 +1,5 @@
 import {
-    FormControl, FormHelperText, FormLabel, Textarea as TextareaChakra, useColorModeValue
+    FormControl, FormHelperText, FormLabel, Text, Textarea as TextareaChakra, useColorModeValue
 } from '@chakra-ui/react'
 import { Controller, UseFormReturn } from 'react-hook-form'
 import { ITextarea } from 'type/element/commom'
@@ -23,9 +23,9 @@ export const Textarea = ({
 			control={control}
 			name={name}
 			render={({ field }) => (
-				<FormControl isRequired={required}>
+				<FormControl>
 					<FormLabel fontWeight={'normal'} htmlFor={name} color={"gray.400"}>
-						{label}
+						{label} { required && <Text as='span' color={'red'}>*</Text>}
 					</FormLabel>
 					<TextareaChakra
 						placeholder={placeholder}

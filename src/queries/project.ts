@@ -1,7 +1,7 @@
 import { AxiosError } from 'axios'
-import { allProjectsRequest, detailProjectRequest } from 'requests/project'
+import { allEmployeesInProjectRequest, allProjectsRequest, detailProjectRequest } from 'requests/project'
 import useSWR from 'swr'
-import { projectMutaionResponse } from 'type/mutationResponses'
+import { employeeMutaionResponse, projectMutaionResponse } from 'type/mutationResponses'
 
 export const detailProjectQuery = (
 	isAuthenticated: boolean | null,
@@ -16,6 +16,22 @@ export const detailProjectQuery = (
 		}
 	)
 }
+
+export const allEmployeesInProjectQuery = (
+	isAuthenticated: boolean | null,
+	projectId: string | string[] | number | null | undefined
+) => {
+	return useSWR<projectMutaionResponse, AxiosError>(
+		isAuthenticated && projectId ? `all-employees/${projectId}` : null,
+		allEmployeesInProjectRequest,
+		{
+			errorRetryCount: 2,
+			revalidateOnFocus: false,
+		}
+	)
+}
+
+
 
 export const allProjectsQuery = (isAuthenticated: boolean | null) => {
 	return useSWR<projectMutaionResponse, AxiosError>(

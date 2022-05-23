@@ -1,5 +1,5 @@
 import { createProjectForm, updateProjectForm } from 'type/form/basicFormType'
-import { projectMutaionResponse } from 'type/mutationResponses'
+import { employeeMutaionResponse, projectMutaionResponse } from 'type/mutationResponses'
 import { deleteData, getData, postData, putData } from 'utils/fetchData'
 
 //Function handle create
@@ -16,6 +16,13 @@ export async function createProjectRequest(inputCreate: createProjectForm) {
 export const detailProjectRequest = async (url: string) => {
 	return await getData<projectMutaionResponse>({
 		url: `http://localhost:4000/api/${url}`,
+	})
+}
+
+//Function handle get all employees in project
+export const allEmployeesInProjectRequest = async (url: string) => {
+	return await getData<projectMutaionResponse>({
+		url: `http://localhost:4000/api/projects/${url}`,
 	})
 }
 
@@ -58,4 +65,30 @@ export const deleteProjectRequest = async (id: string | number) => {
 		url: `http://localhost:4000/api/projects/${id}`,
 	})
 }
+
+// change project admin
+export async function setProjectAdminRequest(data : {
+	idProject?: string | string [] , idEmployee: number
+}) {
+	const resultFetch = await postData<projectMutaionResponse>({
+		url: 'http://localhost:4000/api/projects/project-admin',
+		body: data
+	})
+
+	return resultFetch
+}
+
+//Function handle delete employee in project
+export async function deleteEmpInProjectRequest(inputCreate: {
+	projectId?: string | string [],
+	employeeId?: number
+}) {
+	const resultFetch = await postData<projectMutaionResponse>({
+		url: 'http://localhost:4000/api/projects/delete-employee',
+		body: inputCreate,
+	})
+
+	return resultFetch
+}
+
 

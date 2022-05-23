@@ -152,3 +152,9 @@ export const CreateProjectNoteValidate = yup.object({
 	title: yup.string().required('Please enter field title'),
 })
 
+export const milestoneValidate = yup.object({
+	cost:  yup.number().required('Please enter add to budget'),
+	title: yup.string().required('Please enter title'),
+	summary: yup.string().required('Please enter summary')
+})
+

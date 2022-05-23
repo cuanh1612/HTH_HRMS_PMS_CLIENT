@@ -13,8 +13,10 @@ import {
 	employeeType,
 	eventType,
 	holidayType,
+	Hourly_rate_project,
 	leaveType,
 	leaveTypeType,
+	milestoneType,
 	noticeBoardType,
 	projectCategoryType,
 	projectDiscussionCategoryType,
@@ -59,6 +61,11 @@ export interface leaveTypeMutaionResponse extends commonResponse {
 export interface leaveMutaionResponse extends commonResponse {
 	leave?: leaveType
 	leaves?: leaveType[]
+}
+
+export interface milestoneMutaionResponse extends commonResponse {
+	milestone?: milestoneType
+	milestones?: milestoneType[]
 }
 
 export interface signMutationResponse extends commonResponse {
@@ -143,6 +150,7 @@ export interface ProjectCategoryMutaionResponse extends commonResponse {
 
 export interface projectMutaionResponse extends commonResponse {
 	project?: projectType
+	hourly_rate_projects: Hourly_rate_project[]
 	projects?: projectType[]
 }
 

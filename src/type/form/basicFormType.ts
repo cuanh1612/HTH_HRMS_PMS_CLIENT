@@ -22,6 +22,14 @@ export type statusForm = {
 	color: string
 }
 
+export type milestoneForm = {
+	title: string
+    cost: number
+    addtobudget: boolean | number
+    status: boolean | number
+    summary: string
+}
+
 export type createEmployeeForm = {
 	employeeId: string
 	email: string

@@ -10,7 +10,7 @@ import {
 	RadioGroup,
 	Stack,
 	Text,
-	VStack
+	VStack,
 } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Input } from 'components/form/Input'
@@ -23,6 +23,7 @@ import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 import { allEmployeesQuery } from 'queries/employee'
 import { detailProjectQuery } from 'queries/project'
+import { allProjectNotesQuery } from 'queries/projectNote'
 import { useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { AiOutlineCheck } from 'react-icons/ai'
@@ -41,7 +42,7 @@ export interface IAddNoteProps {
 }
 
 export default function AddNote({ onCloseDrawer }: IAddNoteProps) {
-	const { isAuthenticated, handleLoading, setToast, currentUser } = useContext(AuthContext)
+	const { isAuthenticated, handleLoading, setToast, socket } = useContext(AuthContext)
 	const router = useRouter()
 	const { projectId } = router.query
 
@@ -59,6 +60,11 @@ export default function AddNote({ onCloseDrawer }: IAddNoteProps) {
 	//mutation -------------------------------------------------------------------
 	const [mutateCreProjectNote, { status: statusCreProjectNote, data: dataCreProjectNote }] =
 		createProjectNoteMutation(setToast)
+
+	const { mutate: refetchAllNotes } = allProjectNotesQuery(
+		isAuthenticated,
+		projectId as string
+	)
 
 	//User effect ---------------------------------------------------------------
 	//Handle check loged in
@@ -102,6 +108,12 @@ export default function AddNote({ onCloseDrawer }: IAddNoteProps) {
 	//Note when request success
 	useEffect(() => {
 		if (statusCreProjectNote === 'success') {
+			if (socket && projectId) {
+				socket.emit('newProjectNote', projectId)
+			}
+
+			refetchAllNotes()
+			
 			//Close drawer when using drawer
 			if (onCloseDrawer) {
 				onCloseDrawer()

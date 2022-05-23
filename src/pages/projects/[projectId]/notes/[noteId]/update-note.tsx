@@ -22,7 +22,7 @@ import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 import { allEmployeesQuery } from 'queries/employee'
 import { detailProjectQuery } from 'queries/project'
-import { detailProjectNoteRoomQuery } from 'queries/projectNote'
+import { allProjectNotesQuery, detailProjectNoteRoomQuery } from 'queries/projectNote'
 import { useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { AiOutlineCheck } from 'react-icons/ai'
@@ -41,7 +41,7 @@ export interface IUpdateNoteProps {
 }
 
 export default function UpdateNote({ onCloseDrawer, noteIdProp }: IUpdateNoteProps) {
-	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
+	const { isAuthenticated, handleLoading, setToast, socket } = useContext(AuthContext)
 	const router = useRouter()
 	const { noteId: noteIdRouter, projectId } = router.query
 
@@ -62,7 +62,11 @@ export default function UpdateNote({ onCloseDrawer, noteIdProp }: IUpdateNotePro
 		isAuthenticated,
 		Number(noteIdProp || noteIdRouter)
 	)
-	console.log(dataDetailNote)
+	
+	const { mutate: refetchAllNotes } = allProjectNotesQuery(
+		isAuthenticated,
+		projectId as string
+	)
 
 	//mutation -------------------------------------------------------------------
 	const [mutateUpProjectNote, { status: statusUpProjectNote, data: dataUpProjectNote }] =
@@ -123,36 +127,36 @@ export default function UpdateNote({ onCloseDrawer, noteIdProp }: IUpdateNotePro
 			setAskRePassword(dataDetailNote.projectNote.ask_re_password || false)
 			setNoteType((dataDetailNote.projectNote.note_type as 'Public' | 'Private') || 'Public')
 
-            formSetting.reset({
-                title: dataDetailNote.projectNote.title || '',
-                employees: dataDetailNote.projectNote.employees?.map((employee) => employee.id) || [],
-            })
+			formSetting.reset({
+				title: dataDetailNote.projectNote.title || '',
+				employees:
+					dataDetailNote.projectNote.employees?.map((employee) => employee.id) || [],
+			})
 
-            if(dataDetailNote.projectNote.employees){
-                let newSelectedOptionEmployees: IOption[] = []
+			if (dataDetailNote.projectNote.employees) {
+				let newSelectedOptionEmployees: IOption[] = []
 
-                dataDetailNote.projectNote.employees.map((employee) => {
-                    newSelectedOptionEmployees.push({
-                        label: (
-                            <>
-                                <HStack>
-                                    <Avatar
-                                        size={'xs'}
-                                        name={employee.name}
-                                        src={employee.avatar?.url}
-                                    />
-                                    <Text>{employee.email}</Text>
-                                </HStack>
-                            </>
-                        ),
-                        value: employee.id,
-                    })
-                })
-    
-                setSelectedOptionEmployees(newSelectedOptionEmployees)
-            }
+				dataDetailNote.projectNote.employees.map((employee) => {
+					newSelectedOptionEmployees.push({
+						label: (
+							<>
+								<HStack>
+									<Avatar
+										size={'xs'}
+										name={employee.name}
+										src={employee.avatar?.url}
+									/>
+									<Text>{employee.email}</Text>
+								</HStack>
+							</>
+						),
+						value: employee.id,
+					})
+				})
+
+				setSelectedOptionEmployees(newSelectedOptionEmployees)
+			}
 		}
-
 	}, [dataDetailNote])
 
 	//Set data option employees state
@@ -185,6 +189,12 @@ export default function UpdateNote({ onCloseDrawer, noteIdProp }: IUpdateNotePro
 	//Note when request success
 	useEffect(() => {
 		if (statusUpProjectNote === 'success') {
+			if (socket && projectId) {
+				socket.emit('newProjectNote', projectId)
+			}
+
+			refetchAllNotes()
+
 			//Close drawer when using drawer
 			if (onCloseDrawer) {
 				onCloseDrawer()
@@ -239,7 +249,7 @@ export default function UpdateNote({ onCloseDrawer, noteIdProp }: IUpdateNotePro
 									name={'employees'}
 									required={true}
 									options={optionEmployees}
-                                    selectedOptions={selectedOptionEmployees}
+									selectedOptions={selectedOptionEmployees}
 								/>
 							</GridItem>
 

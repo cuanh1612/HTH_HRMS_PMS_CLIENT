@@ -209,7 +209,7 @@ export default function UpdateClient({ onCloseDrawer, clientUpdateId }: IAddClie
 				salutation: dataDetailClient.client.salutation || '',
 				name: dataDetailClient.client.name || '',
 				email: dataDetailClient.client.email || '',
-				password: dataDetailClient.client.password || '',
+				password: '',
 				mobile: dataDetailClient.client.mobile || '',
 				country: dataDetailClient.client.country || '',
 				gender: dataDetailClient.client.gender || '',
@@ -598,7 +598,8 @@ export default function UpdateClient({ onCloseDrawer, clientUpdateId }: IAddClie
 					</GridItem>
 
 					<GridItem w="100%" colSpan={2}>
-						<Box>
+						<VStack align={"start"}>
+							<Text>Note</Text>
 							<ReactQuill
 								placeholder="Enter you text"
 								modules={{
@@ -625,7 +626,7 @@ export default function UpdateClient({ onCloseDrawer, clientUpdateId }: IAddClie
 								value={note}
 								onChange={handleChangeNote}
 							/>
-						</Box>
+						</VStack>
 					</GridItem>
 				</Grid>
 

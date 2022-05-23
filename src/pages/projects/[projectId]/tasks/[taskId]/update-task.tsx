@@ -2,13 +2,14 @@ import {
 	Avatar,
 	Box,
 	Button,
+	Divider,
 	Grid,
 	GridItem,
 	HStack,
 	Input as InputChakra,
 	Text,
 	useDisclosure,
-	VStack
+	VStack,
 } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Input } from 'components/form/Input'
@@ -20,12 +21,13 @@ import { AuthContext } from 'contexts/AuthContext'
 import { updateTaskMutation } from 'mutations/task'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
+import { milestonesByProjectNormalQuery } from 'queries/milestone'
 import { allStatusQuery } from 'queries/status'
 import { detailTaskQuery } from 'queries/task'
 import { allTaskCategoriesQuery } from 'queries/taskCategory'
 import { useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { AiOutlineCheck } from 'react-icons/ai'
+import { AiFillCaretDown, AiFillCaretUp, AiOutlineCheck } from 'react-icons/ai'
 import { BsCalendarDate } from 'react-icons/bs'
 import { MdOutlineSubtitles } from 'react-icons/md'
 import 'react-quill/dist/quill.bubble.css'
@@ -33,6 +35,7 @@ import 'react-quill/dist/quill.snow.css'
 import TaskCategory from 'src/pages/task-categories'
 import { IOption } from 'type/basicTypes'
 import { updateProjectTaskForm } from 'type/form/basicFormType'
+import { dataTaskPriority } from 'utils/basicData'
 import { UpdateProjectTaskValidate } from 'utils/validate'
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
@@ -51,9 +54,9 @@ export default function UpdateTask({ onCloseDrawer, taskIdProp }: IUpdateTaskPro
 	const [optionTaskCategories, setOptionTaskCategories] = useState<IOption[]>([])
 	const [optionEmployees, setOptionEmployees] = useState<IOption[]>([])
 	const [optionStatus, setOptionStatus] = useState<IOption[]>([])
-	const [selectedStatus, setSelectedStatus] = useState<IOption>()
 	const [description, setDescription] = useState<string>('')
 	const [selectedOptionEmployees, setSelectedOptionEmployees] = useState<IOption[]>([])
+	const [optionMilestones, setOptionMilestones] = useState<IOption[]>([])
 
 	//Setup modal -------------------------------------------------------
 	const {
@@ -62,13 +65,22 @@ export default function UpdateTask({ onCloseDrawer, taskIdProp }: IUpdateTaskPro
 		onClose: onCloseTaskCategory,
 	} = useDisclosure()
 
+	const {
+		isOpen: isOpenOtherDetails,
+		onOpen: onOpenOtherDetails,
+		onClose: onCloseOtherDetails,
+	} = useDisclosure()
+
 	//Query -------------------------------------------------------------
 	const { data: dataTaskCategories } = allTaskCategoriesQuery()
 	const { data: dataDetailTask } = detailTaskQuery(
 		isAuthenticated,
 		taskIdProp || (taskIdRouter as string)
 	)
+	console.log(dataDetailTask);
+	
 	const { data: dataAllStatus } = allStatusQuery(isAuthenticated, projectId)
+	const { data: dataAllMilestones } = milestonesByProjectNormalQuery(isAuthenticated, projectId)
 
 	//mutation -----------------------------------------------------------
 	const [mutateUpTask, { status: statusUpTask, data: dataUpTask }] = updateTaskMutation(setToast)
@@ -82,6 +94,8 @@ export default function UpdateTask({ onCloseDrawer, taskIdProp }: IUpdateTaskPro
 			deadline: undefined,
 			employees: [],
 			status: undefined,
+			milestone: undefined,
+			priority: '',
 		},
 		resolver: yupResolver(UpdateProjectTaskValidate),
 	})
@@ -109,6 +123,15 @@ export default function UpdateTask({ onCloseDrawer, taskIdProp }: IUpdateTaskPro
 		setDescription(value)
 	}
 
+	//Handle trigger other detail
+	const onTriggerOtherDetails = () => {
+		if (isOpenOtherDetails) {
+			onCloseOtherDetails()
+		} else {
+			onOpenOtherDetails()
+		}
+	}
+
 	//User effect ---------------------------------------------------------------
 	//Handle check loged in
 	useEffect(() => {
@@ -120,6 +143,23 @@ export default function UpdateTask({ onCloseDrawer, taskIdProp }: IUpdateTaskPro
 			}
 		}
 	}, [isAuthenticated])
+
+	//Set option select milestiones when have data all milestones
+	useEffect(() => {
+		if (dataAllMilestones?.milestones) {
+			//Set data option milestones state
+			let newOptionMilestones: IOption[] = []
+
+			dataAllMilestones.milestones.map((milestone) => {
+				newOptionMilestones.push({
+					label: milestone.title,
+					value: milestone.id,
+				})
+			})
+
+			setOptionMilestones(newOptionMilestones)
+		}
+	}, [dataAllMilestones])
 
 	//Set data form when have data detail task
 	useEffect(() => {
@@ -133,6 +173,8 @@ export default function UpdateTask({ onCloseDrawer, taskIdProp }: IUpdateTaskPro
 				task_category: dataDetailTask.task.task_category.id,
 				employees: dataDetailTask.task.employees.map((employee) => employee.id),
 				status: dataDetailTask.task.status.id,
+				milestone: dataDetailTask.task.milestone?.id || undefined,
+				priority: dataDetailTask.task.priority || ''
 			})
 		}
 
@@ -351,6 +393,39 @@ export default function UpdateTask({ onCloseDrawer, taskIdProp }: IUpdateTaskPro
 					</VStack>
 				</GridItem>
 			</Grid>
+
+			<Divider marginY={6} />
+			<HStack onClick={onTriggerOtherDetails} cursor={'pointer'}>
+				{isOpenOtherDetails ? <AiFillCaretUp /> : <AiFillCaretDown />}
+				<Text fontSize={20} fontWeight={'semibold'}>
+					Other Details
+				</Text>
+			</HStack>
+
+			{isOpenOtherDetails && (
+				<Grid templateColumns="repeat(2, 1fr)" gap={6} mt={6}>
+					<GridItem w="100%" colSpan={[2, 1]}>
+						<SelectCustom
+							name="milestone"
+							label="Milestone"
+							required={false}
+							form={formSetting}
+							placeholder={'Select Milestone'}
+							options={optionMilestones}
+						/>
+					</GridItem>
+
+					<GridItem w="100%" colSpan={[2, 1]}>
+						<SelectCustom
+							name="priority"
+							label="Priority"
+							form={formSetting}
+							options={dataTaskPriority}
+							required={false}
+						/>
+					</GridItem>
+				</Grid>
+			)}
 
 			<Button
 				color={'white'}

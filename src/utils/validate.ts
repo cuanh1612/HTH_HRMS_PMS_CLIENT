@@ -152,12 +152,12 @@ export const CreateProjectNoteValidate = yup.object({
 	title: yup.string().required('Please enter field title'),
 })
 
-<<<<<<< HEAD
 export const milestoneValidate = yup.object({
 	cost:  yup.number().required('Please enter add to budget'),
 	title: yup.string().required('Please enter title'),
 	summary: yup.string().required('Please enter summary')
-=======
+})
+
 export const UpdateProjectNoteValidate = yup.object({
 	title: yup.string().required('Please enter field title'),
 })
@@ -172,6 +172,5 @@ export const UpdateProjectTaskValidate = yup.object({
 	name: yup.string().required('Please enter field name'),
 	start_date: yup.date().required('Please select start date'),
 	deadline: yup.date().required('Please select deadline'),
->>>>>>> a72c7de3c582657f5afc6e0309ba4c7f941a6756
 })
 

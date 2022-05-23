@@ -6,7 +6,7 @@ import { reEnterPasswordMutation } from 'mutations/auth'
 import { GetServerSideProps } from 'next'
 import { useRouter } from 'next/router'
 import { allProjectNotesQuery } from 'queries/projectNote'
-import { ChangeEventHandler, FormEventHandler, useContext, useEffect, useState } from 'react'
+import { FormEventHandler, useContext, useEffect, useState } from 'react'
 import { AiOutlineCheck } from 'react-icons/ai'
 import { projectMutaionResponse } from 'type/mutationResponses'
 import AddNote from './add-notes'
@@ -16,7 +16,8 @@ import UpdateNote from './[noteId]/update-note'
 export interface INotesProps {}
 
 export default function Notes({}: INotesProps) {
-	const { isAuthenticated, handleLoading, currentUser, setToast } = useContext(AuthContext)
+	const { isAuthenticated, handleLoading, currentUser, setToast, socket } =
+		useContext(AuthContext)
 	const router = useRouter()
 	const { projectId } = router.query
 
@@ -25,8 +26,10 @@ export default function Notes({}: INotesProps) {
 	const [password, setPassword] = useState<string>('')
 
 	//Query -------------------------------------------------------------
-	const { data: dataAllNotes } = allProjectNotesQuery(isAuthenticated, projectId as string)
-	console.log(dataAllNotes)
+	const { data: dataAllNotes, mutate: refetchAllNotes } = allProjectNotesQuery(
+		isAuthenticated,
+		projectId as string
+	)
 
 	//Mutation ----------------------------------------------------------
 	const [mutateReEnterPassword, { status: statusReEnterPassword }] =
@@ -86,6 +89,27 @@ export default function Notes({}: INotesProps) {
 				break
 		}
 	}, [statusReEnterPassword])
+
+	//Join room socket
+	useEffect(() => {
+		//Join room
+		if (socket && projectId) {
+			socket.emit('joinRoomProjectNote', projectId)
+
+			socket.on('getNewProjectNote', () => {
+				refetchAllNotes()
+			})
+		}
+
+		//Leave room
+		function leaveRoom() {
+			if (socket && projectId) {
+				socket.emit('leaveRoomProjectNote', projectId)
+			}
+		}
+
+		return leaveRoom
+	}, [socket, projectId])
 
 	//Function -----------------------------------------------------------
 	//handle open detail note
@@ -167,7 +191,12 @@ export default function Notes({}: INotesProps) {
 			</Drawer>
 
 			{/* drawer to update project note */}
-			<Drawer size="xl" title="Update Note" onClose={onCloseUpdateNote} isOpen={isOpenUpdateNote}>
+			<Drawer
+				size="xl"
+				title="Update Note"
+				onClose={onCloseUpdateNote}
+				isOpen={isOpenUpdateNote}
+			>
 				<UpdateNote onCloseDrawer={onCloseUpdateNote} noteIdProp={4} />
 			</Drawer>
 

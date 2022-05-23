@@ -32,6 +32,7 @@ export default function SelectCustom({
 	//Change value selected when form data change
 	useEffect(() => {
 		if(form.getValues(name)){
+			
 			const selectedOption = options.filter(option => option.value === form.getValues(name))[0]
 			setOptionSelect(selectedOption)
 		}

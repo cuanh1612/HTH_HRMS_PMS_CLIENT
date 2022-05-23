@@ -78,7 +78,7 @@ const taskBoard: NextLayout = () => {
 	)
 
 	// get detail project
-	const { data: projectDetail } = projectDetailQuery(isAuthenticated, String(query.projectId))
+	const { data: projectDetail } = projectDetailQuery(isAuthenticated, query.projectId)
 
 	// change position status column
 	const [changePosition] = changePositionMutation(setToast)

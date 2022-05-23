@@ -490,6 +490,7 @@ export type createProjectTaskForm = {
 	index: number
 	description: string
 	priority: string
+	milestone: number
 	task_files: {
 		name: string
 		public_id: string
@@ -509,6 +510,7 @@ export type updateProjectTaskForm = {
 	index: number
 	description: string
 	priority: string
+	milestone: number
 	task_files: {
 		name: string
 		public_id: string

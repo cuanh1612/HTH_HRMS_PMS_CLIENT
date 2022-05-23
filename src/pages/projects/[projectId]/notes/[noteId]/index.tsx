@@ -2,7 +2,7 @@ import { Avatar, Box, Grid, GridItem, HStack, Text, VStack } from '@chakra-ui/re
 import { AuthContext } from 'contexts/AuthContext'
 import { GetServerSideProps } from 'next'
 import { useRouter } from 'next/router'
-import { detailProjectNoteRoomQuery } from 'queries/projectNote'
+import { allProjectNotesQuery, detailProjectNoteRoomQuery } from 'queries/projectNote'
 import { useContext, useEffect } from 'react'
 import { projectMutaionResponse } from 'type/mutationResponses'
 
@@ -11,9 +11,9 @@ export interface IDetailNoteProps {
 }
 
 export default function DetailProjectNote({ noteIdProp }: IDetailNoteProps) {
-	const { isAuthenticated, handleLoading } = useContext(AuthContext)
+	const { isAuthenticated, handleLoading, socket } = useContext(AuthContext)
 	const router = useRouter()
-	const { noteId: noteIdRouter } = router.query
+	const { noteId: noteIdRouter, projectId } = router.query
 
 	//query ---------------------------------------------------------------------
 	//Get detail project note

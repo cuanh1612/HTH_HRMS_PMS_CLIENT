@@ -46,6 +46,22 @@ export const dataRoleEmployee: IOption[] = [
 	},
 ]
 
+export const dataTaskPriority: IOption[] = [
+	{
+		value: 'Medium',
+		label: 'Medium',
+	},
+	{
+		value: 'High',
+		label: 'High',
+	},
+
+	{
+		value: 'Low',
+		label: 'Low',
+	},
+]
+
 export const dataSalutation: IOption[] = [
 	{
 		value: 'Mr',

@@ -7,7 +7,7 @@ export async function createMilestoneRequest(inputCreate: milestoneForm & {
     project?: string | string[]
 }) {
 	const resultFetch = await postData<milestoneMutaionResponse>({
-		url: 'http://localhost:4000/api/milestone',
+	url: 'http://localhost:4000/api/milestone',
 		body: inputCreate,
 	})
 

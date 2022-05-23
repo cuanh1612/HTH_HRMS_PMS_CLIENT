@@ -20,10 +20,10 @@ export default function ItemContractFile({
 }: IItemContractFileProps) {
 	return (
 		<HStack w={'full'} justify={'space-between'}>
-			<HStack>
+			<HStack overflow={"hidden"}>
 				<Img alt={name} src={srcImg} w={50} height={70} />
-				<VStack align={'start'}>
-					<Text>{name}</Text>
+				<VStack w="full" align={'start'} overflow={"hidden"}>
+					<Text isTruncated>{name}</Text>
 					<Text fontSize={14} color={'gray.400'}>
 						<HStack>
 							<AiOutlineDownload fontSize={15} />

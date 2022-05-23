@@ -26,7 +26,7 @@ const Discussion:NextLayout = ()=> {
 	const { isAuthenticated, handleLoading, setToast, currentUser, socket } =
 		useContext(AuthContext)
 	const router = useRouter()
-	const { discussionId } = router.query
+	const { contractId } = router.query
 
 	//state ---------------------------------------------------------------------
 	const [content, setContent] = useState<string>('')
@@ -37,7 +37,7 @@ const Discussion:NextLayout = ()=> {
 	//Query ----------------------------------------------------------------------
 	const { data: dataAllDiscussion, mutate: refetchAllDiscussions } = allDiscussionsQuery(
 		isAuthenticated,
-		Number(discussionId)
+		Number(contractId)
 	)
 	console.log(dataAllDiscussion)
 
@@ -55,8 +55,8 @@ const Discussion:NextLayout = ()=> {
 	//Join room socket
 	useEffect(() => {
 		//Join room
-		if (socket && discussionId) {
-			socket.emit('joinRoomDiscussionContract', discussionId)
+		if (socket && contractId) {
+			socket.emit('joinRoomDiscussionContract', contractId)
 
 			socket.on('getNewDiscussion', () => {
 				refetchAllDiscussions()
@@ -65,20 +65,20 @@ const Discussion:NextLayout = ()=> {
 
 		//Leave room
 		function leaveRoom() {
-			if (socket && discussionId) {
-				socket.emit('leaveRoomDiscussionContract', discussionId)
+			if (socket && contractId) {
+				socket.emit('leaveRoomDiscussionContract', contractId)
 			}
 		}
 
 		return leaveRoom
-	}, [socket, discussionId])
+	}, [socket, contractId])
 
 	//Handle check loged in
 	useEffect(() => {
 		if (isAuthenticated) {
 			handleLoading(false)
 		} else {
-			if (isAuthenticated === false) {
+			if (isAuthenticated == false) {
 				router.push('/login')
 			}
 		}
@@ -97,8 +97,8 @@ const Discussion:NextLayout = ()=> {
 			refetchAllDiscussions()
 
 			//Emit to other user join room
-			if (socket && discussionId) {
-				socket.emit('newDiscussion', discussionId)
+			if (socket && contractId) {
+				socket.emit('newDiscussion', contractId)
 			}
 		}
 	}, [statusCreDiscussion])
@@ -114,8 +114,8 @@ const Discussion:NextLayout = ()=> {
 			refetchAllDiscussions()
 
 			//Emit to other user join room
-			if (socket && discussionId) {
-				socket.emit('newDiscussion', discussionId)
+			if (socket && contractId) {
+				socket.emit('newDiscussion', contractId)
 			}
 		}
 	}, [statusDeleteDiscussion])
@@ -131,8 +131,8 @@ const Discussion:NextLayout = ()=> {
 			refetchAllDiscussions()
 
 			//Emit to other user join room
-			if (socket && discussionId) {
-				socket.emit('newDiscussion', discussionId)
+			if (socket && contractId) {
+				socket.emit('newDiscussion', contractId)
 			}
 		}
 	}, [statusUpDiscussion])
@@ -163,7 +163,7 @@ const Discussion:NextLayout = ()=> {
 						: {
 								employee: currentUser.id,
 						  }),
-					contract: Number(discussionId),
+					contract: Number(contractId),
 				})
 			}
 		}
@@ -313,7 +313,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 	// Get the paths we want to pre-render based on leave
 	const paths = contracts.map((contract: any) => ({
-		params: { discussionId: String(contract.id) },
+		params: { contractId: String(contract.id) },
 	}))
 
 	// We'll pre-render only these paths at build time.

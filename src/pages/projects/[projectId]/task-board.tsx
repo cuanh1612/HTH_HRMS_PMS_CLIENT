@@ -43,6 +43,7 @@ import { projectDetailQuery } from 'queries/project'
 import Drawer from 'components/Drawer'
 import AddTask from './tasks/add-tasks'
 import UpdateTask from './tasks/[taskId]/update-task'
+import DetailTask from './tasks/[taskId]'
 
 const taskBoard: NextLayout = () => {
 	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
@@ -69,6 +70,13 @@ const taskBoard: NextLayout = () => {
 		isOpen: isOpenUpdateTask,
 		onOpen: onOpenUpdateTask,
 		onClose: onCloseUpdateTask,
+	} = useDisclosure()
+
+	// set open detail task
+	const {
+		isOpen: isOpenDetailTask,
+		onOpen: onOpenDetailTask,
+		onClose: onCloseDetailTask,
 	} = useDisclosure()
 
 	// get all status tasks
@@ -328,6 +336,7 @@ const taskBoard: NextLayout = () => {
 		<Box>
 			<Button onClick={onOpenAddTask}>Add task Incomplete</Button>
 			<Button onClick={onOpenUpdateTask}>Update Task</Button>
+			<Button onClick={onOpenDetailTask}>Detail Task</Button>
 			<HStack
 				divider={
 					<StackDivider borderColor={colorMode == 'light' ? 'gray.200' : 'gray.700'} />
@@ -490,6 +499,15 @@ const taskBoard: NextLayout = () => {
 				isOpen={isOpenUpdateTask}
 			>
 				<UpdateTask taskIdProp={taskId} onCloseDrawer={onCloseUpdateTask} />
+			</Drawer>
+
+			<Drawer
+				size="xl"
+				title={`Task #${taskId}`}
+				onClose={onCloseDetailTask}
+				isOpen={isOpenDetailTask}
+			>
+				<DetailTask taskIdProp={taskId} onCloseDrawer={onCloseDetailTask} />
 			</Drawer>
 		</Box>
 	)

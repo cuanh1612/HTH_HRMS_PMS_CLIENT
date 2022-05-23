@@ -24,10 +24,10 @@ export type statusForm = {
 
 export type milestoneForm = {
 	title: string
-    cost: number
-    addtobudget: boolean | number
-    status: boolean | number
-    summary: string
+	cost: number
+	addtobudget: boolean | number
+	status: boolean | number
+	summary: string
 }
 
 export type createEmployeeForm = {
@@ -407,6 +407,15 @@ export type createProjectFileForm = {
 	project: number
 }
 
+export type createTaskFileForm = {
+	files: {
+		name: string
+		public_id: string
+		url: string
+	}[]
+	task: number
+}
+
 export type updateSalaryForm = {
 	amount: number
 	type: 'Increment' | 'Decrement' | undefined
@@ -516,4 +525,15 @@ export type updateProjectTaskForm = {
 		public_id: string
 		url: string
 	}[]
+}
+
+export type createTaskCommentForm = {
+	task: number
+	project: number
+	content: string
+}
+
+export type updateTaskCommentForm = {
+	taskCommentId: number
+	content: string
 }

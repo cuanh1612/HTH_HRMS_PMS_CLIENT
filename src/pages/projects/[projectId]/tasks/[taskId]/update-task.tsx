@@ -16,9 +16,11 @@ import { Input } from 'components/form/Input'
 import { Select } from 'components/form/Select'
 import SelectCustom from 'components/form/SelectCustom'
 import SelectMany from 'components/form/SelectMany'
+import Loading from 'components/Loading'
 import Modal from 'components/modal/Modal'
 import { AuthContext } from 'contexts/AuthContext'
 import { updateTaskMutation } from 'mutations/task'
+import { GetServerSideProps } from 'next'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 import { milestonesByProjectNormalQuery } from 'queries/milestone'
@@ -35,6 +37,7 @@ import 'react-quill/dist/quill.snow.css'
 import TaskCategory from 'src/pages/task-categories'
 import { IOption } from 'type/basicTypes'
 import { updateProjectTaskForm } from 'type/form/basicFormType'
+import { projectMutaionResponse } from 'type/mutationResponses'
 import { dataTaskPriority } from 'utils/basicData'
 import { UpdateProjectTaskValidate } from 'utils/validate'
 
@@ -442,7 +445,7 @@ export default function UpdateTask({ onCloseDrawer, taskIdProp }: IUpdateTaskPro
 			>
 				Save
 			</Button>
-			{/* {statusCreProjectNote == 'running' && <Loading />} */}
+			{statusUpTask == 'running' && <Loading />}
 
 			{/* Modal department and designation */}
 			<Modal

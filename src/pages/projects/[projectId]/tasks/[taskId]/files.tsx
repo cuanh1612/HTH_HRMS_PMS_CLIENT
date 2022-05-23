@@ -11,26 +11,28 @@ import {
 } from '@chakra-ui/react'
 import ItemContractFile from 'components/ItemContractFile'
 import ItemFileUpload from 'components/ItemFileUpload'
-import { ContractLayout } from 'components/layouts/Contract'
 import Loading from 'components/Loading'
 import { AuthContext } from 'contexts/AuthContext'
-import { createContractFileMutation, deleteContractFileMutation } from 'mutations/contractFile'
-import { GetStaticPaths, GetStaticProps } from 'next'
+import { createTaskFileMutation, deleteTaskFileMutation } from 'mutations/taskFile'
+import { GetServerSideProps } from 'next'
 import { useRouter } from 'next/router'
-import { allContractFilesQuery } from 'queries/contractFile'
+import { allTaskFilesQuery } from 'queries/taskFile'
 import { useCallback, useContext, useEffect, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { AiOutlinePlusCircle, AiOutlineSave } from 'react-icons/ai'
-import { NextLayout } from 'type/element/layout'
 import { ICloudinaryImg } from 'type/fileType'
-import { contractMutaionResponse } from 'type/mutationResponses'
+import { projectMutaionResponse } from 'type/mutationResponses'
 import { generateImgFile } from 'utils/helper'
 import { uploadFile } from 'utils/uploadFile'
 
-const Files: NextLayout = () => {
+export interface ITaskFilesProps {
+	taskIdProp?:  string | number
+}
+
+export default function TaskFiles({taskIdProp}: ITaskFilesProps) {
 	const { isAuthenticated, handleLoading, setToast, socket } = useContext(AuthContext)
 	const router = useRouter()
-	const { id } = router.query
+	const { projectId, taskId: taskIdRouter } = router.query
 
 	//Setup disclosure ----------------------------------------------------------
 	const { isOpen: isOpenAdd, onOpen: onOpenAdd, onClose: onCloseAdd } = useDisclosure()
@@ -40,20 +42,17 @@ const Files: NextLayout = () => {
 	const [isLoadUpFiles, setIsLoadUpFiles] = useState<boolean>(false)
 
 	//Query ----------------------------------------------------------------------
-	const { data: dataAllContractFiles, mutate: refetchAllContractFiles } = allContractFilesQuery(
+	const { data: dataAllTaskFiles, mutate: refetchAllTaskFiles } = allTaskFilesQuery(
 		isAuthenticated,
-		Number(id)
+		Number(taskIdProp || taskIdRouter)
 	)
-	console.log(dataAllContractFiles)
 
 	//mutation -------------------------------------------------------------------
-	const [mutateCreContractFile, { status: statusCreContractFile, data: dataCreContractFile }] =
-		createContractFileMutation(setToast)
+	const [mutateCreTaskFile, { status: statusCreTaskFile, data: dataCreTaskFile }] =
+		createTaskFileMutation(setToast)
 
-	const [
-		mutateDeleteContractFile,
-		{ status: statusDeleteContractFile, data: dataDeleteContractFile },
-	] = deleteContractFileMutation(setToast)
+	const [mutateDeleteTaskFile, { status: statusDeleteTaskFile, data: dataDeleteTaskFile }] =
+		deleteTaskFileMutation(setToast)
 
 	//Setting data file submit --------------------------------------------------
 	const onDrop = useCallback((acceptedFiles: File[]) => {
@@ -82,23 +81,23 @@ const Files: NextLayout = () => {
 	//Join room socket
 	useEffect(() => {
 		//Join room
-		if (socket && id) {
-			socket.emit('joinRoomFileContract', id)
+		if (socket && (taskIdProp || taskIdRouter)) {
+			socket.emit('joinRoomTaskFile', taskIdProp || taskIdRouter)
 
-			socket.on('getNewFileContract', () => {
-				refetchAllContractFiles()
+			socket.on('getNewTaskFile', () => {
+				refetchAllTaskFiles()
 			})
 		}
 
 		//Leave room
 		function leaveRoom() {
-			if (socket && id) {
-				socket.emit('leaveRoomFileContract', id)
+			if (socket && (taskIdProp || taskIdRouter)) {
+				socket.emit('leaveRoomTaskFile', taskIdProp || taskIdRouter)
 			}
 		}
 
 		return leaveRoom
-	}, [socket, id])
+	}, [socket, taskIdProp, taskIdRouter])
 
 	//Handle check loged in
 	useEffect(() => {
@@ -113,39 +112,39 @@ const Files: NextLayout = () => {
 
 	//Note when request success
 	useEffect(() => {
-		if (statusCreContractFile === 'success') {
+		if (statusCreTaskFile === 'success') {
 			setToast({
 				type: 'success',
-				msg: dataCreContractFile?.message as string,
+				msg: dataCreTaskFile?.message as string,
 			})
 
 			setFilesUpload([])
 
-			refetchAllContractFiles()
+			refetchAllTaskFiles()
 
 			// Emit to other user join room
-			if (socket && id) {
-				socket.emit('newFile', id)
+			if (socket && projectId) {
+				socket.emit('newTaskFile', taskIdProp || taskIdRouter)
 			}
 		}
-	}, [statusCreContractFile])
+	}, [statusCreTaskFile])
 
-	//Note when request delete contract file success
+	//Note when request delete project file success
 	useEffect(() => {
-		if (statusDeleteContractFile === 'success') {
+		if (statusDeleteTaskFile === 'success') {
 			setToast({
 				type: 'success',
-				msg: dataDeleteContractFile?.message as string,
+				msg: dataDeleteTaskFile?.message as string,
 			})
 
-			refetchAllContractFiles()
+			refetchAllTaskFiles()
 
 			// Emit to other user join room
-			if (socket && id) {
-				socket.emit('newFile', id)
+			if (socket && projectId) {
+				socket.emit('newTaskFile', taskIdProp || taskIdRouter)
 			}
 		}
-	}, [statusDeleteContractFile])
+	}, [statusDeleteTaskFile])
 
 	//Function --------------------------------------------
 
@@ -169,9 +168,9 @@ const Files: NextLayout = () => {
 
 			const dataUploadFiles: Array<ICloudinaryImg> = await uploadFile({
 				files: filesUpload,
-				tags: ['contractFile'],
+				tags: ['projectFile'],
 				raw: true,
-				upload_preset: 'contract',
+				upload_preset: 'project-file',
 			})
 
 			//Set is load upload file
@@ -187,39 +186,36 @@ const Files: NextLayout = () => {
 	const onUploadFiles = async () => {
 		//Upload contract files
 		const dataUploadFiles: ICloudinaryImg[] | null = await handleUploadFiles()
-
+		
 		//Check upload files success
-		if (id && dataUploadFiles && dataUploadFiles?.length > 0) {
-			//Create contract file
-			mutateCreContractFile({
+		if ((taskIdProp || taskIdRouter) && dataUploadFiles && dataUploadFiles?.length > 0) {
+
+			//Create task file
+			mutateCreTaskFile({
 				files: dataUploadFiles,
-				contract: Number(id),
+				task: Number(taskIdProp || taskIdRouter),
 			})
 		}
 	}
 
-	//Handle delete contract file
-	const onDeleteFile = (contractFileId: number) => {
-		if (!id) {
+	//Handle delete project file
+	const onDeleteFile = (taskFileId: number) => {
+		if (!taskIdRouter && !taskIdProp) {
 			setToast({
-				msg: 'Not found contract to delete contract file',
+				msg: 'Not found task file to delete contract file',
 				type: 'error',
 			})
 		} else {
-			mutateDeleteContractFile({
-				contractFileId,
-				contractId: Number(id),
+			mutateDeleteTaskFile({
+				taskFileId,
+				taskId: Number(taskIdRouter || taskIdProp),
 			})
 		}
 	}
 
 	return (
-		<Box p={10} bgColor={'#f2f4f7'} minHeight={'100vh'}>
+		<Box>
 			<VStack align={'start'} w="full" bgColor={'white'} p={5} borderRadius={5} spacing={5}>
-				<Text fontSize={18} fontWeight={'semibold'}>
-					Files
-				</Text>
-
 				<Box position={'relative'} p={2} w={'full'}>
 					{isOpenAdd ? (
 						<VStack w={'full'} spacing={5} position={'relative'}>
@@ -279,7 +275,7 @@ const Files: NextLayout = () => {
 						</Button>
 					)}
 
-					{(isLoadUpFiles || statusCreContractFile === 'running') && <Loading />}
+					{(isLoadUpFiles || statusCreTaskFile === 'running') && <Loading />}
 				</Box>
 
 				{filesUpload.length > 0 && (
@@ -297,22 +293,22 @@ const Files: NextLayout = () => {
 				)}
 
 				<Grid templateColumns="repeat(4, 1fr)" gap={4} w={'full'} p={2}>
-					{dataAllContractFiles?.contractFiles &&
-						dataAllContractFiles.contractFiles.map((contractFile) => (
+					{dataAllTaskFiles?.taskFiles &&
+						dataAllTaskFiles.taskFiles.map((taskFile) => (
 							<GridItem
-								key={contractFile.id}
-								colSpan={[4, 4, 2, 2, 2, 1]}
+								key={taskFile.id}
+								colSpan={[4]}
 								border={'1px'}
 								borderColor={'gray.300'}
 								p={2}
 								borderRadius={5}
 							>
 								<ItemContractFile
-									name={contractFile.name}
-									contractFileId={contractFile.id}
+									name={taskFile.name}
+									contractFileId={taskFile.id}
 									onDeleteFile={onDeleteFile}
-									srcImg={generateImgFile(contractFile.name)}
-									urlFile={contractFile.url}
+									srcImg={generateImgFile(taskFile.name)}
+									urlFile={taskFile.url}
 								/>
 							</GridItem>
 						))}
@@ -322,37 +318,44 @@ const Files: NextLayout = () => {
 	)
 }
 
-export const getStaticProps: GetStaticProps = async () => {
+export const getServerSideProps: GetServerSideProps = async (context) => {
+	//Get accesstoken
+	const getAccessToken: { accessToken: string; code: number; message: string; success: boolean } =
+		await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/refresh_token`, {
+			method: 'GET',
+			headers: {
+				cookie: context.req.headers.cookie,
+			} as HeadersInit,
+		}).then((e) => e.json())
+
+	//Redirect login page when error
+	if (getAccessToken.code !== 200) {
+		return {
+			redirect: {
+				destination: '/login',
+				permanent: false,
+			},
+		}
+	}
+
+	//Check assigned
+	const checkAsignedProject: projectMutaionResponse = await fetch(
+		`${process.env.NEXT_PUBLIC_API_URL}/api/projects/${context.query.projectId}/check-asigned`,
+		{
+			method: 'GET',
+			headers: {
+				authorization: `Bear ${getAccessToken.accessToken}`,
+			} as HeadersInit,
+		}
+	).then((e) => e.json())
+
+	if (!checkAsignedProject.success) {
+		return {
+			notFound: true,
+		}
+	}
+
 	return {
 		props: {},
-		// Next.js will attempt to re-generate the page:
-		// - When a request comes in
-		// - At most once every 10 seconds
-		revalidate: 10, // In seconds
 	}
 }
-
-export const getStaticPaths: GetStaticPaths = async () => {
-	const res: contractMutaionResponse = await fetch('http://localhost:4000/api/contracts').then(
-		(result) => result.json()
-	)
-	const contracts = res.contracts
-
-	if (!contracts) {
-		return { paths: [], fallback: false }
-	}
-
-	// Get the paths we want to pre-render based on leave
-	const paths = contracts.map((contract: any) => ({
-		params: { id: String(contract.id) },
-	}))
-
-	// We'll pre-render only these paths at build time.
-	// { fallback: blocking } will server-render pages
-	// on-demand if the path doesn't exist.
-	return { paths, fallback: false }
-}
-
-Files.getLayout = ContractLayout
-
-export default Files

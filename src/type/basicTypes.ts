@@ -327,6 +327,14 @@ export interface projectFileType {
 	createdAt: Date
 }
 
+export interface taskFileType {
+	id: number
+	url: string
+	name: string
+	public_id: string
+	createdAt: Date
+}
+
 export interface salaryType {
 	id: number
 	date: Date
@@ -422,4 +430,12 @@ export interface taskType {
     status: statusType
 	createdAt: Date
 	updatedAt: Date
+}
+
+export interface taskCommentType {
+	id: number
+	employee: employeeType
+	content: string
+	task?: taskType
+	createdAt: Date
 }

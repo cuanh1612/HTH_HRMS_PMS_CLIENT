@@ -5,7 +5,7 @@ import { employeeMutaionResponse, projectMutaionResponse } from 'type/mutationRe
 
 export const detailProjectQuery = (
 	isAuthenticated: boolean | null,
-	projectId?: string | number 
+	projectId?: string | number
 ) => {
 	return useSWR<projectMutaionResponse, AxiosError>(
 		isAuthenticated && projectId ? `projects/${projectId}` : null,

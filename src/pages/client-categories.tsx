@@ -24,7 +24,7 @@ import {
 	createCategoryMutation,
 	deleteCategoryMutation,
 	updateCategoryMutation,
-} from 'mutations/clientCategory'
+} from 'mutations'
 import { useRouter } from 'next/router'
 import { allClientCategoriesQuery } from 'queries/clientCategory'
 import { ChangeEventHandler, useContext, useEffect, useState } from 'react'

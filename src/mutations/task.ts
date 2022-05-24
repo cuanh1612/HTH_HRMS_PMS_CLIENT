@@ -20,7 +20,7 @@ export const deleteTaskMutation = (setToast: TToast) => {
 }
 
 //update position of task
-export const changePositionMutation = (setToast: TToast) => {
+export const changePositionTaskMutation = (setToast: TToast) => {
 	return useMutation(changePositionRequest, {
 		onFailure({ error }) {
 			setToast({

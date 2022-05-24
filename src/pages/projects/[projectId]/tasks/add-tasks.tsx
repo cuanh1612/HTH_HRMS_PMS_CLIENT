@@ -9,7 +9,7 @@ import {
 	Input as InputChakra,
 	Text,
 	useDisclosure,
-	VStack
+	VStack,
 } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Input } from 'components/form/Input'
@@ -19,12 +19,12 @@ import SelectMany from 'components/form/SelectMany'
 import Loading from 'components/Loading'
 import Modal from 'components/modal/Modal'
 import { AuthContext } from 'contexts/AuthContext'
-import { createTaskMutation } from 'mutations/task'
+import { createTaskMutation } from 'mutations'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 import { milestonesByProjectNormalQuery } from 'queries/milestone'
 import { detailProjectQuery } from 'queries/project'
-import { allStatusQuery } from 'queries/status'
+import { allStatusQuery, allStatusTasksQuery } from 'queries/status'
 import { allTaskCategoriesQuery } from 'queries/taskCategory'
 import { useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -47,7 +47,7 @@ export interface IAddTaskProps {
 }
 
 export default function AddTask({ onCloseDrawer, statusId }: IAddTaskProps) {
-	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
+	const { isAuthenticated, handleLoading, setToast, currentUser } = useContext(AuthContext)
 	const router = useRouter()
 	const { projectId } = router.query
 
@@ -76,6 +76,11 @@ export default function AddTask({ onCloseDrawer, statusId }: IAddTaskProps) {
 	const { data: dataDetailProject } = detailProjectQuery(isAuthenticated, projectId as string)
 	const { data: dataAllStatus } = allStatusQuery(isAuthenticated, projectId)
 	const { data: dataAllMilestones } = milestonesByProjectNormalQuery(isAuthenticated, projectId)
+	// get all status tasks
+	const { mutate: refetchStatusTasks } = allStatusTasksQuery(
+		isAuthenticated,
+		projectId
+	)
 
 	//mutation -----------------------------------------------------------
 	const [mutateCreTask, { status: statusCreTask, data: dataCreTask }] =
@@ -108,6 +113,7 @@ export default function AddTask({ onCloseDrawer, statusId }: IAddTaskProps) {
 		} else {
 			value.project = Number(projectId as string)
 			value.description = description
+			value.assignBy = currentUser?.id
 			mutateCreTask(value)
 		}
 	}
@@ -189,6 +195,7 @@ export default function AddTask({ onCloseDrawer, statusId }: IAddTaskProps) {
 				type: 'success',
 				msg: dataCreTask?.message as string,
 			})
+			refetchStatusTasks()
 		}
 	}, [statusCreTask])
 

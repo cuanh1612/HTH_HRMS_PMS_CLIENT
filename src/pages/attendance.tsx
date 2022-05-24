@@ -46,7 +46,7 @@ import { allLeaveQuery } from 'queries/leave'
 import { allDepartmentsQuery } from 'queries/department'
 
 // mutation
-import { createAttendanceMutation } from 'mutations/attendance'
+import { createAttendanceMutation } from 'mutations'
 
 // hook
 import { useContext, useEffect, useState } from 'react'
@@ -125,7 +125,10 @@ const attendance: NextLayout = () => {
 	const { data: allDepartments } = allDepartmentsQuery(isAuthenticated)
 
 	// get all leaves
-	const { data: allLeaves } = allLeaveQuery(isAuthenticated, dateFilter)
+	const { data: allLeaves } = allLeaveQuery({
+		isAuthenticated,
+		date: dateFilter
+	})
 
 	// get all holiday
 	const { data: allHolidays } = allHolidaysQuery()

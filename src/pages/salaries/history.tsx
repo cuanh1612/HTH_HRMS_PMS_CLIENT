@@ -15,7 +15,7 @@ import {
 } from '@chakra-ui/react'
 import Loading from 'components/Loading'
 import { AuthContext } from 'contexts/AuthContext'
-import { deleteSalaryMutation } from 'mutations/salary'
+import { deleteSalaryMutation } from 'mutations'
 import { useRouter } from 'next/router'
 import { historySalaryQuery } from 'queries/salary'
 import { useContext, useEffect } from 'react'

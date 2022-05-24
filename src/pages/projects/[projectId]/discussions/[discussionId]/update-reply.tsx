@@ -1,7 +1,7 @@
 import { Box, Button, Grid, GridItem, Text, VStack } from '@chakra-ui/react'
 import Loading from 'components/Loading'
 import { AuthContext } from 'contexts/AuthContext'
-import { updateProjectDiscussionReplyMutation } from 'mutations/projectDiscussionReply'
+import { updateProjectDiscussionReplyMutation } from 'mutations'
 import { GetServerSideProps } from 'next'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'

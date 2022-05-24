@@ -24,7 +24,7 @@ import {
 	createProjectCategoryMutation,
 	deleteProjectCategoryMutation,
 	updateProjectCategoryMutation
-} from 'mutations/projectCategory'
+} from 'mutations'
 import { useRouter } from 'next/router'
 import { allProjectCategoriesQuery } from 'queries/projectCategory'
 import { ChangeEvent, ChangeEventHandler, useContext, useEffect, useState } from 'react'

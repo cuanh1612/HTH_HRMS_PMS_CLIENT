@@ -23,7 +23,7 @@ import SelectCustom from 'components/form/SelectCustom'
 import Loading from 'components/Loading'
 import Modal from 'components/modal/Modal'
 import { AuthContext } from 'contexts/AuthContext'
-import { updateProjectMutation } from 'mutations/project'
+import { updateProjectMutation } from 'mutations'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 import { allClientsQuery } from 'queries/client'
@@ -48,7 +48,7 @@ const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
 
 export interface IUpdateProjectProps {
 	onCloseDrawer?: () => void
-	projectIdUpdate: number | null
+	projectIdUpdate?: number
 }
 
 export default function UpdateProject({ onCloseDrawer, projectIdUpdate }: IUpdateProjectProps) {

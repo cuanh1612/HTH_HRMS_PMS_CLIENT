@@ -24,7 +24,7 @@ import {
 	createDepartmentMutation,
 	deleteDepartmentMutation,
 	updateDepartmentMutation,
-} from 'mutations/department'
+} from 'mutations'
 import { useRouter } from 'next/router'
 import { allDepartmentsQuery } from 'queries/department'
 import { ChangeEvent, ChangeEventHandler, useContext, useEffect, useState } from 'react'

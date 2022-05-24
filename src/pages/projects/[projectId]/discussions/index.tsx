@@ -3,15 +3,11 @@ import Drawer from 'components/Drawer'
 import Modal from 'components/modal/Modal'
 import ProjectDiscussionItem from 'components/projectDiscussion/projectDiscussionItem'
 import { AuthContext } from 'contexts/AuthContext'
-import { deleteProjectDiscussionRoomMutation } from 'mutations/projectDiscussionRoom'
+import { deleteProjectDiscussionRoomMutation } from 'mutations'
 import { GetServerSideProps } from 'next'
 import { useRouter } from 'next/router'
-<<<<<<< HEAD:src/pages/projects/[projectId]/discussions.tsx
-import { useContext, useEffect } from 'react'
-=======
 import { allProjectDiscussionRoomsQuery } from 'queries/projectDiscussionRoom'
 import { useContext, useEffect, useState } from 'react'
->>>>>>> 6c71502f7002cd83defb21eef840178b5b9f0e28:src/pages/projects/[projectId]/discussions/index.tsx
 import { AiOutlineEdit, AiOutlinePlusCircle } from 'react-icons/ai'
 import ProjectDiscussionCategory from 'src/pages/project-discussion-categories'
 import {

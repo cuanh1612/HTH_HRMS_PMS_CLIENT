@@ -413,6 +413,7 @@ export interface taskType {
     description: string
     priority: string
 	milestone?: milestoneType
+	assignBy: employeeType
     tasks?: taskType[]
     task_files?: {
 		url: string

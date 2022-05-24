@@ -6,10 +6,10 @@ import {
 	createDiscussionMutation,
 	deleteDiscussionMutation,
 	updateDiscussionMutation,
-} from 'mutations/discussion'
+} from 'mutations'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
-import { allDiscussionsQuery } from 'queries/discussion'
+import { allDiscussionsQuery } from 'queries'
 import { useContext, useEffect, useState } from 'react'
 import { AiOutlinePlusCircle, AiOutlineSend } from 'react-icons/ai'
 import 'react-quill/dist/quill.bubble.css'

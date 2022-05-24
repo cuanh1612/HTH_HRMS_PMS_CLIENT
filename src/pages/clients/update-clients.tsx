@@ -18,12 +18,10 @@ import UploadAvatar from 'components/form/UploadAvatar'
 import Loading from 'components/Loading'
 import Modal from 'components/modal/Modal'
 import { AuthContext } from 'contexts/AuthContext'
-import { updateClientMutation } from 'mutations/client'
+import { updateClientMutation } from 'mutations'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
-import { detailClientQuery } from 'queries/client'
-import { allClientCategoriesQuery } from 'queries/clientCategory'
-import { allClientSubCategoriesQuery } from 'queries/clientSubCategory'
+import { detailClientQuery, allClientCategoriesQuery, allClientSubCategoriesQuery } from 'queries'
 import { ChangeEvent, useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { AiOutlineCheck, AiOutlineMail, AiOutlinePhone } from 'react-icons/ai'
@@ -598,7 +596,7 @@ export default function UpdateClient({ onCloseDrawer, clientUpdateId }: IAddClie
 					</GridItem>
 
 					<GridItem w="100%" colSpan={2}>
-						<VStack align={"start"}>
+						<VStack align={'start'}>
 							<Text>Note</Text>
 							<ReactQuill
 								placeholder="Enter you text"

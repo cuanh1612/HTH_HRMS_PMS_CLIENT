@@ -26,7 +26,7 @@ import {
 	createProjectDiscussionCategoryMutation,
 	deleteProjectDiscussionCategoryMutation,
 	updateProjectDiscussionCategoryMutation,
-} from 'mutations/projectDiscussionCategory'
+} from 'mutations'
 import { useRouter } from 'next/router'
 import { allProjectDiscussionCategoryQuery } from 'queries/projectDiscussionCategory'
 import { ChangeEventHandler, useContext, useEffect, useState } from 'react'

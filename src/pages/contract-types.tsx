@@ -24,7 +24,7 @@ import {
 	createContractTypeMutation,
 	deleteContractTypeMutation,
 	updateContractTypeMutation,
-} from 'mutations/contractType'
+} from 'mutations'
 import { useRouter } from 'next/router'
 import { allContractTypesQuery } from 'queries/contractType'
 import { ChangeEvent, ChangeEventHandler, useContext, useEffect, useState } from 'react'

@@ -26,7 +26,7 @@ import {
 	createSubCategoryMutation,
 	deleteSubCategoryMutation,
 	updateSubCategoryMutation
-} from 'mutations/clientSubCategory'
+} from 'mutations'
 import { useRouter } from 'next/router'
 import { allClientCategoriesQuery } from 'queries/clientCategory'
 import { allClientSubCategoriesQuery } from 'queries/clientSubCategory'

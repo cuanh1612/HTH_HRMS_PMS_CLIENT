@@ -1,8 +1,6 @@
 // query and mutation
-import { allLeaveQuery } from 'queries/leave'
-import { deleteLeaveMutation, deleteLeavesMutation } from 'mutations/leave'
-import { updateStatusMutation } from 'mutations/leave'
-import { allLeaveTypesQuery } from 'queries/leaveType'
+import { allLeaveQuery, allLeaveTypesQuery } from 'queries'
+import { deleteLeaveMutation, deleteLeavesMutation, updateStatusMutation } from 'mutations'
 
 // components
 import {
@@ -128,7 +126,9 @@ const Leaves: NextLayout = () => {
 
 	// query and mutation -=------------------------------------------------------
 	// get all leaves
-	const { data: allLeaves, mutate: refetchAllLeaves } = allLeaveQuery(isAuthenticated)
+	const { data: allLeaves, mutate: refetchAllLeaves } = allLeaveQuery({
+		isAuthenticated
+	})
 
 	// get all leave type
 	const { data: allLeaveType } = allLeaveTypesQuery()

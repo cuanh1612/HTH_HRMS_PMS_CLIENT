@@ -19,6 +19,20 @@ export const milestonesByProjectQuery = (
 	)
 }
 
+export const detailMilestoneQuery = (
+	isAuthenticated: boolean | null,
+	milestoneId?: string | number
+) => {
+	return useSWR<milestoneMutaionResponse, AxiosError>(
+		isAuthenticated && milestoneId ? `milestone/detail/${milestoneId}` : null,
+		allMilestoneRequest,
+		{
+			errorRetryCount: 2,
+			revalidateOnFocus: false,
+		}
+	)
+}
+
 export const milestonesByProjectNormalQuery = (
 	isAuthenticated: boolean | null,
 	projectId?: string | number | string[]

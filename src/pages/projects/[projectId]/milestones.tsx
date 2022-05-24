@@ -2,14 +2,26 @@ import {
 	Box,
 	Button,
 	ButtonGroup,
+	Divider,
 	HStack,
 	Menu,
 	MenuButton,
 	MenuItem,
 	MenuList,
+	TableContainer,
 	Text,
 	useDisclosure,
 	VStack,
+	Table as CTable,
+	TableCaption,
+	Thead,
+	Tr,
+	Th,
+	Tbody,
+	Td,
+	Tfoot,
+	Avatar,
+	AvatarGroup,
 } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
 import AlertDialog from 'components/AlertDialog'
@@ -25,9 +37,9 @@ import {
 	createMilestoneTypeMutation,
 	deleteMilestoneMutation,
 	updateMilestoneMutation,
-} from 'mutations/milestone'
+} from 'mutations'
 import { useRouter } from 'next/router'
-import { milestonesByProjectQuery } from 'queries/milestone'
+import { detailMilestoneQuery, milestonesByProjectNormalQuery } from 'queries/milestone'
 import React, { useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { MdDriveFileRenameOutline, MdOutlineDeleteOutline, MdOutlineMoreVert } from 'react-icons/md'
@@ -36,6 +48,8 @@ import { NextLayout } from 'type/element/layout'
 import { milestoneForm } from 'type/form/basicFormType'
 import { TColumn } from 'type/tableTypes'
 import { milestoneValidate } from 'utils/validate'
+import Loading from 'components/Loading'
+import { milestoneType } from 'type/basicTypes'
 
 const milestones: NextLayout = () => {
 	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
@@ -47,6 +61,10 @@ const milestones: NextLayout = () => {
 	const [idMilestone, setIdMilestone] = useState<string | number>()
 	const [isUpdate, setIsUpdate] = useState(false)
 
+	// set data to show detail modal
+	const [idDetail, setIdDetail] = useState<number>()
+	const [dataDetail, setDataDetail] = useState<milestoneType>()
+
 	// open modal to update, create milestone
 	const { isOpen: isOpenModal, onClose: onCloseModal, onOpen: onOpenModal } = useDisclosure()
 
@@ -57,9 +75,17 @@ const milestones: NextLayout = () => {
 	const { isOpen: isOpenDialogDl, onOpen: onOpenDl, onClose: onCloseDl } = useDisclosure()
 
 	// get all milestone by project
-	const { data: allMilestone, mutate: refetchAllMilestones } = milestonesByProjectQuery(
+	const { data: allMilestone, mutate: refetchAllMilestones } = milestonesByProjectNormalQuery(
 		isAuthenticated,
 		projectId
+	)
+
+	console.log(dataDetail)
+
+	// get detail milestone
+	const { data: detailMilestone, mutate: refetchDetail } = detailMilestoneQuery(
+		isAuthenticated,
+		idDetail
 	)
 
 	const [createMilestone, { status: statusCreate, data: dataCreate }] =
@@ -81,6 +107,21 @@ const milestones: NextLayout = () => {
 			}
 		}
 	}, [isAuthenticated])
+
+	// when get detail milestone success
+	useEffect(() => {
+		if (detailMilestone) {
+			setDataDetail(detailMilestone.milestone)
+		}
+	}, [detailMilestone])
+
+	// when close detail modal
+	useEffect(() => {
+		if (!isOpenDetail) {
+			setDataDetail(undefined)
+			setIdDetail(undefined)
+		}
+	}, [isOpenDetail])
 
 	// setForm and submit form create and update milestone ----------------------------------------------------------
 	const formSetting = useForm<milestoneForm>({
@@ -172,7 +213,14 @@ const milestones: NextLayout = () => {
 					disableResizing: true,
 					Cell: ({ row }) => (
 						<ButtonGroup isAttached variant="outline">
-							<Button>View</Button>
+							<Button
+								onClick={() => {
+									onOpenDetail()
+									setIdDetail(Number(row.values['id']))
+								}}
+							>
+								View
+							</Button>
 							<Menu>
 								<MenuButton as={Button} paddingInline={3}>
 									<MdOutlineMoreVert />
@@ -181,7 +229,6 @@ const milestones: NextLayout = () => {
 									<MenuItem
 										onClick={() => {
 											setIdMilestone(row.values['id'])
-											console.log(row.values)
 											formSetting.reset({
 												...row.values,
 												status: row.values['status'] == true ? 2 : 1,
@@ -281,7 +328,7 @@ const milestones: NextLayout = () => {
 				size={'xl'}
 				onClose={onCloseModal}
 				onOpen={onOpenModal}
-				title={isUpdate ? 'Update milestone': 'Add milestone'}
+				title={isUpdate ? 'Update milestone' : 'Add milestone'}
 				isOpen={isOpenModal}
 				form={'milestone'}
 			>
@@ -374,17 +421,114 @@ const milestones: NextLayout = () => {
 
 			{/* view detail milestone */}
 			<Modal
-				size={'2xl'}
+				size={'6xl'}
 				onClose={onCloseDetail}
 				onOpen={onOpenDetail}
 				title={'Detail mile stone'}
-				isOpen={!isOpenDetail}
+				isOpen={isOpenDetail}
 			>
-				<HStack>
-					
-				</HStack>
+				{!dataDetail ? (
+					<Box minH={'100px'}>
+						<Loading />
+					</Box>
+				) : (
+					<VStack paddingInline={6} spacing={5}>
+						<VStack w={'full'} spacing={5}>
+							<HStack w={'full'}>
+								<Text w={'150px'} color={'gray'}>
+									Milestone Title
+								</Text>
+								<Text>{dataDetail.title}</Text>
+							</HStack>
+							<HStack w={'full'}>
+								<Text minW={'150px'} color={'gray'}>
+									Milestone Cost
+								</Text>
+								<Text>${dataDetail.cost}</Text>
+							</HStack>
+							<HStack w={'full'}>
+								<Text minW={'150px'} color={'gray'}>
+									Status
+								</Text>
+								<Text>${dataDetail.status ? 'Complete' : 'Incomplete'}</Text>
+							</HStack>
+							<HStack w={'full'}>
+								<Text minW={'150px'} color={'gray'}>
+									Milestone Summary
+								</Text>
+								<Text>{dataDetail.summary}</Text>
+							</HStack>
+							<HStack w={'full'}>
+								<Text minW={'150px'} color={'gray'}>
+									Total Hours
+								</Text>
+								<Text>0</Text>
+							</HStack>
+						</VStack>
+						<Divider />
+						<VStack w={'full'}>
+							<Text w={'full'} fontWeight={'semibold'} fontSize={'xl'}>
+								Tasks
+							</Text>
+							<TableContainer w={'full'}>
+								<CTable variant="simple">
+									<Thead>
+										<Tr>
+											<Th>Id</Th>
+											<Th>Task</Th>
+											<Th>Assign To</Th>
+											<Th>Assign By</Th>
+											<Th>Due Date</Th>
+											<Th>Total hours</Th>
+											<Th>Status</Th>
+										</Tr>
+									</Thead>
+									<Tbody>
+										{dataDetail.tasks &&
+											dataDetail.tasks.map((task, key) => (
+												<Tr>
+													<Td>{task.id}</Td>
+													<Td>{task.name}</Td>
+													<Td>
+														<AvatarGroup size="sm" max={2}>
+															{task.employees.map((employee) => (
+																<Avatar
+																	key={employee.id}
+																	name={employee.name}
+																	src={employee.avatar?.url}
+																/>
+															))}
+														</AvatarGroup>
+													</Td>
+													<Td>{task?.assignBy?.name}</Td>
+													<Td>{`${new Date(task.deadline).getDate()}-${
+														new Date(task.deadline).getMonth() + 1
+													}-${new Date(
+														task.deadline
+													).getFullYear()}`}</Td>
+													<Td>0</Td>
+													<Td>
+														<HStack alignItems={'center'} spacing={4}>
+															<Box
+																background={task.status.color}
+																w={'2'}
+																borderRadius={'full'}
+																h={'2'}
+															/>
+															<Text>
+																{task.status.title}
+															</Text>
+														</HStack>
+													</Td>
+												</Tr>
+											))}
+									</Tbody>
+								</CTable>
+							</TableContainer>
+						</VStack>
+					</VStack>
+				)}
 			</Modal>
-
 		</div>
 	)
 }

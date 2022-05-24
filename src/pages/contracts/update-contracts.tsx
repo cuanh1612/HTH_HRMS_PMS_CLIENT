@@ -4,7 +4,7 @@ import { Input } from 'components/form/Input'
 import { Select } from 'components/form/Select'
 import Loading from 'components/Loading'
 import { AuthContext } from 'contexts/AuthContext'
-import { updateContractMutation } from 'mutations/contract'
+import { updateContractMutation } from 'mutations'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 import { useContext, useEffect, useState } from 'react'
@@ -20,9 +20,12 @@ import { InputNumber } from 'components/form/InputNumber'
 import { Textarea } from 'components/form/Textarea'
 import UploadAvatar from 'components/form/UploadAvatar'
 import Modal from 'components/modal/Modal'
-import { allClientsQuery } from 'queries/client'
-import { allContractsQuery, detailContractQuery } from 'queries/contract'
-import { allContractTypesQuery } from 'queries/contractType'
+import {
+	allClientsQuery,
+	allContractsQuery,
+	detailContractQuery,
+	allContractTypesQuery,
+} from 'queries'
 import { BsCalendarDate } from 'react-icons/bs'
 import { FaCity } from 'react-icons/fa'
 import { GiMatterStates } from 'react-icons/gi'

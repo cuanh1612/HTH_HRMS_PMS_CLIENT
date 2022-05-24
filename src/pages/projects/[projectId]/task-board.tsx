@@ -26,8 +26,9 @@ import {
 	createStatusColumnMutation,
 	deleteStatusColumnMutation,
 	updateStatusColumnMutation,
-} from 'mutations/status'
-import { changePositionMutation as changePositionTaskMutation } from 'mutations/task'
+	changePositionTaskMutation,
+	deleteTaskMutation
+} from 'mutations'
 import { IoIosAdd } from 'react-icons/io'
 import Modal from 'components/modal/Modal'
 import { useForm } from 'react-hook-form'
@@ -38,7 +39,6 @@ import { Input } from 'components/form/Input'
 import { MdOutlineSubtitles } from 'react-icons/md'
 import { AiOutlineBgColors } from 'react-icons/ai'
 import AlertDialog from 'components/AlertDialog'
-import { deleteTaskMutation } from 'mutations/task'
 import { projectDetailQuery } from 'queries/project'
 import Drawer from 'components/Drawer'
 import AddTask from './tasks/add-tasks'

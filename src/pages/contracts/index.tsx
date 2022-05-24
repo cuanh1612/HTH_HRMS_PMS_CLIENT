@@ -30,12 +30,10 @@ import {
 	deleteContractMutation,
 	deleteContractsMutation,
 	publicLinkContractMutation,
-} from 'mutations/contract'
+} from 'mutations'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { allClientsQuery } from 'queries/client'
-import { allContractsQuery } from 'queries/contract'
-import { allContractTypesQuery } from 'queries/contractType'
+import { allClientsQuery, allContractsQuery, allContractTypesQuery} from 'queries'
 import { useContext, useEffect, useState } from 'react'
 import { AiOutlineSearch } from 'react-icons/ai'
 import { BiLinkAlt } from 'react-icons/bi'

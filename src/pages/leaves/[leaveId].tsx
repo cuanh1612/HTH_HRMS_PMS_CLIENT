@@ -2,7 +2,7 @@ import { Avatar, Badge, Box, Divider, Grid, GridItem, HStack, Text, VStack } fro
 import { AuthContext } from 'contexts/AuthContext'
 import { GetStaticPaths, GetStaticProps } from 'next'
 import { useRouter } from 'next/router'
-import { detailLeaveQuery } from 'queries/leave'
+import { detailLeaveQuery } from 'queries'
 import { useContext, useEffect } from 'react'
 
 export interface IDetailLeaveProps {}

@@ -29,7 +29,7 @@ import SelectCustom from 'components/filter/SelectCustomer'
 import { ClientLayout } from 'components/layouts'
 import Table from 'components/Table'
 import { AuthContext } from 'contexts/AuthContext'
-import { deleteProjectMutation, deleteProjectsMutation } from 'mutations/project'
+import { deleteProjectMutation, deleteProjectsMutation } from 'mutations'
 import { useRouter } from 'next/router'
 import { allClientsQuery } from 'queries/client'
 import { allEmployeesQuery } from 'queries/employee'
@@ -53,7 +53,7 @@ const Projects: NextLayout = () => {
 	const { colorMode } = useColorMode()
 
 	//State ---------------------------------------------------------------------
-	const [projectIdUpdate, setProjectId] = useState<number | null>(12)
+	const [projectIdUpdate, setProjectId] = useState<number | undefined>(12)
 
 	// data select to delete all
 	const [dataSl, setDataSl] = useState<Array<number> | null>()

@@ -24,7 +24,7 @@ import {
 	createDesignationMutation,
 	deleteDesignationMutation,
 	updateDesignationMutation,
-} from 'mutations/designation'
+} from 'mutations'
 import { useRouter } from 'next/router'
 import { allDesignationsQuery } from 'queries/designation'
 import { ChangeEvent, ChangeEventHandler, useContext, useEffect, useState } from 'react'

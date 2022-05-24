@@ -30,15 +30,11 @@ import { ClientLayout } from 'components/layouts'
 import { AuthContext } from 'contexts/AuthContext'
 
 // mutation
-import {
-	changeRoleMutation,
-	deleteEmployeeMutation,
-	deleteEmployeesMutation,
-} from 'mutations/employee'
+import { changeRoleMutation, deleteEmployeeMutation, deleteEmployeesMutation } from 'mutations'
 import { useRouter } from 'next/router'
 
 // get all employees
-import { allEmployeesQuery } from 'queries/employee'
+import { allEmployeesQuery, allDesignationsQuery, allDepartmentsQuery } from 'queries'
 
 import { ChangeEventHandler, useContext, useEffect, useState } from 'react'
 
@@ -63,9 +59,7 @@ import { selectFilter, textFilter } from 'utils/tableFilters'
 import AddEmployees from './add-employees'
 import UpdateEmployees from './update-employees'
 
-import { allDepartmentsQuery } from 'queries/department'
 import { IOption } from 'type/basicTypes'
-import { allDesignationsQuery } from 'queries/designation'
 import { Select } from 'components/filter/Select'
 import { Input } from 'components/filter/Input'
 import { IPeople } from 'type/element/commom'

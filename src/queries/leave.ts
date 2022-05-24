@@ -14,16 +14,19 @@ export const detailLeaveQuery = (leaveId: number | string | null | undefined) =>
 	)
 }
 
-export const allLeaveQuery = (
-	isAuthenticated: boolean | null,
+export const allLeaveQuery = (input: {
+	isAuthenticated?:boolean | undefined | null
 	employee?: string,
 	leaveType?: string,
-	status?: string
+	status?: string,
+	date?: Date
+}
 ) => {
 	const fieldUrl: string[] = []
-	employee && fieldUrl.push(`employee=${employee}`)
-	leaveType && fieldUrl.push(`leaveType=${leaveType}`)
-	status && fieldUrl.push(`status=${status}`)
+	input.employee && fieldUrl.push(`employee=${input.employee}`)
+	input.leaveType && fieldUrl.push(`leaveType=${input.leaveType}`)
+	input.status && fieldUrl.push(`status=${input.status}`)
+	input.date && fieldUrl.push(`date=${new Date(input.date).toLocaleDateString()}`)
 
 	var url = ''
 
@@ -36,7 +39,7 @@ export const allLeaveQuery = (
 	}
 
 	return useSWR<leaveMutaionResponse, AxiosError>(
-		isAuthenticated ? (url ? `leaves${url}` : 'leaves') : null,
+		input.isAuthenticated ? (url ? `leaves${url}` : 'leaves') : null,
 		allLeavesRequest,
 		{
 			errorRetryCount: 2,

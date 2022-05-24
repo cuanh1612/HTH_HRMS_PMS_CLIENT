@@ -25,8 +25,6 @@ import {
 	Text,
 } from '@chakra-ui/react'
 
-import { allLeaveQuery } from 'queries/leave'
-
 import { NextLayout } from 'type/element/layout'
 // use layout
 import { ClientLayout } from 'components/layouts'
@@ -36,8 +34,7 @@ import Drawer from 'components/Drawer'
 import UpdateLeaves from './update-leaves'
 import AddLeaves from './add-leaves'
 import { useRouter } from 'next/router'
-import { allEmployeesQuery } from 'queries/employee'
-import { allLeaveTypesQuery } from 'queries/leaveType'
+import { allEmployeesQuery, allLeaveQuery, allLeaveTypesQuery} from 'queries'
 import { Select } from 'components/filter/Select'
 import { IFilter } from 'type/tableTypes'
 import { IOption } from 'type/basicTypes'
@@ -71,7 +68,7 @@ const calendar: NextLayout = () => {
 	const [leaveIdUpdate, setLeaveIdUpdate] = useState<number | null>(30)
 
 	// query
-	const { data: allLeaves } = allLeaveQuery(isAuthenticated, employee, type, status)
+	const { data: allLeaves } = allLeaveQuery({isAuthenticated, employee, status, leaveType: type})
 
 	const { data: allEmployees } = allEmployeesQuery(isAuthenticated)
 	const { data: allLeaveTypes } = allLeaveTypesQuery()

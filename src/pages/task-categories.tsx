@@ -24,7 +24,7 @@ import {
 	createTaskCategoryMutation,
 	deleteTaskCategoryMutation,
 	updateTaskCategoryMutation,
-} from 'mutations/taskCategory'
+} from 'mutations'
 import { useRouter } from 'next/router'
 import { allTaskCategoriesQuery } from 'queries/taskCategory'
 import { ChangeEventHandler, useContext, useEffect, useState } from 'react'

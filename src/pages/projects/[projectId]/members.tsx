@@ -28,10 +28,10 @@ import {
 	assignEmployeeMutation,
 	deleteEmpInProjectMutation,
 	projectAdminMutation,
-} from 'mutations/project'
+	updateHourlyRateMutation
+} from 'mutations'
 import AlertDialog from 'components/AlertDialog'
 import { projectMutaionResponse } from 'type/mutationResponses'
-import { updateHourlyRateMutation } from 'mutations/hourlyRate'
 import Modal from 'components/modal/Modal'
 import { IOption } from 'type/basicTypes'
 import {

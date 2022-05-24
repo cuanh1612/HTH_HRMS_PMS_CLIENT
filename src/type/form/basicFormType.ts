@@ -489,6 +489,7 @@ export type updateProjectNoteForm = {
 export type createProjectTaskForm = {
 	task_category: number
 	project: number
+	assignBy?: number
 	employees: number[]
 	status: number
 	id: number

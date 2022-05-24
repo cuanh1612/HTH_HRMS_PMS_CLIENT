@@ -22,6 +22,8 @@
     "noImplicitReturns": true,
     "baseUrl": ".",
     "paths": {
+      "mutations": ["src/mutations/index.ts"],
+      "queries": ["src/queries/index.ts"],
       "utils/*": ["src/utils/*"],
       "components/*": ["src/components/*"],
       "contexts/*": ["src/contexts/*"],

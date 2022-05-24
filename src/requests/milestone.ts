@@ -28,6 +28,13 @@ export const allMilestoneNormalRequest = async (url: string) => {
 	})
 }
 
+// get detail milestone
+export const detailMilestoneRequest = async (url: string) => {
+	return await getData<milestoneMutaionResponse>({
+		url: `http://localhost:4000/api/${url}`,
+	})
+}
+
 
 //Handle to delete milestone
 export const deleteMilestoneRequest = async (id: string) => {

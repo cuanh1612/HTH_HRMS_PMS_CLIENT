@@ -2,7 +2,7 @@ import { Box, Button, HStack, Input, Text, useDisclosure, VStack } from '@chakra
 import Drawer from 'components/Drawer'
 import Modal from 'components/modal/Modal'
 import { AuthContext } from 'contexts/AuthContext'
-import { reEnterPasswordMutation } from 'mutations/auth'
+import { reEnterPasswordMutation } from 'mutations'
 import { GetServerSideProps } from 'next'
 import { useRouter } from 'next/router'
 import { allProjectNotesQuery } from 'queries/projectNote'

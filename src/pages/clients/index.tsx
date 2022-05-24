@@ -2,10 +2,8 @@
 import countryList from 'react-select-country-list'
 
 // query and mutation
-import { allClientsQuery } from 'queries/client'
-import { deleteClientMutation, deleteClientsMutation } from 'mutations/client'
-import { allClientCategoriesQuery } from 'queries/clientCategory'
-import { allClientSubCategoriesQuery } from 'queries/clientSubCategory'
+import { allClientsQuery, allClientCategoriesQuery, allClientSubCategoriesQuery } from 'queries'
+import { deleteClientMutation, deleteClientsMutation } from 'mutations'
 
 // components
 import {

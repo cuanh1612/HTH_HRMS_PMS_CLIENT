@@ -14,11 +14,19 @@ export const SelectCustom = ({
 	form,
 	required = false,
 	options,
+	selectedOption
 }: ISelect & { form: UseFormReturn<any, any> })=> {
 	const errorColor = useColorModeValue('red.400', 'pink.400')
 
 	//Sate
 	const [optionSelect, setOptionSelect] = useState<IOption | undefined>(undefined)
+
+	//set state when have selected option prop
+	useEffect(() => {
+		if(selectedOption){
+			setOptionSelect(selectedOption)
+		}
+	}, [selectedOption])
 
 	//handle change select
 	const onChangeSelect = (options: IOption) => {

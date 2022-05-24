@@ -1,6 +1,5 @@
 import { Avatar, Box, Button, HStack, Text, useDisclosure, VStack } from '@chakra-ui/react'
-import Loading from 'components/Loading'
-import TaskCommentItem from 'components/TaskCommentItem'
+import {Loading, TaskCommentItem} from 'components/common'
 import { AuthContext } from 'contexts/AuthContext'
 import {
 	createTaskCommentMutation,

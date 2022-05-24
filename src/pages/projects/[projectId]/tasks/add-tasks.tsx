@@ -25,6 +25,7 @@ import {
 	allStatusQuery,
 	allStatusTasksQuery,
 	allTaskCategoriesQuery,
+	detailStatusQuery,
 } from 'queries'
 import { useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -56,6 +57,7 @@ export default function AddTask({ onCloseDrawer, statusId }: IAddTaskProps) {
 	const [optionEmployees, setOptionEmployees] = useState<IOption[]>([])
 	const [description, setDescription] = useState<string>('')
 	const [optionStatus, setOptionStatus] = useState<IOption[]>([])
+	const [selectedOptionStatus, setSelectedOptionStatus] = useState<IOption>()
 	const [optionMilestones, setOptionMilestones] = useState<IOption[]>([])
 
 	//Setup modal -------------------------------------------------------
@@ -75,6 +77,9 @@ export default function AddTask({ onCloseDrawer, statusId }: IAddTaskProps) {
 	const { data: dataTaskCategories } = allTaskCategoriesQuery()
 	const { data: dataDetailProject } = detailProjectQuery(isAuthenticated, projectId as string)
 	const { data: dataAllStatus } = allStatusQuery(isAuthenticated, projectId)
+	const { data: dataDetailStatus } = detailStatusQuery(isAuthenticated, statusId)
+	console.log(dataDetailStatus);
+	
 	const { data: dataAllMilestones } = milestonesByProjectNormalQuery(isAuthenticated, projectId)
 	// get all status tasks
 	const { mutate: refetchStatusTasks } = allStatusTasksQuery(isAuthenticated, projectId)
@@ -139,6 +144,16 @@ export default function AddTask({ onCloseDrawer, statusId }: IAddTaskProps) {
 			}
 		}
 	}, [isAuthenticated])
+
+	//Set data selected status
+	useEffect(() => {
+		if (dataDetailStatus?.status) {
+			setSelectedOptionStatus({
+				label: dataDetailStatus.status.title,
+				value: dataDetailStatus.status.id
+			})
+		}
+	}, [dataDetailStatus])
 
 	//Set option select status when have data all status
 	useEffect(() => {
@@ -307,6 +322,7 @@ export default function AddTask({ onCloseDrawer, statusId }: IAddTaskProps) {
 						form={formSetting}
 						options={optionStatus}
 						required={false}
+						selectedOption={selectedOptionStatus}
 					/>
 				</GridItem>
 

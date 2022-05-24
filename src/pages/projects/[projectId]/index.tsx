@@ -12,7 +12,7 @@ import {
 import { AuthContext } from 'contexts/AuthContext'
 import { GetStaticPaths, GetStaticProps } from 'next'
 import { useRouter } from 'next/router'
-import { detailProjectQuery } from 'queries/project'
+import { detailProjectQuery } from 'queries'
 import { useContext, useEffect } from 'react'
 import { projectMutaionResponse } from 'type/mutationResponses'
 

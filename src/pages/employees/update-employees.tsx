@@ -10,14 +10,16 @@ import {
 	VStack,
 } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
-import CoutrySelector from 'components/form/CountrySelector'
-import { Input } from 'components/form/Input'
-import InputMutiple from 'components/form/InputMultiple'
-import { InputNumber } from 'components/form/InputNumber'
-import { Select } from 'components/form/Select'
-import { Textarea } from 'components/form/Textarea'
-import UploadAvatar from 'components/form/UploadAvatar'
-import Loading from 'components/Loading'
+import {
+	Input,
+	CoutrySelector,
+	InputMutiple,
+	InputNumber,
+	Select,
+	UploadAvatar,
+	Textarea,
+} from 'components/form'
+import {Loading} from 'components/common'
 import Modal from 'components/modal/Modal'
 import { AuthContext } from 'contexts/AuthContext'
 import { updateEmployeeMutation } from 'mutations'
@@ -109,15 +111,13 @@ export default function UpdateEmployees({ onCloseDrawer, employeeId }: IUpdateEm
 	const handleUploadAvatar = async () => {
 		if (infoImg) {
 			setLoadingImg(true)
-			const dataUploadAvatar: Array<ICloudinaryImg> = await uploadFile(
-				{
-					files: infoImg.files,
-					raw: false,
-					tags: ['avatar'],
-					options: infoImg.options,
-					upload_preset: 'huprom-avatar'
-				}
-			)
+			const dataUploadAvatar: Array<ICloudinaryImg> = await uploadFile({
+				files: infoImg.files,
+				raw: false,
+				tags: ['avatar'],
+				options: infoImg.options,
+				upload_preset: 'huprom-avatar',
+			})
 
 			setLoadingImg(false)
 			return dataUploadAvatar[0]

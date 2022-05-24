@@ -20,7 +20,7 @@ export interface IDrawerListItemProps {
 	Icon: IconType
 }
 
-export default function DrawerListItem({ title, listLink, Icon }: IDrawerListItemProps) {
+export const DrawerListItem = ({ title, listLink, Icon }: IDrawerListItemProps)=> {
 	return (
 		<Accordion allowToggle mt="15px" borderColor={'white'}>
 			<AccordionItem isFocusable borderWidth="0">

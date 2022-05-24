@@ -21,20 +21,19 @@ import {
 	DrawerBody,
 	useColorMode,
 } from '@chakra-ui/react'
-import AlertDialog from 'components/AlertDialog'
-import Drawer from 'components/Drawer'
-import { Input } from 'components/filter/Input'
-import { Select } from 'components/filter/Select'
-import SelectCustom from 'components/filter/SelectCustomer'
+import { AlertDialog, Table } from 'components/common'
+import { Drawer } from 'components/Drawer'
+import { Input, Select, SelectCustom } from 'components/filter'
 import { ClientLayout } from 'components/layouts'
-import Table from 'components/Table'
 import { AuthContext } from 'contexts/AuthContext'
 import { deleteProjectMutation, deleteProjectsMutation } from 'mutations'
 import { useRouter } from 'next/router'
-import { allClientsQuery } from 'queries/client'
-import { allEmployeesQuery } from 'queries/employee'
-import { allProjectsQuery } from 'queries/project'
-import { allProjectCategoriesQuery } from 'queries/projectCategory'
+import {
+	allClientsQuery,
+	allEmployeesQuery,
+	allProjectsQuery,
+	allProjectCategoriesQuery,
+} from 'queries'
 import { useContext, useEffect, useState } from 'react'
 import { AiOutlineSearch } from 'react-icons/ai'
 import { IoEyeOutline } from 'react-icons/io5'

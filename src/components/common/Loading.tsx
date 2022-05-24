@@ -9,7 +9,7 @@ const override = css`
 	border-color: red;
 `
 
-export default function Loading() {
+export const Loading = ()=> {
 	return (
 		<Center
 			bg={'#FFFFFF95'}

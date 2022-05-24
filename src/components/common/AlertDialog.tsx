@@ -19,7 +19,7 @@ interface IDialog {
 	handleDelete: () => void
 }
 
-export default function AlertDialog({ isOpen, onClose, title, content, handleDelete }: IDialog) {
+export const AlertDialog = ({ isOpen, onClose, title, content, handleDelete }: IDialog)=> {
 	const cancelRef = useRef<FocusableElement | null>(null)
 
 	return (

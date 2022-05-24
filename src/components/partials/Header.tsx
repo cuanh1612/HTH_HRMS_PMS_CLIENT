@@ -1,5 +1,5 @@
 import { Avatar, Box, HStack, useColorMode, VStack } from '@chakra-ui/react'
-import ButtonIcon from 'components/ButtonIcon'
+import { ButtonIcon } from 'components/common'
 import { AuthContext } from 'contexts/AuthContext'
 import { useContext } from 'react'
 import { BsMoon, BsSun } from 'react-icons/bs'

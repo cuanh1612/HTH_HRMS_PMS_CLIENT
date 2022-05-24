@@ -17,7 +17,7 @@ import { useEffect, useState } from 'react'
 import { DayPicker } from 'react-day-picker'
 import { IInput } from 'type/element/commom'
 
-export default function DateRange({ required = false, label, handleSelect }: Partial<IInput>) {
+export const DateRange = ({ required = false, label, handleSelect }: Partial<IInput>)=> {
 	const [selected, setSelected] = useState<any>()
 	const breakpoint = useBreakpoint()
 	const { isOpen, onClose, onOpen } = useDisclosure()

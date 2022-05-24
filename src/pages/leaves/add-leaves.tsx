@@ -10,10 +10,8 @@ import {
 	VStack
 } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { MultiDatePicker } from 'components/form/MultiDatePicker'
-import { Select } from 'components/form/Select'
-import { Textarea } from 'components/form/Textarea'
-import Loading from 'components/Loading'
+import { MultiDatePicker, Select, Textarea } from 'components/form'
+import{ Loading} from 'components/common'
 import Modal from 'components/modal/Modal'
 import { AuthContext } from 'contexts/AuthContext'
 import { createLeaveMutation } from 'mutations'

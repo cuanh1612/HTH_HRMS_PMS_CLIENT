@@ -1,8 +1,6 @@
 import { Box, Button, Divider, Grid, GridItem, Text, useDisclosure, VStack } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { Input } from 'components/form/Input'
-import { Select } from 'components/form/Select'
-import Loading from 'components/Loading'
+import {Loading} from 'components/common'
 import { AuthContext } from 'contexts/AuthContext'
 import { createContractMutation } from 'mutations'
 import dynamic from 'next/dynamic'
@@ -15,9 +13,7 @@ import { createContractForm } from 'type/form/basicFormType'
 import { dataCurrency } from 'utils/basicData'
 import { CreateContractValidate } from 'utils/validate'
 //CSS
-import CoutrySelector from 'components/form/CountrySelector'
-import { InputNumber } from 'components/form/InputNumber'
-import { Textarea } from 'components/form/Textarea'
+import { InputNumber, CoutrySelector, Textarea, UploadAvatar, Input, Select } from 'components/form'
 import Modal from 'components/modal/Modal'
 import { allClientsQuery, allContractTypesQuery, allContractsQuery } from 'queries'
 import { BsCalendarDate } from 'react-icons/bs'
@@ -29,7 +25,6 @@ import { IOption } from 'type/basicTypes'
 import ContractTypes from '../contract-types'
 import { ICloudinaryImg, IImg } from 'type/fileType'
 import { uploadFile } from 'utils/uploadFile'
-import UploadAvatar from 'components/form/UploadAvatar'
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
 

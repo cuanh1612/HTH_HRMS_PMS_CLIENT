@@ -29,9 +29,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { useForm } from 'react-hook-form'
 
 // component to set value form
-import { Input } from 'components/form/Input'
-import { Switch } from 'components/form/Switch'
-import TimePicker from 'components/form/TimePicker'
+import { Input, Switch, TimePicker } from 'components/form'
 
 // get layout
 import { ClientLayout } from 'components/layouts'
@@ -41,9 +39,7 @@ import { AuthContext } from 'contexts/AuthContext'
 import { useRouter } from 'next/router'
 
 // query
-import { allAttendancesQuery } from 'queries/attendance'
-import { allLeaveQuery } from 'queries/leave'
-import { allDepartmentsQuery } from 'queries/department'
+import { allAttendancesQuery, allDepartmentsQuery, allLeaveQuery, allHolidaysQuery, allEmployeesQuery } from 'queries'
 
 // mutation
 import { createAttendanceMutation } from 'mutations'
@@ -62,11 +58,8 @@ import { AttendanceValidate } from 'utils/validate'
 import { compareTime } from 'utils/time'
 
 import DetailAttendance from 'components/modal/DetailAttendance'
-import { Select } from 'components/filter/Select'
+import { Select, SelectCustom } from 'components/filter'
 import { IFilter } from 'type/tableTypes'
-import { allEmployeesQuery } from 'queries/employee'
-import SelectCustom from 'components/filter/SelectCustomer'
-import { allHolidaysQuery } from 'queries/holiday'
 import { IoAirplaneOutline } from 'react-icons/io5'
 import { BiCheck } from 'react-icons/bi'
 import { IoMdClose } from 'react-icons/io'

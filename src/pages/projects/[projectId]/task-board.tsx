@@ -17,9 +17,9 @@ import {
 	Tooltip,
 	Button,
 } from '@chakra-ui/react'
-import Column from 'components/board/Column'
+import {Column} from 'components/board'
 import { useRouter } from 'next/router'
-import { allStatusTasksQuery } from 'queries/status'
+import { allStatusTasksQuery, projectDetailQuery } from 'queries'
 import { statusType } from 'type/basicTypes'
 import {
 	changePositionMutation,
@@ -35,14 +35,14 @@ import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { statusForm } from 'type/form/basicFormType'
 import { CreateStatusColumnValidate } from 'utils/validate'
-import { Input } from 'components/form/Input'
+import { Input } from 'components/form'
 import { MdOutlineSubtitles } from 'react-icons/md'
 import { AiOutlineBgColors } from 'react-icons/ai'
-import AlertDialog from 'components/AlertDialog'
-import { projectDetailQuery } from 'queries/project'
-import Drawer from 'components/Drawer'
+import {AlertDialog} from 'components/common'
+import {Drawer} from 'components/Drawer'
 import AddTask from './tasks/add-tasks'
 import UpdateTask from './tasks/[taskId]/update-task'
+import DetailTask from './tasks/[taskId]'
 
 const taskBoard: NextLayout = () => {
 	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
@@ -69,6 +69,13 @@ const taskBoard: NextLayout = () => {
 		isOpen: isOpenUpdateTask,
 		onOpen: onOpenUpdateTask,
 		onClose: onCloseUpdateTask,
+	} = useDisclosure()
+
+	// set open detail task
+	const {
+		isOpen: isOpenDetailTask,
+		onOpen: onOpenDetailTask,
+		onClose: onCloseDetailTask,
 	} = useDisclosure()
 
 	// get all status tasks
@@ -328,6 +335,7 @@ const taskBoard: NextLayout = () => {
 		<Box>
 			<Button onClick={onOpenAddTask}>Add task Incomplete</Button>
 			<Button onClick={onOpenUpdateTask}>Update Task</Button>
+			<Button onClick={onOpenDetailTask}>Detail Task</Button>
 			<HStack
 				divider={
 					<StackDivider borderColor={colorMode == 'light' ? 'gray.200' : 'gray.700'} />
@@ -490,6 +498,15 @@ const taskBoard: NextLayout = () => {
 				isOpen={isOpenUpdateTask}
 			>
 				<UpdateTask taskIdProp={taskId} onCloseDrawer={onCloseUpdateTask} />
+			</Drawer>
+
+			<Drawer
+				size="xl"
+				title={`Task #${taskId}`}
+				onClose={onCloseDetailTask}
+				isOpen={isOpenDetailTask}
+			>
+				<DetailTask taskIdProp={taskId} onCloseDrawer={onCloseDetailTask} />
 			</Drawer>
 		</Box>
 	)

@@ -1,6 +1,6 @@
 import { Box, Button, Divider, Grid, GridItem, HStack, Text, useDisclosure } from '@chakra-ui/react'
-import Drawer from 'components/Drawer'
-import Loading from 'components/Loading'
+import {Drawer} from 'components/Drawer'
+import {Loading} from 'components/common'
 import { AuthContext } from 'contexts/AuthContext'
 import { deleteHolidayMutation } from 'mutations'
 import { GetStaticPaths, GetStaticProps } from 'next'

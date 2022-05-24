@@ -8,14 +8,14 @@ import { ISelect } from 'type/element/commom'
 
 const animatedComponents = makeAnimated()
 
-export default function SelectMany({
+export const SelectMany = ({
 	name,
 	label,
 	form,
 	required = false,
 	options,
 	selectedOptions,
-}: ISelect & { form: UseFormReturn<any, any> }) {
+}: ISelect & { form: UseFormReturn<any, any> })=> {
 	const errorColor = useColorModeValue('red.400', 'pink.400')
 
 

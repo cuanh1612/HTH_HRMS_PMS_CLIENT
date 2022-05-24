@@ -9,14 +9,13 @@ import {
 	useDisclosure,
 	VStack,
 } from '@chakra-ui/react'
-import ItemContractFile from 'components/ItemContractFile'
-import ItemFileUpload from 'components/ItemFileUpload'
-import Loading from 'components/Loading'
+import {ItemContractFile, ItemFileUpload, Loading} from 'components/common'
+
 import { AuthContext } from 'contexts/AuthContext'
 import { createProjectFileMutation, deleteProjectFileMutation } from 'mutations'
 import { GetStaticPaths, GetStaticProps } from 'next'
 import { useRouter } from 'next/router'
-import { allProjectFilesQuery } from 'queries/projectFile'
+import { allProjectFilesQuery } from 'queries'
 import { useCallback, useContext, useEffect, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { AiOutlinePlusCircle, AiOutlineSave } from 'react-icons/ai'

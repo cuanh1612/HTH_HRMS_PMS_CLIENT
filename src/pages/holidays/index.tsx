@@ -14,9 +14,9 @@ import {
 	VStack,
 	Drawer as CDrawer,
 } from '@chakra-ui/react'
-import Drawer from 'components/Drawer'
+import {Drawer} from 'components/Drawer'
 import { ClientLayout } from 'components/layouts'
-import Table from 'components/Table'
+import {Table, AlertDialog}from 'components/common'
 import { AuthContext } from 'contexts/AuthContext'
 import { useRouter } from 'next/router'
 import { allHolidaysQuery } from 'queries'
@@ -31,10 +31,8 @@ import AddHoliday from './add-holidays'
 import UpdateHoliday from './update-holidays'
 import DetailHoliday from './[holidayId]'
 import { deleteHolidayMutation, deleteHolidaysMutation } from 'mutations'
-import AlertDialog from 'components/AlertDialog'
 import { AiOutlineSearch } from 'react-icons/ai'
-import { Input } from 'components/filter/Input'
-import { Select } from 'components/filter/Select'
+import { Input, Select } from 'components/filter'
 
 const Holiday: NextLayout = () => {
 	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)

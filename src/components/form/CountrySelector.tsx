@@ -8,7 +8,7 @@ export interface ICoutrySelectorProps {
 	form: UseFormReturn<any, any>
 }
 
-export default function CoutrySelector({ name, form }: ICoutrySelectorProps) {
+export const CoutrySelector = ({ name, form }: ICoutrySelectorProps)=> {
 	const options = useMemo(() => countryList().getData(), [])
 
 	//Initial value

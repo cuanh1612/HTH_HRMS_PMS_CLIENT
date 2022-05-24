@@ -15,9 +15,9 @@ import { IoIosAdd } from 'react-icons/io'
 import { MdOutlineDeleteOutline, MdOutlineMoreVert } from 'react-icons/md'
 import { RiPencilLine } from 'react-icons/ri'
 import { statusType } from 'type/basicTypes'
-import Task from './Task'
+import {Task} from './Task'
 
-export default function Column({
+export const Column = ({
 	column,
 	index,
 	setEditForm,
@@ -29,7 +29,7 @@ export default function Column({
 	setEditForm: ({ title, color, id }: { title: string; color: string; id: string }) => void
 	setIdTaskToDl: (id: string) => void
 	setIdColumnToDl: (id: string) => void
-}) {
+})=> {
 	const { colorMode } = useColorMode()
 	return (
 		<Draggable draggableId={`${column.id}`} index={index}>

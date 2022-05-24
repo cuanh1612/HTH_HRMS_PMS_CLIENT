@@ -29,6 +29,8 @@ import {
 	signType,
 	statusType,
 	taskCategoryType,
+	taskCommentType,
+	taskFileType,
 	taskType,
 	userType,
 } from './basicTypes'
@@ -206,4 +208,14 @@ export interface TaskCategoryMutaionResponse extends commonResponse {
 export interface TaskMutaionResponse extends commonResponse {
 	task?: taskType
 	tasks?: taskType[]
+}
+
+export interface taskFileMutaionResponse extends commonResponse {
+	taskFile?: taskFileType
+	taskFiles?: taskFileType[]
+}
+
+export interface TaskCommentMutationResponse extends commonResponse {
+	taskComment?: taskCommentType
+	taskComments?: taskCommentType[]
 }

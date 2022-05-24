@@ -12,7 +12,7 @@ import {
 	ModalOverlay,
 	Modal,
 } from '@chakra-ui/react'
-import ButtonIcon from 'components/ButtonIcon'
+import {ButtonIcon} from 'components/common'
 
 import { useEffect, useRef, useState } from 'react'
 
@@ -32,7 +32,7 @@ import {
 import { HandleImg } from 'type/fileType'
 
 let timeOutImg: NodeJS.Timeout
-export default function UploadAvatar({ setInfoImg, oldImg }: { setInfoImg: HandleImg, oldImg?: string }) {
+export const UploadAvatar = ({ setInfoImg, oldImg }: { setInfoImg: HandleImg, oldImg?: string })=> {
 	const [file, setFile] = useState<FileList | null>(null)
 	const [preImg, setImg] = useState<any>(null)
 

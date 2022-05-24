@@ -17,8 +17,7 @@ import {
 	Tr,
 	VStack,
 } from '@chakra-ui/react'
-import ButtonIcon from 'components/ButtonIcon'
-import Loading from 'components/Loading'
+import {ButtonIcon, Loading} from 'components/common'
 import { AuthContext } from 'contexts/AuthContext'
 import {
 	createDepartmentMutation,
@@ -26,7 +25,7 @@ import {
 	updateDepartmentMutation,
 } from 'mutations'
 import { useRouter } from 'next/router'
-import { allDepartmentsQuery } from 'queries/department'
+import { allDepartmentsQuery } from 'queries'
 import { ChangeEvent, ChangeEventHandler, useContext, useEffect, useState } from 'react'
 import { AiOutlineCheck } from 'react-icons/ai'
 import { MdDeleteOutline } from 'react-icons/md'

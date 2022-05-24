@@ -5,13 +5,13 @@ import { ISelect } from 'type/element/commom'
 
 const animatedComponents = makeAnimated()
 
-export default function SelectCustom({
+export const SelectCustom = ({
 	name,
 	label,
 	required = false,
 	options,
     handleSearch
-}: ISelect & { handleSearch: any }) {
+}: ISelect & { handleSearch: any })=> {
 	const {colorMode} = useColorMode()
 
 	return (

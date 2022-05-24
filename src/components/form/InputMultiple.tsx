@@ -9,7 +9,7 @@ export interface IInputMutipleProps {
 	form: UseFormReturn<any, any>
 }
 
-export default function InputMutiple({ lable, name, form }: IInputMutipleProps) {
+export const InputMutiple = ({ lable, name, form }: IInputMutipleProps)=> {
 	const [valueMultiple, setValueMultiple] = useState<string[]>(form.getValues(name))
 
 	//handle press enter

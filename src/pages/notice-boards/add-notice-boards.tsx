@@ -10,8 +10,8 @@ import {
 	VStack
 } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { Input } from 'components/form/Input'
-import Loading from 'components/Loading'
+import { Input } from 'components/form'
+import {Loading} from 'components/common'
 import { AuthContext } from 'contexts/AuthContext'
 import { createNoticeBoardMutation } from 'mutations'
 import dynamic from 'next/dynamic'

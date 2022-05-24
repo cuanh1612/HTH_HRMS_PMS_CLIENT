@@ -1,8 +1,7 @@
 import { Box, Button, Grid, GridItem, HStack, Text, useDisclosure, VStack } from '@chakra-ui/react'
-import { Input } from 'components/form/Input'
-import Message from 'components/Message'
+import { Input } from 'components/form'
 import Modal from 'components/modal/Modal'
-import Receiver from 'components/Reciever'
+import {Receiver, Loading, Message} from 'components/common'
 import { AuthContext } from 'contexts/AuthContext'
 import { createConversationReplyMutation, deleteConversationMutation } from 'mutations'
 import { useRouter } from 'next/router'
@@ -14,8 +13,7 @@ import { conversationType, employeeType } from 'type/basicTypes'
 import { createConversationReplyForm } from 'type/form/basicFormType'
 import AddConversations from './add-conversations'
 import { AiOutlineMenu, AiOutlineSend } from 'react-icons/ai'
-import Loading from 'components/Loading'
-import Drawer from 'components/Drawer'
+import {Drawer} from 'components/Drawer'
 
 export default function Messages() {
 	const { isAuthenticated, handleLoading, setToast, currentUser, socket } =

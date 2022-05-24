@@ -17,14 +17,11 @@ import {
 	Drawer as CDrawer,
 	useColorMode,
 } from '@chakra-ui/react'
-import AlertDialog from 'components/AlertDialog'
-import DateRange from 'components/date/DateRange'
-import Drawer from 'components/Drawer'
-import { Input } from 'components/filter/Input'
-import { Select } from 'components/filter/Select'
-import SelectCustom from 'components/filter/SelectCustomer'
+import {AlertDialog, Table} from 'components/common'
+import { DateRange} from 'components/filter'
+import {Drawer} from 'components/Drawer'
+import { Input, SelectCustom, Select } from 'components/filter'
 import { ClientLayout } from 'components/layouts'
-import Table from 'components/Table'
 import { AuthContext } from 'contexts/AuthContext'
 import {
 	deleteContractMutation,

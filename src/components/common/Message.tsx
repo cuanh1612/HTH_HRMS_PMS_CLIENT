@@ -10,7 +10,7 @@ export interface IMessageProps {
 	placement: 'left' | 'right'
 }
 
-export default function Message({ name, avatarUrl, text, placement, createAt }: IMessageProps) {
+export const Message = ({ name, avatarUrl, text, placement, createAt }: IMessageProps)=> {
 	return (
 		<Box
 			w={'full'}

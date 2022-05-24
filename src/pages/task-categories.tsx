@@ -17,8 +17,7 @@ import {
 	Tr,
 	VStack,
 } from '@chakra-ui/react'
-import ButtonIcon from 'components/ButtonIcon'
-import Loading from 'components/Loading'
+import {ButtonIcon, Loading} from 'components/common'
 import { AuthContext } from 'contexts/AuthContext'
 import {
 	createTaskCategoryMutation,
@@ -26,7 +25,7 @@ import {
 	updateTaskCategoryMutation,
 } from 'mutations'
 import { useRouter } from 'next/router'
-import { allTaskCategoriesQuery } from 'queries/taskCategory'
+import { allTaskCategoriesQuery } from 'queries'
 import { ChangeEventHandler, useContext, useEffect, useState } from 'react'
 import { AiOutlineCheck } from 'react-icons/ai'
 import { MdDeleteOutline } from 'react-icons/md'

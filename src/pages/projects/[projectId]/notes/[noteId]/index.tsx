@@ -2,7 +2,7 @@ import { Avatar, Box, Grid, GridItem, HStack, Text, VStack } from '@chakra-ui/re
 import { AuthContext } from 'contexts/AuthContext'
 import { GetServerSideProps } from 'next'
 import { useRouter } from 'next/router'
-import { allProjectNotesQuery, detailProjectNoteRoomQuery } from 'queries/projectNote'
+import { detailProjectNoteRoomQuery } from 'queries'
 import { useContext, useEffect } from 'react'
 import { projectMutaionResponse } from 'type/mutationResponses'
 

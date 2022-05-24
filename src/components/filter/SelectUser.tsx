@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { IPeople } from 'type/element/commom'
 import { BiChevronDown } from 'react-icons/bi'
 
-const SelectUser = ({
+export const SelectUser = ({
 	peoples,
 	required,
 	label,
@@ -115,5 +115,3 @@ const SelectUser = ({
 		</FormControl>
 	)
 }
-
-export default SelectUser

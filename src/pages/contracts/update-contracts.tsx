@@ -1,8 +1,6 @@
 import { Box, Button, Divider, Grid, GridItem, Text, useDisclosure, VStack } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { Input } from 'components/form/Input'
-import { Select } from 'components/form/Select'
-import Loading from 'components/Loading'
+import {Loading} from 'components/common'
 import { AuthContext } from 'contexts/AuthContext'
 import { updateContractMutation } from 'mutations'
 import dynamic from 'next/dynamic'
@@ -15,10 +13,7 @@ import { updateContractForm } from 'type/form/basicFormType'
 import { dataCurrency } from 'utils/basicData'
 import { UpdateContractValidate } from 'utils/validate'
 //CSS
-import CoutrySelector from 'components/form/CountrySelector'
-import { InputNumber } from 'components/form/InputNumber'
-import { Textarea } from 'components/form/Textarea'
-import UploadAvatar from 'components/form/UploadAvatar'
+import { InputNumber, CoutrySelector, Textarea, UploadAvatar, Input, Select } from 'components/form'
 import Modal from 'components/modal/Modal'
 import {
 	allClientsQuery,

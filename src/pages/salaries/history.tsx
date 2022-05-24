@@ -13,11 +13,11 @@ import {
 	Tr,
 	VStack,
 } from '@chakra-ui/react'
-import Loading from 'components/Loading'
+import {Loading} from 'components/common'
 import { AuthContext } from 'contexts/AuthContext'
 import { deleteSalaryMutation } from 'mutations'
 import { useRouter } from 'next/router'
-import { historySalaryQuery } from 'queries/salary'
+import { historySalaryQuery } from 'queries'
 import { useContext, useEffect } from 'react'
 import { BsTrash } from 'react-icons/bs'
 

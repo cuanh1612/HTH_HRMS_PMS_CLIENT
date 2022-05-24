@@ -13,16 +13,13 @@ import {
 	VStack,
 } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { Input } from 'components/form/Input'
-import SelectMany from 'components/form/SelectMany'
-import Loading from 'components/Loading'
+import { Input, SelectMany } from 'components/form'
+import { Loading } from 'components/common'
 import { AuthContext } from 'contexts/AuthContext'
 import { updateProjectNoteMutation } from 'mutations'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
-import { allEmployeesQuery } from 'queries/employee'
-import { detailProjectQuery } from 'queries/project'
-import { allProjectNotesQuery, detailProjectNoteRoomQuery } from 'queries/projectNote'
+import { detailProjectQuery, allProjectNotesQuery, detailProjectNoteRoomQuery } from 'queries'
 import { useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { AiOutlineCheck } from 'react-icons/ai'
@@ -62,11 +59,8 @@ export default function UpdateNote({ onCloseDrawer, noteIdProp }: IUpdateNotePro
 		isAuthenticated,
 		Number(noteIdProp || noteIdRouter)
 	)
-	
-	const { mutate: refetchAllNotes } = allProjectNotesQuery(
-		isAuthenticated,
-		projectId as string
-	)
+
+	const { mutate: refetchAllNotes } = allProjectNotesQuery(isAuthenticated, projectId as string)
 
 	//mutation -------------------------------------------------------------------
 	const [mutateUpProjectNote, { status: statusUpProjectNote, data: dataUpProjectNote }] =

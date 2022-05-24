@@ -39,10 +39,10 @@ import { getDataBlob } from 'utils/uploadFile'
 const DetailContract: NextLayout = () => {
 	const { isAuthenticated, handleLoading, setToast, setContractUrls } = useContext(AuthContext)
 	const router = useRouter()
-	const { id } = router.query
+	const { contractId } = router.query
 
 	//Query ------------------------------------------------------------
-	const { data: dataDetailContract } = detailContractQuery(isAuthenticated, Number(id))
+	const { data: dataDetailContract } = detailContractQuery(isAuthenticated, Number(contractId))
 
 	//Useeffect --------------------------------------------------------
 	//Handle loading page
@@ -52,10 +52,10 @@ const DetailContract: NextLayout = () => {
 
 	// set contract urls
 	useEffect(() => {
-		if (id) {
-			setContractUrls(id as string)
+		if (contractId) {
+			setContractUrls(contractId as string)
 		}
-	}, [id])
+	}, [contractId])
 
 	//Setting react convert to pdf -------------------------------------
 	const generatePDF = async () => {
@@ -67,7 +67,7 @@ const DetailContract: NextLayout = () => {
 		} else {
 			var doc = new jsPDF('p', 'pt')
 
-			doc.text(`Contract #${id}`, 20, 20)
+			doc.text(`Contract #${contractId}`, 20, 20)
 			doc.setFontSize(12)
 			doc.text('HUPROM', 20, 60)
 			doc.text('xx Nguyen Xi Street - Gia Lai - Viet Nam', 20, 80)
@@ -75,7 +75,7 @@ const DetailContract: NextLayout = () => {
 			doc.setFontSize(14)
 			doc.text('Main Contract', 20, 140)
 			doc.setFontSize(12)
-			doc.text(`Contract Number: #${id}`, 20, 170)
+			doc.text(`Contract Number: #${contractId}`, 20, 170)
 			doc.text(`Start Date: ${dataDetailContract?.contract?.start_date}`, 20, 190)
 			doc.text(`End Date: ${dataDetailContract?.contract?.end_date}`, 20, 210)
 			doc.setFontSize(14)
@@ -297,7 +297,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 	// Get the paths we want to pre-render based on leave
 	const paths = contracts.map((contract: any) => ({
-		params: { id: String(contract.id) },
+		params: { contractId: String(contract.id) },
 	}))
 
 	// We'll pre-render only these paths at build time.

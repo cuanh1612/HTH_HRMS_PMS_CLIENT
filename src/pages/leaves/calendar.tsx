@@ -28,17 +28,16 @@ import {
 import { NextLayout } from 'type/element/layout'
 // use layout
 import { ClientLayout } from 'components/layouts'
-import ButtonIcon from 'components/ButtonIcon'
+import{ ButtonIcon }from 'components/common'
 import { MdOutlineNavigateBefore, MdOutlineNavigateNext } from 'react-icons/md'
-import Drawer from 'components/Drawer'
+import {Drawer} from 'components/Drawer'
 import UpdateLeaves from './update-leaves'
 import AddLeaves from './add-leaves'
 import { useRouter } from 'next/router'
 import { allEmployeesQuery, allLeaveQuery, allLeaveTypesQuery} from 'queries'
-import { Select } from 'components/filter/Select'
+import { Select, SelectCustom} from 'components/filter'
 import { IFilter } from 'type/tableTypes'
 import { IOption } from 'type/basicTypes'
-import SelectCustom from 'components/filter/SelectCustomer'
 
 const calendar: NextLayout = () => {
 	const { colorMode } = useColorMode()

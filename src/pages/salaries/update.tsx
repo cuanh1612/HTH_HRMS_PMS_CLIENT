@@ -5,10 +5,6 @@ import {
 	Grid,
 	GridItem,
 	HStack,
-	Table,
-	TableContainer,
-	Tbody,
-	Td,
 	Text,
 	Th,
 	Thead,
@@ -16,21 +12,18 @@ import {
 	VStack,
 } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { Input } from 'components/form/Input'
-import { InputNumber } from 'components/form/InputNumber'
-import SelectCustom from 'components/form/SelectCustom'
-import Loading from 'components/Loading'
+import { Input, InputNumber, SelectCustom} from 'components/form'
 import { AuthContext } from 'contexts/AuthContext'
-import { deleteSalaryMutation, updateSalaryMutation } from 'mutations'
+import { updateSalaryMutation } from 'mutations'
 import { useRouter } from 'next/router'
-import { historySalaryQuery } from 'queries/salary'
+import { historySalaryQuery } from 'queries'
 import { useContext, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { AiOutlineCheck } from 'react-icons/ai'
-import { BsCalendarDate, BsTrash } from 'react-icons/bs'
-import { updateProjectForm, updateSalaryForm } from 'type/form/basicFormType'
+import { BsCalendarDate } from 'react-icons/bs'
+import { updateSalaryForm } from 'type/form/basicFormType'
 import { dataSalaryType } from 'utils/basicData'
-import { createProjectValidate, updateSalaryValidate } from 'utils/validate'
+import { updateSalaryValidate } from 'utils/validate'
 
 export interface IUpdateSalaryProps {
 	employeeId: string | number | null

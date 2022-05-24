@@ -16,7 +16,7 @@ export interface IDrawerProps {
     size: "sm" | "md" | "lg" | "xl" | "full" | "xs" | undefined
 }
 
-export default function Drawer({ isOpen, children, title, onClose, size }: IDrawerProps) {
+export const Drawer = ({ isOpen, children, title, onClose, size }: IDrawerProps)=> {
 	return (
 		<>
 			<DrawerChakra size={size} placement={'right'} onClose={onClose} isOpen={isOpen}>

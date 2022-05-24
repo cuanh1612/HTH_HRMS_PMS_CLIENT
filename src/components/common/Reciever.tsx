@@ -11,13 +11,13 @@ export interface IReceiverProps {
 	onDeleteConversation: (conversationId: number) => void
 }
 
-export default function Receiver({
+export const Receiver = ({
 	employee,
 	onChangeReceiver,
 	isActive,
 	conversation,
 	onDeleteConversation,
-}: IReceiverProps) {
+}: IReceiverProps)=> {
 	return (
 		<Box
 			onClick={() => onChangeReceiver(conversation, employee)}

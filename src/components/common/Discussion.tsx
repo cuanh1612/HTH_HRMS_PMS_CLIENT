@@ -17,8 +17,8 @@ import 'react-quill/dist/quill.bubble.css'
 import 'react-quill/dist/quill.snow.css'
 import { discussionType, employeeType } from 'type/basicTypes'
 import { updateDiscussionForm } from 'type/form/basicFormType'
-import Modal from './modal/Modal'
 import moment from 'moment'
+import Modal from 'components/modal/Modal'
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
 
@@ -29,12 +29,12 @@ export interface IDiscussionProps {
 	onUpdateDiscussion: ({ content, discussionId, email_author }: updateDiscussionForm) => void
 }
 
-export default function Discussion({
+export const Discussion = ({
 	discussion,
 	currentUser,
 	onDeleteDiscussion,
 	onUpdateDiscussion,
-}: IDiscussionProps) {
+}: IDiscussionProps)=> {
 	const { isOpen: isOpenEdit, onOpen: onOpenEdit, onClose: onCloseEdit } = useDisclosure()
 	const [content, setContent] = useState<string>(discussion.content ? discussion.content : '')
 

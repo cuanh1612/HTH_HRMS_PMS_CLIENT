@@ -1,7 +1,7 @@
 // component and hooks of library
 import { Box, Button, Divider, HStack, useColorModeValue, VStack } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { Input } from 'components/form/Input'
+import { Input } from 'components/form'
 import { AuthLayout } from 'components/layouts'
 import { AuthContext } from 'contexts/AuthContext'
 import { loginGoogleMutation, loginMutation } from 'mutations'

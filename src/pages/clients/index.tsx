@@ -27,8 +27,8 @@ import {
 	useDisclosure,
 	VStack,
 } from '@chakra-ui/react'
-import AlertDialog from 'components/AlertDialog'
-import Drawer from 'components/Drawer'
+import {AlertDialog, Table} from 'components/common'
+import {Drawer} from 'components/Drawer'
 
 // use layout
 import { ClientLayout } from 'components/layouts'
@@ -49,7 +49,6 @@ import { RiPencilLine } from 'react-icons/ri'
 import { NextLayout } from 'type/element/layout'
 
 // fucs, component to setup table
-import Table from 'components/Table'
 import { IFilter, TColumn } from 'type/tableTypes'
 
 // filter of column
@@ -61,10 +60,8 @@ import AddClient from './add-clients'
 import UpdateClient from './update-clients'
 
 // component to filter
-import { Input } from 'components/filter/Input'
-import SelectUser from 'components/filter/SelectUser'
-import DateRange from 'components/date/DateRange'
-import { Select } from 'components/filter/Select'
+import { Input, SelectUser, Select } from 'components/filter'
+import { DateRange } from 'components/filter'
 
 import { IPeople } from 'type/element/commom'
 import { IOption } from 'type/basicTypes'
@@ -585,7 +582,7 @@ const Clients: NextLayout = () => {
 								}}
 								label="Select date"
 							/>
-							
+
 							<SelectUser
 								handleSearch={(data: IFilter) => {
 									setFilter(data)

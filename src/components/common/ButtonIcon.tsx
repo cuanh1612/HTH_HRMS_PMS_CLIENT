@@ -2,7 +2,7 @@ import { IconButton } from '@chakra-ui/react'
 import React from 'react'
 import { IButtonIcon } from 'type/element/commom'
 
-export default function ButtonIcon({
+export const ButtonIcon = ({
 	isDisabled = false,
 	handle,
 	ariaLabel,
@@ -15,7 +15,7 @@ export default function ButtonIcon({
 	hoverBg,
 	radius = false,
 	htmlFor,
-}: IButtonIcon) {
+}: IButtonIcon)=> {
 	return (
 		<IconButton
 			cursor={'pointer'}

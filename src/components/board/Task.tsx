@@ -22,7 +22,7 @@ import { MdOutlineDeleteOutline, MdOutlineMoreVert } from 'react-icons/md'
 import { RiPencilLine } from 'react-icons/ri'
 import { taskType } from 'type/basicTypes'
 
-export default function Task({
+export const Task = ({
 	data,
 	index,
 	setIdTaskToDl,
@@ -30,7 +30,7 @@ export default function Task({
 	data: taskType
 	index: number
 	setIdTaskToDl: (id: string) => void
-}) {
+})=> {
 	const { colorMode } = useColorMode()
 	return (
 		<Draggable draggableId={`task-${data.id}`} index={index}>

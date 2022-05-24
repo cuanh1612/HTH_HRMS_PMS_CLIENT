@@ -3,8 +3,7 @@ import { AuthContext } from 'contexts/AuthContext'
 import { useRouter } from 'next/router'
 import { NextLayout } from 'type/element/layout'
 import { ClientLayout } from 'components/layouts'
-import { allEmployeesInProjectQuery, employeesNotInProjectQuery } from 'queries/project'
-import Table from 'components/Table'
+import { allEmployeesInProjectQuery, employeesNotInProjectQuery, allDepartmentsQuery} from 'queries'
 import { TColumn } from 'type/tableTypes'
 import {
 	Avatar,
@@ -30,7 +29,7 @@ import {
 	projectAdminMutation,
 	updateHourlyRateMutation
 } from 'mutations'
-import AlertDialog from 'components/AlertDialog'
+import {AlertDialog, Table} from 'components/common'
 import { projectMutaionResponse } from 'type/mutationResponses'
 import Modal from 'components/modal/Modal'
 import { IOption } from 'type/basicTypes'
@@ -39,8 +38,7 @@ import {
 	EmployeesNotInProjectForm,
 } from 'type/form/basicFormType'
 import { useForm } from 'react-hook-form'
-import SelectMany from 'components/form/SelectMany'
-import { allDepartmentsQuery } from 'queries/department'
+import { SelectMany} from 'components/form'
 
 var hourlyRateTimeOut: NodeJS.Timeout
 

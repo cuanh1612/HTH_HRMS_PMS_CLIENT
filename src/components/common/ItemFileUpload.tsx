@@ -10,13 +10,13 @@ export interface IItemFileUploadProps {
 	url_file?: string
 }
 
-export default function ItemFileUpload({
+export const ItemFileUpload = ({
 	src,
 	fileName,
 	onRemoveFile,
 	index,
 	url_file,
-}: IItemFileUploadProps) {
+}: IItemFileUploadProps) => {
 	return (
 		<HStack
 			border={'1px solid #80808050'}

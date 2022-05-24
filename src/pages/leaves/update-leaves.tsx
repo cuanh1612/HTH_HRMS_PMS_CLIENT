@@ -8,13 +8,11 @@ import {
 	Stack,
 	Text,
 	useDisclosure,
-	VStack
+	VStack,
 } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { Input } from 'components/form/Input'
-import { Select } from 'components/form/Select'
-import { Textarea } from 'components/form/Textarea'
-import Loading from 'components/Loading'
+import { Input, Select, Textarea } from 'components/form'
+import { Loading } from 'components/common'
 import Modal from 'components/modal/Modal'
 import { AuthContext } from 'contexts/AuthContext'
 import { updateLeaveMutation } from 'mutations'

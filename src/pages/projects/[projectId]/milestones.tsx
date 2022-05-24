@@ -24,14 +24,10 @@ import {
 	AvatarGroup,
 } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
-import AlertDialog from 'components/AlertDialog'
-import { Input } from 'components/form/Input'
-import { InputNumber } from 'components/form/InputNumber'
-import { Select } from 'components/form/Select'
-import { Textarea } from 'components/form/Textarea'
+import {AlertDialog, Table, Loading} from 'components/common'
+import { Input, InputNumber, Select, Textarea} from 'components/form'
 import { ClientLayout } from 'components/layouts'
 import Modal from 'components/modal/Modal'
-import Table from 'components/Table'
 import { AuthContext } from 'contexts/AuthContext'
 import {
 	createMilestoneTypeMutation,
@@ -39,7 +35,7 @@ import {
 	updateMilestoneMutation,
 } from 'mutations'
 import { useRouter } from 'next/router'
-import { detailMilestoneQuery, milestonesByProjectNormalQuery } from 'queries/milestone'
+import { detailMilestoneQuery, milestonesByProjectNormalQuery } from 'queries'
 import React, { useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { MdDriveFileRenameOutline, MdOutlineDeleteOutline, MdOutlineMoreVert } from 'react-icons/md'
@@ -48,7 +44,6 @@ import { NextLayout } from 'type/element/layout'
 import { milestoneForm } from 'type/form/basicFormType'
 import { TColumn } from 'type/tableTypes'
 import { milestoneValidate } from 'utils/validate'
-import Loading from 'components/Loading'
 import { milestoneType } from 'type/basicTypes'
 
 const milestones: NextLayout = () => {

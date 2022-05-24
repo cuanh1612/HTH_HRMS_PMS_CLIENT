@@ -20,7 +20,7 @@ import { MdOutlineExpandLess, MdOutlineExpandMore } from 'react-icons/md'
 import { IInput } from 'type/element/commom'
 import { setTime as setTimeInit } from 'utils/time'
 
-const TimePicker = ({
+export const TimePicker = ({
 	name,
 	label,
 	form,
@@ -243,5 +243,3 @@ const TimePicker = ({
 		/>
 	)
 }
-
-export default TimePicker

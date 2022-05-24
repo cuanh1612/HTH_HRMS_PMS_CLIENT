@@ -1,5 +1,5 @@
 import { Box, Button, Grid, GridItem, Text, VStack } from '@chakra-ui/react'
-import Loading from 'components/Loading'
+import {Loading }from 'components/common'
 import { AuthContext } from 'contexts/AuthContext'
 import { updateProjectDiscussionReplyMutation } from 'mutations'
 import { GetServerSideProps } from 'next'
@@ -8,7 +8,7 @@ import { useRouter } from 'next/router'
 import {
 	allRepliesByDiscussionQuery,
 	detailDiscussionReplyQuery,
-} from 'queries/projectDiscussionReply'
+} from 'queries'
 import { useContext, useEffect, useState } from 'react'
 import { AiOutlineCheck } from 'react-icons/ai'
 import 'react-quill/dist/quill.bubble.css'

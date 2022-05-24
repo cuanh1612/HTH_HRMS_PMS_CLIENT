@@ -19,8 +19,7 @@ import {
 	Tr,
 	VStack,
 } from '@chakra-ui/react'
-import ButtonIcon from 'components/ButtonIcon'
-import Loading from 'components/Loading'
+import {ButtonIcon, Loading} from 'components/common'
 import { AuthContext } from 'contexts/AuthContext'
 import {
 	createProjectDiscussionCategoryMutation,
@@ -28,7 +27,7 @@ import {
 	updateProjectDiscussionCategoryMutation,
 } from 'mutations'
 import { useRouter } from 'next/router'
-import { allProjectDiscussionCategoryQuery } from 'queries/projectDiscussionCategory'
+import { allProjectDiscussionCategoryQuery } from 'queries'
 import { ChangeEventHandler, useContext, useEffect, useState } from 'react'
 import { AiOutlineCheck } from 'react-icons/ai'
 import { MdDeleteOutline } from 'react-icons/md'

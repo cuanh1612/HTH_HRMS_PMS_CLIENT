@@ -12,19 +12,14 @@ import {
 	VStack,
 } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { Input } from 'components/form/Input'
-import { Select } from 'components/form/Select'
-import SelectCustom from 'components/form/SelectCustom'
-import SelectMany from 'components/form/SelectMany'
+import { Input, Select, SelectCustom, SelectMany} from 'components/form'
+import {Loading} from 'components/common'
 import Modal from 'components/modal/Modal'
 import { AuthContext } from 'contexts/AuthContext'
-import { updateTaskMutation } from 'mutations'
+import { updateTaskMutation } from 'mutations/task'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
-import { milestonesByProjectNormalQuery } from 'queries/milestone'
-import { allStatusQuery } from 'queries/status'
-import { detailTaskQuery } from 'queries/task'
-import { allTaskCategoriesQuery } from 'queries/taskCategory'
+import { milestonesByProjectNormalQuery, allStatusQuery, detailTaskQuery, allTaskCategoriesQuery} from 'queries'
 import { useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { AiFillCaretDown, AiFillCaretUp, AiOutlineCheck } from 'react-icons/ai'
@@ -442,7 +437,7 @@ export default function UpdateTask({ onCloseDrawer, taskIdProp }: IUpdateTaskPro
 			>
 				Save
 			</Button>
-			{/* {statusCreProjectNote == 'running' && <Loading />} */}
+			{statusUpTask == 'running' && <Loading />}
 
 			{/* Modal department and designation */}
 			<Modal

@@ -8,7 +8,7 @@ export interface IDrawerItemProps {
 	Icon: IconType
 }
 
-export default function DrawerItem({ title, Icon, url }: IDrawerItemProps) {
+export const DrawerItem = ({ title, Icon, url }: IDrawerItemProps)=> {
 	return (
 		<Link href={url} passHref>
 			<Button

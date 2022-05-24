@@ -1,6 +1,6 @@
 import { Box, Button, Grid, GridItem } from '@chakra-ui/react'
-import { Input } from 'components/form/Input'
-import Loading from 'components/Loading'
+import { Input } from 'components/form'
+import {Loading }from 'components/common'
 import { AuthContext } from 'contexts/AuthContext'
 import { updateHolidayMutation } from 'mutations'
 import { useRouter } from 'next/router'

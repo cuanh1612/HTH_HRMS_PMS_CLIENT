@@ -16,6 +16,14 @@ export const allStatusRequest = async (url: string) => {
 	})
 }
 
+// get detail status 
+export const detailStatusRequest = async (url: string) => {
+	return await getData<statusMutaionResponse>({
+		url: `http://localhost:4000/api/${url}`,
+	})
+}
+
+
 //Function handle to change position
 export async function changePositionRequest({
 	idStatus1,

@@ -2,7 +2,7 @@ import {
 	createNoticeBoardForm, updateNoticeBoardForm
 } from 'type/form/basicFormType'
 import { NoticeBoardMutaionResponse } from 'type/mutationResponses'
-import { getData, postData, putData } from 'utils/fetchData'
+import { deleteData, getData, postData, putData } from 'utils/fetchData'
 
 //Function handle create
 export async function createNoticeBoardRequest(inputCreate: createNoticeBoardForm) {
@@ -16,6 +16,13 @@ export async function createNoticeBoardRequest(inputCreate: createNoticeBoardFor
 
 //Function handle get detail notice board
 export const detailNoticeBoardRequest = async (url: string) => {
+	return await getData<NoticeBoardMutaionResponse>({
+		url: `http://localhost:4000/api/${url}`,
+	})
+}
+
+// get all notice board
+export const allNoticeBoardRequest = async (url: string) => {
 	return await getData<NoticeBoardMutaionResponse>({
 		url: `http://localhost:4000/api/${url}`,
 	})
@@ -36,3 +43,23 @@ export async function updateNoticeBoardtRequest({
 
 	return resultFetch
 }
+
+
+//Handle to delete notice
+export const deleteNoticeRequest = async (id?: string | number) => {
+	return await deleteData<NoticeBoardMutaionResponse>({
+		url: `http://localhost:4000/api/notice-boards/${id}`,
+	})
+}
+
+
+// Handle to delete many notices
+export const deleteNoticesRequest = async (ids: number[]) => {
+	return await postData<NoticeBoardMutaionResponse>({
+		url: `http://localhost:4000/api/notice-boards/delete-many`,
+		body: {
+			noticeBoards: ids,
+		},
+	})
+}
+

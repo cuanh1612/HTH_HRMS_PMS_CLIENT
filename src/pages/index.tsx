@@ -1,3 +1,4 @@
+import { Box } from '@chakra-ui/react'
 import { AuthContext } from 'contexts/AuthContext'
 import { useRouter } from 'next/router'
 import React, { useContext, useEffect, useState } from 'react'
@@ -214,11 +215,102 @@ export default function index() {
 		}
 	}, [isAuthenticated])
 	return (
-		<div
+		<Box
+			height={'100vh'}
+			border={'1px solid red'}
 			style={{
-				display: 'flex',
+				position: 'relative',
+				overflow: 'auto',
+				minHeight: '100vh'
 			}}
 		>
+			<p style={{position: 'sticky', top: 0, width: 200, height: 50, marginTop: 100, background:'red'}}>
+				{
+					new Date(`${new Date().getMonth() + 1}-`).getHours()
+				}
+			</p>
+			<p>fgfgdgdfdfdg</p>
+			<p>fgfgdgdfdfdg</p>
+			<p>fgfgdgdfdfdg</p>
+			<p>fgfgdgdfdfdg</p>
+			<p>fgfgdgdfdfdg</p>
+			<p>fgfgdgdfdfdg</p>
+			<p>fgfgdgdfdfdg</p>
+			<p>fgfgdgdfdfdg</p>
+			<p>fgfgdgdfdfdg</p>
+			<p>fgfgdgdfdfdg</p>
+			<p>fgfgdgdfdfdg</p>
+			<p>fgfgdgdfdfdg</p>
+			<p>fgfgdgdfdfdg</p>
+			<p>fgfgdgdfdfdg</p>
+			<p>fgfgdgdfdfdg</p>
+			<p>fgfgdgdfdfdg</p>
+			<p>fgfgdgdfdfdg</p>
+			<p>fgfgdgdfdfdg</p>
+			<p>fgfgdgdfdfdg</p>
+			<p>fgfgdgdfdfdg</p>
+			<p>fgfgdgdfdfdg</p>
+			<p>fgfgdgdfdfdg</p>
+			<p>fgfgdgdfdfdg</p>
+			<p>fgfgdgdfdfdg</p>
+			<p>fgfgdgdfdfdg</p>
+			<p>fgfgdgdfdfdg</p>
+			<p>fgfgdgdfdfdg</p>
+			<p>fgfgdgdfdfdg</p>
+			<p>fgfgdgdfdfdg</p>
+			<p>fgfgdgdfdfdg</p>
+			<p>fgfgdgdfdfdg</p>
+			<p>fgfgdgdfdfdg</p>
+			<p>fgfgdgdfdfdg</p>
+			<p>fgfgdgdfdfdg</p>
+			<p>fgfgdgdfdfdg</p>
+			<p>fgfgdgdfdfdg</p>
+			<p>fgfgdgdfdfdg</p>
+			<p>fgfgdgdfdfdg</p>
+			<p>fgfgdgdfdfdg</p>
+			<p>fgfgdgdfdfdg</p>
+			<p>fgfgdgdfdfdg</p>
+			<p>fgfgdgdfdfdg</p>
+			<p>fgfgdgdfdfdg</p>
+			<p>fgfgdgdfdfdg</p>
+			<p>fgfgdgdfdfdg</p>
+			<p>fgfgdgdfdfdg</p>
+			<p>fgfgdgdfdfdg</p>
+			<p>fgfgdgdfdfdg</p>
+			<p>fgfgdgdfdfdg</p>
+			<p>fgfgdgdfdfdg</p>
+			<p>fgfgdgdfdfdg</p>
+			<p>fgfgdgdfdfdg</p>
+			<p>fgfgdgdfdfdg</p>
+			<p>fgfgdgdfdfdg</p>
+			<p>fgfgdgdfdfdg</p>
+			<p>fgfgdgdfdfdg</p>
+			<p>fgfgdgdfdfdg</p>
+			<p>fgfgdgdfdfdg</p>
+			<p>fgfgdgdfdfdg</p>
+			<p>fgfgdgdfdfdg</p>
+			<p>fgfgdgdfdfdg</p>
+			<p>fgfgdgdfdfdg</p>
+			<p>fgfgdgdfdfdg</p>
+			<p>fgfgdgdfdfdg</p>
+			<p>fgfgdgdfdfdg</p>
+			<p>fgfgdgdfdfdg</p>
+			<p>fgfgdgdfdfdg</p>
+			<p>fgfgdgdfdfdg</p>
+			<p>fgfgdgdfdfdg</p>
+			<p>fgfgdgdfdfdg</p>
+			<p>fgfgdgdfdfdg</p>
+			<p>fgfgdgdfdfdg</p>
+			<p>fgfgdgdfdfdg</p>
+			<p>fgfgdgdfdfdg</p>
+			<p>fgfgdgdfdfdg</p>
+			<p>fgfgdgdfdfdg</p>
+			<p>fgfgdgdfdfdg</p>
+			<p>fgfgdgdfdfdg</p>
+			<p>fgfgdgdfdfdg</p>
+			<p>fgfgdgdfdfdg</p>
+			<p>fgfgdgdfdfdg</p>
+			<p>fgfgdgdfdfdg</p>
 			<DragDropContext onDragEnd={onDragEnd}>
 				<Droppable
 					isCombineEnabled={true}
@@ -242,6 +334,6 @@ export default function index() {
 					)}
 				</Droppable>
 			</DragDropContext>
-		</div>
+		</Box>
 	)
 }

@@ -1,4 +1,4 @@
-import { Box, Center, useToast } from '@chakra-ui/react'
+import { Box, Center, useDisclosure, useToast } from '@chakra-ui/react'
 import { currentUserQuery } from 'queries/auth'
 import {
 	createContext,
@@ -39,6 +39,9 @@ interface IAuthContext {
 	socket: Socket<DefaultEventsMap, DefaultEventsMap> | null
 	setContractUrls: (id: string | number) => void
 	contractUrls?: IContractUrls
+	isOpenMenu: boolean
+	onOpenMenu: ()=> void
+	onCloseMenu: ()=> void
 }
 
 const defaultIsAuthenticated = null
@@ -53,10 +56,15 @@ export const AuthContext = createContext<IAuthContext>({
 	setToast: () => {},
 	handleLoading: () => {},
 	socket: null,
-	setContractUrls: () => {}
+	setContractUrls: () => {},
+	isOpenMenu: false,
+	onOpenMenu: ()=> {},
+	onCloseMenu: ()=> {},
 })
 
 const AuthContextProvider = ({ children }: { children: ReactNode }) => {
+	// set open menu
+	const {isOpen, onOpen, onClose} = useDisclosure()
 	// use toast
 	const toast = useToast()
 	const setToast: TToast = ({ type, msg }) => {
@@ -157,7 +165,7 @@ const AuthContextProvider = ({ children }: { children: ReactNode }) => {
 		}
 	}, [socket, currentUser])
 
-	const authContextData = {
+	const authContextData: IAuthContext = {
 		isAuthenticated,
 		checkAuth,
 		currentUser,
@@ -168,7 +176,10 @@ const AuthContextProvider = ({ children }: { children: ReactNode }) => {
 		handleLoading,
 		socket,
 		contractUrls,
-		setContractUrls: ContractUrlsHandle
+		setContractUrls: ContractUrlsHandle,
+		isOpenMenu: isOpen,
+		onOpenMenu: onOpen,
+		onCloseMenu: onClose
 	}
 
 	return (

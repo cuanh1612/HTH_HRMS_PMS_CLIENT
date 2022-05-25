@@ -176,7 +176,7 @@ export interface SalaryMutaionResponse extends commonResponse {
 
 export interface NoticeBoardMutaionResponse extends commonResponse {
 	noticeBoard?: noticeBoardType
-	noticeBoards?: noticeBoardType
+	noticeBoards?: noticeBoardType[]
 }
 
 export interface ProjectDisucssionRoomMutaionResponse extends commonResponse {

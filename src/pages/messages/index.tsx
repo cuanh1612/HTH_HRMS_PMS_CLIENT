@@ -14,8 +14,10 @@ import { createConversationReplyForm } from 'type/form/basicFormType'
 import AddConversations from './add-conversations'
 import { AiOutlineMenu, AiOutlineSend } from 'react-icons/ai'
 import {Drawer} from 'components/Drawer'
+import { NextLayout } from 'type/element/layout'
+import { ClientLayout } from 'components/layouts'
 
-export default function Messages() {
+const Messages:NextLayout = ()=> {
 	const { isAuthenticated, handleLoading, setToast, currentUser, socket } =
 		useContext(AuthContext)
 	const router = useRouter()
@@ -195,7 +197,7 @@ export default function Messages() {
 	})
 
 	return (
-		<Box pos="relative" height={'100vh'} p={6}>
+		<Box minH={'500px'} pos="relative" height={'calc( 100vh - 130px )'}>
 			<Grid templateColumns="repeat(6, 1fr)" gap={0} height={'100%'}>
 				<GridItem
 					w="100%"
@@ -372,3 +374,7 @@ export default function Messages() {
 		</Box>
 	)
 }
+
+Messages.getLayout = ClientLayout
+
+export default Messages

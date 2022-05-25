@@ -76,7 +76,7 @@ const Employees: NextLayout = () => {
 	const { isOpen: isOpenAdd, onOpen: onOpenAdd, onClose: onCloseAdd } = useDisclosure()
 	const { isOpen: isOpenUpdate, onOpen: onOpenUpdate, onClose: onCloseUpdate } = useDisclosure()
 
-	// set isOpen of dialog to filters
+	// set isOpen of drawer to filters
 	const { isOpen: isOpenFilter, onOpen: onOpenFilter, onClose: onCloseFilter } = useDisclosure()
 
 	// set isOpen of dialog to delete one

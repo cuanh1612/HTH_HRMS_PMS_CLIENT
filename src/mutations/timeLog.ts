@@ -1,4 +1,4 @@
-import { createTimeLogRequest } from 'requests/timeLog'
+import { createTimeLogRequest, updateTimeLogRequest } from 'requests/timeLog'
 import { TToast } from 'type/basicTypes'
 import useMutation from 'use-mutation'
 
@@ -13,3 +13,16 @@ export const createTimeLogMutation = (setToast: TToast) => {
 		},
 	})
 }
+
+//update
+export const updateTimeLogMutation = (setToast: TToast) => {
+	return useMutation(updateTimeLogRequest, {
+		onFailure({ error }) {
+			setToast({
+				msg: error.message,
+				type: 'error',
+			})
+		},
+	})
+}
+

@@ -560,7 +560,18 @@ export type updateTaskCommentForm = {
 export type createProjectTimeLogForm = {
 	project: number
 	task: number
-	employee: number
+	employee?: number
+	starts_on_date: Date
+	ends_on_date: Date
+	starts_on_time: string
+	ends_on_time: string
+	memo: string
+}
+
+export type updateProjectTimeLogForm = {
+	project: number
+	task: number
+	employee?: number
 	starts_on_date: Date
 	ends_on_date: Date
 	starts_on_time: string

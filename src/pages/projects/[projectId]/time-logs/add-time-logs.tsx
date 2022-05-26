@@ -42,6 +42,7 @@ export default function AddTimeLog({ onCloseDrawer }: IAddTimeLogProps) {
 	const [optionTasks, setOptionTasks] = useState<IOption[]>([])
 	const [optionEmployees, setOptionEmployees] = useState<IOption[]>([])
 	const [selectedTaskId, setSelectedTaskId] = useState<number | string>()
+	const [selectedEmployeeId, setSelectedEmployeeId] = useState<IOption>()
 
 	//Query -------------------------------------------------------------
 	// get data detail project
@@ -140,7 +141,13 @@ export default function AddTimeLog({ onCloseDrawer }: IAddTimeLogProps) {
 				})
 			})
 
+			//When refetch data tasks, value employeeid existing, need to clear option selected employee and employee id form
 			setOptionEmployees(newOptionEmployees)
+			setSelectedEmployeeId({
+				label: <Text color={"gray.400"}>Select...</Text>,
+				value: undefined
+			})
+			formSetting.setValue('employee', undefined)
 		}
 	}, [detailTaskSelected])
 
@@ -192,6 +199,7 @@ export default function AddTimeLog({ onCloseDrawer }: IAddTimeLogProps) {
 							form={formSetting}
 							options={optionEmployees}
 							required={true}
+							selectedOption={selectedEmployeeId}
 						/>
 					</GridItem>
 

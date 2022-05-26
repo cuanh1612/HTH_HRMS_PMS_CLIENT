@@ -16,7 +16,12 @@ import { AuthContext } from 'contexts/AuthContext'
 import { createTimeLogMutation } from 'mutations/timeLog'
 import { GetServerSideProps } from 'next'
 import { useRouter } from 'next/router'
-import { allTasksByProjectQuery, detailProjectQuery, detailTaskQuery } from 'queries'
+import {
+	allTasksByProjectQuery,
+	detailProjectQuery,
+	detailTaskQuery,
+	timeLogsByProjectQuery,
+} from 'queries'
 import { useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { AiOutlineCheck } from 'react-icons/ai'
@@ -27,6 +32,7 @@ import 'react-quill/dist/quill.snow.css'
 import { IOption } from 'type/basicTypes'
 import { createProjectTimeLogForm } from 'type/form/basicFormType'
 import { projectMutaionResponse } from 'type/mutationResponses'
+import { compareDateTime } from 'utils/time'
 import { CreateProjectTimeLogValidate } from 'utils/validate'
 
 export interface IAddTimeLogProps {
@@ -51,6 +57,9 @@ export default function AddTimeLog({ onCloseDrawer }: IAddTimeLogProps) {
 	const { data: allTasksProject } = allTasksByProjectQuery(isAuthenticated, projectId as string)
 
 	const { data: detailTaskSelected } = detailTaskQuery(isAuthenticated, selectedTaskId)
+
+	// refetch all time log by project
+	const { mutate: refetchTimeLogs } = timeLogsByProjectQuery(isAuthenticated, projectId)
 
 	//mutation -----------------------------------------------------------
 	const [mutateCreTimeLog, { status: statusCreTimeLog, data: dataCreTimeLog }] =
@@ -80,6 +89,18 @@ export default function AddTimeLog({ onCloseDrawer }: IAddTimeLogProps) {
 			})
 		} else {
 			values.project = Number(projectId)
+			const invalid = compareDateTime(
+				new Date(values.starts_on_date).toLocaleDateString(),
+				new Date(values.ends_on_date).toLocaleDateString(),
+				values.starts_on_time,
+				values.ends_on_time
+			)
+			if(invalid) {
+				setToast({
+					msg: 'The end time must be greater than the start time of the time log',
+					type: 'error'
+				})
+			}
 			mutateCreTimeLog(values)
 		}
 	}
@@ -144,8 +165,8 @@ export default function AddTimeLog({ onCloseDrawer }: IAddTimeLogProps) {
 			//When refetch data tasks, value employeeid existing, need to clear option selected employee and employee id form
 			setOptionEmployees(newOptionEmployees)
 			setSelectedEmployeeId({
-				label: <Text color={"gray.400"}>Select...</Text>,
-				value: undefined
+				label: <Text color={'gray.400'}>Select...</Text>,
+				value: undefined,
 			})
 			formSetting.setValue('employee', undefined)
 		}
@@ -163,6 +184,8 @@ export default function AddTimeLog({ onCloseDrawer }: IAddTimeLogProps) {
 				type: 'success',
 				msg: dataCreTimeLog?.message as string,
 			})
+
+			refetchTimeLogs()
 		}
 	}, [statusCreTimeLog])
 

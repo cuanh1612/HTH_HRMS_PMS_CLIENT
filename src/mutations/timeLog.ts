@@ -1,4 +1,4 @@
-import { createTimeLogRequest, updateTimeLogRequest } from 'requests/timeLog'
+import { createTimeLogRequest, deleteTimeLogRequest, deleteTimeLogsRequest, updateTimeLogRequest } from 'requests/timeLog'
 import { TToast } from 'type/basicTypes'
 import useMutation from 'use-mutation'
 
@@ -25,4 +25,30 @@ export const updateTimeLogMutation = (setToast: TToast) => {
 		},
 	})
 }
+
+
+// delete one
+export const deleteTimeLogMutation = (setToast: TToast) => {
+	return useMutation(deleteTimeLogRequest, {
+		onFailure({ error }) {
+			setToast({
+				msg: error.message,
+				type: 'error',
+			})
+		},
+	})
+}
+
+// delete many
+export const deleteTimeLogsMutation = (setToast: TToast) => {
+	return useMutation(deleteTimeLogsRequest, {
+		onFailure({ error }) {
+			setToast({
+				msg: error.message,
+				type: 'error',
+			})
+		},
+	})
+}
+
 

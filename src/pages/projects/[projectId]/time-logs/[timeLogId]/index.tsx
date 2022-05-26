@@ -7,13 +7,14 @@ import { useContext, useEffect } from 'react'
 import 'react-quill/dist/quill.bubble.css'
 import 'react-quill/dist/quill.snow.css'
 import { projectMutaionResponse } from 'type/mutationResponses'
+import {deleteTimeLogMutation} from 'mutations'
 
 export interface IDetailTimeLogProps {
 	timeLogIdProp?: string | number
 }
 
 export default function DetailTimeLog({ timeLogIdProp }: IDetailTimeLogProps) {
-	const { isAuthenticated, handleLoading } = useContext(AuthContext)
+	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
 	const router = useRouter()
 	const { timeLogId: timeLogIdRouter } = router.query
 
@@ -43,55 +44,68 @@ export default function DetailTimeLog({ timeLogIdProp }: IDetailTimeLogProps) {
 						Start Time:
 					</GridItem>
 					<GridItem w="100%" colSpan={[2, 1]}>
-						{detailTimeLog?.timeLog?.starts_on_date} {detailTimeLog?.timeLog?.starts_on_time}
+						{detailTimeLog?.timeLog?.starts_on_date}{' '}
+						{detailTimeLog?.timeLog?.starts_on_time}
 					</GridItem>
-                    <GridItem w="100%" colSpan={[2, 1]} color={'gray.400'}>
+					<GridItem w="100%" colSpan={[2, 1]} color={'gray.400'}>
 						End Time:
 					</GridItem>
 					<GridItem w="100%" colSpan={[2, 1]}>
-						{detailTimeLog?.timeLog?.ends_on_date} {detailTimeLog?.timeLog?.ends_on_time}
+						{detailTimeLog?.timeLog?.ends_on_date}{' '}
+						{detailTimeLog?.timeLog?.ends_on_time}
 					</GridItem>
-                    <GridItem w="100%" colSpan={[2, 1]} color={'gray.400'}>
+					<GridItem w="100%" colSpan={[2, 1]} color={'gray.400'}>
 						Total Hours:
 					</GridItem>
 					<GridItem w="100%" colSpan={[2, 1]}>
-						{detailTimeLog?.timeLog?.total_hours || "0"} hrs
+						{detailTimeLog?.timeLog?.total_hours || '0'} hrs
 					</GridItem>
-                    <GridItem w="100%" colSpan={[2, 1]} color={'gray.400'}>
+					<GridItem w="100%" colSpan={[2, 1]} color={'gray.400'}>
 						Earnings:
 					</GridItem>
 					<GridItem w="100%" colSpan={[2, 1]}>
-						${detailTimeLog?.timeLog?.earnings}
+						{Intl.NumberFormat('en-US', {
+							style: 'currency',
+							currency: 'USD',
+							useGrouping: false,
+						}).format(Number(detailTimeLog?.timeLog?.earnings || 0))}
 					</GridItem>
-                    <GridItem w="100%" colSpan={[2, 1]} color={'gray.400'}>
+					<GridItem w="100%" colSpan={[2, 1]} color={'gray.400'}>
 						Memo:
 					</GridItem>
 					<GridItem w="100%" colSpan={[2, 1]}>
 						{detailTimeLog?.timeLog?.memo}
 					</GridItem>
-                    <GridItem w="100%" colSpan={[2, 1]} color={'gray.400'}>
+					<GridItem w="100%" colSpan={[2, 1]} color={'gray.400'}>
 						Project:
 					</GridItem>
 					<GridItem w="100%" colSpan={[2, 1]}>
 						{detailTimeLog?.timeLog?.project.name}
 					</GridItem>
-                    <GridItem w="100%" colSpan={[2, 1]} color={'gray.400'}>
+					<GridItem w="100%" colSpan={[2, 1]} color={'gray.400'}>
 						Task:
 					</GridItem>
 					<GridItem w="100%" colSpan={[2, 1]}>
 						{detailTimeLog?.timeLog?.task?.name}
 					</GridItem>
-                    <GridItem w="100%" colSpan={[2, 1]} color={'gray.400'}>
+					<GridItem w="100%" colSpan={[2, 1]} color={'gray.400'}>
 						Employee:
 					</GridItem>
 					<GridItem w="100%" colSpan={[2, 1]}>
 						<HStack>
-                            <Avatar size={"sm"} src={detailTimeLog?.timeLog?.employee?.avatar?.url} name={detailTimeLog?.timeLog?.employee?.name}/>
-                            <VStack align={"start"}>
-                                <Text>{detailTimeLog?.timeLog?.employee?.name}</Text>
-                                <Text fontSize={14} color={"gray.400"}>{detailTimeLog?.timeLog?.employee?.designation || detailTimeLog?.timeLog?.employee?.email}</Text>
-                            </VStack>
-                        </HStack>
+							<Avatar
+								size={'sm'}
+								src={detailTimeLog?.timeLog?.employee?.avatar?.url}
+								name={detailTimeLog?.timeLog?.employee?.name}
+							/>
+							<VStack align={'start'}>
+								<Text>{detailTimeLog?.timeLog?.employee?.name}</Text>
+								<Text fontSize={14} color={'gray.400'}>
+									{detailTimeLog?.timeLog?.employee?.designation?.name ||
+										detailTimeLog?.timeLog?.employee?.email}
+								</Text>
+							</VStack>
+						</HStack>
 					</GridItem>
 				</Grid>
 			</Box>

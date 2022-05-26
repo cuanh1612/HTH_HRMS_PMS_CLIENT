@@ -7,7 +7,7 @@ import {
 	HStack,
 	Input as ChakraInput,
 	Text,
-	VStack
+	VStack,
 } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Loading } from 'components/common'
@@ -16,8 +16,13 @@ import { AuthContext } from 'contexts/AuthContext'
 import { updateTimeLogMutation } from 'mutations/timeLog'
 import { GetServerSideProps } from 'next'
 import { useRouter } from 'next/router'
-import { allTasksByProjectQuery, detailProjectQuery, detailTaskQuery } from 'queries'
-import { detailTimeLogQuery } from 'queries/timeLog'
+import {
+	allTasksByProjectQuery,
+	detailProjectQuery,
+	detailTaskQuery,
+	timeLogsByProjectQuery,
+} from 'queries'
+import { detailTimeLogQuery } from 'queries'
 import { useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { AiOutlineCheck } from 'react-icons/ai'
@@ -28,6 +33,7 @@ import 'react-quill/dist/quill.snow.css'
 import { IOption } from 'type/basicTypes'
 import { updateProjectTimeLogForm } from 'type/form/basicFormType'
 import { projectMutaionResponse } from 'type/mutationResponses'
+import { compareDateTime } from 'utils/time'
 import { CreateProjectTimeLogValidate } from 'utils/validate'
 
 export interface IUpdateTimeLogProps {
@@ -60,6 +66,9 @@ export default function UpdateTimeLog({ onCloseDrawer, timeLogIdProp }: IUpdateT
 		timeLogIdProp || (timeLogIdRouter as string)
 	)
 
+	// refetch all time log by project
+	const { mutate: refetchTimeLogs } = timeLogsByProjectQuery(isAuthenticated, projectId)
+
 	//mutation -----------------------------------------------------------
 	const [mutateUpdateTimeLog, { status: statusUpdateTimeLog, data: dataUpdateTimeLog }] =
 		updateTimeLogMutation(setToast)
@@ -88,9 +97,21 @@ export default function UpdateTimeLog({ onCloseDrawer, timeLogIdProp }: IUpdateT
 			})
 		} else {
 			values.project = Number(projectId)
+			const invalid = compareDateTime(
+				new Date(values.starts_on_date).toLocaleDateString(),
+				new Date(values.ends_on_date).toLocaleDateString(),
+				values.starts_on_time,
+				values.ends_on_time
+			)
+			if (invalid) {
+				setToast({
+					msg: 'The end time must be greater than the start time of the time log',
+					type: 'error',
+				})
+			}
 			mutateUpdateTimeLog({
 				inputUpdate: values,
-				timeLogId: timeLogIdProp || timeLogIdRouter as string
+				timeLogId: timeLogIdProp || (timeLogIdRouter as string),
 			})
 		}
 	}
@@ -174,6 +195,7 @@ export default function UpdateTimeLog({ onCloseDrawer, timeLogIdProp }: IUpdateT
 				type: 'success',
 				msg: dataUpdateTimeLog?.message as string,
 			})
+			refetchTimeLogs()
 		}
 	}, [statusUpdateTimeLog])
 
@@ -181,13 +203,13 @@ export default function UpdateTimeLog({ onCloseDrawer, timeLogIdProp }: IUpdateT
 	useEffect(() => {
 		if (detailTimeLog?.timeLog) {
 			formSetting.reset({
-				task: detailTimeLog.timeLog.task?.id || undefined,
-				employee: detailTimeLog.timeLog.employee?.id || undefined,
-				memo: detailTimeLog.timeLog.memo || '',
-				starts_on_date: detailTimeLog.timeLog.starts_on_date || undefined,
-				starts_on_time: detailTimeLog.timeLog.starts_on_time || undefined,
-				ends_on_date: detailTimeLog.timeLog.ends_on_date || undefined,
-				ends_on_time: detailTimeLog.timeLog.ends_on_time || undefined,
+				task: detailTimeLog.timeLog.task?.id,
+				employee: detailTimeLog.timeLog.employee?.id,
+				memo: detailTimeLog.timeLog.memo,
+				starts_on_date: detailTimeLog.timeLog.starts_on_date,
+				starts_on_time: detailTimeLog.timeLog.starts_on_time,
+				ends_on_date: detailTimeLog.timeLog.ends_on_date,
+				ends_on_time: detailTimeLog.timeLog.ends_on_time,
 			})
 		}
 
@@ -284,6 +306,7 @@ export default function UpdateTimeLog({ onCloseDrawer, timeLogIdProp }: IUpdateT
 							name={'starts_on_time'}
 							label={'Starts On Time'}
 							required
+							timeInit={formSetting.getValues()['starts_on_time']}
 						/>
 					</GridItem>
 
@@ -304,6 +327,7 @@ export default function UpdateTimeLog({ onCloseDrawer, timeLogIdProp }: IUpdateT
 							name={'ends_on_time'}
 							label={'Ends On Time'}
 							required
+							timeInit={formSetting.getValues()['ends_on_time']}
 						/>
 					</GridItem>
 				</Grid>

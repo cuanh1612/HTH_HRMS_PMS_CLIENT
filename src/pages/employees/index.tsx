@@ -157,6 +157,7 @@ const Employees: NextLayout = () => {
 				type: 'success',
 			})
 			refetchAllEmpl()
+			setIsloading(false)
 		}
 	}, [statusDl])
 
@@ -169,6 +170,7 @@ const Employees: NextLayout = () => {
 			})
 			setDataSl(null)
 			refetchAllEmpl()
+			setIsloading(false)
 		}
 	}, [statusDlMany])
 
@@ -537,6 +539,7 @@ const Employees: NextLayout = () => {
 				content="You will not be able to recover the deleted record!"
 				isOpen={isOpenDialogDlMany}
 				onClose={onCloseDlMany}
+				
 			/>
 
 			{/* drawer to add employee */}

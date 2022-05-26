@@ -181,26 +181,37 @@ const Projects: NextLayout = () => {
 					minWidth: 250,
 					filter: selectFilter(['client', 'id']),
 					Cell: ({ value }: { value: clientType }) => (
-						<HStack w={'full'} spacing={5}>
-							<Avatar
-								flex={'none'}
-								size={'sm'}
-								name={value.name}
-								src={value.avatar?.url}
-							/>
-							<VStack w={'70%'} alignItems={'start'}>
-								<Text isTruncated w={'full'}>
-									{value.salutation
-										? `${value.salutation}. ${value.name}`
-										: value.name}
-								</Text>
-								{value.company_name && (
-									<Text isTruncated w={'full'} fontSize={'sm'} color={'gray.400'}>
-										{value.company_name}
-									</Text>
-								)}
-							</VStack>
-						</HStack>
+						<>
+							{value ? (
+								<HStack w={'full'} spacing={5}>
+									<Avatar
+										flex={'none'}
+										size={'sm'}
+										name={value.name}
+										src={value.avatar?.url}
+									/>
+									<VStack w={'70%'} alignItems={'start'}>
+										<Text isTruncated w={'full'}>
+											{value.salutation
+												? `${value.salutation}. ${value.name}`
+												: value.name}
+										</Text>
+										{value.company_name && (
+											<Text
+												isTruncated
+												w={'full'}
+												fontSize={'sm'}
+												color={'gray.400'}
+											>
+												{value.company_name}
+											</Text>
+										)}
+									</VStack>
+								</HStack>
+							) : (
+								''
+							)}
+						</>
 					),
 				},
 				{

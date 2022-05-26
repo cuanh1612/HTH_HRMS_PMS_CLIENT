@@ -440,3 +440,17 @@ export interface taskCommentType {
 	task?: taskType
 	createdAt: Date
 }
+
+export interface timeLogType {
+	id: number
+	project: projectType
+	task?: taskType
+	employee?: employeeType
+	starts_on_date: Date
+	ends_on_date: Date
+	starts_on_time: string
+	ends_on_time: string
+	memo: string
+	total_hours: number
+	earnings: Number
+}

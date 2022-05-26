@@ -14,7 +14,8 @@ export const SelectCustom = ({
 	form,
 	required = false,
 	options,
-	selectedOption
+	selectedOption,
+	onChangeValue
 }: ISelect & { form: UseFormReturn<any, any> })=> {
 	const errorColor = useColorModeValue('red.400', 'pink.400')
 
@@ -35,6 +36,11 @@ export const SelectCustom = ({
 
 		//Set value form select
 		form.setValue(name, options.value)
+
+		//Handle when change value
+		if(onChangeValue){
+			onChangeValue(options.value)
+		}
 	}
 
 	//Change value selected when form data change

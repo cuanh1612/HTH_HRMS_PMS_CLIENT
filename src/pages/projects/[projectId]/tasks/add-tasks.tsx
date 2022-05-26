@@ -78,7 +78,6 @@ export default function AddTask({ onCloseDrawer, statusId }: IAddTaskProps) {
 	const { data: dataDetailProject } = detailProjectQuery(isAuthenticated, projectId as string)
 	const { data: dataAllStatus } = allStatusQuery(isAuthenticated, projectId)
 	const { data: dataDetailStatus } = detailStatusQuery(isAuthenticated, statusId)
-	console.log(dataDetailStatus);
 	
 	const { data: dataAllMilestones } = milestonesByProjectNormalQuery(isAuthenticated, projectId)
 	// get all status tasks

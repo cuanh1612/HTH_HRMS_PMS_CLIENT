@@ -1,5 +1,5 @@
 import { AxiosError } from 'axios'
-import { detailNoticeBoardRequest } from 'requests/noticeBoard'
+import { allNoticeBoardRequest, detailNoticeBoardRequest } from 'requests/noticeBoard'
 import useSWR from 'swr'
 import { NoticeBoardMutaionResponse } from 'type/mutationResponses'
 
@@ -10,6 +10,19 @@ export const detailNoticeBoardQuery = (
 	return useSWR<NoticeBoardMutaionResponse, AxiosError>(
 		isAuthenticated && noticeBoardId ? `notice-boards/${noticeBoardId}` : null,
 		detailNoticeBoardRequest,
+		{
+			errorRetryCount: 2,
+			revalidateOnFocus: false,
+		}
+	)
+}
+
+export const allNoticeBoardQuery = (
+	isAuthenticated: boolean | null,
+) => {
+	return useSWR<NoticeBoardMutaionResponse, AxiosError>(
+		isAuthenticated ? `notice-boards` : null,
+		allNoticeBoardRequest,
 		{
 			errorRetryCount: 2,
 			revalidateOnFocus: false,

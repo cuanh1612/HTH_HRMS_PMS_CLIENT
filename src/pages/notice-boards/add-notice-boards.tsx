@@ -24,6 +24,7 @@ import 'react-quill/dist/quill.bubble.css'
 import 'react-quill/dist/quill.snow.css'
 import { createNoticeBoardForm } from 'type/form/basicFormType'
 import { createNoticeBoardValidate } from 'utils/validate'
+import { allNoticeBoardQuery } from 'queries'
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
 
@@ -43,6 +44,9 @@ export default function AddNoticeBoard({ onCloseDrawer }: IAddNoticeBoardProps) 
 	const [mutateCreNoticeBoard, { status: statusCreNoticeBoard, data: dataCreNoticeBoard }] =
 		createNoticeBoardMutation(setToast)
 
+	// refetch all norice
+	const { mutate: refetchNotice} = allNoticeBoardQuery(isAuthenticated)
+	
 	//User effect ---------------------------------------------------------------
 	//Handle check loged in
 	useEffect(() => {
@@ -67,6 +71,8 @@ export default function AddNoticeBoard({ onCloseDrawer }: IAddNoticeBoardProps) 
 				type: 'success',
 				msg: dataCreNoticeBoard?.message as string,
 			})
+
+			refetchNotice()
 		}
 	}, [statusCreNoticeBoard])
 

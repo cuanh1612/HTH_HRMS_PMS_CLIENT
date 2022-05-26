@@ -81,3 +81,9 @@ export interface IAttendance {
 	id?: number
 	id_Employee?: number
 }
+
+export interface ILinkItem {
+	title: string
+	icon: any
+    link: string
+}

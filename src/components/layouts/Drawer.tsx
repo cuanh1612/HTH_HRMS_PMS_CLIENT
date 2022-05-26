@@ -6,8 +6,7 @@ import {
 	DrawerHeader,
 	DrawerOverlay
 } from '@chakra-ui/react'
-import DrawerItem from 'components/DrawerItem'
-import DrawerListItem from 'components/DrawerListItem'
+import {DrawerItem, DrawerListItem } from 'components/Drawer'
 import { AiOutlineUsergroupAdd } from 'react-icons/ai'
 
 export interface IDrawerProps {

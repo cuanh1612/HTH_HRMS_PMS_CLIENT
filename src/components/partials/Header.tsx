@@ -1,7 +1,7 @@
-import { Avatar, Box, HStack, useColorMode, VStack } from '@chakra-ui/react'
+import { Avatar, Box, HStack, useBreakpoint, useColorMode, VStack } from '@chakra-ui/react'
 import { ButtonIcon } from 'components/common'
 import { AuthContext } from 'contexts/AuthContext'
-import { useContext } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { BsMoon, BsSun } from 'react-icons/bs'
 
 export const Header = () => {
@@ -9,40 +9,71 @@ export const Header = () => {
 	const { colorMode, toggleColorMode } = useColorMode()
 
 	// get user
-	const { currentUser } = useContext(AuthContext)
+	const { currentUser, onOpenMenu } = useContext(AuthContext)
+
+	const [isLarge, setIsLarge] = useState(true)
+
+	const breakpoint = useBreakpoint()
+	useEffect(() => {
+		if (breakpoint == 'md' || breakpoint == 'sm' || breakpoint == 'base') {
+			setIsLarge(false)
+		} else {
+			setIsLarge(true)
+		}
+		console.log(breakpoint)
+	}, [breakpoint])
 
 	return (
-		<HStack alignItems={'center'} justify={'space-between'} paddingBlock={4}>
-			<VStack cursor={'pointer'} role="group" alignItems={'start'} spacing={'6px'}>
-				<Box
-					_groupHover={{
-						w: '25px',
-						scale: 1.1,
-					}}
-					transform={'auto'}
-					as="span"
-					transition={'0.1s linear'}
-					background={colorMode == 'light' ? 'hu-Green.normal' : 'hu-Green.light'}
-					borderRadius="full"
-					h={'4px'}
-					w={'15px'}
-					pos="relative"
-					display={'block'}
-				></Box>
-				<Box
-					_groupHover={{
-						scale: 1.1,
-					}}
-					transform={'auto'}
-					as="span"
-					background={colorMode == 'light' ? 'hu-Green.normalA' : 'hu-Green.lightA'}
-					borderRadius="full"
-					h={'4px'}
-					w={'25px'}
-					pos="relative"
-					display={'block'}
-				></Box>
-			</VStack>
+		<HStack
+			bg={colorMode == 'light' ? 'white' : '#1a202c'}
+			marginBottom={'30px'}
+			paddingInline={10}
+			borderBottom={'1px solid gray'}
+			zIndex={10}
+			top={0}
+			position={'sticky'}
+			alignItems={'center'}
+			justify={'space-between'}
+			paddingBlock={4}
+		>
+			{!isLarge && (
+				<VStack
+					onClick={onOpenMenu}
+					cursor={'pointer'}
+					role="group"
+					alignItems={'start'}
+					spacing={'6px'}
+				>
+					<Box
+						_groupHover={{
+							w: '25px',
+							scale: 1.1,
+						}}
+						transform={'auto'}
+						as="span"
+						transition={'0.1s linear'}
+						background={colorMode == 'light' ? 'hu-Green.normal' : 'hu-Green.light'}
+						borderRadius="full"
+						h={'4px'}
+						w={'15px'}
+						pos="relative"
+						display={'block'}
+					></Box>
+					<Box
+						_groupHover={{
+							scale: 1.1,
+						}}
+						transform={'auto'}
+						as="span"
+						background={colorMode == 'light' ? 'hu-Green.normalA' : 'hu-Green.lightA'}
+						borderRadius="full"
+						h={'4px'}
+						w={'25px'}
+						pos="relative"
+						display={'block'}
+					></Box>
+				</VStack>
+			)}
 
 			<HStack spacing={5}>
 				<ButtonIcon

@@ -11,12 +11,12 @@ import {
 } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Input } from 'components/form'
-import {Loading }from 'components/common'
+import { Loading } from 'components/common'
 import { AuthContext } from 'contexts/AuthContext'
 import { updateNoticeBoardMutation } from 'mutations'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
-import { detailNoticeBoardQuery } from 'queries'
+import { allNoticeBoardQuery, detailNoticeBoardQuery } from 'queries'
 import { useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { AiOutlineCheck } from 'react-icons/ai'
@@ -30,7 +30,7 @@ const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
 
 export interface IUpdateNoticeBoardProps {
 	onCloseDrawer?: () => void
-	noticeBoardIdProp: number | null
+	noticeBoardIdProp?: number
 }
 
 export default function UpdateNoticeBoard({
@@ -51,6 +51,9 @@ export default function UpdateNoticeBoard({
 		isAuthenticated,
 		noticeBoardIdProp || (noticeBoardIdRouter as string)
 	)
+
+	// refetch all norice
+	const { mutate: refetchNotice } = allNoticeBoardQuery(isAuthenticated)
 
 	//mutation -------------------------------------------------------------------
 	const [mutateUpNoticeBoard, { status: statusUpNoticeBoard, data: dataUpNoticeBoard }] =
@@ -127,6 +130,8 @@ export default function UpdateNoticeBoard({
 				type: 'success',
 				msg: dataUpNoticeBoard?.message as string,
 			})
+
+			refetchNotice()
 		}
 	}, [statusUpNoticeBoard])
 

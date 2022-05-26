@@ -32,6 +32,7 @@ import {
 	taskCommentType,
 	taskFileType,
 	taskType,
+	timeLogType,
 	userType,
 } from './basicTypes'
 
@@ -218,4 +219,9 @@ export interface taskFileMutaionResponse extends commonResponse {
 export interface TaskCommentMutationResponse extends commonResponse {
 	taskComment?: taskCommentType
 	taskComments?: taskCommentType[]
+}
+
+export interface TimeLogMutaionResponse extends commonResponse {
+	timeLog?: timeLogType
+	timeLogs?: timeLogType[]
 }

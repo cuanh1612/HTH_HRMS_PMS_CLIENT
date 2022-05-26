@@ -31,11 +31,11 @@ export type milestoneForm = {
 }
 
 export interface EmployeesNotInProjectForm {
-	employees:  number[]
+	employees: number[]
 }
 
 export interface EmployeesByDepartmentProjectForm {
-	departments:  number[]
+	departments: number[]
 }
 
 export type createEmployeeForm = {
@@ -545,4 +545,15 @@ export type createTaskCommentForm = {
 export type updateTaskCommentForm = {
 	taskCommentId: number
 	content: string
+}
+
+export type createProjectTimeLogForm = {
+	project: number
+	task: number
+	employee: number
+	starts_on_date: Date
+	ends_on_date: Date
+	starts_on_time: string
+	ends_on_time: string
+	memo: string
 }

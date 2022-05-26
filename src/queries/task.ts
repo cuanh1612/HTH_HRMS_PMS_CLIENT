@@ -1,5 +1,5 @@
 import { AxiosError } from 'axios'
-import { detailTaskRequest } from 'requests/task'
+import { allTaskByProjectRequest, detailTaskRequest } from 'requests/task'
 import useSWR from 'swr'
 import { TaskMutaionResponse } from 'type/mutationResponses'
 
@@ -10,6 +10,20 @@ export const detailTaskQuery = (
 	return useSWR<TaskMutaionResponse, AxiosError>(
 		isAuthenticated && taskId ? `tasks/${taskId}` : null,
 		detailTaskRequest,
+		{
+			errorRetryCount: 2,
+			revalidateOnFocus: false,
+		}
+	)
+}
+
+export const allTasksByProjectQuery = (
+	isAuthenticated: boolean | null,
+	projectId: string | number | null | undefined
+) => {
+	return useSWR<TaskMutaionResponse, AxiosError>(
+		isAuthenticated && projectId ? `tasks/project/${projectId}` : null,
+		allTaskByProjectRequest,
 		{
 			errorRetryCount: 2,
 			revalidateOnFocus: false,

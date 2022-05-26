@@ -40,7 +40,7 @@ export const SelectCustom = ({
 
 		//Handle when change value
 		if(onChangeValue){
-			onChangeValue(options.value)
+			onChangeValue(options.value as string | number)
 		}
 	}
 

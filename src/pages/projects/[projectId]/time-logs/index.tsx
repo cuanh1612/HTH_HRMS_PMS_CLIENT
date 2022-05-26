@@ -6,6 +6,7 @@ import { useRouter } from 'next/router'
 import { useContext, useEffect } from 'react'
 import { projectMutaionResponse } from 'type/mutationResponses'
 import AddTimeLog from './add-time-logs'
+import DetailTimeLog from './[timeLogId]'
 import UpdateTimeLog from './[timeLogId]/update-time-logs'
 
 export interface ITimeLogsProps {}
@@ -30,6 +31,13 @@ export default function TimeLogs({}: ITimeLogsProps) {
 		onClose: onCloseUpdateTimelog,
 	} = useDisclosure()
 
+	// set open detail time log
+	const {
+		isOpen: isOpenDetailTimelog,
+		onOpen: onOpenDetailTimelog,
+		onClose: onCloseDetailTimelog,
+	} = useDisclosure()
+
 	//Useeffect ---------------------------------------------------------
 	//Handle check loged in
 	useEffect(() => {
@@ -46,6 +54,7 @@ export default function TimeLogs({}: ITimeLogsProps) {
 		<>
 			<Button onClick={onOpenAddTimeLog}>Show add time log</Button>
 			<Button onClick={onOpenUpdateTimelog}>Show update time log</Button>
+			<Button onClick={onOpenDetailTimelog}>Show detail time log</Button>
 
 			{/* drawer to add project time log */}
 			<Drawer
@@ -65,6 +74,16 @@ export default function TimeLogs({}: ITimeLogsProps) {
 				isOpen={isOpenUpdateTimelog}
 			>
 				<UpdateTimeLog onCloseDrawer={onCloseUpdateTimelog} timeLogIdProp={8} />
+			</Drawer>
+
+			{/* drawer to show detail project time log */}
+			<Drawer
+				size="xl"
+				title="Detail Time Log"
+				onClose={onCloseDetailTimelog}
+				isOpen={isOpenDetailTimelog}
+			>
+				<DetailTimeLog timeLogIdProp={8} />
 			</Drawer>
 		</>
 	)

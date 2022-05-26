@@ -8,6 +8,13 @@ export const LoginValidate = yup.object({
 	password: yup.string().required('Please, enter your password'),
 })
 
+export const recoverPassValidate = yup.object({
+	email:  yup
+	.string()
+	.required('Please, enter your email')
+	.email('Please, Enter the correct email format')
+})
+
 export const CreateEmployeeValidate = yup.object({
 	employeeId: yup.string().required('Please enter employee id'),
 	email: yup
@@ -181,3 +188,18 @@ export const CreateProjectTimeLogValidate = yup.object({
 	employee: yup.number().required('Please select employee'),
 	task: yup.number().required('Please select task'),
 })
+
+export const validateResetPass = yup.object({
+	password: yup
+	  .string()
+	  .required('Please Enter your password')
+	  .matches(
+		/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{6,}$/,
+		'Must Contain 6 Characters, One Uppercase, One Lowercase, One Number and one special case Character'
+	  ),
+	passwordConfirm: yup
+	  .string()
+	  .label('Password Confirm')
+	  .required()
+	  .oneOf([yup.ref('password')], 'Passwords does not match'),
+  });

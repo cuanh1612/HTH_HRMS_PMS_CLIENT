@@ -1,4 +1,4 @@
-import { loginForm, loginGoogleForm, logoutForm, registerForm } from 'type/form/basicFormType'
+import { loginForm, loginGoogleForm, logoutForm, registerForm, TResetPassword } from 'type/form/basicFormType'
 import { authMutaionResponse } from 'type/mutationResponses'
 import { getData, postData } from 'utils/fetchData'
 
@@ -67,3 +67,22 @@ export async function reEnterPasswordRequest(inputReEnterPassword: {email: strin
 	return resultFetch
 }
 
+// recover password
+export async function recoverPasswordRequest(inputReEnterPassword: {email: string}) {
+	const resultFetch = await postData<authMutaionResponse>({
+		url: 'http://localhost:4000/api/auth/recover-password',
+		body: inputReEnterPassword,
+	})
+
+	return resultFetch
+}
+
+// reset password
+export async function resetPasswordRequest(inputReEnterPassword: TResetPassword) {
+	const resultFetch = await postData<authMutaionResponse>({
+		url: 'http://localhost:4000/api/auth/reset-password',
+		body: inputReEnterPassword,
+	})
+
+	return resultFetch
+}

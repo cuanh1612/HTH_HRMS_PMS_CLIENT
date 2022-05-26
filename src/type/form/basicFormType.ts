@@ -3,6 +3,16 @@ export type loginForm = {
 	password: string
 }
 
+export type TCoverPassword = {
+	email: string
+}
+
+export type TResetPassword = {
+	password: string,
+	activeToken: string,
+	passwordConfirm: string
+}
+
 export type loginGoogleForm = {
 	token: string
 }

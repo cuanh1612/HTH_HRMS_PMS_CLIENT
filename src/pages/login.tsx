@@ -229,7 +229,7 @@ const Login: NextLayout = () => {
 						Login with Google
 					</Button>
 					<Box as="div" w={'full'}>
-						<Link href={'/'} passHref>
+						<Link href={'/recover-password'} passHref>
 							<Box
 								color={'hu-Green.normal'}
 								cursor="pointer"

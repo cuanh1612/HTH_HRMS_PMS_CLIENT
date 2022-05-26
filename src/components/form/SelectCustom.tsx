@@ -18,6 +18,7 @@ export const SelectCustom = ({
 	onChangeValue
 }: ISelect & { form: UseFormReturn<any, any> })=> {
 	const errorColor = useColorModeValue('red.400', 'pink.400')
+	
 
 	//Sate
 	const [optionSelect, setOptionSelect] = useState<IOption | undefined>(undefined)
@@ -46,6 +47,7 @@ export const SelectCustom = ({
 	//Change value selected when form data change
 	useEffect(() => {
 		if(form.getValues(name)){
+			console.log("doi", form.getValues(name));
 			
 			const selectedOption = options.filter(option => option.value === form.getValues(name))[0]
 			setOptionSelect(selectedOption)
@@ -60,7 +62,7 @@ export const SelectCustom = ({
 				</FormLabel>
 
 				<Select
-					value={optionSelect}
+					value={optionSelect ? optionSelect : selectedOption}
 					options={options}
 					closeMenuOnSelect={false}
 					components={animatedComponents}

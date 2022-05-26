@@ -1,19 +1,19 @@
 import {
-    Avatar,
-    Box,
-    Button,
-    Grid,
-    GridItem,
-    HStack,
-    Input as ChakraInput,
-    Text,
-    VStack
+	Avatar,
+	Box,
+	Button,
+	Grid,
+	GridItem,
+	HStack,
+	Input as ChakraInput,
+	Text,
+	VStack
 } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Loading } from 'components/common'
 import { Input, SelectCustom, TimePicker } from 'components/form'
 import { AuthContext } from 'contexts/AuthContext'
-import { createTimeLogMutation } from 'mutations/timeLog'
+import { updateTimeLogMutation } from 'mutations/timeLog'
 import { GetServerSideProps } from 'next'
 import { useRouter } from 'next/router'
 import { allTasksByProjectQuery, detailProjectQuery, detailTaskQuery } from 'queries'
@@ -26,7 +26,7 @@ import { BsCalendarDate } from 'react-icons/bs'
 import 'react-quill/dist/quill.bubble.css'
 import 'react-quill/dist/quill.snow.css'
 import { IOption } from 'type/basicTypes'
-import { createProjectTimeLogForm } from 'type/form/basicFormType'
+import { updateProjectTimeLogForm } from 'type/form/basicFormType'
 import { projectMutaionResponse } from 'type/mutationResponses'
 import { CreateProjectTimeLogValidate } from 'utils/validate'
 
@@ -44,6 +44,8 @@ export default function UpdateTimeLog({ onCloseDrawer, timeLogIdProp }: IUpdateT
 	const [optionTasks, setOptionTasks] = useState<IOption[]>([])
 	const [optionEmployees, setOptionEmployees] = useState<IOption[]>([])
 	const [selectedTaskId, setSelectedTaskId] = useState<number | string>()
+	const [selectedEmployeeId, setSelectedEmployeeId] = useState<IOption>()
+	const [selectedTaskIdForSelect, setSelectedTaskIdForSelect] = useState<IOption>()
 
 	//Query -------------------------------------------------------------
 	// get data detail project
@@ -55,16 +57,15 @@ export default function UpdateTimeLog({ onCloseDrawer, timeLogIdProp }: IUpdateT
 
 	const { data: detailTimeLog } = detailTimeLogQuery(
 		isAuthenticated,
-		timeLogIdProp || timeLogIdRouter as string
+		timeLogIdProp || (timeLogIdRouter as string)
 	)
-	console.log('huy', detailTimeLog)
 
 	//mutation -----------------------------------------------------------
-	const [mutateCreTimeLog, { status: statusCreTimeLog, data: dataCreTimeLog }] =
-		createTimeLogMutation(setToast)
+	const [mutateUpdateTimeLog, { status: statusUpdateTimeLog, data: dataUpdateTimeLog }] =
+		updateTimeLogMutation(setToast)
 
-	// setForm and submit form create new project timelog -------------------------------
-	const formSetting = useForm<createProjectTimeLogForm>({
+	// setForm and submit form update new project timelog -------------------------------
+	const formSetting = useForm<updateProjectTimeLogForm>({
 		defaultValues: {
 			task: undefined,
 			employee: undefined,
@@ -79,7 +80,7 @@ export default function UpdateTimeLog({ onCloseDrawer, timeLogIdProp }: IUpdateT
 
 	const { handleSubmit } = formSetting
 
-	const onSubmit = async (values: createProjectTimeLogForm) => {
+	const onSubmit = async (values: updateProjectTimeLogForm) => {
 		if (!projectId) {
 			setToast({
 				msg: 'Not found project to add new time log',
@@ -87,7 +88,10 @@ export default function UpdateTimeLog({ onCloseDrawer, timeLogIdProp }: IUpdateT
 			})
 		} else {
 			values.project = Number(projectId)
-			mutateCreTimeLog(values)
+			mutateUpdateTimeLog({
+				inputUpdate: values,
+				timeLogId: timeLogIdProp || timeLogIdRouter as string
+			})
 		}
 	}
 
@@ -148,13 +152,19 @@ export default function UpdateTimeLog({ onCloseDrawer, timeLogIdProp }: IUpdateT
 				})
 			})
 
+			//When refetch data tasks, value employeeid existing, need to clear option selected employee and employee id form
 			setOptionEmployees(newOptionEmployees)
+			setSelectedEmployeeId({
+				label: <Text color={'gray.400'}>Select...</Text>,
+				value: undefined,
+			})
+			formSetting.setValue('employee', undefined)
 		}
 	}, [detailTaskSelected])
 
 	//Note when request success
 	useEffect(() => {
-		if (statusCreTimeLog === 'success') {
+		if (statusUpdateTimeLog === 'success') {
 			//Close drawer when using drawer
 			if (onCloseDrawer) {
 				onCloseDrawer()
@@ -162,10 +172,50 @@ export default function UpdateTimeLog({ onCloseDrawer, timeLogIdProp }: IUpdateT
 
 			setToast({
 				type: 'success',
-				msg: dataCreTimeLog?.message as string,
+				msg: dataUpdateTimeLog?.message as string,
 			})
 		}
-	}, [statusCreTimeLog])
+	}, [statusUpdateTimeLog])
+
+	//Reset data when have data detail
+	useEffect(() => {
+		if (detailTimeLog?.timeLog) {
+			formSetting.reset({
+				task: detailTimeLog.timeLog.task?.id || undefined,
+				employee: detailTimeLog.timeLog.employee?.id || undefined,
+				memo: detailTimeLog.timeLog.memo || '',
+				starts_on_date: detailTimeLog.timeLog.starts_on_date || undefined,
+				starts_on_time: detailTimeLog.timeLog.starts_on_time || undefined,
+				ends_on_date: detailTimeLog.timeLog.ends_on_date || undefined,
+				ends_on_time: detailTimeLog.timeLog.ends_on_time || undefined,
+			})
+		}
+
+		if (detailTimeLog?.timeLog?.employee) {
+			setSelectedEmployeeId({
+				label: (
+					<>
+						<HStack>
+							<Avatar
+								size={'xs'}
+								name={detailTimeLog.timeLog.employee.name}
+								src={detailTimeLog.timeLog.employee.avatar?.url}
+							/>
+							<Text>{detailTimeLog.timeLog.employee.email}</Text>
+						</HStack>
+					</>
+				),
+				value: detailTimeLog.timeLog.employee.id,
+			})
+
+			if (detailTimeLog?.timeLog?.task) {
+				setSelectedTaskIdForSelect({
+					label: detailTimeLog.timeLog.task.name,
+					value: detailTimeLog.timeLog.task.id,
+				})
+			}
+		}
+	}, [detailTimeLog])
 
 	return (
 		<>
@@ -190,6 +240,7 @@ export default function UpdateTimeLog({ onCloseDrawer, timeLogIdProp }: IUpdateT
 							options={optionTasks}
 							required={true}
 							onChangeValue={onChangeTask}
+							selectedOption={selectedTaskIdForSelect}
 						/>
 					</GridItem>
 
@@ -200,6 +251,7 @@ export default function UpdateTimeLog({ onCloseDrawer, timeLogIdProp }: IUpdateT
 							form={formSetting}
 							options={optionEmployees}
 							required={true}
+							selectedOption={selectedEmployeeId}
 						/>
 					</GridItem>
 
@@ -271,7 +323,7 @@ export default function UpdateTimeLog({ onCloseDrawer, timeLogIdProp }: IUpdateT
 				>
 					Save
 				</Button>
-				{statusCreTimeLog == 'running' && <Loading />}
+				{statusUpdateTimeLog == 'running' && <Loading />}
 			</Box>
 		</>
 	)

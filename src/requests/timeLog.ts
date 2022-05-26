@@ -1,6 +1,6 @@
-import { createProjectTimeLogForm } from 'type/form/basicFormType'
+import { createProjectTimeLogForm, updateProjectTimeLogForm } from 'type/form/basicFormType'
 import { TimeLogMutaionResponse } from 'type/mutationResponses'
-import { getData, postData } from 'utils/fetchData'
+import { getData, postData, putData } from 'utils/fetchData'
 
 //Function handle create
 export async function createTimeLogRequest(inputCreate: createProjectTimeLogForm) {
@@ -18,3 +18,20 @@ export const detailTimeLogRequest = async (url: string) => {
 		url: `http://localhost:4000/api/${url}`,
 	})
 }
+
+//Function handle update TimeLog
+export async function updateTimeLogRequest({
+	inputUpdate,
+	timeLogId,
+}: {
+	inputUpdate: updateProjectTimeLogForm
+	timeLogId: number | string
+}) {
+	const resultFetch = await putData<TimeLogMutaionResponse>({
+		url: `http://localhost:4000/api/time-logs/${timeLogId}`,
+		body: inputUpdate,
+	})
+
+	return resultFetch
+}
+

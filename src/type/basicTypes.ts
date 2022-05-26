@@ -223,7 +223,7 @@ export interface contractFileType {
 }
 
 export interface IOption {
-	value: string | number 
+	value?: string | number 
 	label: string | ReactNode
 }
 

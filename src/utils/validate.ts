@@ -124,7 +124,6 @@ export const createProjectValidate = yup.object({
 	deadline: yup.date().required('Please select deadline event'),
 })
 
-
 export const updateSalaryValidate = yup.object({
 	amount: yup.number().min(1).required('Please enter field amount salary'),
 	date: yup.date().required('Please select start on date project'),
@@ -180,4 +179,8 @@ export const CreateProjectTimeLogValidate = yup.object({
 	memo: yup.string().required('Please enter field memo'),
 	employee: yup.number().required('Please select employee'),
 	task: yup.number().required('Please select task'),
+})
+
+export const updateStatusProjectValidate = yup.object({
+	project_status: yup.string().required('Please select project'),
 })

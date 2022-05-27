@@ -19,7 +19,7 @@ export const detailTaskQuery = (
 
 export const allTasksByProjectQuery = (
 	isAuthenticated: boolean | null,
-	projectId: string | number | null | undefined
+	projectId?: string | string[] | number 
 ) => {
 	return useSWR<TaskMutaionResponse, AxiosError>(
 		isAuthenticated && projectId ? `tasks/project/${projectId}` : null,

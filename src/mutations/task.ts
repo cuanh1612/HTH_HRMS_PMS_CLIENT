@@ -2,6 +2,7 @@ import {
 	changePositionRequest,
 	createTaskRequest,
 	deleteTaskRequest,
+	deleteTasksRequest,
 	updateTaskRequest,
 } from 'requests/task'
 import { TToast } from 'type/basicTypes'
@@ -46,6 +47,18 @@ export const createTaskMutation = (setToast: TToast) => {
 //update
 export const updateTaskMutation = (setToast: TToast) => {
 	return useMutation(updateTaskRequest, {
+		onFailure({ error }) {
+			setToast({
+				msg: error.message,
+				type: 'error',
+			})
+		},
+	})
+}
+
+// delete many
+export const deleteTasksMutation = (setToast: TToast) => {
+	return useMutation(deleteTasksRequest, {
 		onFailure({ error }) {
 			setToast({
 				msg: error.message,

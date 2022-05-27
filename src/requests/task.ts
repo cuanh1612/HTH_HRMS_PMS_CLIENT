@@ -74,3 +74,14 @@ export async function updateTaskRequest({
 
 	return resultFetch
 }
+
+// Handle to delete many leave
+export const deleteTasksRequest = async (ids: number[]) => {
+	return await postData<TaskMutaionResponse>({
+		url: `http://localhost:4000/api/tasks/delete-many`,
+		body: {
+			tasks: ids,
+		},
+	})
+}
+

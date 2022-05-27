@@ -114,7 +114,7 @@ const TimeLogs: NextLayout = () => {
 	)
 
 	// get all status to filter
-	const { data: allStatuses, mutate: refetchStatuses } = allStatusQuery(
+	const { data: allStatuses } = allStatusQuery(
 		isAuthenticated,
 		projectId
 	)

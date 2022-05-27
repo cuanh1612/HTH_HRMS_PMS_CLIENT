@@ -12,14 +12,21 @@ import {
 	VStack,
 } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { Input, Select, SelectCustom, SelectMany} from 'components/form'
-import {Loading} from 'components/common'
+import { Input, Select, SelectCustom, SelectMany } from 'components/form'
+import { Loading } from 'components/common'
 import Modal from 'components/modal/Modal'
 import { AuthContext } from 'contexts/AuthContext'
 import { updateTaskMutation } from 'mutations/task'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
-import { milestonesByProjectNormalQuery, allStatusQuery, detailTaskQuery, allTaskCategoriesQuery} from 'queries'
+import {
+	milestonesByProjectNormalQuery,
+	allStatusQuery,
+	detailTaskQuery,
+	allTaskCategoriesQuery,
+	allTasksByProjectQuery,
+	allStatusTasksQuery,
+} from 'queries'
 import { useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { AiFillCaretDown, AiFillCaretUp, AiOutlineCheck } from 'react-icons/ai'
@@ -72,8 +79,11 @@ export default function UpdateTask({ onCloseDrawer, taskIdProp }: IUpdateTaskPro
 		isAuthenticated,
 		taskIdProp || (taskIdRouter as string)
 	)
-	console.log(dataDetailTask);
-	
+	// refetch all task
+	const { mutate: refetchTasks } = allTasksByProjectQuery(isAuthenticated, projectId)
+	// refetch all status
+	const { mutate: refetchStatusTasks } = allStatusTasksQuery(isAuthenticated, projectId)
+
 	const { data: dataAllStatus } = allStatusQuery(isAuthenticated, projectId)
 	const { data: dataAllMilestones } = milestonesByProjectNormalQuery(isAuthenticated, projectId)
 
@@ -169,7 +179,7 @@ export default function UpdateTask({ onCloseDrawer, taskIdProp }: IUpdateTaskPro
 				employees: dataDetailTask.task.employees.map((employee) => employee.id),
 				status: dataDetailTask.task.status.id,
 				milestone: dataDetailTask.task.milestone?.id || undefined,
-				priority: dataDetailTask.task.priority || ''
+				priority: dataDetailTask.task.priority || '',
 			})
 		}
 
@@ -253,6 +263,8 @@ export default function UpdateTask({ onCloseDrawer, taskIdProp }: IUpdateTaskPro
 				type: 'success',
 				msg: dataUpTask?.message as string,
 			})
+			refetchStatusTasks()
+			refetchTasks()
 		}
 	}, [statusUpTask])
 

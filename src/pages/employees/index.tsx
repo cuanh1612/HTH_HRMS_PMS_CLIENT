@@ -70,7 +70,7 @@ const Employees: NextLayout = () => {
 	const [filter, setFilter] = useState<IFilter>({
 		columnId: '',
 		filterValue: '',
-	})
+	}) 
 
 	// set isOpen drawer to add, update
 	const { isOpen: isOpenAdd, onOpen: onOpenAdd, onClose: onCloseAdd } = useDisclosure()

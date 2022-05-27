@@ -20,7 +20,7 @@ import {
 import { AlertDialog, Table } from 'components/common'
 import { Drawer } from 'components/Drawer'
 import { DateRange, Input, Select } from 'components/filter'
-import { ClientLayout } from 'components/layouts'
+import { ClientLayout, ProjectLayout } from 'components/layouts'
 import { AuthContext } from 'contexts/AuthContext'
 import { deleteTimeLogMutation, deleteTimeLogsMutation } from 'mutations'
 import { GetServerSideProps } from 'next'
@@ -529,6 +529,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 	}
 }
 
-TimeLogs.getLayout = ClientLayout
+TimeLogs.getLayout = ProjectLayout
 
 export default TimeLogs

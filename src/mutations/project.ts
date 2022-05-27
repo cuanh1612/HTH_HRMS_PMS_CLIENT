@@ -1,4 +1,14 @@
-import { assignEmplByDepartmentRequest, assignEmployeeRequest, createProjectRequest, deleteEmpInProjectRequest, deleteProjectRequest, deleteProjectsRequest, setProjectAdminRequest, updateProjectRequest, updateStatusProjectRequest } from 'requests/project'
+import {
+	assignEmplByDepartmentRequest,
+	assignEmployeeRequest,
+	createProjectRequest,
+	deleteEmpInProjectRequest,
+	deleteProjectRequest,
+	deleteProjectsRequest,
+	setProjectAdminRequest,
+	updateProjectRequest,
+	updateStatusProjectRequest,
+} from 'requests/project'
 import { TToast } from 'type/basicTypes'
 import useMutation from 'use-mutation'
 
@@ -26,8 +36,6 @@ export const deleteEmpInProjectMutation = (setToast: TToast) => {
 	})
 }
 
-
-
 //change project admin
 export const projectAdminMutation = (setToast: TToast) => {
 	return useMutation(setProjectAdminRequest, {
@@ -39,8 +47,6 @@ export const projectAdminMutation = (setToast: TToast) => {
 		},
 	})
 }
-
-
 
 //update
 export const updateProjectMutation = (setToast: TToast) => {

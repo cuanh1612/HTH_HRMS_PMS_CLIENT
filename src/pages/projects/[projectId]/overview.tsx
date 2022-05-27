@@ -12,7 +12,6 @@ import {
 } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Drawer } from 'components/Drawer'
-import { SelectCustom } from 'components/form'
 import { AuthContext } from 'contexts/AuthContext'
 import { updateStatusProjectMutation } from 'mutations'
 import { useRouter } from 'next/router'
@@ -23,8 +22,10 @@ import { updateStatusProjectForm } from 'type/form/basicFormType'
 import { dataProjectStatus } from 'utils/basicData'
 import { updateStatusProjectValidate } from 'utils/validate'
 import UpdateProject from '../update-projects'
+import { NextLayout } from 'type/element/layout'
+import { ProjectLayout } from 'components/layouts'
 
-export default function Overview() {
+const Overview: NextLayout = () => {
 	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
 	const router = useRouter()
 	const { projectId } = router.query
@@ -172,7 +173,6 @@ export default function Overview() {
 							>
 								<VStack align={'start'} w={'full'} justify={'space-between'}>
 									<Text fontWeight={'bold'}>Tasks</Text>
-									
 								</VStack>
 							</GridItem>
 							<GridItem
@@ -207,3 +207,7 @@ export default function Overview() {
 		</>
 	)
 }
+
+Overview.getLayout = ProjectLayout
+
+export default Overview

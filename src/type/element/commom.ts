@@ -87,3 +87,9 @@ export interface ILinkItem {
 	icon: any
     link: string
 }
+
+export interface ITab {
+	icon?: any
+	title: string
+	link: string
+}

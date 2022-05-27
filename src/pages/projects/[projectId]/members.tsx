@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { AuthContext } from 'contexts/AuthContext'
 import { useRouter } from 'next/router'
 import { NextLayout } from 'type/element/layout'
-import { ClientLayout } from 'components/layouts'
+import { ProjectLayout } from 'components/layouts'
 import { allEmployeesInProjectQuery, employeesNotInProjectQuery, allDepartmentsQuery} from 'queries'
 import { TColumn } from 'type/tableTypes'
 import {
@@ -383,7 +383,7 @@ const members: NextLayout = () => {
 						return (
 							<HStack spacing={4}>
 								<Radio
-									onChange={(event) => {
+									onChange={() => {
 										setProjectAdmin({
 											idProject: projectId,
 											idEmployee: row.values['id'],
@@ -510,6 +510,6 @@ const members: NextLayout = () => {
 	)
 }
 
-members.getLayout = ClientLayout
+members.getLayout = ProjectLayout
 
 export default members

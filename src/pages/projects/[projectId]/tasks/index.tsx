@@ -20,7 +20,7 @@ import {
 	VStack,
 } from '@chakra-ui/react'
 import { Drawer } from 'components/Drawer'
-import { ClientLayout } from 'components/layouts'
+import { ClientLayout, ProjectLayout } from 'components/layouts'
 import { useContext, useEffect, useState } from 'react'
 import { NextLayout } from 'type/element/layout'
 import AddTask from './add-tasks'
@@ -238,7 +238,7 @@ const tasks: NextLayout = () => {
 							<AvatarGroup size="sm" max={2}>
 								{value.length != 0 &&
 									value.map((employee: employeeType) => (
-										<Avatar key={employee.id} src={employee.avatar?.url} />
+										<Avatar name={employee.name} key={employee.id} src={employee.avatar?.url} />
 									))}
 							</AvatarGroup>
 						)
@@ -432,6 +432,6 @@ const tasks: NextLayout = () => {
 	)
 }
 
-tasks.getLayout = ClientLayout
+tasks.getLayout = ProjectLayout
 
 export default tasks

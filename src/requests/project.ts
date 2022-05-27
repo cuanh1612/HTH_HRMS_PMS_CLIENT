@@ -98,8 +98,15 @@ export async function updateStatusProjectRequest({
 	return resultFetch
 }
 
-// get all
+// get all project with info employee and client in project
 export const allProjectsRequest = async (url: string) => {
+	return await getData<projectMutaionResponse>({
+		url: `http://localhost:4000/api/${url}`,
+	})
+}
+
+// get all project 
+export const allProjectsNormalRequest = async (url: string) => {
 	return await getData<projectMutaionResponse>({
 		url: `http://localhost:4000/api/${url}`,
 	})

@@ -4,10 +4,7 @@ import {
 	Button,
 	Grid,
 	GridItem,
-	HStack,
-	Input as ChakraInput,
-	Text,
-	VStack,
+	HStack, Text
 } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Loading } from 'components/common'
@@ -17,10 +14,11 @@ import { createTimeLogMutation } from 'mutations/timeLog'
 import { GetServerSideProps } from 'next'
 import { useRouter } from 'next/router'
 import {
+	allProjectsNormalQuery,
 	allTasksByProjectQuery,
 	detailProjectQuery,
 	detailTaskQuery,
-	timeLogsByProjectQuery,
+	timeLogsByProjectQuery
 } from 'queries'
 import { useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -40,26 +38,30 @@ export interface IAddTimeLogProps {
 }
 
 export default function AddTimeLog({ onCloseDrawer }: IAddTimeLogProps) {
-	const { isAuthenticated, handleLoading, setToast, socket } = useContext(AuthContext)
+	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
 	const router = useRouter()
-	const { projectId } = router.query
 
 	//State -------------------------------------------------------------
 	const [optionTasks, setOptionTasks] = useState<IOption[]>([])
 	const [optionEmployees, setOptionEmployees] = useState<IOption[]>([])
 	const [selectedTaskId, setSelectedTaskId] = useState<number | string>()
 	const [selectedEmployeeId, setSelectedEmployeeId] = useState<IOption>()
+	const [selectedTask, setSelectedTask] = useState<IOption>()
+	const [optionProjects, setOptionProjects] = useState<IOption[]>([])
+	const [selectProjectId, setSelectProjectId] = useState<string | number>()
 
 	//Query -------------------------------------------------------------
-	// get data detail project
-	const { data: dataDetailProject } = detailProjectQuery(isAuthenticated, projectId as string)
-
-	const { data: allTasksProject } = allTasksByProjectQuery(isAuthenticated, projectId as string)
+	const { data: allTasksProject } = allTasksByProjectQuery(
+		isAuthenticated,
+		selectProjectId as string
+	)
 
 	const { data: detailTaskSelected } = detailTaskQuery(isAuthenticated, selectedTaskId)
 
+	const { data: dataAllProjects } = allProjectsNormalQuery(isAuthenticated)
+
 	// refetch all time log by project
-	const { mutate: refetchTimeLogs } = timeLogsByProjectQuery(isAuthenticated, projectId)
+	const { mutate: refetchTimeLogs } = timeLogsByProjectQuery(isAuthenticated, selectProjectId)
 
 	//mutation -----------------------------------------------------------
 	const [mutateCreTimeLog, { status: statusCreTimeLog, data: dataCreTimeLog }] =
@@ -68,13 +70,14 @@ export default function AddTimeLog({ onCloseDrawer }: IAddTimeLogProps) {
 	// setForm and submit form create new project timelog -------------------------------
 	const formSetting = useForm<createProjectTimeLogForm>({
 		defaultValues: {
+			project: undefined,
 			task: undefined,
 			employee: undefined,
 			starts_on_date: undefined,
 			ends_on_date: undefined,
 			starts_on_time: '',
 			ends_on_time: '',
-			memo: '',
+			memo: undefined,
 		},
 		resolver: yupResolver(CreateProjectTimeLogValidate),
 	})
@@ -82,27 +85,19 @@ export default function AddTimeLog({ onCloseDrawer }: IAddTimeLogProps) {
 	const { handleSubmit } = formSetting
 
 	const onSubmit = async (values: createProjectTimeLogForm) => {
-		if (!projectId) {
+		const invalid = compareDateTime(
+			new Date(values.starts_on_date).toLocaleDateString(),
+			new Date(values.ends_on_date).toLocaleDateString(),
+			values.starts_on_time,
+			values.ends_on_time
+		)
+		if (invalid) {
 			setToast({
-				msg: 'Not found project to add new time log',
+				msg: 'The end time must be greater than the start time of the time log',
 				type: 'error',
 			})
 		} else {
-			values.project = Number(projectId)
-			const invalid = compareDateTime(
-				new Date(values.starts_on_date).toLocaleDateString(),
-				new Date(values.ends_on_date).toLocaleDateString(),
-				values.starts_on_time,
-				values.ends_on_time
-			)
-			if (invalid) {
-				setToast({
-					msg: 'The end time must be greater than the start time of the time log',
-					type: 'error',
-				})
-			} else {
-				mutateCreTimeLog(values)
-			}
+			mutateCreTimeLog(values)
 		}
 	}
 
@@ -112,7 +107,39 @@ export default function AddTimeLog({ onCloseDrawer }: IAddTimeLogProps) {
 		setSelectedTaskId(taskId)
 	}
 
+	//Handle change project select
+	const onChangeProject = (projectId: string | number) => {
+		setSelectProjectId(projectId)
+
+		setSelectedEmployeeId({
+			label: <Text color={'gray.400'}>Select...</Text>,
+			value: undefined,
+		})
+
+		setSelectedTask({
+			label: <Text color={'gray.400'}>Select...</Text>,
+			value: undefined,
+		})
+
+		formSetting.setValue('employee', undefined)
+		formSetting.setValue('task', undefined)
+	}
+
 	//User effect ---------------------------------------------------------------
+	//Set data option task categories when have data from request
+	useEffect(() => {
+		if (dataAllProjects?.projects) {
+			const newOptionProject: IOption[] = dataAllProjects.projects.map((project) => {
+				return {
+					value: project.id,
+					label: project.name,
+				}
+			})
+
+			setOptionProjects(newOptionProject)
+		}
+	}, [dataAllProjects])
+
 	//Handle check loged in
 	useEffect(() => {
 		if (isAuthenticated) {
@@ -195,35 +222,14 @@ export default function AddTimeLog({ onCloseDrawer }: IAddTimeLogProps) {
 			<Box pos="relative" p={6} as={'form'} h="auto" onSubmit={handleSubmit(onSubmit)}>
 				<Grid templateColumns="repeat(2, 1fr)" gap={6}>
 					<GridItem w="100%" colSpan={[2, 1]}>
-						<VStack align={'start'}>
-							<Text color={'gray.400'}>Project</Text>
-							<ChakraInput
-								type={'text'}
-								value={dataDetailProject?.project?.name}
-								disabled
-							/>
-						</VStack>
-					</GridItem>
-
-					<GridItem w="100%" colSpan={[2, 1]}>
 						<SelectCustom
-							name="task"
-							label="task"
-							form={formSetting}
-							options={optionTasks}
+							name="project"
+							label="Project"
 							required={true}
-							onChangeValue={onChangeTask}
-						/>
-					</GridItem>
-
-					<GridItem w="100%" colSpan={[2, 1]}>
-						<SelectCustom
-							name="employee"
-							label="employee"
 							form={formSetting}
-							options={optionEmployees}
-							required={true}
-							selectedOption={selectedEmployeeId}
+							placeholder={'Select Project'}
+							options={optionProjects}
+							onChangeValue={onChangeProject}
 						/>
 					</GridItem>
 
@@ -276,6 +282,29 @@ export default function AddTimeLog({ onCloseDrawer }: IAddTimeLogProps) {
 							name={'ends_on_time'}
 							label={'Ends On Time'}
 							required
+						/>
+					</GridItem>
+
+					<GridItem w="100%" colSpan={[2, 1]}>
+						<SelectCustom
+							name="task"
+							label="task"
+							form={formSetting}
+							options={optionTasks}
+							required={true}
+							onChangeValue={onChangeTask}
+							selectedOption={selectedTask}
+						/>
+					</GridItem>
+
+					<GridItem w="100%" colSpan={[2, 1]}>
+						<SelectCustom
+							name="employee"
+							label="employee"
+							form={formSetting}
+							options={optionEmployees}
+							required={true}
+							selectedOption={selectedEmployeeId}
 						/>
 					</GridItem>
 				</Grid>

@@ -7,20 +7,19 @@ import {
 	HStack,
 	Input as ChakraInput,
 	Text,
-	VStack,
+	VStack
 } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Loading } from 'components/common'
 import { Input, SelectCustom, TimePicker } from 'components/form'
 import { AuthContext } from 'contexts/AuthContext'
-import { createTimeLogMutation } from 'mutations/timeLog'
+import { updateTimeLogMutation } from 'mutations/timeLog'
 import { GetServerSideProps } from 'next'
 import { useRouter } from 'next/router'
 import {
 	allTasksByProjectQuery,
 	detailProjectQuery,
-	detailTaskQuery,
-	timeLogsByProjectQuery,
+	detailTaskQuery, detailTimeLogQuery, timeLogsByProjectQuery
 } from 'queries'
 import { useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -30,43 +29,48 @@ import { BsCalendarDate } from 'react-icons/bs'
 import 'react-quill/dist/quill.bubble.css'
 import 'react-quill/dist/quill.snow.css'
 import { IOption } from 'type/basicTypes'
-import { createProjectTimeLogForm } from 'type/form/basicFormType'
+import { updateProjectTimeLogForm } from 'type/form/basicFormType'
 import { projectMutaionResponse } from 'type/mutationResponses'
 import { compareDateTime } from 'utils/time'
 import { CreateProjectTimeLogValidate } from 'utils/validate'
 
-export interface IAddTimeLogProps {
-	onCloseDrawer: () => void
+export interface IUpdateTimeLogProps {
+	onCloseDrawer?: () => void
+	timeLogIdProp?: string | number
 }
 
-export default function AddTimeLog({ onCloseDrawer }: IAddTimeLogProps) {
-	const { isAuthenticated, handleLoading, setToast, socket } = useContext(AuthContext)
+export default function UpdateTimeLog({ onCloseDrawer, timeLogIdProp }: IUpdateTimeLogProps) {
+	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
 	const router = useRouter()
-	const { projectId } = router.query
+	const { timeLogId: timeLogIdRouter } = router.query
 
 	//State -------------------------------------------------------------
 	const [optionTasks, setOptionTasks] = useState<IOption[]>([])
 	const [optionEmployees, setOptionEmployees] = useState<IOption[]>([])
 	const [selectedTaskId, setSelectedTaskId] = useState<number | string>()
 	const [selectedEmployeeId, setSelectedEmployeeId] = useState<IOption>()
+	const [selectedTaskIdForSelect, setSelectedTaskIdForSelect] = useState<IOption>()
+	const [projectId, setProjectId] = useState<string | number>()
 
 	//Query -------------------------------------------------------------
-	// get data detail project
-	const { data: dataDetailProject } = detailProjectQuery(isAuthenticated, projectId as string)
-
 	const { data: allTasksProject } = allTasksByProjectQuery(isAuthenticated, projectId as string)
 
 	const { data: detailTaskSelected } = detailTaskQuery(isAuthenticated, selectedTaskId)
+
+	const { data: detailTimeLog } = detailTimeLogQuery(
+		isAuthenticated,
+		timeLogIdProp || (timeLogIdRouter as string)
+	)
 
 	// refetch all time log by project
 	const { mutate: refetchTimeLogs } = timeLogsByProjectQuery(isAuthenticated, projectId)
 
 	//mutation -----------------------------------------------------------
-	const [mutateCreTimeLog, { status: statusCreTimeLog, data: dataCreTimeLog }] =
-		createTimeLogMutation(setToast)
+	const [mutateUpdateTimeLog, { status: statusUpdateTimeLog, data: dataUpdateTimeLog }] =
+		updateTimeLogMutation(setToast)
 
-	// setForm and submit form create new project timelog -------------------------------
-	const formSetting = useForm<createProjectTimeLogForm>({
+	// setForm and submit form update new project timelog -------------------------------
+	const formSetting = useForm<updateProjectTimeLogForm>({
 		defaultValues: {
 			task: undefined,
 			employee: undefined,
@@ -81,7 +85,7 @@ export default function AddTimeLog({ onCloseDrawer }: IAddTimeLogProps) {
 
 	const { handleSubmit } = formSetting
 
-	const onSubmit = async (values: createProjectTimeLogForm) => {
+	const onSubmit = async (values: updateProjectTimeLogForm) => {
 		if (!projectId) {
 			setToast({
 				msg: 'Not found project to add new time log',
@@ -100,9 +104,11 @@ export default function AddTimeLog({ onCloseDrawer }: IAddTimeLogProps) {
 					msg: 'The end time must be greater than the start time of the time log',
 					type: 'error',
 				})
-			} else {
-				mutateCreTimeLog(values)
 			}
+			mutateUpdateTimeLog({
+				inputUpdate: values,
+				timeLogId: timeLogIdProp || (timeLogIdRouter as string),
+			})
 		}
 	}
 
@@ -123,6 +129,13 @@ export default function AddTimeLog({ onCloseDrawer }: IAddTimeLogProps) {
 			}
 		}
 	}, [isAuthenticated])
+
+	//Set project id
+	useEffect(() => {
+		if (detailTimeLog?.timeLog?.project) {
+			setProjectId(detailTimeLog.timeLog.project.id)
+		}
+	}, [detailTimeLog])
 
 	//Set data option tasks state
 	useEffect(() => {
@@ -175,7 +188,7 @@ export default function AddTimeLog({ onCloseDrawer }: IAddTimeLogProps) {
 
 	//Note when request success
 	useEffect(() => {
-		if (statusCreTimeLog === 'success') {
+		if (statusUpdateTimeLog === 'success') {
 			//Close drawer when using drawer
 			if (onCloseDrawer) {
 				onCloseDrawer()
@@ -183,12 +196,51 @@ export default function AddTimeLog({ onCloseDrawer }: IAddTimeLogProps) {
 
 			setToast({
 				type: 'success',
-				msg: dataCreTimeLog?.message as string,
+				msg: dataUpdateTimeLog?.message as string,
 			})
-
 			refetchTimeLogs()
 		}
-	}, [statusCreTimeLog])
+	}, [statusUpdateTimeLog])
+
+	//Reset data when have data detail
+	useEffect(() => {
+		if (detailTimeLog?.timeLog) {
+			formSetting.reset({
+				task: detailTimeLog.timeLog.task?.id,
+				employee: detailTimeLog.timeLog.employee?.id,
+				memo: detailTimeLog.timeLog.memo,
+				starts_on_date: detailTimeLog.timeLog.starts_on_date,
+				starts_on_time: detailTimeLog.timeLog.starts_on_time,
+				ends_on_date: detailTimeLog.timeLog.ends_on_date,
+				ends_on_time: detailTimeLog.timeLog.ends_on_time,
+			})
+		}
+
+		if (detailTimeLog?.timeLog?.employee) {
+			setSelectedEmployeeId({
+				label: (
+					<>
+						<HStack>
+							<Avatar
+								size={'xs'}
+								name={detailTimeLog.timeLog.employee.name}
+								src={detailTimeLog.timeLog.employee.avatar?.url}
+							/>
+							<Text>{detailTimeLog.timeLog.employee.email}</Text>
+						</HStack>
+					</>
+				),
+				value: detailTimeLog.timeLog.employee.id,
+			})
+
+			if (detailTimeLog?.timeLog?.task) {
+				setSelectedTaskIdForSelect({
+					label: detailTimeLog.timeLog.task.name,
+					value: detailTimeLog.timeLog.task.id,
+				})
+			}
+		}
+	}, [detailTimeLog])
 
 	return (
 		<>
@@ -199,7 +251,7 @@ export default function AddTimeLog({ onCloseDrawer }: IAddTimeLogProps) {
 							<Text color={'gray.400'}>Project</Text>
 							<ChakraInput
 								type={'text'}
-								value={dataDetailProject?.project?.name}
+								value={detailTimeLog?.timeLog?.project?.name}
 								disabled
 							/>
 						</VStack>
@@ -213,6 +265,7 @@ export default function AddTimeLog({ onCloseDrawer }: IAddTimeLogProps) {
 							options={optionTasks}
 							required={true}
 							onChangeValue={onChangeTask}
+							selectedOption={selectedTaskIdForSelect}
 						/>
 					</GridItem>
 
@@ -256,6 +309,7 @@ export default function AddTimeLog({ onCloseDrawer }: IAddTimeLogProps) {
 							name={'starts_on_time'}
 							label={'Starts On Time'}
 							required
+							timeInit={formSetting.getValues()['starts_on_time']}
 						/>
 					</GridItem>
 
@@ -276,6 +330,7 @@ export default function AddTimeLog({ onCloseDrawer }: IAddTimeLogProps) {
 							name={'ends_on_time'}
 							label={'Ends On Time'}
 							required
+							timeInit={formSetting.getValues()['ends_on_time']}
 						/>
 					</GridItem>
 				</Grid>
@@ -295,7 +350,7 @@ export default function AddTimeLog({ onCloseDrawer }: IAddTimeLogProps) {
 				>
 					Save
 				</Button>
-				{statusCreTimeLog == 'running' && <Loading />}
+				{statusUpdateTimeLog == 'running' && <Loading />}
 			</Box>
 		</>
 	)

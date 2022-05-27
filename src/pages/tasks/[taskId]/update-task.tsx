@@ -12,14 +12,19 @@ import {
 	VStack,
 } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { Input, Select, SelectCustom, SelectMany} from 'components/form'
-import {Loading} from 'components/common'
+import { Input, Select, SelectCustom, SelectMany } from 'components/form'
+import { Loading } from 'components/common'
 import Modal from 'components/modal/Modal'
 import { AuthContext } from 'contexts/AuthContext'
 import { updateTaskMutation } from 'mutations/task'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
-import { milestonesByProjectNormalQuery, allStatusQuery, detailTaskQuery, allTaskCategoriesQuery} from 'queries'
+import {
+	milestonesByProjectNormalQuery,
+	allStatusQuery,
+	detailTaskQuery,
+	allTaskCategoriesQuery,
+} from 'queries'
 import { useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { AiFillCaretDown, AiFillCaretUp, AiOutlineCheck } from 'react-icons/ai'
@@ -43,15 +48,18 @@ export interface IUpdateTaskProps {
 export default function UpdateTask({ onCloseDrawer, taskIdProp }: IUpdateTaskProps) {
 	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
 	const router = useRouter()
-	const { taskId: taskIdRouter, projectId } = router.query
+	const { taskId: taskIdRouter } = router.query
 
 	//state -------------------------------------------------------------
 	const [optionTaskCategories, setOptionTaskCategories] = useState<IOption[]>([])
 	const [optionEmployees, setOptionEmployees] = useState<IOption[]>([])
 	const [optionStatus, setOptionStatus] = useState<IOption[]>([])
+	const [selectedStatus, setSelectedStatus] = useState<IOption>()
 	const [description, setDescription] = useState<string>('')
 	const [selectedOptionEmployees, setSelectedOptionEmployees] = useState<IOption[]>([])
 	const [optionMilestones, setOptionMilestones] = useState<IOption[]>([])
+	const [projectId, setProjectId] = useState<number | string>()
+	const [selectedMilestone, setSelectedMilestone] = useState<IOption>()
 
 	//Setup modal -------------------------------------------------------
 	const {
@@ -72,8 +80,7 @@ export default function UpdateTask({ onCloseDrawer, taskIdProp }: IUpdateTaskPro
 		isAuthenticated,
 		taskIdProp || (taskIdRouter as string)
 	)
-	console.log(dataDetailTask);
-	
+
 	const { data: dataAllStatus } = allStatusQuery(isAuthenticated, projectId)
 	const { data: dataAllMilestones } = milestonesByProjectNormalQuery(isAuthenticated, projectId)
 
@@ -160,6 +167,19 @@ export default function UpdateTask({ onCloseDrawer, taskIdProp }: IUpdateTaskPro
 	useEffect(() => {
 		if (dataDetailTask?.task) {
 			setDescription(dataDetailTask.task.description)
+			setProjectId(dataDetailTask.task.project.id)
+			if (dataDetailTask.task.status) {
+				setSelectedStatus({
+					label: dataDetailTask.task.status.title,
+					value: dataDetailTask.task.status.id,
+				})
+			}
+			if (dataDetailTask.task.milestone) {
+				setSelectedMilestone({
+					label: dataDetailTask.task.milestone.title,
+					value: dataDetailTask.task.milestone.id,
+				})
+			}
 
 			formSetting.reset({
 				name: dataDetailTask.task.name,
@@ -169,7 +189,7 @@ export default function UpdateTask({ onCloseDrawer, taskIdProp }: IUpdateTaskPro
 				employees: dataDetailTask.task.employees.map((employee) => employee.id),
 				status: dataDetailTask.task.status.id,
 				milestone: dataDetailTask.task.milestone?.id || undefined,
-				priority: dataDetailTask.task.priority || ''
+				priority: dataDetailTask.task.priority || '',
 			})
 		}
 
@@ -340,6 +360,7 @@ export default function UpdateTask({ onCloseDrawer, taskIdProp }: IUpdateTaskPro
 						form={formSetting}
 						options={optionStatus}
 						required
+						selectedOption={selectedStatus}
 					/>
 				</GridItem>
 
@@ -407,6 +428,7 @@ export default function UpdateTask({ onCloseDrawer, taskIdProp }: IUpdateTaskPro
 							form={formSetting}
 							placeholder={'Select Milestone'}
 							options={optionMilestones}
+							selectedOption={selectedMilestone}
 						/>
 					</GridItem>
 

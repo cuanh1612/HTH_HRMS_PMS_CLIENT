@@ -5,9 +5,7 @@ import {
 	Divider,
 	Grid,
 	GridItem,
-	HStack,
-	Input as InputChakra,
-	Text,
+	HStack, Text,
 	useDisclosure,
 	VStack
 } from '@chakra-ui/react'
@@ -20,10 +18,11 @@ import { createTaskMutation } from 'mutations'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 import {
-	allProjectsQuery,
+	allProjectsNormalQuery,
 	allStatusQuery,
 	allStatusTasksQuery,
-	allTaskCategoriesQuery, detailProjectQuery, detailStatusQuery, milestonesByProjectNormalQuery
+	allTaskCategoriesQuery,
+	detailProjectQuery, milestonesByProjectNormalQuery
 } from 'queries'
 import { useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -42,21 +41,22 @@ const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
 
 export interface IAddTaskProps {
 	onCloseDrawer?: () => void
-	statusId?: string | number
 }
 
-export default function AddTask({ onCloseDrawer, statusId }: IAddTaskProps) {
+export default function AddTask({ onCloseDrawer }: IAddTaskProps) {
 	const { isAuthenticated, handleLoading, setToast, currentUser } = useContext(AuthContext)
 	const router = useRouter()
 
 	//state -------------------------------------------------------------
 	const [optionTaskCategories, setOptionTaskCategories] = useState<IOption[]>([])
+	const [optionProjects, setOptionProjects] = useState<IOption[]>([])
 	const [optionEmployees, setOptionEmployees] = useState<IOption[]>([])
 	const [description, setDescription] = useState<string>('')
 	const [optionStatus, setOptionStatus] = useState<IOption[]>([])
-	const [selectedOptionStatus, setSelectedOptionStatus] = useState<IOption>()
 	const [optionMilestones, setOptionMilestones] = useState<IOption[]>([])
 	const [selectProjectId, setSelectProjectId] = useState<string | number>()
+	const [selectedStatus, setSelectedStatus] = useState<IOption>()
+	const [selectedEmployees, setSelectedEmployees] = useState<IOption[]>()
 
 	//Setup modal -------------------------------------------------------
 	const {
@@ -75,8 +75,7 @@ export default function AddTask({ onCloseDrawer, statusId }: IAddTaskProps) {
 	const { data: dataTaskCategories } = allTaskCategoriesQuery()
 	const { data: dataDetailProject } = detailProjectQuery(isAuthenticated, selectProjectId)
 	const { data: dataAllStatus } = allStatusQuery(isAuthenticated, selectProjectId)
-	const { data: dataDetailStatus } = detailStatusQuery(isAuthenticated, statusId)
-	const { data: dataAllProjects } = allProjectsQuery(isAuthenticated, statusId)
+	const { data: dataAllProjects } = allProjectsNormalQuery(isAuthenticated)
 
 	const { data: dataAllMilestones } = milestonesByProjectNormalQuery(
 		isAuthenticated,
@@ -93,14 +92,14 @@ export default function AddTask({ onCloseDrawer, statusId }: IAddTaskProps) {
 	const formSetting = useForm<createProjectTaskForm>({
 		defaultValues: {
 			project: undefined,
-			name: '',
+			name: undefined,
 			task_category: undefined,
 			start_date: undefined,
 			deadline: undefined,
 			employees: [],
 			status: undefined,
 			milestone: undefined,
-			priority: '',
+			priority: undefined,
 		},
 		resolver: yupResolver(CreateProjectTaskValidate),
 	})
@@ -127,6 +126,20 @@ export default function AddTask({ onCloseDrawer, statusId }: IAddTaskProps) {
 		}
 	}
 
+	//Handle change project select
+	const onChangeProject = (projectId: string | number) => {
+		setSelectProjectId(projectId)
+		
+
+		//Clear data when change project
+		setSelectedStatus({
+			label: <Text color={"gray.400"}>Select ...</Text>,
+			value: undefined
+		})
+
+		setSelectedEmployees([])
+	}
+
 	//User effect ---------------------------------------------------------------
 	//Handle check loged in
 	useEffect(() => {
@@ -139,24 +152,8 @@ export default function AddTask({ onCloseDrawer, statusId }: IAddTaskProps) {
 		}
 	}, [isAuthenticated])
 
-	//Set data selected status
-	useEffect(() => {
-		if (dataDetailStatus?.status) {
-			setSelectedOptionStatus({
-				label: dataDetailStatus.status.title,
-				value: dataDetailStatus.status.id,
-			})
-		}
-	}, [dataDetailStatus])
-
 	//Set option select status when have data all status
 	useEffect(() => {
-		if (statusId) {
-			formSetting.reset({
-				status: Number(statusId),
-			})
-		}
-
 		if (dataAllStatus?.statuses) {
 			//Set data option satuses state
 			let newOptionStatus: IOption[] = []
@@ -248,6 +245,20 @@ export default function AddTask({ onCloseDrawer, statusId }: IAddTaskProps) {
 		}
 	}, [dataTaskCategories])
 
+	//Set data option task categories when have data from request
+	useEffect(() => {
+		if (dataAllProjects?.projects) {
+			const newOptionProject: IOption[] = dataAllProjects.projects.map((project) => {
+				return {
+					value: project.id,
+					label: project.name,
+				}
+			})
+
+			setOptionProjects(newOptionProject)
+		}
+	}, [dataAllProjects])
+
 	return (
 		<Box pos="relative" p={6} as={'form'} h="auto" onSubmit={handleSubmit(onSubmitTask)}>
 			<Grid templateColumns="repeat(2, 1fr)" gap={6}>
@@ -277,14 +288,15 @@ export default function AddTask({ onCloseDrawer, statusId }: IAddTaskProps) {
 				</GridItem>
 
 				<GridItem w="100%" colSpan={[2, 1]}>
-					<VStack align={'start'}>
-						<Text color={'gray.400'}>Project</Text>
-						<InputChakra
-							type={'text'}
-							value={dataDetailProject?.project?.name}
-							disabled
-						/>
-					</VStack>
+					<SelectCustom
+						name="project"
+						label="Project"
+						required={true}
+						form={formSetting}
+						placeholder={'Select Project'}
+						options={optionProjects}
+						onChangeValue={onChangeProject}
+					/>
 				</GridItem>
 
 				<GridItem w="100%" colSpan={[2, 1]}>
@@ -315,8 +327,8 @@ export default function AddTask({ onCloseDrawer, statusId }: IAddTaskProps) {
 						label="Status"
 						form={formSetting}
 						options={optionStatus}
-						required={false}
-						selectedOption={selectedOptionStatus}
+						required={true}
+						selectedOption={selectedStatus}
 					/>
 				</GridItem>
 
@@ -327,6 +339,7 @@ export default function AddTask({ onCloseDrawer, statusId }: IAddTaskProps) {
 						name={'employees'}
 						required={true}
 						options={optionEmployees}
+						selectedOptions={selectedEmployees}
 					/>
 				</GridItem>
 

@@ -1,14 +1,15 @@
 import { Avatar, Box, Button, HStack, Text, useDisclosure, VStack } from '@chakra-ui/react'
-import {Loading, TaskCommentItem} from 'components/common'
+import { Loading, TaskCommentItem } from 'components/common'
 import { AuthContext } from 'contexts/AuthContext'
 import {
 	createTaskCommentMutation,
 	deleteTaskCommentMutation,
-	updateTaskCommentMutation
+	updateTaskCommentMutation,
 } from 'mutations/taskComment'
 import { GetServerSideProps } from 'next'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
+import { detailTaskQuery } from 'queries'
 import { allTaskCommentsQuery } from 'queries/taskComment'
 import { useContext, useEffect, useState } from 'react'
 import { AiOutlinePlusCircle, AiOutlineSend } from 'react-icons/ai'
@@ -27,10 +28,11 @@ export default function TaskComments({ taskIdProp }: ITaskCommentsProps) {
 	const { isAuthenticated, handleLoading, setToast, currentUser, socket } =
 		useContext(AuthContext)
 	const router = useRouter()
-	const { taskId: taskIdRouter, projectId } = router.query
+	const { taskId: taskIdRouter } = router.query
 
 	//state ---------------------------------------------------------------------
 	const [content, setContent] = useState<string>('')
+	const [projectId, setProjectId] = useState<string | number>('')
 
 	//Setup disclosure -----------------------------------------------------------
 	const { isOpen: isOpenAdd, onOpen: onOpenAdd, onClose: onCloseAdd } = useDisclosure()
@@ -39,6 +41,11 @@ export default function TaskComments({ taskIdProp }: ITaskCommentsProps) {
 	const { data: dataAllTaskComments, mutate: refetchAllTaskComments } = allTaskCommentsQuery(
 		isAuthenticated,
 		Number(taskIdProp || taskIdRouter)
+	)
+
+	const { data: dataDetailTask } = detailTaskQuery(
+		isAuthenticated,
+		taskIdProp || (taskIdRouter as string)
 	)
 
 	//mutation -------------------------------------------------------------------
@@ -54,6 +61,13 @@ export default function TaskComments({ taskIdProp }: ITaskCommentsProps) {
 		updateTaskCommentMutation(setToast)
 
 	//User effect ---------------------------------------------------------------
+	//set project id
+	useEffect(() => {
+		if (dataDetailTask?.task?.project) {
+			setProjectId(dataDetailTask.task.project.id)
+		}
+	}, [dataDetailTask])
+
 	//Join room socket
 	useEffect(() => {
 		//Join room
@@ -161,7 +175,7 @@ export default function TaskComments({ taskIdProp }: ITaskCommentsProps) {
 				mutateCreTaskComment({
 					project: Number(projectId as string),
 					task: Number(taskIdProp || (taskIdRouter as string)),
-					content
+					content,
 				})
 			}
 		}

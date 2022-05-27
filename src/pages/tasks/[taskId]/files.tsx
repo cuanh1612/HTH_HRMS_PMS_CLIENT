@@ -14,7 +14,7 @@ import { AuthContext } from 'contexts/AuthContext'
 import { createTaskFileMutation, deleteTaskFileMutation } from 'mutations/taskFile'
 import { GetServerSideProps } from 'next'
 import { useRouter } from 'next/router'
-import { allTaskFilesQuery } from 'queries'
+import { allTaskFilesQuery, detailTaskQuery } from 'queries'
 import { useCallback, useContext, useEffect, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { AiOutlinePlusCircle, AiOutlineSave } from 'react-icons/ai'
@@ -30,7 +30,7 @@ export interface ITaskFilesProps {
 export default function TaskFiles({taskIdProp}: ITaskFilesProps) {
 	const { isAuthenticated, handleLoading, setToast, socket } = useContext(AuthContext)
 	const router = useRouter()
-	const { projectId, taskId: taskIdRouter } = router.query
+	const { taskId: taskIdRouter } = router.query
 
 	//Setup disclosure ----------------------------------------------------------
 	const { isOpen: isOpenAdd, onOpen: onOpenAdd, onClose: onCloseAdd } = useDisclosure()
@@ -38,11 +38,17 @@ export default function TaskFiles({taskIdProp}: ITaskFilesProps) {
 	//State ---------------------------------------------------------------------
 	const [filesUpload, setFilesUpload] = useState<File[]>([])
 	const [isLoadUpFiles, setIsLoadUpFiles] = useState<boolean>(false)
+	const [projectId, setProjectId] = useState<string | number>()
 
 	//Query ----------------------------------------------------------------------
 	const { data: dataAllTaskFiles, mutate: refetchAllTaskFiles } = allTaskFilesQuery(
 		isAuthenticated,
 		Number(taskIdProp || taskIdRouter)
+	)
+
+	const { data: dataDetailTask } = detailTaskQuery(
+		isAuthenticated,
+		taskIdProp || (taskIdRouter as string)
 	)
 
 	//mutation -------------------------------------------------------------------
@@ -76,6 +82,13 @@ export default function TaskFiles({taskIdProp}: ITaskFilesProps) {
 	const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop })
 
 	//User effect ---------------------------------------------------------------
+	//set project id
+	useEffect(() => {
+		if(dataDetailTask?.task?.project){
+			setProjectId(dataDetailTask.task.project.id)
+		}
+	}, [dataDetailTask])
+
 	//Join room socket
 	useEffect(() => {
 		//Join room

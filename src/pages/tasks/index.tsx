@@ -1,14 +1,19 @@
-import { Box, Button, useDisclosure } from '@chakra-ui/react'
 import { Drawer } from 'components/Drawer'
+import { Box, Button, useDisclosure } from '@chakra-ui/react'
 import { ClientLayout } from 'components/layouts'
-import { useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { NextLayout } from 'type/element/layout'
 import AddTask from './add-tasks'
 import DetailTask from './[taskId]'
 import UpdateTask from './[taskId]/update-task'
+import { useRouter } from 'next/router'
+import { AuthContext } from 'contexts/AuthContext'
 
 const tasks: NextLayout = () => {
-	const [taskId, setTaskId] = useState<string | number>(1)
+	const { isAuthenticated, handleLoading, setToast, currentUser } = useContext(AuthContext)
+	const router = useRouter()
+
+	const [taskId, setTaskId] = useState<string | number>(9)
 	const [statusIdShow, setStatusIdShow] = useState<number>(1)
 
 	//Modal -------------------------------------------------------------
@@ -33,6 +38,18 @@ const tasks: NextLayout = () => {
 		onClose: onCloseDetailTask,
 	} = useDisclosure()
 
+	//User effect ---------------------------------------------------------------
+	//Handle check loged in
+	useEffect(() => {
+		if (isAuthenticated) {
+			handleLoading(false)
+		} else {
+			if (isAuthenticated === false) {
+				router.push('/login')
+			}
+		}
+	}, [isAuthenticated])
+
 	return (
 		<Box>
 			<Button onClick={onOpenAddTask}>Add task Incomplete</Button>
@@ -40,7 +57,7 @@ const tasks: NextLayout = () => {
 			<Button onClick={onOpenDetailTask}>Detail Task</Button>
 
 			<Drawer size="xl" title="Add New Task" onClose={onCloseAddTask} isOpen={isOpenAddTask}>
-				<AddTask statusId={statusIdShow} onCloseDrawer={onCloseAddTask} />
+				<AddTask onCloseDrawer={onCloseAddTask} />
 			</Drawer>
 
 			<Drawer

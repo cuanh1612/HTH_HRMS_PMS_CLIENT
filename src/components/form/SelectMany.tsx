@@ -21,6 +21,13 @@ export const SelectMany = ({
 
 	const [selectedOptionsState, setSelectedOptionsState] = useState<IOption[]>([])
 
+		//set state when have selected option prop
+		useEffect(() => {
+			if(selectedOptions){
+				setSelectedOptionsState(selectedOptions)
+			}
+		}, [selectedOptions])
+
 	//handle change select
 	const onChangeSelect = (options: IOption[]) => {
 		let newOptionSelects: any[] = []

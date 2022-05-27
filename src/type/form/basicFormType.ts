@@ -578,3 +578,8 @@ export type updateProjectTimeLogForm = {
 	ends_on_time: string
 	memo: string
 }
+
+export type updateStatusProjectForm = {
+	project: number | string 
+	project_status?: "Not Started" | "In Progress" | "On Hold" | "Canceled" | "Finished"
+}

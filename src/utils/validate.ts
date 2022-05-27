@@ -131,7 +131,6 @@ export const createProjectValidate = yup.object({
 	deadline: yup.date().required('Please select deadline event'),
 })
 
-
 export const updateSalaryValidate = yup.object({
 	amount: yup.number().min(1).required('Please enter field amount salary'),
 	date: yup.date().required('Please select start on date project'),
@@ -189,6 +188,7 @@ export const CreateProjectTimeLogValidate = yup.object({
 	task: yup.number().required('Please select task'),
 })
 
+<<<<<<< HEAD
 export const validateResetPass = yup.object({
 	password: yup
 	  .string()
@@ -203,3 +203,8 @@ export const validateResetPass = yup.object({
 	  .required()
 	  .oneOf([yup.ref('password')], 'Passwords does not match'),
   });
+=======
+export const updateStatusProjectValidate = yup.object({
+	project_status: yup.string().required('Please select project'),
+})
+>>>>>>> c8128e6d3c2fcc567a2cfe3401989f2c284ffbcb

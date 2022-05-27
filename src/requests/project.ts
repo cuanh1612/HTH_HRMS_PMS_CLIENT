@@ -1,4 +1,4 @@
-import { createProjectForm, updateProjectForm, EmployeesNotInProjectForm, EmployeesByDepartmentProjectForm } from 'type/form/basicFormType'
+import { createProjectForm, updateProjectForm, EmployeesNotInProjectForm, EmployeesByDepartmentProjectForm, updateStatusProjectForm } from 'type/form/basicFormType'
 import { employeeMutaionResponse, projectMutaionResponse } from 'type/mutationResponses'
 import { deleteData, getData, postData, putData } from 'utils/fetchData'
 
@@ -76,6 +76,22 @@ export async function updateProjectRequest({
 }) {
 	const resultFetch = await putData<projectMutaionResponse>({
 		url: `http://localhost:4000/api/projects/${projectId}`,
+		body: inputUpdate,
+	})
+
+	return resultFetch
+}
+
+//Function handle update status project
+export async function updateStatusProjectRequest({
+	inputUpdate,
+	projectId,
+}: {
+	inputUpdate: updateStatusProjectForm
+	projectId: number | string
+}) {
+	const resultFetch = await putData<projectMutaionResponse>({
+		url: `http://localhost:4000/api/projects/${projectId}/change-status`,
 		body: inputUpdate,
 	})
 

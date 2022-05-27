@@ -1,4 +1,4 @@
-import { assignEmplByDepartmentRequest, assignEmployeeRequest, createProjectRequest, deleteEmpInProjectRequest, deleteProjectRequest, deleteProjectsRequest, setProjectAdminRequest, updateProjectRequest } from 'requests/project'
+import { assignEmplByDepartmentRequest, assignEmployeeRequest, createProjectRequest, deleteEmpInProjectRequest, deleteProjectRequest, deleteProjectsRequest, setProjectAdminRequest, updateProjectRequest, updateStatusProjectRequest } from 'requests/project'
 import { TToast } from 'type/basicTypes'
 import useMutation from 'use-mutation'
 
@@ -45,6 +45,18 @@ export const projectAdminMutation = (setToast: TToast) => {
 //update
 export const updateProjectMutation = (setToast: TToast) => {
 	return useMutation(updateProjectRequest, {
+		onFailure({ error }) {
+			setToast({
+				msg: error.message,
+				type: 'error',
+			})
+		},
+	})
+}
+
+//update status
+export const updateStatusProjectMutation = (setToast: TToast) => {
+	return useMutation(updateStatusProjectRequest, {
 		onFailure({ error }) {
 			setToast({
 				msg: error.message,

@@ -20,6 +20,7 @@ import { createTaskMutation } from 'mutations'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 import {
+	allProjectsQuery,
 	allStatusQuery,
 	allStatusTasksQuery,
 	allTaskCategoriesQuery, detailProjectQuery, detailStatusQuery, milestonesByProjectNormalQuery
@@ -75,6 +76,7 @@ export default function AddTask({ onCloseDrawer, statusId }: IAddTaskProps) {
 	const { data: dataDetailProject } = detailProjectQuery(isAuthenticated, selectProjectId)
 	const { data: dataAllStatus } = allStatusQuery(isAuthenticated, selectProjectId)
 	const { data: dataDetailStatus } = detailStatusQuery(isAuthenticated, statusId)
+	const { data: dataAllProjects } = allProjectsQuery(isAuthenticated, statusId)
 
 	const { data: dataAllMilestones } = milestonesByProjectNormalQuery(
 		isAuthenticated,

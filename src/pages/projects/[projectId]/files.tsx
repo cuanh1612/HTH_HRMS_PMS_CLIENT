@@ -10,6 +10,7 @@ import {
 	VStack,
 } from '@chakra-ui/react'
 import {ItemContractFile, ItemFileUpload, Loading} from 'components/common'
+import { ProjectLayout } from 'components/layouts'
 
 import { AuthContext } from 'contexts/AuthContext'
 import { createProjectFileMutation, deleteProjectFileMutation } from 'mutations'
@@ -19,12 +20,13 @@ import { allProjectFilesQuery } from 'queries'
 import { useCallback, useContext, useEffect, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { AiOutlinePlusCircle, AiOutlineSave } from 'react-icons/ai'
+import { NextLayout } from 'type/element/layout'
 import { ICloudinaryImg } from 'type/fileType'
 import { projectMutaionResponse } from 'type/mutationResponses'
 import { generateImgFile } from 'utils/helper'
 import { uploadFile } from 'utils/uploadFile'
 
-export default function Files() {
+const Files:NextLayout = ()=> {
 	const { isAuthenticated, handleLoading, setToast, socket } = useContext(AuthContext)
 	const router = useRouter()
 	const { projectId } = router.query
@@ -349,3 +351,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 	// on-demand if the path doesn't exist.
 	return { paths, fallback: false }
 }
+
+Files.getLayout = ProjectLayout
+
+export default Files

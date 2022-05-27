@@ -7,12 +7,9 @@ import {
 	Drawer,
 	DrawerOverlay,
 	DrawerContent,
-	DrawerCloseButton,
-	DrawerHeader,
 	DrawerBody,
 	DrawerFooter,
 	Button,
-    IconButton,
     CloseButton,
 } from '@chakra-ui/react'
 import { AuthContext } from 'contexts/AuthContext'

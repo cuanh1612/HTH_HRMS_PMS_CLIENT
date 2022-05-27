@@ -13,20 +13,18 @@ import {
 	useDisclosure,
 	VStack,
 	Table as CTable,
-	TableCaption,
 	Thead,
 	Tr,
 	Th,
 	Tbody,
 	Td,
-	Tfoot,
 	Avatar,
 	AvatarGroup,
 } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
 import {AlertDialog, Table, Loading} from 'components/common'
 import { Input, InputNumber, Select, Textarea} from 'components/form'
-import { ClientLayout } from 'components/layouts'
+import { ProjectLayout } from 'components/layouts'
 import Modal from 'components/modal/Modal'
 import { AuthContext } from 'contexts/AuthContext'
 import {
@@ -78,7 +76,7 @@ const milestones: NextLayout = () => {
 	console.log(dataDetail)
 
 	// get detail milestone
-	const { data: detailMilestone, mutate: refetchDetail } = detailMilestoneQuery(
+	const { data: detailMilestone } = detailMilestoneQuery(
 		isAuthenticated,
 		idDetail
 	)
@@ -481,7 +479,7 @@ const milestones: NextLayout = () => {
 									<Tbody>
 										{dataDetail.tasks &&
 											dataDetail.tasks.map((task, key) => (
-												<Tr>
+												<Tr key={key}>
 													<Td>{task.id}</Td>
 													<Td>{task.name}</Td>
 													<Td>
@@ -528,6 +526,6 @@ const milestones: NextLayout = () => {
 	)
 }
 
-milestones.getLayout = ClientLayout
+milestones.getLayout = ProjectLayout
 
 export default milestones

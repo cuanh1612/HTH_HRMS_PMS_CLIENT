@@ -1,4 +1,4 @@
-import { ClientLayout } from 'components/layouts'
+import { ClientLayout, ProjectLayout } from 'components/layouts'
 import { AuthContext } from 'contexts/AuthContext'
 import React, { useContext, useEffect, useState } from 'react'
 import { NextLayout } from 'type/element/layout'
@@ -512,6 +512,6 @@ const taskBoard: NextLayout = () => {
 	)
 }
 
-taskBoard.getLayout = ClientLayout
+taskBoard.getLayout = ProjectLayout
 
 export default taskBoard

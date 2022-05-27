@@ -36,7 +36,7 @@ import { useRouter } from 'next/router'
 // get all employees
 import { allEmployeesQuery, allDesignationsQuery, allDepartmentsQuery } from 'queries'
 
-import { ChangeEventHandler, useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 // icons
 import { AiOutlineCaretDown, AiOutlineCaretUp, AiOutlineSearch } from 'react-icons/ai'
@@ -70,7 +70,7 @@ const Employees: NextLayout = () => {
 	const [filter, setFilter] = useState<IFilter>({
 		columnId: '',
 		filterValue: '',
-	})
+	}) 
 
 	// set isOpen drawer to add, update
 	const { isOpen: isOpenAdd, onOpen: onOpenAdd, onClose: onCloseAdd } = useDisclosure()
@@ -157,6 +157,7 @@ const Employees: NextLayout = () => {
 				type: 'success',
 			})
 			refetchAllEmpl()
+			setIsloading(false)
 		}
 	}, [statusDl])
 
@@ -169,6 +170,7 @@ const Employees: NextLayout = () => {
 			})
 			setDataSl(null)
 			refetchAllEmpl()
+			setIsloading(false)
 		}
 	}, [statusDlMany])
 
@@ -537,6 +539,7 @@ const Employees: NextLayout = () => {
 				content="You will not be able to recover the deleted record!"
 				isOpen={isOpenDialogDlMany}
 				onClose={onCloseDlMany}
+				
 			/>
 
 			{/* drawer to add employee */}

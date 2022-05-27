@@ -1,5 +1,5 @@
 import useMutation from 'use-mutation'
-import { loginGoogleRequest, loginRequest, logoutRequest, reEnterPasswordRequest, registerRequest } from 'requests/auth'
+import { loginGoogleRequest, loginRequest, logoutRequest, recoverPasswordRequest, reEnterPasswordRequest, registerRequest, resetPasswordRequest } from 'requests/auth'
 import { TToast } from 'type/basicTypes'
 
 export const registerMutation = (setToast: TToast) => {
@@ -56,3 +56,28 @@ export const reEnterPasswordMutation = (setToast: TToast) => {
 		},
 	})
 }
+
+export const recoverPassMutation = (setToast: TToast) => {
+	return useMutation(recoverPasswordRequest, {
+		onFailure({ error }) {
+			setToast({
+				msg: error.message,
+				type: 'error'
+			})
+		},
+	})
+}
+
+export const resetPassMutation = (setToast: TToast) => {
+	return useMutation(resetPasswordRequest, {
+		onFailure({ error }) {
+			setToast({
+				msg: error.message,
+				type: 'error'
+			})
+		},
+	})
+}
+
+
+

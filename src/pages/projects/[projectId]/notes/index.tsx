@@ -1,5 +1,6 @@
 import { Box, Button, HStack, Input, Text, useDisclosure, VStack } from '@chakra-ui/react'
 import {Drawer} from 'components/Drawer'
+import { ProjectLayout } from 'components/layouts'
 import Modal from 'components/modal/Modal'
 import { AuthContext } from 'contexts/AuthContext'
 import { reEnterPasswordMutation } from 'mutations'
@@ -8,6 +9,7 @@ import { useRouter } from 'next/router'
 import { allProjectNotesQuery } from 'queries'
 import { FormEventHandler, useContext, useEffect, useState } from 'react'
 import { AiOutlineCheck } from 'react-icons/ai'
+import { NextLayout } from 'type/element/layout'
 import { projectMutaionResponse } from 'type/mutationResponses'
 import AddNote from './add-notes'
 import DetailProjectNote from './[noteId]'
@@ -15,7 +17,7 @@ import UpdateNote from './[noteId]/update-note'
 
 export interface INotesProps {}
 
-export default function Notes({}: INotesProps) {
+const Notes:NextLayout = ({}: INotesProps)=> {
 	const { isAuthenticated, handleLoading, currentUser, setToast, socket } =
 		useContext(AuthContext)
 	const router = useRouter()
@@ -89,6 +91,12 @@ export default function Notes({}: INotesProps) {
 				break
 		}
 	}, [statusReEnterPassword])
+
+	useEffect(()=> {
+		if(dataAllNotes) {
+			console.log(dataAllNotes)
+		}
+	}, [dataAllNotes])
 
 	//Join room socket
 	useEffect(() => {
@@ -295,3 +303,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 		props: {},
 	}
 }
+
+Notes.getLayout = ProjectLayout
+export default Notes

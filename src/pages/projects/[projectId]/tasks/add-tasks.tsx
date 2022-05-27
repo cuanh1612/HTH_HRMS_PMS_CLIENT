@@ -26,6 +26,7 @@ import {
 	allStatusTasksQuery,
 	allTaskCategoriesQuery,
 	detailStatusQuery,
+	allTasksByProjectQuery,
 } from 'queries'
 import { useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -82,6 +83,11 @@ export default function AddTask({ onCloseDrawer, statusId }: IAddTaskProps) {
 	const { data: dataAllMilestones } = milestonesByProjectNormalQuery(isAuthenticated, projectId)
 	// get all status tasks
 	const { mutate: refetchStatusTasks } = allStatusTasksQuery(isAuthenticated, projectId)
+	// refetch all task
+	const { mutate: refetchTasks } = allTasksByProjectQuery(
+		isAuthenticated,
+		projectId
+	)
 
 	//mutation -----------------------------------------------------------
 	const [mutateCreTask, { status: statusCreTask, data: dataCreTask }] =
@@ -207,6 +213,7 @@ export default function AddTask({ onCloseDrawer, statusId }: IAddTaskProps) {
 				msg: dataCreTask?.message as string,
 			})
 			refetchStatusTasks()
+			refetchTasks()
 		}
 	}, [statusCreTask])
 

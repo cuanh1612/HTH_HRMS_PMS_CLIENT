@@ -70,7 +70,7 @@ export const deleteLeaveRequest = async (id: string) => {
 }
 
 
-// Handle to delete many employees
+// Handle to delete many leave
 export const deleteLeavesRequest = async (ids: number[]) => {
 	return await postData<leaveMutaionResponse>({
 		url: `http://localhost:4000/api/leaves/delete-many`,

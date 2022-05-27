@@ -1,5 +1,6 @@
 import { Box, Button, HStack, useDisclosure, VStack } from '@chakra-ui/react'
 import {Drawer} from 'components/Drawer'
+import { ProjectLayout } from 'components/layouts'
 import Modal from 'components/modal/Modal'
 import ProjectDiscussionItem from 'components/projectDiscussion/projectDiscussionItem'
 import { AuthContext } from 'contexts/AuthContext'
@@ -10,6 +11,7 @@ import { allProjectDiscussionRoomsQuery } from 'queries'
 import { useContext, useEffect, useState } from 'react'
 import { AiOutlineEdit, AiOutlinePlusCircle } from 'react-icons/ai'
 import ProjectDiscussionCategory from 'src/pages/project-discussion-categories'
+import { NextLayout } from 'type/element/layout'
 import {
 	ProjectDisucssionRoomMutaionResponse,
 	projectMutaionResponse
@@ -21,7 +23,7 @@ export interface IDiscussionsProps {
 	allDiscussionRooms: ProjectDisucssionRoomMutaionResponse
 }
 
-export default function Discussions({}: IDiscussionsProps) {
+const Discussions:NextLayout = ()=> {
 	const { isAuthenticated, handleLoading, setToast, socket } = useContext(AuthContext)
 	const router = useRouter()
 	const { projectId } = router.query
@@ -244,3 +246,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 		},
 	}
 }
+
+Discussions.getLayout = ProjectLayout
+export default Discussions

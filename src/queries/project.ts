@@ -46,10 +46,22 @@ export const allEmployeesInProjectQuery = (
 }
 
 
-
+// get all projects with info employees and client
 export const allProjectsQuery = (isAuthenticated?: boolean | null) => {
 	return useSWR<projectMutaionResponse, AxiosError>(
 		isAuthenticated ? 'projects': null,
+		allProjectsRequest,
+		{
+			errorRetryCount: 2,
+			revalidateOnFocus: false,
+		}
+	)
+}
+
+// get all projects
+export const allProjectsNormalQuery = (isAuthenticated?: boolean | null) => {
+	return useSWR<projectMutaionResponse, AxiosError>(
+		isAuthenticated ? 'projects/normal': null,
 		allProjectsRequest,
 		{
 			errorRetryCount: 2,

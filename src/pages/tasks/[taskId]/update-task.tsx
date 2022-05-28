@@ -25,6 +25,7 @@ import {
 	detailTaskQuery,
 	allTaskCategoriesQuery,
 	allTasksQuery,
+	allTasksCalendarQuery,
 } from 'queries'
 import { useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -87,6 +88,9 @@ export default function UpdateTask({ onCloseDrawer, taskIdProp }: IUpdateTaskPro
 
 	// refetch all tasks
 	const { mutate: refetchTasks } = allTasksQuery(isAuthenticated)
+
+	// refetch task in calendar
+	const { mutate: refetchTasksCalendar } = allTasksCalendarQuery({isAuthenticated})
 
 	//mutation -----------------------------------------------------------
 	const [mutateUpTask, { status: statusUpTask, data: dataUpTask }] = updateTaskMutation(setToast)
@@ -279,6 +283,7 @@ export default function UpdateTask({ onCloseDrawer, taskIdProp }: IUpdateTaskPro
 			})
 
 			refetchTasks()
+			refetchTasksCalendar()
 		}
 	}, [statusUpTask])
 

@@ -7,7 +7,7 @@ import {
 	HStack,
 	Input as ChakraInput,
 	Text,
-	VStack
+	VStack,
 } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Loading } from 'components/common'
@@ -19,7 +19,11 @@ import { useRouter } from 'next/router'
 import {
 	allTasksByProjectQuery,
 	detailProjectQuery,
-	detailTaskQuery, detailTimeLogQuery, timeLogsByProjectQuery
+	detailTaskQuery,
+	detailTimeLogQuery,
+	timeLogsByProjectQuery,
+	timeLogsCalendarQuery,
+	timeLogsQuery,
 } from 'queries'
 import { useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -62,8 +66,11 @@ export default function UpdateTimeLog({ onCloseDrawer, timeLogIdProp }: IUpdateT
 		timeLogIdProp || (timeLogIdRouter as string)
 	)
 
-	// refetch all time log by project
-	const { mutate: refetchTimeLogs } = timeLogsByProjectQuery(isAuthenticated, projectId)
+	// refetch time log
+	const { mutate: refetchTimeLogs } = timeLogsQuery(isAuthenticated)
+
+	// refetch time logs in calendar
+	const { mutate: refetchTimeLogsCalendar } = timeLogsCalendarQuery({isAuthenticated})
 
 	//mutation -----------------------------------------------------------
 	const [mutateUpdateTimeLog, { status: statusUpdateTimeLog, data: dataUpdateTimeLog }] =
@@ -199,6 +206,7 @@ export default function UpdateTimeLog({ onCloseDrawer, timeLogIdProp }: IUpdateT
 				msg: dataUpdateTimeLog?.message as string,
 			})
 			refetchTimeLogs()
+			refetchTimeLogsCalendar()
 		}
 	}, [statusUpdateTimeLog])
 

@@ -33,7 +33,7 @@ export const ProjectLayout = ({ children }: { children: JSX.Element }) => {
                 },
                 {
                     icon: '',
-                    link: `/projects/${projectId}/tasks`,
+                    link: `/projects/${projectId}/tasks-table`,
                     title: 'Tasks'
                 },
                 {
@@ -43,7 +43,7 @@ export const ProjectLayout = ({ children }: { children: JSX.Element }) => {
                 },
                 {
                     icon: '',
-                    link: `/projects/${projectId}/time-logs`,
+                    link: `/projects/${projectId}/time-logs-table`,
                     title: 'Time Logs'
                 },
                 {

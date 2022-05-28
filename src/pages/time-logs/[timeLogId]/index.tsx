@@ -1,4 +1,4 @@
-import { Avatar, Box, Grid, GridItem, HStack, Text, VStack } from '@chakra-ui/react'
+import { Avatar, Box, Button, Grid, GridItem, HStack, Text, VStack } from '@chakra-ui/react'
 import { AuthContext } from 'contexts/AuthContext'
 import { GetServerSideProps } from 'next'
 import { useRouter } from 'next/router'
@@ -10,9 +10,15 @@ import { projectMutaionResponse } from 'type/mutationResponses'
 
 export interface IDetailTimeLogProps {
 	timeLogIdProp?: string | number
+	onOpenDl?: any
+	onOpenUpdate?: any
 }
 
-export default function DetailTimeLog({ timeLogIdProp }: IDetailTimeLogProps) {
+export default function DetailTimeLog({
+	timeLogIdProp,
+	onOpenDl,
+	onOpenUpdate,
+}: IDetailTimeLogProps) {
 	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
 	const router = useRouter()
 	const { timeLogId: timeLogIdRouter } = router.query
@@ -107,6 +113,8 @@ export default function DetailTimeLog({ timeLogIdProp }: IDetailTimeLogProps) {
 						</HStack>
 					</GridItem>
 				</Grid>
+				{onOpenDl && <Button onClick={onOpenDl}>delete</Button>}
+				{onOpenUpdate && <Button onClick={onOpenUpdate}>update</Button>}
 			</Box>
 		</>
 	)

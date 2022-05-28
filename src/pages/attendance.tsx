@@ -39,7 +39,7 @@ import { AuthContext } from 'contexts/AuthContext'
 import { useRouter } from 'next/router'
 
 // query
-import { allAttendancesQuery, allDepartmentsQuery, allLeaveQuery, allHolidaysQuery, allEmployeesQuery } from 'queries'
+import { allAttendancesQuery, allDepartmentsQuery, allLeaveQuery, allHolidaysQuery, allEmployeesQuery, allEmployeesNormalQuery } from 'queries'
 
 // mutation
 import { createAttendanceMutation } from 'mutations'
@@ -112,7 +112,7 @@ const attendance: NextLayout = () => {
 	)
 
 	// get all employees
-	const { data: allEmployees } = allEmployeesQuery(isAuthenticated)
+	const { data: allEmployees } = allEmployeesNormalQuery(isAuthenticated)
 
 	// get all attendance
 	const { data: allDepartments } = allDepartmentsQuery(isAuthenticated)
@@ -178,7 +178,7 @@ const attendance: NextLayout = () => {
 									src={employee.avatar?.url}
 								/>
 								<Text color={colorMode == 'dark' ? 'white' : 'black'}>
-									{employee.email}
+									{employee.name}
 								</Text>
 							</HStack>
 						</>
@@ -666,8 +666,8 @@ const attendance: NextLayout = () => {
 										handleSearch={(field: any) => {
 											setEmployeeSl(field.value)
 										}}
-										label={'Department'}
-										name={'department'}
+										label={'Employee'}
+										name={'employee'}
 										options={[
 											{
 												label: <Text color={colorMode== 'light' ? 'black' : 'white'}>all</Text>,

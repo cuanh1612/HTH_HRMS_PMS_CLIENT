@@ -30,3 +30,54 @@ export const timeLogsByProjectQuery = (
 	)
 }
 
+export const timeLogsQuery = (
+	isAuthenticated: boolean | null,
+) => {
+	return useSWR<TimeLogMutaionResponse, AxiosError>(
+		isAuthenticated ? `time-logs` : null,
+		allTimeLogByProjectRequest,
+		{
+			errorRetryCount: 2,
+			revalidateOnFocus: false,
+		}
+	)
+}
+
+export const timeLogsCalendarQuery = ({
+	isAuthenticated,
+	employee,
+	client,
+	name,
+	project,
+}: {
+	isAuthenticated: boolean | null
+	employee?: number
+	project?: number
+	client?: number
+	name?: string
+}) => {
+	const fieldUrl: string[] = []
+	employee && fieldUrl.push(`employee=${employee}`)
+	client && fieldUrl.push(`client=${client}`)
+	name && fieldUrl.push(`name=${name}`)
+	project && fieldUrl.push(`project=${project}`)
+
+	var url = ''
+
+	for (let index = 0; index < fieldUrl.length; index++) {
+		if (index == 0) {
+			url += `?${fieldUrl[index]}`
+		} else {
+			url += `&${fieldUrl[index]}`
+		}
+	}
+
+	return useSWR<TimeLogMutaionResponse, AxiosError>(
+		isAuthenticated ? `time-logs/calendar${url}` : null,
+		allTimeLogByProjectRequest,
+		{
+			errorRetryCount: 2,
+			revalidateOnFocus: false,
+		}
+	)
+}

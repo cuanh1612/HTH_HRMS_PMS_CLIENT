@@ -24,3 +24,14 @@ export const allClientsQuery = (isAuthenticated: boolean | null) => {
 		}
 	)
 }
+
+export const allClientsNormalQuery = (isAuthenticated: boolean | null) => {
+	return useSWR<clientMutaionResponse, AxiosError>(
+		isAuthenticated ? `clients/normal` : null,
+		allClientsRequest,
+		{
+			errorRetryCount: 2,
+			revalidateOnFocus: false,
+		}
+	)
+}

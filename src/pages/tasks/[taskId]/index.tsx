@@ -1,6 +1,7 @@
 import {
 	Avatar,
 	Box,
+	Button,
 	Grid,
 	GridItem,
 	HStack,
@@ -27,9 +28,11 @@ import TaskFiles from './files'
 export interface IDetailTaskProps {
 	onCloseDrawer?: () => void
 	taskIdProp?: string | number
+	onOpenDl?: any
+	onOpenUpdate?: any;
 }
 
-export default function DetailTask({ onCloseDrawer, taskIdProp }: IDetailTaskProps) {
+export default function DetailTask({ onCloseDrawer, taskIdProp, onOpenDl, onOpenUpdate }: IDetailTaskProps) {
 	const { isAuthenticated, handleLoading } = useContext(AuthContext)
 	const router = useRouter()
 	const { taskId: taskIdRouter } = router.query
@@ -198,6 +201,12 @@ export default function DetailTask({ onCloseDrawer, taskIdProp }: IDetailTaskPro
 			>
 				<TaskCategory />
 			</Modal>
+			{
+				onOpenDl && <Button onClick={onOpenDl}>delete</Button>
+			}
+			{
+				onOpenUpdate && <Button onClick={onOpenUpdate}>update</Button>
+			}
 		</Box>
 	)
 }

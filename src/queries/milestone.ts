@@ -47,5 +47,17 @@ export const milestonesByProjectNormalQuery = (
 	)
 }
 
+export const allMilestonesQuery = (
+	isAuthenticated?: boolean | null,
+) => {
+	return useSWR<milestoneMutaionResponse, AxiosError>(
+		isAuthenticated  ? `milestone/normal` : null,
+		allMilestoneNormalRequest,
+		{
+			errorRetryCount: 2,
+			revalidateOnFocus: false,
+		}
+	)
+}
 
 

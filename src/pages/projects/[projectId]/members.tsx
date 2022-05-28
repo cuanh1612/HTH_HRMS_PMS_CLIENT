@@ -364,7 +364,7 @@ const members: NextLayout = () => {
 									setIsloading(true)
 								}, 500)
 							}}
-							defaultValue={Number(value.hourly_rate)}
+							defaultValue={Number(value?.hourly_rate)}
 						>
 							<NumberInputField />
 							<NumberInputStepper>

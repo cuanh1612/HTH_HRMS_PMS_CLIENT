@@ -55,7 +55,6 @@ const Event: NextLayout = () => {
 
 	// set data to handle to calendar
 	const [data, setData] = useState<EventInput[]>([])
-
 	const [calendar, setCalendar] = useState<Calendar>()
 
 	const [employeesFilter, setEmployeesFilter] = useState<IOption[]>([])

@@ -1,35 +1,51 @@
 import {
-	Button, Drawer as CDrawer, DrawerBody,
+	Avatar,
+	Badge,
+	Button,
+	Drawer as CDrawer,
+	DrawerBody,
 	DrawerCloseButton,
-	DrawerContent, DrawerHeader, DrawerOverlay, useDisclosure,
-	VStack
+	DrawerContent,
+	DrawerHeader,
+	DrawerOverlay,
+	HStack,
+	Menu,
+	MenuButton,
+	MenuItem,
+	MenuList,
+	Text,
+	useDisclosure,
+	VStack,
 } from '@chakra-ui/react'
-import { AlertDialog } from 'components/common'
+import { AlertDialog, Table } from 'components/common'
 import { Drawer } from 'components/Drawer'
 import { DateRange, Input, Select } from 'components/filter'
+import { ClientLayout } from 'components/layouts'
 import { AuthContext } from 'contexts/AuthContext'
 import { deleteTimeLogMutation, deleteTimeLogsMutation } from 'mutations'
 import { useRouter } from 'next/router'
-import { allStatusQuery, timeLogsByProjectQuery } from 'queries'
+import { allProjectsNormalQuery, timeLogsQuery } from 'queries'
 import { useContext, useEffect, useState } from 'react'
 import { AiOutlineSearch } from 'react-icons/ai'
+import { IoEyeOutline } from 'react-icons/io5'
+import { MdOutlineDeleteOutline, MdOutlineMoreVert } from 'react-icons/md'
+import { RiPencilLine } from 'react-icons/ri'
 import { NextLayout } from 'type/element/layout'
-import { IFilter } from 'type/tableTypes'
+import { IFilter, TColumn } from 'type/tableTypes'
+import { dateFilter, selectFilter, textFilter } from 'utils/tableFilters'
 import AddTimeLog from './add-time-logs'
 import DetailTimeLog from './[timeLogId]'
 import UpdateTimeLog from './[timeLogId]/update-time-logs'
 
 const TimeLogs: NextLayout = () => {
-	const { isAuthenticated, handleLoading, currentUser, setToast } = useContext(AuthContext)
+	const { isAuthenticated, handleLoading, setToast, currentUser } = useContext(AuthContext)
 	const router = useRouter()
-
-	const { projectId } = router.query
 
 	// data select to delete all
 	const [dataSl, setDataSl] = useState<Array<number> | null>()
 
 	// set id time log to delete or update
-	const [idTimeLog, setIdTimeLog] = useState<number>(16)
+	const [idTimeLog, setIdTimeLog] = useState<number>()
 
 	// set filter
 	const [filter, setFilter] = useState<IFilter>({
@@ -71,15 +87,6 @@ const TimeLogs: NextLayout = () => {
 	// set isOpen of dialog to delete one
 	const { isOpen: isOpenDialogDl, onOpen: onOpenDl, onClose: onCloseDl } = useDisclosure()
 
-	// mutation
-
-	// delete one
-	const [deleteOne, { data: dataDlOne, status: statusDlOne }] = deleteTimeLogMutation(setToast)
-
-	// delete may
-	const [deleteMany, { data: dataDlMany, status: statusDlMany }] =
-		deleteTimeLogsMutation(setToast)
-
 	// set isOpen of dialog to delete one
 	const {
 		isOpen: isOpenDialogDlMany,
@@ -87,17 +94,20 @@ const TimeLogs: NextLayout = () => {
 		onClose: onCloseDlMany,
 	} = useDisclosure()
 
-	// get all time log by project
-	const { data: allTimeLogs, mutate: refetchTimeLogs } = timeLogsByProjectQuery(
-		isAuthenticated,
-		projectId
-	)
+	// mutation
+	// delete one
+	const [deleteOne, { data: dataDlOne, status: statusDlOne }] = deleteTimeLogMutation(setToast)
 
-	// get all status to filter
-	const { data: allStatuses } = allStatusQuery(
-		isAuthenticated,
-		projectId
-	)
+	// delete many
+	const [deleteMany, { data: dataDlMany, status: statusDlMany }] =
+		deleteTimeLogsMutation(setToast)
+
+	// query
+	// get all time log by project
+	const { data: allTimeLogs, mutate: refetchTimeLogs } = timeLogsQuery(isAuthenticated)
+
+	// get all project to filter
+	const { data: dataAllProjects } = allProjectsNormalQuery(isAuthenticated)
 
 	//Useeffect ---------------------------------------------------------
 	//Handle check login successfully
@@ -144,6 +154,183 @@ const TimeLogs: NextLayout = () => {
 		}
 	}, [statusDlMany])
 
+	// header ----------------------------------------
+	const columns: TColumn[] = [
+		{
+			Header: 'Time logs',
+
+			columns: [
+				{
+					Header: 'Id',
+					accessor: 'id',
+
+					width: 80,
+					minWidth: 80,
+					disableResizing: true,
+					Cell: ({ value }) => {
+						return value
+					},
+				},
+				{
+					Header: 'Task',
+					accessor: 'task',
+					Cell: ({ value }) => {
+						return <Text isTruncated>{value.name}</Text>
+					},
+					filter: textFilter(['task', 'name']),
+				},
+				{
+					Header: 'Project',
+					accessor: 'project',
+					Cell: ({ value }) => {
+						return <Text isTruncated>{value?.name}</Text>
+					},
+					filter: selectFilter(['project', 'id']),
+				},
+				{
+					Header: 'Employee',
+					accessor: 'employee',
+					minWidth: 250,
+					Cell: ({ value }) => {
+						return (
+							<>
+								{value ? (
+									<HStack w={'full'} spacing={5}>
+										<Avatar
+											flex={'none'}
+											size={'sm'}
+											name={value.name}
+											src={value.avatar?.url}
+										/>
+										<VStack w={'70%'} alignItems={'start'}>
+											<Text isTruncated w={'full'}>
+												{value.name}
+												{currentUser?.email == value.email && (
+													<Badge
+														marginLeft={'5'}
+														color={'white'}
+														background={'gray.500'}
+													>
+														It's you
+													</Badge>
+												)}
+											</Text>
+											<Text
+												isTruncated
+												w={'full'}
+												fontSize={'sm'}
+												color={'gray.400'}
+											>
+												Junior
+											</Text>
+										</VStack>
+									</HStack>
+								) : (
+									''
+								)}
+							</>
+						)
+					},
+				},
+				{
+					Header: 'Start Time',
+					accessor: 'starts_on_date',
+					filter: dateFilter(['starts_on_date']),
+					Cell: ({ value, row }) => {
+						const date = new Date(value)
+						return (
+							<Text isTruncated>{`${date.getDate()}-${
+								date.getMonth() + 1
+							}-${date.getFullYear()} ${row.original['starts_on_time']}`}</Text>
+						)
+					},
+				},
+				{
+					Header: 'End Time',
+					accessor: 'ends_on_date',
+					minWidth: 150,
+					filter: dateFilter(['ends_on_date']),
+					Cell: ({ value, row }) => {
+						const date = new Date(value)
+						return (
+							<Text isTruncated>{`${date.getDate()}-${
+								date.getMonth() + 1
+							}-${date.getFullYear()} ${row.original['ends_on_time']}`}</Text>
+						)
+					},
+				},
+				{
+					Header: 'Total Hours',
+					minWidth: 150,
+					accessor: 'total_hours',
+					Cell: ({ value }) => {
+						return <Text isTruncated>{value} hrs</Text>
+					},
+				},
+				{
+					Header: 'Earnings',
+					accessor: 'earnings',
+					Cell: ({ value }) => {
+						return (
+							<Text isTruncated>
+								{Intl.NumberFormat('en-US', {
+									style: 'currency',
+									currency: 'USD',
+									useGrouping: false,
+								}).format(Number(value))}
+							</Text>
+						)
+					},
+				},
+				{
+					Header: 'Action',
+					accessor: 'action',
+					disableResizing: true,
+					width: 120,
+					minWidth: 120,
+					disableSortBy: true,
+					Cell: ({ row }) => (
+						<Menu>
+							<MenuButton as={Button} paddingInline={3}>
+								<MdOutlineMoreVert />
+							</MenuButton>
+							<MenuList>
+								<MenuItem
+									onClick={() => {
+										setIdTimeLog(Number(row.values['id']))
+										onOpenDetailTimelog()
+									}}
+									icon={<IoEyeOutline fontSize={'15px'} />}
+								>
+									View
+								</MenuItem>
+								<MenuItem
+									onClick={() => {
+										setIdTimeLog(Number(row.values['id']))
+										onOpenUpdateTimelog()
+									}}
+									icon={<RiPencilLine fontSize={'15px'} />}
+								>
+									Edit
+								</MenuItem>
+
+								<MenuItem
+									onClick={() => {
+										setIdTimeLog(Number(row.values['id']))
+										onOpenDl()
+									}}
+									icon={<MdOutlineDeleteOutline fontSize={'15px'} />}
+								>
+									Delete
+								</MenuItem>
+							</MenuList>
+						</Menu>
+					),
+				},
+			],
+		},
+	]
+
 	return (
 		<>
 			<Button onClick={onOpenAddTimeLog}>Add new</Button>
@@ -163,6 +350,18 @@ const TimeLogs: NextLayout = () => {
 			>
 				reset filter
 			</Button>
+
+			<Table
+				data={allTimeLogs?.timeLogs || []}
+				columns={columns}
+				isLoading={isLoading}
+				isSelect
+				selectByColumn="id"
+				setSelect={(data: Array<number>) => setDataSl(data)}
+				filter={filter}
+				disableColumns={['project']}
+				isResetFilter={isResetFilter}
+			/>
 
 			{/* drawer to add project time log */}
 			<Drawer
@@ -259,18 +458,17 @@ const TimeLogs: NextLayout = () => {
 								}}
 								label="Ends on date"
 							/>
-
 							<Select
-								options={allStatuses?.statuses?.map((item) => ({
-									label: item.title,
-									value: item.id,
+								options={dataAllProjects?.projects?.map((project) => ({
+									label: project.name,
+									value: project.id,
 								}))}
 								handleSearch={(data: IFilter) => {
 									setFilter(data)
 								}}
-								columnId={'status'}
-								label="Status"
-								placeholder="Select status"
+								columnId={'project'}
+								label="Project"
+								placeholder="Select project"
 							/>
 						</VStack>
 					</DrawerBody>
@@ -279,5 +477,7 @@ const TimeLogs: NextLayout = () => {
 		</>
 	)
 }
+
+TimeLogs.getLayout = ClientLayout
 
 export default TimeLogs

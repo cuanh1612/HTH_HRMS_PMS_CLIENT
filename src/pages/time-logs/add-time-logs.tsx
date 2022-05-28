@@ -16,9 +16,10 @@ import { useRouter } from 'next/router'
 import {
 	allProjectsNormalQuery,
 	allTasksByProjectQuery,
-	detailProjectQuery,
 	detailTaskQuery,
-	timeLogsByProjectQuery
+	timeLogsByProjectQuery,
+	timeLogsCalendarQuery,
+	timeLogsQuery
 } from 'queries'
 import { useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -60,8 +61,11 @@ export default function AddTimeLog({ onCloseDrawer }: IAddTimeLogProps) {
 
 	const { data: dataAllProjects } = allProjectsNormalQuery(isAuthenticated)
 
-	// refetch all time log by project
-	const { mutate: refetchTimeLogs } = timeLogsByProjectQuery(isAuthenticated, selectProjectId)
+	// refetch time log
+	const { mutate: refetchTimeLogs } = timeLogsQuery(isAuthenticated)
+
+	// refetch time logs in calendar
+	const { mutate: refetchTimeLogsCalendar } = timeLogsCalendarQuery({isAuthenticated})
 
 	//mutation -----------------------------------------------------------
 	const [mutateCreTimeLog, { status: statusCreTimeLog, data: dataCreTimeLog }] =
@@ -214,6 +218,7 @@ export default function AddTimeLog({ onCloseDrawer }: IAddTimeLogProps) {
 			})
 
 			refetchTimeLogs()
+			refetchTimeLogsCalendar()
 		}
 	}, [statusCreTimeLog])
 

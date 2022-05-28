@@ -172,7 +172,7 @@ export const CreateProjectTaskValidate = yup.object({
 	name: yup.string().required('Please enter field name'),
 	start_date: yup.date().required('Please select start date'),
 	deadline: yup.date().required('Please select deadline'),
-	project: yup.number().required('Please select project'),
+	project: yup.number(),
 	status: yup.number().required('Please select status'),
 })
 

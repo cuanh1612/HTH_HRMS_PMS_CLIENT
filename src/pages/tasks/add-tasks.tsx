@@ -22,6 +22,7 @@ import {
 	allStatusQuery,
 	allStatusTasksQuery,
 	allTaskCategoriesQuery,
+	allTasksCalendarQuery,
 	allTasksQuery,
 	detailProjectQuery, milestonesByProjectNormalQuery
 } from 'queries'
@@ -78,14 +79,17 @@ export default function AddTask({ onCloseDrawer }: IAddTaskProps) {
 	const { data: dataAllStatus } = allStatusQuery(isAuthenticated, selectProjectId)
 	const { data: dataAllProjects } = allProjectsNormalQuery(isAuthenticated)
 
-	// refetch all tasks
-	const { mutate: refetchTasks } = allTasksQuery(isAuthenticated)
 	const { data: dataAllMilestones } = milestonesByProjectNormalQuery(
 		isAuthenticated,
 		selectProjectId
 	)
-	// get all status tasks
+
+	// refetch all tasks
+	const { mutate: refetchTasks } = allTasksQuery(isAuthenticated)
+	// refetch status all status tasks
 	const { mutate: refetchStatusTasks } = allStatusTasksQuery(isAuthenticated, selectProjectId)
+	// refetch task in calendar
+	const {  mutate: refetchTasksCalendar } = allTasksCalendarQuery({isAuthenticated})
 
 	//mutation -----------------------------------------------------------
 	const [mutateCreTask, { status: statusCreTask, data: dataCreTask }] =
@@ -208,6 +212,7 @@ export default function AddTask({ onCloseDrawer }: IAddTaskProps) {
 			})
 			refetchTasks()
 			refetchStatusTasks()
+			refetchTasksCalendar()
 		}
 	}, [statusCreTask])
 

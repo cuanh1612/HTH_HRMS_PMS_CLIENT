@@ -40,9 +40,9 @@ import { MdOutlineSubtitles } from 'react-icons/md'
 import { AiOutlineBgColors } from 'react-icons/ai'
 import {AlertDialog} from 'components/common'
 import {Drawer} from 'components/Drawer'
-import AddTask from './tasks/add-tasks'
-import UpdateTask from './tasks/[taskId]/update-task'
-import DetailTask from './tasks/[taskId]'
+import AddTask from './tasks-table/add-tasks'
+import UpdateTask from './tasks-table/[taskId]/update-task'
+import DetailTask from './tasks-table/[taskId]'
 
 const taskBoard: NextLayout = () => {
 	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)

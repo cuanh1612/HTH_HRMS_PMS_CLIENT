@@ -15,8 +15,9 @@ import {
 import { AuthContext } from 'contexts/AuthContext'
 import React, { useState, useEffect, useContext } from 'react'
 import { AiOutlineFile, AiOutlineProject, AiOutlineUsergroupAdd } from 'react-icons/ai'
-import { BiMessageDots } from 'react-icons/bi'
+import { BiMessageDots, BiTime } from 'react-icons/bi'
 import { BsCheck2, BsPerson } from 'react-icons/bs'
+import { VscTasklist } from 'react-icons/vsc'
 import { IoIosGitNetwork } from 'react-icons/io'
 import { IoAirplaneOutline, IoExitOutline } from 'react-icons/io5'
 import { MdOutlineEditNote, MdOutlineEvent } from 'react-icons/md'
@@ -80,6 +81,16 @@ const SideLeft = () => (
 						icon: <AiOutlineProject fontSize={20} />,
 						link: '/projects',
 						title: 'Projects',
+					},
+					{
+						icon: <VscTasklist fontSize={20} />,
+						link: '/tasks',
+						title: 'Tasks',
+					},
+					{
+						icon: <BiTime fontSize={20} />,
+						link: '/time-logs',
+						title: 'Time Logs',
 					},
 				]}
 				title="Work"

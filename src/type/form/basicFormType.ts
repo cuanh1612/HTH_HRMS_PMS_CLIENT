@@ -510,7 +510,7 @@ export type createProjectTaskForm = {
 	project: number
 	assignBy?: number
 	employees: number[]
-	status: number
+	status?: number
 	id: number
 	name: string
 	start_date: Date
@@ -559,7 +559,7 @@ export type updateTaskCommentForm = {
 
 export type createProjectTimeLogForm = {
 	project: number
-	task: number
+	task?: number
 	employee?: number
 	starts_on_date: Date
 	ends_on_date: Date

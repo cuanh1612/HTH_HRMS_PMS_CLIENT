@@ -140,7 +140,12 @@ export default function AddTask({ onCloseDrawer }: IAddTaskProps) {
 			value: undefined
 		})
 
+		//Clear select employees
 		setSelectedEmployees([])
+
+		//Reset data form
+		formSetting.setValue("status", undefined)
+		formSetting.setValue("employees", [])
 	}
 
 	//User effect ---------------------------------------------------------------

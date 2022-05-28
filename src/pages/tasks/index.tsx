@@ -1,5 +1,24 @@
 import { Drawer } from 'components/Drawer'
-import { Box, Button, useDisclosure } from '@chakra-ui/react'
+import {
+	Avatar,
+	AvatarGroup,
+	Box,
+	Button,
+	DrawerBody,
+	DrawerCloseButton,
+	DrawerContent,
+	DrawerHeader,
+	DrawerOverlay,
+	HStack,
+	Menu,
+	MenuButton,
+	MenuItem,
+	MenuList,
+	Text,
+	useDisclosure,
+	VStack,
+	Drawer as CDrawer,
+} from '@chakra-ui/react'
 import { ClientLayout } from 'components/layouts'
 import { useContext, useEffect, useState } from 'react'
 import { NextLayout } from 'type/element/layout'
@@ -8,13 +27,54 @@ import DetailTask from './[taskId]'
 import UpdateTask from './[taskId]/update-task'
 import { useRouter } from 'next/router'
 import { AuthContext } from 'contexts/AuthContext'
+import { allProjectsNormalQuery, allTasksQuery } from 'queries'
+import { IFilter, TColumn } from 'type/tableTypes'
+import { AlertDialog, Table } from 'components/common'
+import { dateFilter, selectFilter, textFilter } from 'utils/tableFilters'
+import { MdOutlineDeleteOutline, MdOutlineMoreVert } from 'react-icons/md'
+import { employeeType, timeLogType } from 'type/basicTypes'
+import { RiPencilLine } from 'react-icons/ri'
+import { IoEyeOutline } from 'react-icons/io5'
+import { deleteTaskMutation, deleteTasksMutation } from 'mutations'
+import { DateRange, Input, Select as SelectF } from 'components/filter'
+import { AiOutlineSearch } from 'react-icons/ai'
 
 const tasks: NextLayout = () => {
 	const { isAuthenticated, handleLoading, setToast, currentUser } = useContext(AuthContext)
 	const router = useRouter()
 
 	const [taskId, setTaskId] = useState<string | number>(9)
-	const [statusIdShow, setStatusIdShow] = useState<number>(1)
+
+	// set loading table
+	const [isLoading, setIsloading] = useState(true)
+
+	// data select to delete all
+	const [dataSl, setDataSl] = useState<Array<number> | null>()
+
+	// is reset table
+	const [isResetFilter, setIsReset] = useState(false)
+
+	// set filter
+	const [filter, setFilter] = useState<IFilter>({
+		columnId: '',
+		filterValue: '',
+	})
+
+	// query
+	// get all tasks
+	const { data: allTasks, mutate: refetchTasks } = allTasksQuery(isAuthenticated)
+
+	// get all projects to filter
+	const { data: dataAllProjects } = allProjectsNormalQuery(isAuthenticated)
+
+	// get all employees to filter
+
+
+	// mutation
+	// delete one
+	const [deleteOne, { data: dataDlOne, status: statusDlOne }] = deleteTaskMutation(setToast)
+	// delete many
+	const [deleteMany, { data: dataDlMany, status: statusDlMany }] = deleteTasksMutation(setToast)
 
 	//Modal -------------------------------------------------------------
 	// set open add task
@@ -38,6 +98,19 @@ const tasks: NextLayout = () => {
 		onClose: onCloseDetailTask,
 	} = useDisclosure()
 
+	// set isOpen of dialog to delete one
+	const { isOpen: isOpenDialogDl, onOpen: onOpenDl, onClose: onCloseDl } = useDisclosure()
+
+	// set isOpen of dialog to delete many
+	const {
+		isOpen: isOpenDialogDlMany,
+		onOpen: onOpenDlMany,
+		onClose: onCloseDlMany,
+	} = useDisclosure()
+
+	// set isOpen of drawer to filters
+	const { isOpen: isOpenFilter, onOpen: onOpenFilter, onClose: onCloseFilter } = useDisclosure()
+
 	//User effect ---------------------------------------------------------------
 	//Handle check loged in
 	useEffect(() => {
@@ -50,11 +123,201 @@ const tasks: NextLayout = () => {
 		}
 	}, [isAuthenticated])
 
+	useEffect(() => {
+		if (allTasks) {
+			console.log(allTasks)
+			setIsloading(false)
+		}
+	}, [allTasks])
+
+	useEffect(() => {
+		if (statusDlOne == 'success' && dataDlOne) {
+			setToast({
+				type: 'success',
+				msg: dataDlOne.message,
+			})
+			refetchTasks()
+			setIsloading(false)
+		}
+	}, [statusDlOne])
+
+	useEffect(() => {
+		if (statusDlMany == 'success' && dataDlMany) {
+			setToast({
+				type: 'success',
+				msg: dataDlMany.message,
+			})
+			refetchTasks()
+			setDataSl([])
+			setIsloading(false)
+		}
+	}, [statusDlMany])
+
+	// header ----------------------------------------
+	const columns: TColumn[] = [
+		{
+			Header: 'Tasks',
+			columns: [
+				{
+					Header: 'Id',
+					accessor: 'id',
+					width: 80,
+					minWidth: 80,
+					disableResizing: true,
+					Cell: ({ value }) => {
+						return value
+					},
+				},
+				{
+					Header: 'Task',
+					accessor: 'name',
+					Cell: ({ value }) => {
+						return <Text isTruncated>{value}</Text>
+					},
+					filter: textFilter(['name']),
+				},
+				{
+					Header: 'Project',
+					accessor: 'project',
+					Cell: ({ value }) => {
+						return <Text isTruncated>{value.name}</Text>
+					},
+					filter: selectFilter(['project', 'id'])
+				},
+				{
+					Header: 'Deadline',
+					accessor: 'deadline',
+					Cell: ({ value }) => {
+						const date = new Date(value)
+						return (
+							<Text color={'red'} isTruncated>{`${date.getDate()}-${
+								date.getMonth() + 1
+							}-${date.getFullYear()}`}</Text>
+						)
+					},
+					filter: dateFilter(['deadline']),
+				},
+				{
+					Header: 'Hours Logged',
+					accessor: 'time_logs',
+					Cell: ({ value }) => {
+						var result
+						if (value.length == 0) {
+							result = 0
+						} else {
+							value.map((item: timeLogType) => {
+								result = item.total_hours
+							})
+						}
+
+						return <Text isTruncated>{result} hrs</Text>
+					},
+				},
+				{
+					Header: 'milestone',
+					accessor: 'milestone',
+					Cell: ({ value }) => {
+						return <Text isTruncated>{value?.title}</Text>
+					},
+					filter: selectFilter(['milestone', 'id']),
+				},
+				{
+					Header: 'Assign to',
+					accessor: 'employees',
+					Cell: ({ value }) => {
+						return (
+							<AvatarGroup size="sm" max={2}>
+								{value.length != 0 &&
+									value.map((employee: employeeType) => (
+										<Avatar
+											name={employee.name}
+											key={employee.id}
+											src={employee.avatar?.url}
+										/>
+									))}
+							</AvatarGroup>
+						)
+					},
+				},
+				{
+					Header: 'Status',
+					accessor: 'status',
+					Cell: ({ value }) => (
+						<HStack alignItems={'center'}>
+							<Box background={value.color} w={'3'} borderRadius={'full'} h={'3'} />
+							<Text>{value.title}</Text>
+						</HStack>
+					),
+					filter: selectFilter(['status', 'id']),
+				},
+				{
+					Header: 'Action',
+					accessor: 'action',
+					disableResizing: true,
+					width: 120,
+					minWidth: 120,
+					disableSortBy: true,
+					Cell: ({ row }) => (
+						<Menu>
+							<MenuButton as={Button} paddingInline={3}>
+								<MdOutlineMoreVert />
+							</MenuButton>
+							<MenuList>
+								<MenuItem
+									onClick={() => {
+										setTaskId(Number(row.values['id']))
+										onOpenDetailTask()
+									}}
+									icon={<IoEyeOutline fontSize={'15px'} />}
+								>
+									View
+								</MenuItem>
+								<MenuItem
+									onClick={() => {
+										setTaskId(Number(row.values['id']))
+										onOpenUpdateTask()
+									}}
+									icon={<RiPencilLine fontSize={'15px'} />}
+								>
+									Edit
+								</MenuItem>
+
+								<MenuItem
+									onClick={() => {
+										setTaskId(Number(row.values['id']))
+										onOpenDl()
+									}}
+									icon={<MdOutlineDeleteOutline fontSize={'15px'} />}
+								>
+									Delete
+								</MenuItem>
+							</MenuList>
+						</Menu>
+					),
+				},
+			],
+		},
+	]
+
 	return (
 		<Box>
-			<Button onClick={onOpenAddTask}>Add task Incomplete</Button>
-			<Button onClick={onOpenUpdateTask}>Update Task</Button>
-			<Button onClick={onOpenDetailTask}>Detail Task</Button>
+			<Button onClick={onOpenAddTask}>Add new</Button>
+			<Button onClick={onOpenFilter}>Filter</Button>
+			<Button disabled={!dataSl || dataSl.length == 0 ? true : false} onClick={onOpenDlMany}>
+				Delete all
+			</Button>
+
+			<Table
+				data={allTasks?.tasks || []}
+				columns={columns}
+				isLoading={isLoading}
+				isSelect
+				selectByColumn="id"
+				setSelect={(data: Array<number>) => setDataSl(data)}
+				filter={filter}
+				disableColumns={['milestone']}
+				isResetFilter={isResetFilter}
+			/>
 
 			<Drawer size="xl" title="Add New Task" onClose={onCloseAddTask} isOpen={isOpenAddTask}>
 				<AddTask onCloseDrawer={onCloseAddTask} />
@@ -77,6 +340,89 @@ const tasks: NextLayout = () => {
 			>
 				<DetailTask taskIdProp={taskId} onCloseDrawer={onCloseDetailTask} />
 			</Drawer>
+
+			{/* alert dialog when delete one */}
+			<AlertDialog
+				handleDelete={() => {
+					setIsloading(true)
+					deleteOne(String(taskId))
+				}}
+				title="Are you sure?"
+				content="You will not be able to recover the deleted record!"
+				isOpen={isOpenDialogDl}
+				onClose={onCloseDl}
+			/>
+
+			{/* alert dialog when delete many */}
+			<AlertDialog
+				handleDelete={() => {
+					if (dataSl) {
+						setIsloading(true)
+						deleteMany(dataSl)
+					}
+				}}
+				title="Are you sure to delete all?"
+				content="You will not be able to recover the deleted record!"
+				isOpen={isOpenDialogDlMany}
+				onClose={onCloseDlMany}
+			/>
+			<CDrawer isOpen={isOpenFilter} placement="right" onClose={onCloseFilter}>
+				<DrawerOverlay />
+				<DrawerContent>
+					<DrawerCloseButton />
+					<DrawerHeader>Filters</DrawerHeader>
+
+					<DrawerBody>
+						<VStack spacing={5}>
+							<Input
+								handleSearch={(data: IFilter) => {
+									setFilter(data)
+								}}
+								columnId={'name'}
+								label="Task"
+								placeholder="Enter task title"
+								icon={
+									<AiOutlineSearch fontSize={'20px'} color="gray" opacity={0.6} />
+								}
+								type={'text'}
+							/>
+							<DateRange
+								handleSelect={(date: { from: Date; to: Date }) => {
+									setFilter({
+										columnId: 'deadline',
+										filterValue: date,
+									})
+								}}
+								label="Select date"
+							/>
+							<SelectF
+								options={dataAllProjects?.projects?.map(project => ({
+									label: project.name,
+									value: project.id
+								}))}
+								handleSearch={(data: IFilter) => {
+									setFilter(data)
+								}}
+								columnId={'project'}
+								label="Project"
+								placeholder="Select project"
+							/>
+							{/* <SelectF
+								options={allMilestones?.milestones?.map((item) => ({
+									label: item.title,
+									value: item.id,
+								}))}
+								handleSearch={(data: IFilter) => {
+									setFilter(data)
+								}}
+								columnId={'milestone'}
+								label="Milestone"
+								placeholder="Select milestone"
+							/>  */}
+						</VStack>
+					</DrawerBody>
+				</DrawerContent>
+			</CDrawer>
 		</Box>
 	)
 }

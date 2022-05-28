@@ -226,7 +226,7 @@ const tasks: NextLayout = () => {
 					Header: 'milestone',
 					accessor: 'milestone',
 					Cell: ({ value }) => {
-						return <Text isTruncated>{value.title}</Text>
+						return <Text isTruncated>{value?.title}</Text>
 					},
 					filter: selectFilter(['milestone', 'id']),
 				},

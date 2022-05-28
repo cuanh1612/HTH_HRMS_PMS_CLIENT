@@ -24,6 +24,7 @@ import {
 	allStatusQuery,
 	detailTaskQuery,
 	allTaskCategoriesQuery,
+	allTasksQuery,
 } from 'queries'
 import { useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -83,6 +84,9 @@ export default function UpdateTask({ onCloseDrawer, taskIdProp }: IUpdateTaskPro
 
 	const { data: dataAllStatus } = allStatusQuery(isAuthenticated, projectId)
 	const { data: dataAllMilestones } = milestonesByProjectNormalQuery(isAuthenticated, projectId)
+
+	// refetch all tasks
+	const { mutate: refetchTasks } = allTasksQuery(isAuthenticated)
 
 	//mutation -----------------------------------------------------------
 	const [mutateUpTask, { status: statusUpTask, data: dataUpTask }] = updateTaskMutation(setToast)
@@ -185,7 +189,7 @@ export default function UpdateTask({ onCloseDrawer, taskIdProp }: IUpdateTaskPro
 				name: dataDetailTask.task.name,
 				start_date: dataDetailTask.task.start_date,
 				deadline: dataDetailTask.task.deadline,
-				task_category: dataDetailTask.task.task_category.id,
+				task_category: dataDetailTask.task.task_category?.id,
 				employees: dataDetailTask.task.employees.map((employee) => employee.id),
 				status: dataDetailTask.task.status.id,
 				milestone: dataDetailTask.task.milestone?.id || undefined,
@@ -273,6 +277,8 @@ export default function UpdateTask({ onCloseDrawer, taskIdProp }: IUpdateTaskPro
 				type: 'success',
 				msg: dataUpTask?.message as string,
 			})
+
+			refetchTasks()
 		}
 	}, [statusUpTask])
 

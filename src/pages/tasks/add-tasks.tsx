@@ -22,6 +22,7 @@ import {
 	allStatusQuery,
 	allStatusTasksQuery,
 	allTaskCategoriesQuery,
+	allTasksQuery,
 	detailProjectQuery, milestonesByProjectNormalQuery
 } from 'queries'
 import { useContext, useEffect, useState } from 'react'
@@ -77,6 +78,8 @@ export default function AddTask({ onCloseDrawer }: IAddTaskProps) {
 	const { data: dataAllStatus } = allStatusQuery(isAuthenticated, selectProjectId)
 	const { data: dataAllProjects } = allProjectsNormalQuery(isAuthenticated)
 
+	// refetch all tasks
+	const { mutate: refetchTasks } = allTasksQuery(isAuthenticated)
 	const { data: dataAllMilestones } = milestonesByProjectNormalQuery(
 		isAuthenticated,
 		selectProjectId
@@ -198,6 +201,7 @@ export default function AddTask({ onCloseDrawer }: IAddTaskProps) {
 				type: 'success',
 				msg: dataCreTask?.message as string,
 			})
+			refetchTasks()
 			refetchStatusTasks()
 		}
 	}, [statusCreTask])

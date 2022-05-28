@@ -131,7 +131,7 @@ export default function DetailTask({ onCloseDrawer, taskIdProp }: IDetailTaskPro
 					Task Category:
 				</GridItem>
 				<GridItem w="100%" colSpan={[2, 1]}>
-					{dataDetailTask?.task?.task_category.name || '--'}
+					{dataDetailTask?.task?.task_category?.name || '--'}
 				</GridItem>
 				<GridItem w="100%" colSpan={[2, 1]} color={'gray.400'}>
 					Description:

@@ -1,5 +1,12 @@
 import { AxiosError } from 'axios'
-import { allEmployeesInProjectRequest, allProjectsRequest, detailProjectRequest, employeesNotInProjectRequest } from 'requests/project'
+import {
+	allEmployeesInProjectRequest,
+	allProjectsByEmployeeNormalRequest,
+	allProjectsByEmployeeRequest,
+	allProjectsRequest,
+	detailProjectRequest,
+	employeesNotInProjectRequest,
+} from 'requests/project'
 import useSWR from 'swr'
 import { employeeMutaionResponse, projectMutaionResponse } from 'type/mutationResponses'
 
@@ -19,7 +26,7 @@ export const detailProjectQuery = (
 
 export const employeesNotInProjectQuery = (
 	isAuthenticated: boolean | null,
-	projectId?: string | string[]| number 
+	projectId?: string | string[] | number
 ) => {
 	return useSWR<employeeMutaionResponse, AxiosError>(
 		isAuthenticated && projectId ? `projects/get-employees-not-in-project/${projectId}` : null,
@@ -33,7 +40,7 @@ export const employeesNotInProjectQuery = (
 
 export const allEmployeesInProjectQuery = (
 	isAuthenticated: boolean | null,
-	projectId?: string | string[] | number 
+	projectId?: string | string[] | number
 ) => {
 	return useSWR<projectMutaionResponse, AxiosError>(
 		isAuthenticated && projectId ? `all-employees/${projectId}` : null,
@@ -45,12 +52,26 @@ export const allEmployeesInProjectQuery = (
 	)
 }
 
-
 // get all projects with info employees and client
 export const allProjectsQuery = (isAuthenticated?: boolean | null) => {
 	return useSWR<projectMutaionResponse, AxiosError>(
-		isAuthenticated ? 'projects': null,
+		isAuthenticated ? 'projects' : null,
 		allProjectsRequest,
+		{
+			errorRetryCount: 2,
+			revalidateOnFocus: false,
+		}
+	)
+}
+
+// get all projects with info employees and client
+export const allProjectsByEmployeeQuery = (
+	isAuthenticated?: boolean | null,
+	employeeId?: string | number
+) => {
+	return useSWR<projectMutaionResponse, AxiosError>(
+		isAuthenticated && employeeId ? `projects/employee/${employeeId}` : null,
+		allProjectsByEmployeeRequest,
 		{
 			errorRetryCount: 2,
 			revalidateOnFocus: false,
@@ -61,7 +82,7 @@ export const allProjectsQuery = (isAuthenticated?: boolean | null) => {
 // get all projects
 export const allProjectsNormalQuery = (isAuthenticated?: boolean | null) => {
 	return useSWR<projectMutaionResponse, AxiosError>(
-		isAuthenticated ? 'projects/normal': null,
+		isAuthenticated ? 'projects/normal' : null,
 		allProjectsRequest,
 		{
 			errorRetryCount: 2,
@@ -70,10 +91,11 @@ export const allProjectsNormalQuery = (isAuthenticated?: boolean | null) => {
 	)
 }
 
-export const projectDetailQuery = (isAuthenticated: boolean | null, idProject?: string | string[] | number) => {
+// get all projects normal by employee
+export const allProjectsNormalByEmployeeQuery = (isAuthenticated?: boolean | null, employeeId?: string | number) => {
 	return useSWR<projectMutaionResponse, AxiosError>(
-		isAuthenticated && idProject ? `projects/${idProject}`: null,
-		detailProjectRequest,
+		isAuthenticated && employeeId ? `projects/normal/employee/${employeeId}` : null,
+		allProjectsByEmployeeNormalRequest,
 		{
 			errorRetryCount: 2,
 			revalidateOnFocus: false,
@@ -81,10 +103,16 @@ export const projectDetailQuery = (isAuthenticated: boolean | null, idProject?: 
 	)
 }
 
-
-
-
-
-
-
-
+export const projectDetailQuery = (
+	isAuthenticated: boolean | null,
+	idProject?: string | string[] | number
+) => {
+	return useSWR<projectMutaionResponse, AxiosError>(
+		isAuthenticated && idProject ? `projects/${idProject}` : null,
+		detailProjectRequest,
+		{
+			errorRetryCount: 2,
+			revalidateOnFocus: false,
+		}
+	)
+}

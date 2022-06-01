@@ -5,9 +5,10 @@ import {
 	Divider,
 	Grid,
 	GridItem,
-	HStack, Text,
+	HStack,
+	Text,
 	useDisclosure,
-	VStack
+	VStack,
 } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Loading } from 'components/common'
@@ -18,13 +19,15 @@ import { createTaskMutation } from 'mutations'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 import {
+	allProjectsNormalByEmployeeQuery,
 	allProjectsNormalQuery,
 	allStatusQuery,
 	allStatusTasksQuery,
 	allTaskCategoriesQuery,
 	allTasksCalendarQuery,
 	allTasksQuery,
-	detailProjectQuery, milestonesByProjectNormalQuery
+	detailProjectQuery,
+	milestonesByProjectNormalQuery,
 } from 'queries'
 import { useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -77,7 +80,10 @@ export default function AddTask({ onCloseDrawer }: IAddTaskProps) {
 	const { data: dataTaskCategories } = allTaskCategoriesQuery()
 	const { data: dataDetailProject } = detailProjectQuery(isAuthenticated, selectProjectId)
 	const { data: dataAllStatus } = allStatusQuery(isAuthenticated, selectProjectId)
-	const { data: dataAllProjects } = allProjectsNormalQuery(isAuthenticated)
+	const { data: dataAllProjects } =
+		currentUser && currentUser.role === 'Admin'
+			? allProjectsNormalQuery(isAuthenticated)
+			: allProjectsNormalByEmployeeQuery(isAuthenticated, currentUser?.id)
 
 	const { data: dataAllMilestones } = milestonesByProjectNormalQuery(
 		isAuthenticated,
@@ -89,7 +95,7 @@ export default function AddTask({ onCloseDrawer }: IAddTaskProps) {
 	// refetch status all status tasks
 	const { mutate: refetchStatusTasks } = allStatusTasksQuery(isAuthenticated, selectProjectId)
 	// refetch task in calendar
-	const {  mutate: refetchTasksCalendar } = allTasksCalendarQuery({isAuthenticated})
+	const { mutate: refetchTasksCalendar } = allTasksCalendarQuery({ isAuthenticated })
 
 	//mutation -----------------------------------------------------------
 	const [mutateCreTask, { status: statusCreTask, data: dataCreTask }] =
@@ -136,20 +142,19 @@ export default function AddTask({ onCloseDrawer }: IAddTaskProps) {
 	//Handle change project select
 	const onChangeProject = (projectId: string | number) => {
 		setSelectProjectId(projectId)
-		
 
 		//Clear data when change project
 		setSelectedStatus({
-			label: <Text color={"gray.400"}>Select ...</Text>,
-			value: undefined
+			label: <Text color={'gray.400'}>Select ...</Text>,
+			value: undefined,
 		})
 
 		//Clear select employees
 		setSelectedEmployees([])
 
 		//Reset data form
-		formSetting.setValue("status", undefined)
-		formSetting.setValue("employees", [])
+		formSetting.setValue('status', undefined)
+		formSetting.setValue('employees', [])
 	}
 
 	//User effect ---------------------------------------------------------------

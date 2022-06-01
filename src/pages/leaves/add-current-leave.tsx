@@ -3,6 +3,7 @@ import {
 	Button,
 	Grid,
 	GridItem,
+	Input,
 	Radio,
 	RadioGroup,
 	Stack,
@@ -11,13 +12,13 @@ import {
 	VStack,
 } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { MultiDatePicker, Select, Textarea } from 'components/form'
 import { Loading } from 'components/common'
+import { MultiDatePicker, Select, Textarea } from 'components/form'
 import Modal from 'components/modal/Modal'
 import { AuthContext } from 'contexts/AuthContext'
 import { createLeaveMutation } from 'mutations'
 import { useRouter } from 'next/router'
-import { allEmployeesQuery, allLeaveTypesQuery } from 'queries'
+import { allLeaveTypesQuery } from 'queries'
 import { useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { AiOutlineCheck } from 'react-icons/ai'
@@ -26,19 +27,18 @@ import { mutate } from 'swr'
 import { IOption } from 'type/basicTypes'
 import { createLeaveForm } from 'type/form/basicFormType'
 import { dataStatusLeave } from 'utils/basicData'
-import { CreateLeaveValidate } from 'utils/validate'
+import { CreateCurrentLeaveValidate } from 'utils/validate'
 import AddLeaveType from '../leave-types'
 
-export interface IAddLeavesProps {
+export interface IAddCurrentLeaveProps {
 	onCloseDrawer?: () => void
 }
 
-export default function AddLeaves({ onCloseDrawer }: IAddLeavesProps) {
-	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
+export default function AddCurrentLeave({ onCloseDrawer }: IAddCurrentLeaveProps) {
+	const { isAuthenticated, handleLoading, setToast, currentUser } = useContext(AuthContext)
 	const router = useRouter()
 
 	//State ---------------------------------------------------------------------
-	const [optionEmployees, setOptionEmployees] = useState<IOption[]>([])
 	const [optionLeaveTypes, setOptionLeaveTypes] = useState<IOption[]>([])
 	const [duration, setDuration] = useState<string>('Single')
 
@@ -50,7 +50,6 @@ export default function AddLeaves({ onCloseDrawer }: IAddLeavesProps) {
 	} = useDisclosure()
 
 	//Query ---------------------------------------------------------------------
-	const { data: dataEmployees } = allEmployeesQuery(isAuthenticated)
 	const { data: dataLeaveTypes } = allLeaveTypesQuery()
 
 	//mutation ------------------------------------------------------------------
@@ -60,19 +59,19 @@ export default function AddLeaves({ onCloseDrawer }: IAddLeavesProps) {
 	// setForm and submit form create new leave -------------------------------
 	const formSetting = useForm<createLeaveForm>({
 		defaultValues: {
-			employee: '',
 			leave_type: '',
 			status: '',
 			reason: '',
 			dates: [],
 		},
-		resolver: yupResolver(CreateLeaveValidate),
+		resolver: yupResolver(CreateCurrentLeaveValidate),
 	})
 
 	const { handleSubmit } = formSetting
 
 	const onSubmit = (values: createLeaveForm) => {
 		values.duration = duration
+		values.employee = currentUser?.id
 		mutateCreateLeave(values)
 	}
 
@@ -88,20 +87,6 @@ export default function AddLeaves({ onCloseDrawer }: IAddLeavesProps) {
 			}
 		}
 	}, [isAuthenticated])
-
-	//Set options select employees
-	useEffect(() => {
-		if (dataEmployees?.employees) {
-			const newOptionEmployees: IOption[] = dataEmployees.employees.map((employee) => {
-				return {
-					value: employee.id.toString(),
-					label: employee.email,
-				}
-			})
-
-			setOptionEmployees(newOptionEmployees)
-		}
-	}, [dataEmployees])
 
 	//Set options select leave type
 	useEffect(() => {
@@ -138,14 +123,12 @@ export default function AddLeaves({ onCloseDrawer }: IAddLeavesProps) {
 			<Box pos="relative" p={6} as={'form'} h="auto" onSubmit={handleSubmit(onSubmit)}>
 				<Grid templateColumns="repeat(2, 1fr)" gap={6}>
 					<GridItem w="100%" colSpan={[2, 1]}>
-						<Select
-							name="employee"
-							label="Choose Member"
-							required
-							form={formSetting}
-							placeholder={'Select Member'}
-							options={optionEmployees}
-						/>
+						<VStack align={'start'}>
+							<Text color={'gray.400'}>
+								Name <span style={{ color: 'red' }}>*</span>
+							</Text>
+							<Input value={currentUser?.name} disabled />
+						</VStack>
 					</GridItem>
 
 					<GridItem w="100%" colSpan={[2, 1]}>

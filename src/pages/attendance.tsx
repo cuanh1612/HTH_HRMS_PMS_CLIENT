@@ -39,7 +39,14 @@ import { AuthContext } from 'contexts/AuthContext'
 import { useRouter } from 'next/router'
 
 // query
-import { allAttendancesQuery, allDepartmentsQuery, allLeaveQuery, allHolidaysQuery, allEmployeesQuery, allEmployeesNormalQuery } from 'queries'
+import {
+	allAttendancesQuery,
+	allDepartmentsQuery,
+	allLeaveQuery,
+	allHolidaysQuery,
+	allEmployeesQuery,
+	allEmployeesNormalQuery,
+} from 'queries'
 
 // mutation
 import { createAttendanceMutation } from 'mutations'
@@ -68,6 +75,9 @@ import { AiTwotoneStar } from 'react-icons/ai'
 const attendance: NextLayout = () => {
 	const { colorMode } = useColorMode()
 
+	// check authenticate
+	const { isAuthenticated, handleLoading, setToast, currentUser } = useContext(AuthContext)
+
 	const router = useRouter()
 
 	// get date to filter
@@ -89,7 +99,7 @@ const attendance: NextLayout = () => {
 	const [employees, setEmployees] = useState<IOption[]>([])
 
 	// get employee id to filter
-	const [employeeSl, setEmployeeSl] = useState<string>()
+	const [employeeSl, setEmployeeSl] = useState<string | undefined>()
 
 	// set open modal to check attendance
 	const { isOpen: isOpenInsert, onOpen: onOpenInsert, onClose: onCloseInsert } = useDisclosure()
@@ -100,15 +110,12 @@ const attendance: NextLayout = () => {
 	// set open modal to check filter
 	const { isOpen: isOpenFilter, onOpen: onOpenFilter, onClose: onCloseFilter } = useDisclosure()
 
-	// check authenticate
-	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
-
 	// get all attendances
 	const { data: allAttendances, mutate: refetchAttendances } = allAttendancesQuery(
 		isAuthenticated,
 		dateFilter,
 		departmentSl,
-		employeeSl
+		currentUser?.role === "Admin" ? employeeSl : currentUser?.id
 	)
 
 	// get all employees
@@ -120,7 +127,7 @@ const attendance: NextLayout = () => {
 	// get all leaves
 	const { data: allLeaves } = allLeaveQuery({
 		isAuthenticated,
-		date: dateFilter
+		date: dateFilter,
 	})
 
 	// get all holiday
@@ -342,7 +349,7 @@ const attendance: NextLayout = () => {
 						</Text>
 					</HStack>
 
-					{allAttendances?.data.map((employee) => {
+					{currentUser && allAttendances?.data.map((employee) => {
 						const attendances = employee.attendances.map(
 							(attendance): IAttendance => ({
 								id: attendance.id,
@@ -397,6 +404,7 @@ const attendance: NextLayout = () => {
 											leaveDates={allLeaves?.leaves}
 											holidays={allHolidays?.holidays}
 											dateFilter={dateFilter}
+											isChange={currentUser && currentUser.role === "Admin" ? true : false}
 										/>
 									</HStack>
 								</HStack>
@@ -646,7 +654,7 @@ const attendance: NextLayout = () => {
 									label="Year"
 									placeholder="Select year"
 								/>
-								{departments && (
+								{currentUser?.role === "Admin" && departments && (
 									<Select
 										options={departments}
 										handleSearch={(data: IFilter) => {
@@ -661,7 +669,7 @@ const attendance: NextLayout = () => {
 										placeholder="Select department"
 									/>
 								)}
-								{employees && (
+								{currentUser?.role === "Admin" && employees && (
 									<SelectCustom
 										handleSearch={(field: any) => {
 											setEmployeeSl(field.value)
@@ -670,7 +678,15 @@ const attendance: NextLayout = () => {
 										name={'employee'}
 										options={[
 											{
-												label: <Text color={colorMode== 'light' ? 'black' : 'white'}>all</Text>,
+												label: (
+													<Text
+														color={
+															colorMode == 'light' ? 'black' : 'white'
+														}
+													>
+														all
+													</Text>
+												),
 												value: '',
 											},
 											...employees,

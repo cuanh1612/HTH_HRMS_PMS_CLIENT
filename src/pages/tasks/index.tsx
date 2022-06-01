@@ -33,6 +33,7 @@ import {
 	allMilestonesQuery,
 	allProjectsNormalQuery,
 	allTaskCategoriesQuery,
+	allTasksByEmployeeQuery,
 	allTasksQuery,
 } from 'queries'
 import { IFilter, TColumn } from 'type/tableTypes'
@@ -73,7 +74,10 @@ const tasks: NextLayout = () => {
 
 	// query
 	// get all tasks
-	const { data: allTasks, mutate: refetchTasks } = allTasksQuery(isAuthenticated)
+	const { data: allTasks, mutate: refetchTasks } =
+		currentUser && currentUser.role === 'Admin'
+			? allTasksQuery(isAuthenticated)
+			: allTasksByEmployeeQuery(isAuthenticated, currentUser?.id)
 
 	// get all projects to filter
 	const { data: dataAllProjects } = allProjectsNormalQuery(isAuthenticated)
@@ -318,43 +322,51 @@ const tasks: NextLayout = () => {
 					width: 120,
 					minWidth: 120,
 					disableSortBy: true,
-					Cell: ({ row }) => (
-						<Menu>
-							<MenuButton as={Button} paddingInline={3}>
-								<MdOutlineMoreVert />
-							</MenuButton>
-							<MenuList>
-								<MenuItem
-									onClick={() => {
-										setTaskId(Number(row.values['id']))
-										onOpenDetailTask()
-									}}
-									icon={<IoEyeOutline fontSize={'15px'} />}
-								>
-									View
-								</MenuItem>
-								<MenuItem
-									onClick={() => {
-										setTaskId(Number(row.values['id']))
-										onOpenUpdateTask()
-									}}
-									icon={<RiPencilLine fontSize={'15px'} />}
-								>
-									Edit
-								</MenuItem>
+					Cell: ({ row }) => {
+						return (
+							<Menu>
+								<MenuButton as={Button} paddingInline={3}>
+									<MdOutlineMoreVert />
+								</MenuButton>
+								<MenuList>
+									<MenuItem
+										onClick={() => {
+											setTaskId(Number(row.values['id']))
+											onOpenDetailTask()
+										}}
+										icon={<IoEyeOutline fontSize={'15px'} />}
+									>
+										View
+									</MenuItem>
 
-								<MenuItem
-									onClick={() => {
-										setTaskId(Number(row.values['id']))
-										onOpenDl()
-									}}
-									icon={<MdOutlineDeleteOutline fontSize={'15px'} />}
-								>
-									Delete
-								</MenuItem>
-							</MenuList>
-						</Menu>
-					),
+									{(currentUser?.role === 'Admin' ||
+										row.original?.assignBy?.id === currentUser?.id) && (
+										<>
+											<MenuItem
+												onClick={() => {
+													setTaskId(Number(row.values['id']))
+													onOpenUpdateTask()
+												}}
+												icon={<RiPencilLine fontSize={'15px'} />}
+											>
+												Edit
+											</MenuItem>
+
+											<MenuItem
+												onClick={() => {
+													setTaskId(Number(row.values['id']))
+													onOpenDl()
+												}}
+												icon={<MdOutlineDeleteOutline fontSize={'15px'} />}
+											>
+												Delete
+											</MenuItem>
+										</>
+									)}
+								</MenuList>
+							</Menu>
+						)
+					},
 				},
 			],
 		},
@@ -362,11 +374,18 @@ const tasks: NextLayout = () => {
 
 	return (
 		<Box>
-			<Button onClick={onOpenAddTask}>Add new</Button>
+			{currentUser?.role === 'Admin' && (
+				<>
+					<Button onClick={onOpenAddTask}>Add new</Button>
+					<Button
+						disabled={!dataSl || dataSl.length == 0 ? true : false}
+						onClick={onOpenDlMany}
+					>
+						Delete all
+					</Button>
+				</>
+			)}
 			<Button onClick={onOpenFilter}>Filter</Button>
-			<Button disabled={!dataSl || dataSl.length == 0 ? true : false} onClick={onOpenDlMany}>
-				Delete all
-			</Button>
 			<Button
 				onClick={() => {
 					setIsReset(true)
@@ -526,28 +545,32 @@ const tasks: NextLayout = () => {
 								]}
 								required={false}
 							/>
-							<SelectCustom
-								handleSearch={(field: any) => {
-									setFilter({
-										columnId: 'assignBy',
-										filterValue: field.value,
-									})
-								}}
-								label={'Assign by'}
-								name={'assignBy'}
-								options={[
-									{
-										label: (
-											<Text color={colorMode == 'light' ? 'black' : 'white'}>
-												all
-											</Text>
-										),
-										value: '',
-									},
-									...employees,
-								]}
-								required={false}
-							/>
+							{currentUser?.role === 'Admin' && (
+								<SelectCustom
+									handleSearch={(field: any) => {
+										setFilter({
+											columnId: 'assignBy',
+											filterValue: field.value,
+										})
+									}}
+									label={'Assign by'}
+									name={'assignBy'}
+									options={[
+										{
+											label: (
+												<Text
+													color={colorMode == 'light' ? 'black' : 'white'}
+												>
+													all
+												</Text>
+											),
+											value: '',
+										},
+										...employees,
+									]}
+									required={false}
+								/>
+							)}
 						</VStack>
 					</DrawerBody>
 				</DrawerContent>

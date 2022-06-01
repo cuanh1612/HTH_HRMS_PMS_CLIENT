@@ -1,32 +1,32 @@
 // query and mutation
-import { allLeaveQuery, allLeaveTypesQuery } from 'queries'
 import { deleteLeaveMutation, deleteLeavesMutation, updateStatusMutation } from 'mutations'
+import { allLeaveQuery, allLeaveTypesQuery } from 'queries'
 
 // components
 import {
 	Avatar,
 	Badge,
 	Box,
+	Button,
 	Collapse,
+	Drawer as CDrawer,
+	DrawerBody,
+	DrawerCloseButton,
+	DrawerContent,
+	DrawerHeader,
+	DrawerOverlay,
 	HStack,
 	Menu,
 	MenuButton,
 	MenuItem,
 	MenuList,
-	Text,
-	Button,
-	useDisclosure,
-	DrawerOverlay,
-	DrawerContent,
-	DrawerHeader,
-	Drawer as CDrawer,
-	DrawerBody,
-	DrawerCloseButton,
-	VStack,
 	Tag,
+	Text,
+	useDisclosure,
+	VStack,
 } from '@chakra-ui/react'
-import {AlertDialog, Table} from 'components/common'
-import {Drawer} from 'components/Drawer'
+import { AlertDialog, Table } from 'components/common'
+import { Drawer } from 'components/Drawer'
 
 // use layout
 import { ClientLayout } from 'components/layouts'
@@ -39,10 +39,10 @@ import { useContext, useEffect, useState } from 'react'
 // icons
 import { AiOutlineCaretDown, AiOutlineCaretUp, AiOutlineSearch } from 'react-icons/ai'
 import { BiExport, BiImport } from 'react-icons/bi'
+import { IoMdClose } from 'react-icons/io'
 import { IoAdd, IoEyeOutline } from 'react-icons/io5'
 import { MdOutlineDeleteOutline, MdOutlineMoreVert } from 'react-icons/md'
 import { RiPencilLine } from 'react-icons/ri'
-import { IoMdClose } from 'react-icons/io'
 
 import { NextLayout } from 'type/element/layout'
 
@@ -53,17 +53,17 @@ import { IFilter, TColumn } from 'type/tableTypes'
 import { dateFilter, selectFilter, textFilter, yearFilter } from 'utils/tableFilters'
 
 // page add and update employee
+import AddCurrentLeave from './add-current-leave'
 import AddLeave from './add-leaves'
 
 import UpdateLeave from './update-leaves'
 
 // component to filter
-import { Input, SelectUser, Select } from 'components/filter'
-import {DateRange} from 'components/filter'
+import { DateRange, Input, Select, SelectUser } from 'components/filter'
 
-import { IPeople } from 'type/element/commom'
-import { IOption } from 'type/basicTypes'
 import { BsCheck2 } from 'react-icons/bs'
+import { IOption } from 'type/basicTypes'
+import { IPeople } from 'type/element/commom'
 
 // get current year
 const year = new Date().getFullYear()
@@ -124,7 +124,8 @@ const Leaves: NextLayout = () => {
 	// query and mutation -=------------------------------------------------------
 	// get all leaves
 	const { data: allLeaves, mutate: refetchAllLeaves } = allLeaveQuery({
-		isAuthenticated
+		isAuthenticated,
+		...(currentUser?.role === 'Employee' ? { employee: currentUser?.id } : {}),
 	})
 
 	// get all leave type
@@ -538,7 +539,13 @@ const Leaves: NextLayout = () => {
 
 			{/* drawer to add leave */}
 			<Drawer size="xl" title="Add leave" onClose={onCloseAdd} isOpen={isOpenAdd}>
-				<AddLeave onCloseDrawer={onCloseAdd} />
+				{currentUser?.role === 'Admin' ? (
+					<AddLeave onCloseDrawer={onCloseAdd} />
+				) : currentUser?.role === 'Employee' ? (
+					<AddCurrentLeave onCloseDrawer={onCloseAdd} />
+				) : (
+					<></>
+				)}
 			</Drawer>
 
 			{/* drawer to update leave */}
@@ -639,15 +646,17 @@ const Leaves: NextLayout = () => {
 								}}
 								label="Select date"
 							/>
-							<SelectUser
-								handleSearch={(data: IFilter) => {
-									setFilter(data)
-								}}
-								columnId={'id'}
-								required={false}
-								label={'User'}
-								peoples={dataUsersSl}
-							/>
+							{currentUser && currentUser.role === 'Admin' && (
+								<SelectUser
+									handleSearch={(data: IFilter) => {
+										setFilter(data)
+									}}
+									columnId={'id'}
+									required={false}
+									label={'User'}
+									peoples={dataUsersSl}
+								/>
+							)}
 						</VStack>
 					</DrawerBody>
 				</DrawerContent>

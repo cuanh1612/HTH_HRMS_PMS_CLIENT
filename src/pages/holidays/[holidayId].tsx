@@ -1,6 +1,6 @@
 import { Box, Button, Divider, Grid, GridItem, HStack, Text, useDisclosure } from '@chakra-ui/react'
-import {Drawer} from 'components/Drawer'
-import {Loading} from 'components/common'
+import { Drawer } from 'components/Drawer'
+import { Loading } from 'components/common'
 import { AuthContext } from 'contexts/AuthContext'
 import { deleteHolidayMutation } from 'mutations'
 import { GetStaticPaths, GetStaticProps } from 'next'
@@ -16,7 +16,7 @@ export interface IDetailHolidayProps {
 }
 var isUseLayout = false
 export default function DetailHoliday({ onCloseDrawer, holidayIdProp }: IDetailHolidayProps) {
-	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
+	const { isAuthenticated, handleLoading, setToast, currentUser } = useContext(AuthContext)
 	const router = useRouter()
 	const { holidayId: holidayIdRouter } = router.query
 
@@ -48,7 +48,7 @@ export default function DetailHoliday({ onCloseDrawer, holidayIdProp }: IDetailH
 
 	//handle delete holiday
 	const onDeleteHoliday = () => {
-		if(!holidayIdProp && !holidayIdRouter){
+		if (!holidayIdProp && !holidayIdRouter) {
 			setToast({
 				msg: 'Not found holiday to delete',
 				type: 'warning',
@@ -91,28 +91,36 @@ export default function DetailHoliday({ onCloseDrawer, holidayIdProp }: IDetailH
 		<>
 			<Box pos="relative" p={6} as={'form'} h="auto">
 				<Grid templateColumns="repeat(2, 1fr)" gap={6}>
-					<GridItem w="100%" colSpan={2}>
-						<HStack w={'full'} justify={'space-between'}>
-							<Text fontSize={16} fontWeight={'semibold'}>
-								Holiday Details
-							</Text>
-							<HStack>
-								<Button colorScheme="teal" variant="ghost" onClick={onOpenUpdate}>
-									Edit
-								</Button>
-								<Button
-									colorScheme="teal"
-									variant="ghost"
-									onClick={onDeleteHoliday}
-								>
-									Delete
-								</Button>
-							</HStack>
-						</HStack>
-					</GridItem>
-					<GridItem w="100%" colSpan={2}>
-						<Divider />
-					</GridItem>
+					{currentUser && currentUser.role === 'Admin' && (
+						<>
+							<GridItem w="100%" colSpan={2}>
+								<HStack w={'full'} justify={'space-between'}>
+									<Text fontSize={16} fontWeight={'semibold'}>
+										Holiday Details
+									</Text>
+									<HStack>
+										<Button
+											colorScheme="teal"
+											variant="ghost"
+											onClick={onOpenUpdate}
+										>
+											Edit
+										</Button>
+										<Button
+											colorScheme="teal"
+											variant="ghost"
+											onClick={onDeleteHoliday}
+										>
+											Delete
+										</Button>
+									</HStack>
+								</HStack>
+							</GridItem>
+							<GridItem w="100%" colSpan={2}>
+								<Divider />
+							</GridItem>
+						</>
+					)}
 					<GridItem w="100%" colSpan={[2, 1]} color={'gray.400'} fontWeight={'normal'}>
 						Date:
 					</GridItem>

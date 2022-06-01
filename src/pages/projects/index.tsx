@@ -33,6 +33,7 @@ import {
 	allEmployeesQuery,
 	allProjectsQuery,
 	allProjectCategoriesQuery,
+	allProjectsByEmployeeQuery,
 } from 'queries'
 import { useContext, useEffect, useState } from 'react'
 import { AiOutlineSearch } from 'react-icons/ai'
@@ -47,7 +48,7 @@ import AddProject from './add-projects'
 import UpdateProject from './update-projects'
 
 const Projects: NextLayout = () => {
-	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
+	const { isAuthenticated, handleLoading, setToast, currentUser } = useContext(AuthContext)
 	const router = useRouter()
 	const { colorMode } = useColorMode()
 
@@ -96,7 +97,10 @@ const Projects: NextLayout = () => {
 	} = useDisclosure()
 
 	// query and mutation
-	const { data: allProjects, mutate: refetchAllProjects } = allProjectsQuery(isAuthenticated)
+	const { data: allProjects, mutate: refetchAllProjects } =
+		currentUser?.role === 'Admin'
+			? allProjectsQuery(isAuthenticated)
+			: allProjectsByEmployeeQuery(isAuthenticated, currentUser?.id)
 
 	const { data: allPjCategories } = allProjectCategoriesQuery(isAuthenticated)
 
@@ -291,24 +295,29 @@ const Projects: NextLayout = () => {
 								>
 									View
 								</MenuItem>
-								<MenuItem
-									onClick={() => {
-										setProjectId(row.values['id'])
-										onOpenUpdate()
-									}}
-									icon={<RiPencilLine fontSize={'15px'} />}
-								>
-									Edit
-								</MenuItem>
-								<MenuItem
-									onClick={() => {
-										setIdDeletePj(row.values['id'])
-										onOpenDl()
-									}}
-									icon={<MdOutlineDeleteOutline fontSize={'15px'} />}
-								>
-									Delete
-								</MenuItem>
+
+								{currentUser && currentUser.role === 'Admin' && (
+									<>
+										<MenuItem
+											onClick={() => {
+												setProjectId(row.values['id'])
+												onOpenUpdate()
+											}}
+											icon={<RiPencilLine fontSize={'15px'} />}
+										>
+											Edit
+										</MenuItem>
+										<MenuItem
+											onClick={() => {
+												setIdDeletePj(row.values['id'])
+												onOpenDl()
+											}}
+											icon={<MdOutlineDeleteOutline fontSize={'15px'} />}
+										>
+											Delete
+										</MenuItem>
+									</>
+								)}
 							</MenuList>
 						</Menu>
 					),
@@ -411,12 +420,19 @@ const Projects: NextLayout = () => {
 
 	return (
 		<>
-			<Button colorScheme="blue" onClick={onOpenAdd}>
-				open add project
-			</Button>
-			<Button disabled={!dataSl || dataSl.length == 0 ? true : false} onClick={onOpenDlMany}>
-				Delete all
-			</Button>
+			{currentUser && currentUser.role === 'Admin' && (
+				<>
+					<Button colorScheme="blue" onClick={onOpenAdd}>
+						open add project
+					</Button>
+					<Button
+						disabled={!dataSl || dataSl.length == 0 ? true : false}
+						onClick={onOpenDlMany}
+					>
+						Delete all
+					</Button>
+				</>
+			)}
 			<Button onClick={onOpenFilter}>open filter</Button>
 			<Button
 				onClick={() => {
@@ -432,7 +448,7 @@ const Projects: NextLayout = () => {
 				data={allProjects?.projects || []}
 				columns={columns}
 				isLoading={isLoading}
-				isSelect
+				isSelect = {currentUser && currentUser.role === "Admin" ? true : false}
 				selectByColumn="id"
 				setSelect={(data: Array<number>) => setDataSl(data)}
 				filter={filter}

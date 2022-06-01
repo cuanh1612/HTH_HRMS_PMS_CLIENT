@@ -73,7 +73,7 @@ export type createEmployeeForm = {
 }
 
 export type createLeaveForm = {
-	employee: string
+	employee?: string | number
 	leave_type: string
 	status: string
 	reason: string

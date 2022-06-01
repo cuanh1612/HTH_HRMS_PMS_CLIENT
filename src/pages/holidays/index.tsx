@@ -14,9 +14,9 @@ import {
 	VStack,
 	Drawer as CDrawer,
 } from '@chakra-ui/react'
-import {Drawer} from 'components/Drawer'
+import { Drawer } from 'components/Drawer'
 import { ClientLayout } from 'components/layouts'
-import {Table, AlertDialog}from 'components/common'
+import { Table, AlertDialog } from 'components/common'
 import { AuthContext } from 'contexts/AuthContext'
 import { useRouter } from 'next/router'
 import { allHolidaysQuery } from 'queries'
@@ -35,7 +35,7 @@ import { AiOutlineSearch } from 'react-icons/ai'
 import { Input, Select } from 'components/filter'
 
 const Holiday: NextLayout = () => {
-	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
+	const { isAuthenticated, handleLoading, setToast, currentUser } = useContext(AuthContext)
 	const router = useRouter()
 
 	//Setup drawer --------------------------------------------------------------
@@ -106,12 +106,12 @@ const Holiday: NextLayout = () => {
 		onCloseDetail()
 	}
 
-	useEffect(()=> {
-		if(holidayIdDetail) {
+	useEffect(() => {
+		if (holidayIdDetail) {
 			window.history.pushState({}, '', `/holidays/${holidayIdDetail}`)
 		}
 	}, [holidayIdDetail])
-	
+
 	// check is successfully delete many
 	useEffect(() => {
 		if (statusDlHolidays == 'success') {
@@ -157,7 +157,9 @@ const Holiday: NextLayout = () => {
 					Cell: ({ value }) => {
 						const date = new Date(value)
 						return (
-							<Text>{`${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`}</Text>
+							<Text>{`${date.getDate()}-${
+								date.getMonth() + 1
+							}-${date.getFullYear()}`}</Text>
 						)
 					},
 				},
@@ -201,28 +203,37 @@ const Holiday: NextLayout = () => {
 								<MdOutlineMoreVert />
 							</MenuButton>
 							<MenuList>
-								<MenuItem onClick={()=> {
-									setHolidayIdDetail(row.values['id'])
-									onOpenDetail()
-								}} icon={<IoEyeOutline fontSize={'15px'} />}>View</MenuItem>
 								<MenuItem
 									onClick={() => {
-										setHolidayIdUpdate(row.values['id'])
-										onOpenUpdate()
+										setHolidayIdDetail(row.values['id'])
+										onOpenDetail()
 									}}
-									icon={<RiPencilLine fontSize={'15px'} />}
+									icon={<IoEyeOutline fontSize={'15px'} />}
 								>
-									Edit
+									View
 								</MenuItem>
-								<MenuItem
-									onClick={() => {
-										setIdDlHoliday(row.values['id'])
-										onOpenDl()
-									}}
-									icon={<MdOutlineDeleteOutline fontSize={'15px'} />}
-								>
-									Delete
-								</MenuItem>
+								{currentUser && currentUser.role === 'Admin' && (
+									<>
+										<MenuItem
+											onClick={() => {
+												setHolidayIdUpdate(row.values['id'])
+												onOpenUpdate()
+											}}
+											icon={<RiPencilLine fontSize={'15px'} />}
+										>
+											Edit
+										</MenuItem>
+										<MenuItem
+											onClick={() => {
+												setIdDlHoliday(row.values['id'])
+												onOpenDl()
+											}}
+											icon={<MdOutlineDeleteOutline fontSize={'15px'} />}
+										>
+											Delete
+										</MenuItem>
+									</>
+								)}
 							</MenuList>
 						</Menu>
 					),
@@ -240,12 +251,19 @@ const Holiday: NextLayout = () => {
 
 	return (
 		<>
-			<Button colorScheme="blue" onClick={onOpenAdd}>
-				add new
-			</Button>
-			<Button disabled={!dataSl || dataSl.length == 0 ? true : false} onClick={onOpenDlMany}>
-				Delete all
-			</Button>
+			{currentUser && currentUser.role === 'Admin' && (
+				<>
+					<Button colorScheme="blue" onClick={onOpenAdd}>
+						add new
+					</Button>
+					<Button
+						disabled={!dataSl || dataSl.length == 0 ? true : false}
+						onClick={onOpenDlMany}
+					>
+						Delete all
+					</Button>
+				</>
+			)}
 			<Button
 				onClick={() => {
 					onOpenFilter()

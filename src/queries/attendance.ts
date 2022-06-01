@@ -7,7 +7,7 @@ export const allAttendancesQuery = (
 	isAuthenticated: boolean | null,
 	date?: Date,
 	department?: string,
-	employee?: string
+	employee?: string | number
 ) => {
 	const fieldUrl: string[] = []
 	date && fieldUrl.push(`date=${date.toLocaleDateString()}`)

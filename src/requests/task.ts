@@ -65,6 +65,13 @@ export const allTasksRequest = async (url: string) => {
 	})
 }
 
+//Function handle get all tasks by employee
+export const allTasksByEmployeeRequest = async (url: string) => {
+	return await getData<TaskMutaionResponse>({
+		url: `http://localhost:4000/api/${url}`,
+	})
+}
+
 //Function handle update task
 export async function updateTaskRequest({
 	inputUpdate,

@@ -16,7 +16,7 @@ export const detailLeaveQuery = (leaveId: number | string | null | undefined) =>
 
 export const allLeaveQuery = (input: {
 	isAuthenticated?:boolean | undefined | null
-	employee?: string,
+	employee?: string | number,
 	leaveType?: string,
 	status?: string,
 	date?: Date

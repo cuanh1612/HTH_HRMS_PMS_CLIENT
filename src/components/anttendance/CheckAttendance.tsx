@@ -21,6 +21,8 @@ interface ICheckAttendance {
 	dateFilter: Date
 
 	holidays?: holidayType[]
+
+	isChange?: boolean
 }
 
 export default function CheckAttendance({
@@ -30,11 +32,10 @@ export default function CheckAttendance({
 	createHandle,
 	dateFilter,
 	holidays,
+	isChange = true,
 }: ICheckAttendance) {
 	const [dates, setDates] = useState<number[]>([])
 	const [now] = useState<Date>(new Date())
-
-	console.log(new Date(dateFilter).toLocaleDateString())
 
 	useEffect(() => {
 		if (countDate) {
@@ -76,7 +77,6 @@ export default function CheckAttendance({
 				const checkHoliday =
 					holidays &&
 					holidays.some(function (value) {
-						console.log(value, new Date(value.holiday_date))
 						const holydayDate = new Date(value.holiday_date)
 						return (
 							date == holydayDate.getDate() &&
@@ -117,7 +117,6 @@ export default function CheckAttendance({
 							aria-label="Search database"
 							borderRadius={'5px'}
 							justifyContent={'center'}
-							
 						>
 							<AiTwotoneStar />
 						</HStack>
@@ -129,13 +128,15 @@ export default function CheckAttendance({
 					return (
 						<IconButton
 							onClick={() => {
-								checkAttendance.handle(
-									new Date().setFullYear(
-										dateFilter.getFullYear(),
-										dateFilter.getMonth(),
-										date
+								if (isChange) {
+									checkAttendance.handle(
+										new Date().setFullYear(
+											dateFilter.getFullYear(),
+											dateFilter.getMonth(),
+											date
+										)
 									)
-								)
+								}
 							}}
 							key={date}
 							h={'30px'}
@@ -157,13 +158,15 @@ export default function CheckAttendance({
 						<IconButton
 							key={date}
 							onClick={() => {
-								createHandle(
-									new Date().setFullYear(
-										dateFilter.getFullYear(),
-										dateFilter.getMonth(),
-										date
+								if (isChange) {
+									createHandle(
+										new Date().setFullYear(
+											dateFilter.getFullYear(),
+											dateFilter.getMonth(),
+											date
+										)
 									)
-								)
+								}
 							}}
 							h={'30px'}
 							minW={'30px'}
@@ -186,13 +189,15 @@ export default function CheckAttendance({
 						<IconButton
 							key={date}
 							onClick={() => {
-								createHandle(
-									new Date().setFullYear(
-										dateFilter.getFullYear(),
-										dateFilter.getMonth(),
-										date
+								if (isChange) {
+									createHandle(
+										new Date().setFullYear(
+											dateFilter.getFullYear(),
+											dateFilter.getMonth(),
+											date
+										)
 									)
-								)
+								}
 							}}
 							h={'30px'}
 							minW={'30px'}

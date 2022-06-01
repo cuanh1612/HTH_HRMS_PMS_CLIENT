@@ -105,6 +105,20 @@ export const allProjectsRequest = async (url: string) => {
 	})
 }
 
+// get all project normal by employee
+export const allProjectsByEmployeeNormalRequest = async (url: string) => {
+	return await getData<projectMutaionResponse>({
+		url: `http://localhost:4000/api/${url}`,
+	})
+}
+
+// get all project by employee
+export const allProjectsByEmployeeRequest = async (url: string) => {
+	return await getData<projectMutaionResponse>({
+		url: `http://localhost:4000/api/${url}`,
+	})
+}
+
 // get all project 
 export const allProjectsNormalRequest = async (url: string) => {
 	return await getData<projectMutaionResponse>({

@@ -128,6 +128,20 @@ export default function DetailTask({ onCloseDrawer, taskIdProp }: IDetailTaskPro
 					</Wrap>
 				</GridItem>
 				<GridItem w="100%" colSpan={[2, 1]} color={'gray.400'}>
+					Assign By:
+				</GridItem>
+				<GridItem w="100%" colSpan={[2, 1]}>
+					{dataDetailTask?.task?.assignBy ? (
+						<Tooltip label={dataDetailTask.task.assignBy.email}>
+							<Avatar
+								name={dataDetailTask.task.assignBy.name}
+								src={dataDetailTask.task.assignBy.avatar?.url}
+								size={'xs'}
+							/>
+						</Tooltip>
+					) : "--"}
+				</GridItem>
+				<GridItem w="100%" colSpan={[2, 1]} color={'gray.400'}>
 					Task Category:
 				</GridItem>
 				<GridItem w="100%" colSpan={[2, 1]}>

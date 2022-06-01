@@ -29,10 +29,15 @@ export interface IDetailTaskProps {
 	onCloseDrawer?: () => void
 	taskIdProp?: string | number
 	onOpenDl?: any
-	onOpenUpdate?: any;
+	onOpenUpdate?: any
 }
 
-export default function DetailTask({ onCloseDrawer, taskIdProp, onOpenDl, onOpenUpdate }: IDetailTaskProps) {
+export default function DetailTask({
+	onCloseDrawer,
+	taskIdProp,
+	onOpenDl,
+	onOpenUpdate,
+}: IDetailTaskProps) {
 	const { isAuthenticated, handleLoading } = useContext(AuthContext)
 	const router = useRouter()
 	const { taskId: taskIdRouter } = router.query
@@ -130,6 +135,21 @@ export default function DetailTask({ onCloseDrawer, taskIdProp, onOpenDl, onOpen
 							))}
 					</Wrap>
 				</GridItem>
+
+				<GridItem w="100%" colSpan={[2, 1]} color={'gray.400'}>
+					Assign By:
+				</GridItem>
+				<GridItem w="100%" colSpan={[2, 1]}>
+					{dataDetailTask?.task?.assignBy ? (
+						<Tooltip label={dataDetailTask.task.assignBy.email}>
+							<Avatar
+								name={dataDetailTask.task.assignBy.name}
+								src={dataDetailTask.task.assignBy.avatar?.url}
+								size={'xs'}
+							/>
+						</Tooltip>
+					) : "--"}
+				</GridItem>
 				<GridItem w="100%" colSpan={[2, 1]} color={'gray.400'}>
 					Task Category:
 				</GridItem>
@@ -175,10 +195,10 @@ export default function DetailTask({ onCloseDrawer, taskIdProp, onOpenDl, onOpen
 				</TabList>
 				<TabPanels>
 					<TabPanel>
-						<TaskFiles taskIdProp={taskIdProp || taskIdRouter as string} />
+						<TaskFiles taskIdProp={taskIdProp || (taskIdRouter as string)} />
 					</TabPanel>
 					<TabPanel>
-						<TaskComments taskIdProp={taskIdProp || taskIdRouter as string} />
+						<TaskComments taskIdProp={taskIdProp || (taskIdRouter as string)} />
 					</TabPanel>
 				</TabPanels>
 			</Tabs>
@@ -201,12 +221,8 @@ export default function DetailTask({ onCloseDrawer, taskIdProp, onOpenDl, onOpen
 			>
 				<TaskCategory />
 			</Modal>
-			{
-				onOpenDl && <Button onClick={onOpenDl}>delete</Button>
-			}
-			{
-				onOpenUpdate && <Button onClick={onOpenUpdate}>update</Button>
-			}
+			{onOpenDl && <Button onClick={onOpenDl}>delete</Button>}
+			{onOpenUpdate && <Button onClick={onOpenUpdate}>update</Button>}
 		</Box>
 	)
 }

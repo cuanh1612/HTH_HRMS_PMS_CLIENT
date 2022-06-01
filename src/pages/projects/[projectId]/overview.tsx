@@ -1,72 +1,46 @@
 import {
 	Avatar,
 	Box,
-	Button,
-	Grid,
-	GridItem,
 	HStack,
-	Select,
+	Progress,
+	SimpleGrid,
+	Stack,
 	Text,
-	useDisclosure,
+	Tooltip as CTooltip,
 	VStack,
 } from '@chakra-ui/react'
-import { yupResolver } from '@hookform/resolvers/yup'
-import { Drawer } from 'components/Drawer'
 import { AuthContext } from 'contexts/AuthContext'
-import { updateStatusProjectMutation } from 'mutations'
 import { useRouter } from 'next/router'
-import { detailProjectQuery } from 'queries'
-import { useContext, useEffect } from 'react'
-import { useForm } from 'react-hook-form'
-import { updateStatusProjectForm } from 'type/form/basicFormType'
-import { dataProjectStatus } from 'utils/basicData'
-import { updateStatusProjectValidate } from 'utils/validate'
-import UpdateProject from '../update-projects'
+import { detailProjectQuery, projectEarningsQuery, projectHoursLoggedQuery } from 'queries'
+import { useContext, useEffect, useState } from 'react'
 import { NextLayout } from 'type/element/layout'
 import { ProjectLayout } from 'components/layouts'
+import { StatisticPrj } from 'components/common'
+
+import {
+	Chart as ChartJS,
+	CategoryScale,
+	LinearScale,
+	BarElement,
+	Title,
+	Tooltip,
+	Legend,
+	ArcElement
+} from 'chart.js'
+import { Bar, Pie } from 'react-chartjs-2'
+
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement)
 
 const Overview: NextLayout = () => {
-	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
+	const { isAuthenticated, handleLoading } = useContext(AuthContext)
 	const router = useRouter()
 	const { projectId } = router.query
 
 	//query ----------------------------------------------------------------------
 	// get detail project
 	const { data: dataDetailProject } = detailProjectQuery(isAuthenticated, projectId as string)
-
-	//Setup drawer --------------------------------------------------------------
-	const { isOpen: isOpenUpdate, onOpen: onOpenUpdate, onClose: onCloseUpdate } = useDisclosure()
-
-	//mutation -------------------------------------------------------------------
-	const [
-		mutateUpdateStatusProject,
-		{ status: statusUpdateStatusProject, data: dataUpdateStatusProject },
-	] = updateStatusProjectMutation(setToast)
-
-	// setForm and submit form change status project -------------------------------
-	const formSetting = useForm<updateStatusProjectForm>({
-		defaultValues: {
-			project_status: undefined,
-		},
-		resolver: yupResolver(updateStatusProjectValidate),
-	})
-
-	const { handleSubmit } = formSetting
-
-	const onSubmit = async (values: updateStatusProjectForm) => {
-		if (!projectId) {
-			setToast({
-				msg: 'Not found project to udate status',
-				type: 'error',
-			})
-		} else {
-			values.project = projectId as string
-			mutateUpdateStatusProject({
-				inputUpdate: values,
-				projectId: values.project,
-			})
-		}
-	}
+	const { data: dataEarning } = projectEarningsQuery(isAuthenticated, projectId as string)
+	const { data: dataHoursLogged } = projectHoursLoggedQuery(isAuthenticated, projectId as string)
 
 	//User effect ---------------------------------------------------------------
 	//Handle check loged in
@@ -80,131 +54,270 @@ const Overview: NextLayout = () => {
 		}
 	}, [isAuthenticated])
 
-	//Note when request success
-	useEffect(() => {
-		if (statusUpdateStatusProject === 'success') {
-			setToast({
-				type: 'success',
-				msg: dataUpdateStatusProject?.message as string,
-			})
-		}
-	}, [statusUpdateStatusProject])
-
 	return (
-		<>
-			<Box p={10} bgColor={'#f2f4f7'} minHeight={'100vh'}>
-				<VStack
-					align={'start'}
-					w="full"
-					bgColor={'white'}
-					p={5}
-					borderRadius={5}
-					spacing={5}
-				>
-					<VStack position={'relative'} p={2} w={'full'} align={'start'} spacing={5}>
-						<HStack w={'full'} justify={'end'}>
-							<Button colorScheme="teal" variant="outline" onClick={onOpenUpdate}>
-								Edit Project
-							</Button>
-							<Box w={200}>
-								<Select placeholder="Select option">
-									{dataProjectStatus.map((option) => (
-										<option value={option.value}>{option.label}</option>
-									))}
-								</Select>
-							</Box>
+		<Stack direction={'row'} spacing={'30px'}>
+			<VStack spacing={5} flex={1}>
+				{/* <HStack alignItems={'start'} w={'full'} spacing={10}>
+					<VStack spacing={'4'} alignItems={'start'}>
+						<Text fontWeight={'semibold'} fontSize={'xl'}>
+							Client
+						</Text>
+						<HStack spacing={5}>
+							<Avatar
+								boxShadow={'5px 5px 10px 0px #00000020'}
+								borderRadius={'10px'}
+								size={'lg'}
+								name={dataDetailProject?.project?.client?.name}
+								src={dataDetailProject?.project?.client?.avatar?.url}
+							/>
+							<VStack spacing={'5px'} alignItems={'start'}>
+								<Text fontWeight={'semibold'} fontSize={'16px'}>
+									{dataDetailProject?.project?.client?.salutation +
+										'. ' +
+										dataDetailProject?.project?.client?.name}
+								</Text>
+								<Text fontSize={'14px'} color={'gray'}>
+									{dataDetailProject?.project?.client?.company_name}
+								</Text>
+							</VStack>
 						</HStack>
-						<Grid templateColumns="repeat(2, 1fr)" gap={6} w={'full'}>
-							<GridItem
-								colSpan={[2, 1]}
-								border={'1px solid'}
-								borderColor={'gray.400'}
-								borderRadius={5}
-								p={6}
-							>
-								<VStack align={'start'} w={'full'} justify={'space-between'}>
-									<Text fontWeight={'bold'}>Project Progress</Text>
-									<HStack justify={'space-between'} wrap={'wrap'} w={'full'}>
-										<VStack align={'start'}>
-											<Text color={'gray.400'}>Start Date</Text>
-											<Text>{dataDetailProject?.project?.start_date}</Text>
-										</VStack>
-
-										<VStack align={'start'}>
-											<Text color={'gray.400'}>Deadline</Text>
-											<Text>{dataDetailProject?.project?.deadline}</Text>
-										</VStack>
-									</HStack>
-								</VStack>
-							</GridItem>
-
-							<GridItem
-								colSpan={[2, 1]}
-								border={'1px solid'}
-								borderColor={'gray.400'}
-								borderRadius={5}
-								p={6}
-							>
-								<VStack align={'start'} w={'full'} justify={'space-between'}>
-									<Text fontWeight={'bold'}>Client</Text>
-									<HStack wrap={'wrap'} w={'full'}>
-										<Avatar
-											name={dataDetailProject?.project?.client?.name}
-											src={dataDetailProject?.project?.client?.avatar?.url}
-											borderRadius={5}
-											size={'lg'}
-										/>
-										<VStack align={'start'}>
-											<Text>{dataDetailProject?.project?.client?.name}</Text>
-											<Text color={'gray.400'}>
-												{dataDetailProject?.project?.client?.email}
-											</Text>
-										</VStack>
-									</HStack>
-								</VStack>
-							</GridItem>
-
-							<GridItem
-								colSpan={[2, 1]}
-								border={'1px solid'}
-								borderColor={'gray.400'}
-								borderRadius={5}
-								p={6}
-							>
-								<VStack align={'start'} w={'full'} justify={'space-between'}>
-									<Text fontWeight={'bold'}>Tasks</Text>
-								</VStack>
-							</GridItem>
-							<GridItem
-								colSpan={[2, 1]}
-								border={'1px solid'}
-								borderColor={'gray.400'}
-								borderRadius={5}
-								p={6}
-							>
-								huy
-							</GridItem>
-							<GridItem
-								colSpan={[2]}
-								border={'1px solid'}
-								borderColor={'gray.400'}
-								borderRadius={5}
-								p={6}
-							>
-								huy
-							</GridItem>
-						</Grid>
 					</VStack>
-				</VStack>
-			</Box>
+					<VStack minW={'300px'} spacing={'4'} alignItems={'start'}>
+						<Text fontWeight={'semibold'} fontSize={'xl'}>
+							Progress
+						</Text>
+						<CTooltip
+							hasArrow
+							label={`${dataDetailProject?.project?.Progress}%`}
+							bg="gray.300"
+							color="black"
+						>
+							<VStack
+								spacing={4}
+								borderRadius={'10px'}
+								boxShadow={'5px 5px 10px 0px #00000020'}
+								paddingInline={'20px'}
+								paddingBlock={'10px'}
+								w={'full'}
+								bg={
+									Number(dataDetailProject?.project?.Progress) < 50
+										? 'red.200'
+										: Number(dataDetailProject?.project?.Progress) < 70
+										? 'yellow.200'
+										: 'green.200'
+								}
+							>
+								<HStack w={'full'} justifyContent={'space-between'}>
+									<Text>
+										{dataDetailProject?.project?.start_date &&
+											`${new Date(
+												dataDetailProject.project.start_date
+											).getDate()}-${
+												new Date(
+													dataDetailProject.project.start_date
+												).getMonth() + 1
+											}-${new Date(
+												dataDetailProject.project.start_date
+											).getFullYear()}`}
+									</Text>
+									<Text>
+										{dataDetailProject?.project?.deadline &&
+											`${new Date(
+												dataDetailProject.project.deadline
+											).getDate()}-${
+												new Date(
+													dataDetailProject.project.deadline
+												).getMonth() + 1
+											}-${new Date(
+												dataDetailProject.project.deadline
+											).getFullYear()}`}
+									</Text>
+								</HStack>
 
-			<Drawer size="xl" title="Update Project" onClose={onCloseUpdate} isOpen={isOpenUpdate}>
-				<UpdateProject
-					onCloseDrawer={onCloseUpdate}
-					projectIdUpdate={Number(projectId as string)}
-				/>
-			</Drawer>
-		</>
+								<Progress
+									colorScheme={
+										Number(dataDetailProject?.project?.Progress) < 50
+											? 'red'
+											: Number(dataDetailProject?.project?.Progress) < 70
+											? 'yellow'
+											: 'green'
+									}
+									borderRadius={'full'}
+									w={'full'}
+									height={'5px'}
+									hasStripe
+									value={dataDetailProject?.project?.Progress}
+								/>
+							</VStack>
+						</CTooltip>
+					</VStack>
+				</HStack> */}
+				<VStack spacing={'4'} w={'full'} alignItems={'start'}>
+					<Text fontWeight={'semibold'} fontSize={'xl'}>
+						Statistics
+					</Text>
+					<SimpleGrid w={'full'} minChildWidth="250px" spacing="30px">
+						<StatisticPrj
+							title="Project Budget"
+							decorate="🌔"
+							isMoney
+							content={dataDetailProject?.project?.project_budget || 0}
+						/>
+						<StatisticPrj
+							title="Earnings"
+							decorate="🌓"
+							isMoney
+							content={dataEarning?.projectEarnings || 0}
+						/>
+						<StatisticPrj
+							title="Hours Logged"
+							decorate="🌖"
+							content={dataHoursLogged?.projectHoursLogged || 0}
+						/>
+					</SimpleGrid>
+				</VStack>
+
+				<HStack>
+					<Box>
+						<Text fontWeight={'semibold'} fontSize={'xl'}>
+							Hours Logged
+						</Text>
+						<Pie data={{
+							labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+							datasets: [
+							  {
+								label: '# of Votes',
+								data: [12, 19, 3, 5, 2, 3],
+								backgroundColor: [
+								  'rgba(255, 99, 132, 0.2)',
+								  'rgba(54, 162, 235, 0.2)',
+								  'rgba(255, 206, 86, 0.2)',
+								  'rgba(75, 192, 192, 0.2)',
+								  'rgba(153, 102, 255, 0.2)',
+								  'rgba(255, 159, 64, 0.2)',
+								],
+								borderColor: [
+								  'rgba(255, 99, 132, 1)',
+								  'rgba(54, 162, 235, 1)',
+								  'rgba(255, 206, 86, 1)',
+								  'rgba(75, 192, 192, 1)',
+								  'rgba(153, 102, 255, 1)',
+								  'rgba(255, 159, 64, 1)',
+								],
+								borderWidth: 1,
+							  },
+							],
+						}} />
+					</Box>
+				</HStack>
+
+				<HStack w={'full'} spacing={5}>
+					{dataDetailProject && dataHoursLogged && (
+						<VStack spacing={'4'} alignItems={'start'} w={'50%'}>
+							<Text fontWeight={'semibold'} fontSize={'xl'}>
+								Hours Logged
+							</Text>
+							<Box pos="relative" h={'250px'} w={'full'}>
+								<Bar
+									options={{
+										responsive: true,
+										plugins: {
+											legend: {
+												position: 'top' as const,
+												display: false,
+											},
+										},
+										scales: {
+											y: {
+												grid: {
+													display: false,
+												},
+											},
+											x: {
+												grid: {
+													display: false,
+												},
+											},
+										},
+										maintainAspectRatio: false,
+										animation: true as any,
+									}}
+									data={{
+										labels: ['Planned', 'Actual'],
+										datasets: [
+											{
+												label: 'salary',
+												data: [
+													dataDetailProject?.project?.hours_estimate || 0,
+													dataHoursLogged.projectHoursLogged,
+												] as any,
+												backgroundColor: ['#D5ECC2', '#FFE5E4'],
+												borderColor: ['#C0D4AF', '#E69996'],
+												borderWidth: 2,
+												borderRadius: 10,
+											},
+										],
+									}}
+								/>
+							</Box>
+						</VStack>
+					)}
+					{dataDetailProject && dataEarning && (
+						<VStack spacing={'4'} alignItems={'start'} w={'50%'}>
+							<Text fontWeight={'semibold'} fontSize={'xl'}>
+								Project Budget
+							</Text>
+							<Box h={'250px'} pos="relative" w={'full'}>
+								<Bar
+									options={{
+										responsive: true,
+										plugins: {
+											legend: {
+												position: 'top' as const,
+												display: false,
+											},
+										},
+										maintainAspectRatio: false,
+										animation: true as any,
+										scales: {
+											y: {
+												grid: {
+													display: false,
+												},
+											},
+											x: {
+												grid: {
+													display: false,
+												},
+											},
+										},
+									}}
+									data={{
+										labels: ['Planned', 'Actual'],
+										datasets: [
+											{
+												label: 'salary',
+												data: [
+													dataDetailProject?.project?.project_budget || 0,
+													dataEarning.projectEarnings,
+												] as any,
+												backgroundColor: ['#D5ECC2', '#FFE5E4'],
+												borderColor: ['#C0D4AF', '#E69996'],
+												borderWidth: 2,
+												borderRadius: 10,
+											},
+										],
+									}}
+								/>
+							</Box>
+						</VStack>
+					)}
+				</HStack>
+			</VStack>
+			<Box border="1px solid red" w={'300px'}>
+				1
+			</Box>
+		</Stack>
 	)
 }
 

@@ -81,6 +81,27 @@ export const projectDetailQuery = (isAuthenticated: boolean | null, idProject?: 
 	)
 }
 
+export const projectEarningsQuery = (isAuthenticated: boolean | null, idProject?: string | string[] | number) => {
+	return useSWR<projectMutaionResponse, AxiosError>(
+		isAuthenticated && idProject ? `projects/${idProject}/earnings`: null,
+		detailProjectRequest,
+		{
+			errorRetryCount: 2,
+			revalidateOnFocus: false,
+		}
+	)
+}
+
+export const projectHoursLoggedQuery = (isAuthenticated: boolean | null, idProject?: string | string[] | number) => {
+	return useSWR<projectMutaionResponse, AxiosError>(
+		isAuthenticated && idProject ? `projects/${idProject}/Hours-logged`: null,
+		detailProjectRequest,
+		{
+			errorRetryCount: 2,
+			revalidateOnFocus: false,
+		}
+	)
+}
 
 
 

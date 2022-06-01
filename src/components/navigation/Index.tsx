@@ -44,6 +44,7 @@ const SideLeft = () => (
 		</HStack>
 
 		<VStack paddingTop={4} height={'calc( 100vh - 75px )'} overflow={'auto'} spacing={4}>
+			<LinkItem link="/clients" title="Clients" icon={<BsPerson fontSize={20} />} />
 			<LinkGroup
 				data={[
 					{

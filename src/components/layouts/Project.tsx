@@ -69,7 +69,7 @@ export const ProjectLayout = ({ children }: { children: JSX.Element }) => {
 			spacing={'0px'}
 		>
 			<Navigation />
-			<Box w={'full'}>
+			<Box flex={1}>
 				<Header />
 				<Box paddingInline={10}>
 					<TabsMenu

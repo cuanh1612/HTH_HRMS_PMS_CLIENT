@@ -103,12 +103,18 @@ export const allProjectsNormalByEmployeeQuery = (isAuthenticated?: boolean | nul
 	)
 }
 
+<<<<<<< HEAD
 export const projectDetailQuery = (
 	isAuthenticated: boolean | null,
 	idProject?: string | string[] | number
 ) => {
 	return useSWR<projectMutaionResponse, AxiosError>(
 		isAuthenticated && idProject ? `projects/${idProject}` : null,
+=======
+export const projectEarningsQuery = (isAuthenticated: boolean | null, idProject?: string | string[] | number) => {
+	return useSWR<projectMutaionResponse, AxiosError>(
+		isAuthenticated && idProject ? `projects/${idProject}/earnings`: null,
+>>>>>>> e51a62b75316515fb2007c796aad3af6b10c1f4b
 		detailProjectRequest,
 		{
 			errorRetryCount: 2,
@@ -116,3 +122,24 @@ export const projectDetailQuery = (
 		}
 	)
 }
+<<<<<<< HEAD
+=======
+
+export const projectHoursLoggedQuery = (isAuthenticated: boolean | null, idProject?: string | string[] | number) => {
+	return useSWR<projectMutaionResponse, AxiosError>(
+		isAuthenticated && idProject ? `projects/${idProject}/Hours-logged`: null,
+		detailProjectRequest,
+		{
+			errorRetryCount: 2,
+			revalidateOnFocus: false,
+		}
+	)
+}
+
+
+
+
+
+
+
+>>>>>>> e51a62b75316515fb2007c796aad3af6b10c1f4b

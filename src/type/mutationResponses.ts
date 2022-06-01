@@ -157,6 +157,8 @@ export interface projectMutaionResponse extends commonResponse {
 	project?: projectType
 	hourly_rate_projects: Hourly_rate_project[]
 	projects?: projectType[]
+	projectEarnings?: number
+	projectHoursLogged?: number
 }
 
 export interface statusMutaionResponse extends commonResponse  {

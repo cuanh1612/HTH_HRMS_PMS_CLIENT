@@ -27,6 +27,7 @@ import { Input, Select, SelectCustom } from 'components/filter'
 import { ClientLayout } from 'components/layouts'
 import { AuthContext } from 'contexts/AuthContext'
 import { deleteProjectMutation, deleteProjectsMutation } from 'mutations'
+import Link from 'next/link'
 import { useRouter } from 'next/router'
 import {
 	allClientsQuery,
@@ -132,7 +133,10 @@ const Projects: NextLayout = () => {
 					accessor: 'name',
 					minWidth: 200,
 					width: 200,
-					Cell: ({ value }) => <Text isTruncated={true}>{value}</Text>,
+					Cell: ({ value, row }) => (<Link href={`/projects/${row.values['id']}/overview`} passHref><Text _hover={{
+						textDecoration: 'underline',
+						cursor: 'pointer'
+					}} isTruncated={true}>{value}</Text></Link>),
 					filter: textFilter(['name']),
 				},
 				{

@@ -4,6 +4,10 @@ import Navigation from 'components/navigation/Index'
 import { Header } from 'components/partials'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
+import { AiOutlineDashboard, AiOutlineFileAdd, AiOutlineProject, AiOutlineUsergroupAdd } from 'react-icons/ai'
+import { BiTime } from 'react-icons/bi'
+import { FaRegStickyNote } from 'react-icons/fa'
+import { VscCommentDiscussion, VscMilestone, VscTasklist } from 'react-icons/vsc'
 import { ITab } from 'type/element/commom'
 export const ProjectLayout = ({ children }: { children: JSX.Element }) => {
     const {query: {projectId}} = useRouter()
@@ -12,47 +16,47 @@ export const ProjectLayout = ({ children }: { children: JSX.Element }) => {
         if(projectId) {
             setTabs([
                 {
-                    icon: '',
+                    icon: <AiOutlineDashboard fontSize={'15'}/>,
                     link: `/projects/${projectId}/overview`,
                     title: 'Overview'
                 },
                 {
-                    icon: '',
+                    icon: <AiOutlineUsergroupAdd fontSize={'15'}/>,
                     link: `/projects/${projectId}/members`,
                     title: 'Members'
                 },
                 {
-                    icon: '',
+                    icon: <AiOutlineFileAdd fontSize={'15'} />,
                     link: `/projects/${projectId}/files`,
                     title: 'Files'
                 },
                 {
-                    icon: '',
+                    icon: <VscMilestone fontSize={'15'}/>,
                     link: `/projects/${projectId}/milestones`,
                     title: 'Milestones'
                 },
                 {
-                    icon: '',
+                    icon: <VscTasklist fontSize={15} />,
                     link: `/projects/${projectId}/tasks-table`,
                     title: 'Tasks'
                 },
                 {
-                    icon: '',
+                    icon: <AiOutlineProject fontSize={15} />,
                     link: `/projects/${projectId}/task-board`,
                     title: 'Task Board'
                 },
                 {
-                    icon: '',
+                    icon:  <BiTime fontSize={15} />,
                     link: `/projects/${projectId}/time-logs-table`,
                     title: 'Time Logs'
                 },
                 {
-                    icon: '',
+                    icon: <VscCommentDiscussion fontSize={15}/>,
                     link: `/projects/${projectId}/discussions`,
                     title: 'Discussion'
                 },
                 {
-                    icon: '',
+                    icon: <FaRegStickyNote fontSize={15}/>,
                     link: `/projects/${projectId}/notes`,
                     title: 'Notes'
                 },

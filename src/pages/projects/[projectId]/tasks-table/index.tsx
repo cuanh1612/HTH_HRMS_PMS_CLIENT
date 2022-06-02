@@ -28,7 +28,13 @@ import DetailTask from './[taskId]'
 import UpdateTask from './[taskId]/update-task'
 import { AuthContext } from 'contexts/AuthContext'
 import { useRouter } from 'next/router'
-import { allStatusQuery, allTasksByProjectQuery, milestonesByProjectNormalQuery } from 'queries'
+import {
+	allStatusQuery,
+	allTasksByEmployeeAndProjectQuery,
+	allTasksByEmployeeQuery,
+	allTasksByProjectQuery,
+	milestonesByProjectNormalQuery,
+} from 'queries'
 import { IFilter, TColumn } from 'type/tableTypes'
 import { AlertDialog, Table } from 'components/common'
 import { dateFilter, selectFilter, textFilter } from 'utils/tableFilters'
@@ -103,10 +109,14 @@ const tasks: NextLayout = () => {
 	// query
 
 	// get all task by project
-	const { data: allTasks, mutate: refetchTasks } = allTasksByProjectQuery(
-		isAuthenticated,
-		projectId
-	)
+	const { data: allTasks, mutate: refetchTasks } =
+		currentUser && currentUser.role === 'Admin'
+			? allTasksByProjectQuery(isAuthenticated, projectId)
+			: allTasksByEmployeeAndProjectQuery(
+					isAuthenticated,
+					currentUser?.id,
+					projectId as string
+			  )
 
 	// get all status to filter
 	const { data: allStatuses } = allStatusQuery(isAuthenticated, projectId)
@@ -204,7 +214,7 @@ const tasks: NextLayout = () => {
 							}-${date.getFullYear()}`}</Text>
 						)
 					},
-					filter: dateFilter(['deadline'])
+					filter: dateFilter(['deadline']),
 				},
 				{
 					Header: 'Hours Logged',
@@ -238,7 +248,11 @@ const tasks: NextLayout = () => {
 							<AvatarGroup size="sm" max={2}>
 								{value.length != 0 &&
 									value.map((employee: employeeType) => (
-										<Avatar name={employee.name} key={employee.id} src={employee.avatar?.url} />
+										<Avatar
+											name={employee.name}
+											key={employee.id}
+											src={employee.avatar?.url}
+										/>
 									))}
 							</AvatarGroup>
 						)
@@ -277,25 +291,31 @@ const tasks: NextLayout = () => {
 								>
 									View
 								</MenuItem>
-								<MenuItem
-									onClick={() => {
-										setTaskId(Number(row.values['id']))
-										onOpenUpdateTask()
-									}}
-									icon={<RiPencilLine fontSize={'15px'} />}
-								>
-									Edit
-								</MenuItem>
 
-								<MenuItem
-									onClick={() => {
-										setTaskId(Number(row.values['id']))
-										onOpenDl()
-									}}
-									icon={<MdOutlineDeleteOutline fontSize={'15px'} />}
-								>
-									Delete
-								</MenuItem>
+								{(currentUser?.role === 'Admin' ||
+									row.original?.assignBy?.id === currentUser?.id) && (
+									<>
+										<MenuItem
+											onClick={() => {
+												setTaskId(Number(row.values['id']))
+												onOpenUpdateTask()
+											}}
+											icon={<RiPencilLine fontSize={'15px'} />}
+										>
+											Edit
+										</MenuItem>
+
+										<MenuItem
+											onClick={() => {
+												setTaskId(Number(row.values['id']))
+												onOpenDl()
+											}}
+											icon={<MdOutlineDeleteOutline fontSize={'15px'} />}
+										>
+											Delete
+										</MenuItem>
+									</>
+								)}
 							</MenuList>
 						</Menu>
 					),

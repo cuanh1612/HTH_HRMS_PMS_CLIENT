@@ -423,6 +423,7 @@ export type createProjectFileForm = {
 		url: string
 	}[]
 	project: number
+	assignBy?: number
 }
 
 export type createTaskFileForm = {

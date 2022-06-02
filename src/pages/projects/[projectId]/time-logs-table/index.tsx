@@ -114,10 +114,7 @@ const TimeLogs: NextLayout = () => {
 	)
 
 	// get all status to filter
-	const { data: allStatuses } = allStatusQuery(
-		isAuthenticated,
-		projectId
-	)
+	const { data: allStatuses } = allStatusQuery(isAuthenticated, projectId)
 
 	//Useeffect ---------------------------------------------------------
 	//Handle check login successfully
@@ -315,25 +312,29 @@ const TimeLogs: NextLayout = () => {
 								>
 									View
 								</MenuItem>
-								<MenuItem
-									onClick={() => {
-										setIdTimeLog(Number(row.values['id']))
-										onOpenUpdateTimelog()
-									}}
-									icon={<RiPencilLine fontSize={'15px'} />}
-								>
-									Edit
-								</MenuItem>
+								{currentUser?.role === 'Admin' && (
+									<>
+										<MenuItem
+											onClick={() => {
+												setIdTimeLog(Number(row.values['id']))
+												onOpenUpdateTimelog()
+											}}
+											icon={<RiPencilLine fontSize={'15px'} />}
+										>
+											Edit
+										</MenuItem>
 
-								<MenuItem
-									onClick={() => {
-										setIdTimeLog(Number(row.values['id']))
-										onOpenDl()
-									}}
-									icon={<MdOutlineDeleteOutline fontSize={'15px'} />}
-								>
-									Delete
-								</MenuItem>
+										<MenuItem
+											onClick={() => {
+												setIdTimeLog(Number(row.values['id']))
+												onOpenDl()
+											}}
+											icon={<MdOutlineDeleteOutline fontSize={'15px'} />}
+										>
+											Delete
+										</MenuItem>
+									</>
+								)}
 							</MenuList>
 						</Menu>
 					),
@@ -344,10 +345,17 @@ const TimeLogs: NextLayout = () => {
 
 	return (
 		<>
-			<Button onClick={onOpenAddTimeLog}>Add new</Button>
-			<Button disabled={!dataSl || dataSl.length == 0 ? true : false} onClick={onOpenDlMany}>
-				Delete all
-			</Button>
+			{currentUser?.role === 'Admin' && (
+				<>
+					<Button onClick={onOpenAddTimeLog}>Add new</Button>
+					<Button
+						disabled={!dataSl || dataSl.length == 0 ? true : false}
+						onClick={onOpenDlMany}
+					>
+						Delete all
+					</Button>
+				</>
+			)}
 			<Button onClick={onOpenFilter}>filter</Button>
 			<Button
 				onClick={() => {

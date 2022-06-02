@@ -3,7 +3,11 @@ import { AuthContext } from 'contexts/AuthContext'
 import { useRouter } from 'next/router'
 import { NextLayout } from 'type/element/layout'
 import { ProjectLayout } from 'components/layouts'
-import { allEmployeesInProjectQuery, employeesNotInProjectQuery, allDepartmentsQuery} from 'queries'
+import {
+	allEmployeesInProjectQuery,
+	employeesNotInProjectQuery,
+	allDepartmentsQuery,
+} from 'queries'
 import { TColumn } from 'type/tableTypes'
 import {
 	Avatar,
@@ -27,9 +31,9 @@ import {
 	assignEmployeeMutation,
 	deleteEmpInProjectMutation,
 	projectAdminMutation,
-	updateHourlyRateMutation
+	updateHourlyRateMutation,
 } from 'mutations'
-import {AlertDialog, Table} from 'components/common'
+import { AlertDialog, Table } from 'components/common'
 import { projectMutaionResponse } from 'type/mutationResponses'
 import Modal from 'components/modal/Modal'
 import { IOption } from 'type/basicTypes'
@@ -38,7 +42,7 @@ import {
 	EmployeesNotInProjectForm,
 } from 'type/form/basicFormType'
 import { useForm } from 'react-hook-form'
-import { SelectMany} from 'components/form'
+import { SelectMany } from 'components/form'
 
 var hourlyRateTimeOut: NodeJS.Timeout
 
@@ -380,26 +384,37 @@ const members: NextLayout = () => {
 					minWidth: 180,
 					width: 180,
 					Cell: ({ row }) => {
-						return (
-							<HStack spacing={4}>
-								<Radio
-									onChange={() => {
-										setProjectAdmin({
-											idProject: projectId,
-											idEmployee: row.values['id'],
-										})
-									}}
-									isChecked={
-										projectResponse?.project?.project_Admin
-											? projectResponse.project.project_Admin.id ==
-											  row.values['id']
-											: false
-									}
-									value={row.values['id']}
-								/>
-								<Text>Project Admin</Text>
-							</HStack>
-						)
+						if (currentUser?.role === 'Admin') {
+							return (
+								<HStack spacing={4}>
+									<Radio
+										onChange={() => {
+											setProjectAdmin({
+												idProject: projectId,
+												idEmployee: row.values['id'],
+											})
+										}}
+										isChecked={
+											projectResponse?.project?.project_Admin
+												? projectResponse.project.project_Admin.id ==
+												  row.values['id']
+												: false
+										}
+										value={row.values['id']}
+									/>
+									<Text>Project Admin</Text>
+								</HStack>
+							)
+						} else {
+							return (
+								<Text>
+									{projectResponse?.project?.project_Admin &&
+									projectResponse.project.project_Admin.id == row.values['id']
+										? 'Project Admin'
+										: '--'}
+								</Text>
+							)
+						}
 					},
 				},
 				{
@@ -433,7 +448,11 @@ const members: NextLayout = () => {
 				columns={columns}
 				isLoading={isLoading}
 				isSelect={false}
-				disableColumns={['department', 'designation']}
+				disableColumns={
+					currentUser?.role === 'Admin'
+						? ['department', 'designation']
+						: ['hourly_rate_project', 'department', 'designation', 'action']
+				}
 			/>
 
 			{/* alert dialog when delete one */}

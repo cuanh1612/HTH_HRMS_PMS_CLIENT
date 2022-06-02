@@ -9,6 +9,7 @@ export interface IItemContractFileProps {
 	urlFile: string
 	onDeleteFile: (contractFileId: number) => void
 	contractFileId: number
+	isChange?: boolean
 }
 
 export const ItemContractFile = ({
@@ -17,12 +18,13 @@ export const ItemContractFile = ({
 	urlFile,
 	onDeleteFile,
 	contractFileId,
-}: IItemContractFileProps)=> {
+	isChange = true,
+}: IItemContractFileProps) => {
 	return (
 		<HStack w={'full'} justify={'space-between'}>
-			<HStack overflow={"hidden"}>
+			<HStack overflow={'hidden'}>
 				<Img alt={name} src={srcImg} w={50} height={70} />
-				<VStack w="full" align={'start'} overflow={"hidden"}>
+				<VStack w="full" align={'start'} overflow={'hidden'}>
 					<Text isTruncated>{name}</Text>
 					<Text fontSize={14} color={'gray.400'}>
 						<HStack>
@@ -35,19 +37,21 @@ export const ItemContractFile = ({
 				</VStack>
 			</HStack>
 
-			<Menu placement="top-end">
-				<MenuButton>
-					<BsThreeDotsVertical />
-				</MenuButton>
-				<MenuList>
-					<MenuItem
-						icon={<BsTrash fontSize={15} />}
-						onClick={() => onDeleteFile(contractFileId)}
-					>
-						Delete
-					</MenuItem>
-				</MenuList>
-			</Menu>
+			{isChange && (
+				<Menu placement="top-end">
+					<MenuButton>
+						<BsThreeDotsVertical />
+					</MenuButton>
+					<MenuList>
+						<MenuItem
+							icon={<BsTrash fontSize={15} />}
+							onClick={() => onDeleteFile(contractFileId)}
+						>
+							Delete
+						</MenuItem>
+					</MenuList>
+				</Menu>
+			)}
 		</HStack>
 	)
 }

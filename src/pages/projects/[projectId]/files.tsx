@@ -9,7 +9,7 @@ import {
 	useDisclosure,
 	VStack,
 } from '@chakra-ui/react'
-import {ItemContractFile, ItemFileUpload, Loading} from 'components/common'
+import { ItemContractFile, ItemFileUpload, Loading } from 'components/common'
 import { ProjectLayout } from 'components/layouts'
 
 import { AuthContext } from 'contexts/AuthContext'
@@ -26,8 +26,9 @@ import { projectMutaionResponse } from 'type/mutationResponses'
 import { generateImgFile } from 'utils/helper'
 import { uploadFile } from 'utils/uploadFile'
 
-const Files:NextLayout = ()=> {
-	const { isAuthenticated, handleLoading, setToast, socket } = useContext(AuthContext)
+const Files: NextLayout = () => {
+	const { isAuthenticated, handleLoading, setToast, socket, currentUser } =
+		useContext(AuthContext)
 	const router = useRouter()
 	const { projectId } = router.query
 
@@ -43,7 +44,6 @@ const Files:NextLayout = ()=> {
 		isAuthenticated,
 		Number(projectId)
 	)
-	console.log(dataAllProjectFiles)
 
 	//mutation -------------------------------------------------------------------
 	const [mutateCreProjectFile, { status: statusCreProjectFile, data: dataCreProjectFile }] =
@@ -193,6 +193,7 @@ const Files:NextLayout = ()=> {
 			mutateCreProjectFile({
 				files: dataUploadFiles,
 				project: Number(projectId),
+				...(currentUser?.id ? { assignBy: currentUser?.id } : {}),
 			})
 		}
 	}
@@ -312,6 +313,7 @@ const Files:NextLayout = ()=> {
 									onDeleteFile={onDeleteFile}
 									srcImg={generateImgFile(projectFile.name)}
 									urlFile={projectFile.url}
+									isChange={currentUser?.role === "Admin" || projectFile.assignBy?.id === currentUser?.id}
 								/>
 							</GridItem>
 						))}

@@ -325,6 +325,7 @@ export interface projectFileType {
 	public_id: string
 	contract: contractType
 	createdAt: Date
+	assignBy?: employeeType
 }
 
 export interface taskFileType {

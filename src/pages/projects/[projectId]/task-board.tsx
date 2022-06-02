@@ -19,7 +19,7 @@ import {
 } from '@chakra-ui/react'
 import {Column} from 'components/board'
 import { useRouter } from 'next/router'
-import { allStatusTasksQuery, projectDetailQuery } from 'queries'
+import { allStatusTasksQuery, detailProjectQuery } from 'queries'
 import { statusType } from 'type/basicTypes'
 import {
 	changePositionMutation,
@@ -85,7 +85,7 @@ const taskBoard: NextLayout = () => {
 	)
 
 	// get detail project
-	const { data: projectDetail } = projectDetailQuery(isAuthenticated, query.projectId)
+	const { data: projectDetail } = detailProjectQuery(isAuthenticated, query.projectId as string)
 
 	// change position status column
 	const [changePosition] = changePositionMutation(setToast)

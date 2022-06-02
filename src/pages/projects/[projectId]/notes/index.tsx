@@ -284,7 +284,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
 	//Check assigned
 	const checkAsignedProject: projectMutaionResponse = await fetch(
-		`${process.env.NEXT_PUBLIC_API_URL}/api/projects/${context.query.projectId}/check-asigned`,
+		`${process.env.NEXT_PUBLIC_API_URL}/api/projects/${context.query.projectId}/check-assigned`,
 		{
 			method: 'GET',
 			headers: {

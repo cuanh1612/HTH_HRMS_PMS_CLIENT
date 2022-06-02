@@ -12,7 +12,7 @@ import { employeeMutaionResponse, projectMutaionResponse } from 'type/mutationRe
 
 export const detailProjectQuery = (
 	isAuthenticated: boolean | null,
-	projectId?: string | number
+	projectId?: string | number | string[]
 ) => {
 	return useSWR<projectMutaionResponse, AxiosError>(
 		isAuthenticated && projectId ? `projects/${projectId}` : null,
@@ -125,9 +125,22 @@ export const projectHoursLoggedQuery = (isAuthenticated: boolean | null, idProje
 	)
 }
 
+export const countStatusTasksQuery = (isAuthenticated: boolean | null, idProject?: string | string[] | number) => {
+	return useSWR<projectMutaionResponse, AxiosError>(
+		isAuthenticated && idProject ? `projects/${idProject}/count-status-tasks`: null,
+		detailProjectRequest,
+		{
+			errorRetryCount: 2,
+			revalidateOnFocus: false,
+		}
+	)
+}
 
 
 
 
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 2e9a19b7d5179e2fc4c69e0174cf509a2bb4e59e

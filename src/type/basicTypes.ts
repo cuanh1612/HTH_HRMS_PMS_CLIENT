@@ -278,6 +278,7 @@ export interface statusType {
 	index: number
 	root: boolean
 	title: string
+	count?: number
 	tasks?: taskType[]
 	
 }

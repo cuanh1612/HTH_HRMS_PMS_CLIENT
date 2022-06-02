@@ -159,6 +159,7 @@ export interface projectMutaionResponse extends commonResponse {
 	projects?: projectType[]
 	projectEarnings?: number
 	projectHoursLogged?: number
+	countstatusTasks: statusType[] 
 }
 
 export interface statusMutaionResponse extends commonResponse  {

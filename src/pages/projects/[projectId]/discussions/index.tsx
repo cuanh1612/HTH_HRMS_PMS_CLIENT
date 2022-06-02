@@ -1,5 +1,5 @@
 import { Box, Button, HStack, useDisclosure, VStack } from '@chakra-ui/react'
-import {Drawer} from 'components/Drawer'
+import { Drawer } from 'components/Drawer'
 import { ProjectLayout } from 'components/layouts'
 import Modal from 'components/modal/Modal'
 import ProjectDiscussionItem from 'components/projectDiscussion/projectDiscussionItem'
@@ -14,7 +14,7 @@ import ProjectDiscussionCategory from 'src/pages/project-discussion-categories'
 import { NextLayout } from 'type/element/layout'
 import {
 	ProjectDisucssionRoomMutaionResponse,
-	projectMutaionResponse
+	projectMutaionResponse,
 } from 'type/mutationResponses'
 import AddDiscussion from '../add-discussion'
 import DetailDiscussion from './[discussionId]'
@@ -23,8 +23,9 @@ export interface IDiscussionsProps {
 	allDiscussionRooms: ProjectDisucssionRoomMutaionResponse
 }
 
-const Discussions:NextLayout = ()=> {
-	const { isAuthenticated, handleLoading, setToast, socket } = useContext(AuthContext)
+const Discussions: NextLayout = () => {
+	const { isAuthenticated, handleLoading, setToast, socket, currentUser } =
+		useContext(AuthContext)
 	const router = useRouter()
 	const { projectId } = router.query
 
@@ -66,7 +67,7 @@ const Discussions:NextLayout = ()=> {
 		if (isAuthenticated) {
 			handleLoading(false)
 		} else {
-			if (isAuthenticated === false) { 
+			if (isAuthenticated === false) {
 				router.push('/login')
 			}
 		}
@@ -143,9 +144,14 @@ const Discussions:NextLayout = ()=> {
 						>
 							New Discussion
 						</Button>
-						<Button leftIcon={<AiOutlineEdit />} onClick={onOpenAddDiscussionCategory}>
-							New Category
-						</Button>
+						{currentUser?.role === 'Admin' && (
+							<Button
+								leftIcon={<AiOutlineEdit />}
+								onClick={onOpenAddDiscussionCategory}
+							>
+								New Category
+							</Button>
+						)}
 					</HStack>
 
 					<VStack w={'100%'}>
@@ -158,6 +164,12 @@ const Discussions:NextLayout = ()=> {
 											key={discussionRoom.id}
 											discussionRoom={discussionRoom}
 											onClick={onChangeSelectDiscussion}
+											isOnChange={
+												currentUser?.role === 'Admin' ||
+												discussionRoom.assigner.id === currentUser?.id
+													? true
+													: false
+											}
 										/>
 									</>
 								)
@@ -242,8 +254,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 	}
 
 	return {
-		props: {
-		},
+		props: {},
 	}
 }
 

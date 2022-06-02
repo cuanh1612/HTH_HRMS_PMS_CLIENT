@@ -43,7 +43,7 @@ import { IFilter } from 'type/tableTypes'
 var timeoutName: NodeJS.Timeout
 
 const Event: NextLayout = () => {
-	const { isAuthenticated, handleLoading } = useContext(AuthContext)
+	const { isAuthenticated, handleLoading, currentUser } = useContext(AuthContext)
 	const router = useRouter()
 
 	const { colorMode } = useColorMode()

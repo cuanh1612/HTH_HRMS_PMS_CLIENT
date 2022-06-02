@@ -140,7 +140,3 @@ export const countStatusTasksQuery = (isAuthenticated: boolean | null, idProject
 
 
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 2e9a19b7d5179e2fc4c69e0174cf509a2bb4e59e

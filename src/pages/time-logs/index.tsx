@@ -24,7 +24,7 @@ import { ClientLayout } from 'components/layouts'
 import { AuthContext } from 'contexts/AuthContext'
 import { deleteTimeLogMutation, deleteTimeLogsMutation } from 'mutations'
 import { useRouter } from 'next/router'
-import { allProjectsNormalQuery, timeLogsQuery } from 'queries'
+import { allProjectsNormalQuery, timeLogsCurrentUserQuery, timeLogsQuery } from 'queries'
 import { useContext, useEffect, useState } from 'react'
 import { AiOutlineSearch } from 'react-icons/ai'
 import { IoEyeOutline } from 'react-icons/io5'
@@ -104,7 +104,10 @@ const TimeLogs: NextLayout = () => {
 
 	// query
 	// get all time log by project
-	const { data: allTimeLogs, mutate: refetchTimeLogs } = timeLogsQuery(isAuthenticated)
+	const { data: allTimeLogs, mutate: refetchTimeLogs } =
+		currentUser?.role === 'Admin'
+			? timeLogsQuery(isAuthenticated)
+			: timeLogsCurrentUserQuery(isAuthenticated)
 
 	// get all project to filter
 	const { data: dataAllProjects } = allProjectsNormalQuery(isAuthenticated)
@@ -304,25 +307,29 @@ const TimeLogs: NextLayout = () => {
 								>
 									View
 								</MenuItem>
-								<MenuItem
-									onClick={() => {
-										setIdTimeLog(Number(row.values['id']))
-										onOpenUpdateTimelog()
-									}}
-									icon={<RiPencilLine fontSize={'15px'} />}
-								>
-									Edit
-								</MenuItem>
+								{currentUser?.role === 'Admin' && (
+									<>
+										<MenuItem
+											onClick={() => {
+												setIdTimeLog(Number(row.values['id']))
+												onOpenUpdateTimelog()
+											}}
+											icon={<RiPencilLine fontSize={'15px'} />}
+										>
+											Edit
+										</MenuItem>
 
-								<MenuItem
-									onClick={() => {
-										setIdTimeLog(Number(row.values['id']))
-										onOpenDl()
-									}}
-									icon={<MdOutlineDeleteOutline fontSize={'15px'} />}
-								>
-									Delete
-								</MenuItem>
+										<MenuItem
+											onClick={() => {
+												setIdTimeLog(Number(row.values['id']))
+												onOpenDl()
+											}}
+											icon={<MdOutlineDeleteOutline fontSize={'15px'} />}
+										>
+											Delete
+										</MenuItem>
+									</>
+								)}
 							</MenuList>
 						</Menu>
 					),
@@ -333,12 +340,19 @@ const TimeLogs: NextLayout = () => {
 
 	return (
 		<>
-			<Button onClick={onOpenAddTimeLog}>Add new</Button>
-			<Button onClick={onOpenUpdateTimelog}>Update time log</Button>
+			{currentUser?.role === 'Admin' && (
+				<>
+					<Button onClick={onOpenAddTimeLog}>Add new</Button>
+					<Button onClick={onOpenUpdateTimelog}>Update time log</Button>
+					<Button
+						disabled={!dataSl || dataSl.length == 0 ? true : false}
+						onClick={onOpenDlMany}
+					>
+						Delete all
+					</Button>
+				</>
+			)}
 			<Button onClick={onOpenDetailTimelog}>detail time log</Button>
-			<Button disabled={!dataSl || dataSl.length == 0 ? true : false} onClick={onOpenDlMany}>
-				Delete all
-			</Button>
 			<Button onClick={onOpenFilter}>filter</Button>
 			<Button
 				onClick={() => {
@@ -355,7 +369,7 @@ const TimeLogs: NextLayout = () => {
 				data={allTimeLogs?.timeLogs || []}
 				columns={columns}
 				isLoading={isLoading}
-				isSelect
+				isSelect = {currentUser?.role === "Admin" ? true : false}
 				selectByColumn="id"
 				setSelect={(data: Array<number>) => setDataSl(data)}
 				filter={filter}

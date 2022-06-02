@@ -1,51 +1,39 @@
-import { ClientLayout, ProjectLayout } from 'components/layouts'
-import { AuthContext } from 'contexts/AuthContext'
-import React, { useContext, useEffect, useState } from 'react'
-import { NextLayout } from 'type/element/layout'
-import { DragDropContext, Droppable, DropResult } from 'react-beautiful-dnd'
 import {
 	Avatar,
 	AvatarGroup,
-	Box,
-	HStack,
-	Text,
-	useColorMode,
-	useDisclosure,
-	VStack,
-	Divider,
-	StackDivider,
-	Tooltip,
-	Button,
+	Box, Button, HStack, StackDivider, Text, Tooltip, useColorMode,
+	useDisclosure
 } from '@chakra-ui/react'
-import {Column} from 'components/board'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { Column } from 'components/board'
+import { AlertDialog } from 'components/common'
+import { Drawer } from 'components/Drawer'
+import { Input } from 'components/form'
+import { ProjectLayout } from 'components/layouts'
+import Modal from 'components/modal/Modal'
+import { AuthContext } from 'contexts/AuthContext'
+import {
+	changePositionMutation, changePositionTaskMutation, createStatusColumnMutation,
+	deleteStatusColumnMutation, deleteTaskMutation, updateStatusColumnMutation
+} from 'mutations'
 import { useRouter } from 'next/router'
 import { allStatusTasksQuery, detailProjectQuery } from 'queries'
-import { statusType } from 'type/basicTypes'
-import {
-	changePositionMutation,
-	createStatusColumnMutation,
-	deleteStatusColumnMutation,
-	updateStatusColumnMutation,
-	changePositionTaskMutation,
-	deleteTaskMutation
-} from 'mutations'
-import { IoIosAdd } from 'react-icons/io'
-import Modal from 'components/modal/Modal'
+import { useContext, useEffect, useState } from 'react'
+import { DragDropContext, Droppable, DropResult } from 'react-beautiful-dnd'
 import { useForm } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup'
+import { AiOutlineBgColors } from 'react-icons/ai'
+import { IoIosAdd } from 'react-icons/io'
+import { MdOutlineSubtitles } from 'react-icons/md'
+import { statusType } from 'type/basicTypes'
+import { NextLayout } from 'type/element/layout'
 import { statusForm } from 'type/form/basicFormType'
 import { CreateStatusColumnValidate } from 'utils/validate'
-import { Input } from 'components/form'
-import { MdOutlineSubtitles } from 'react-icons/md'
-import { AiOutlineBgColors } from 'react-icons/ai'
-import {AlertDialog} from 'components/common'
-import {Drawer} from 'components/Drawer'
 import AddTask from './tasks-table/add-tasks'
-import UpdateTask from './tasks-table/[taskId]/update-task'
 import DetailTask from './tasks-table/[taskId]'
+import UpdateTask from './tasks-table/[taskId]/update-task'
 
 const taskBoard: NextLayout = () => {
-	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
+	const { isAuthenticated, handleLoading, setToast, currentUser } = useContext(AuthContext)
 	const [columns, setColumns] = useState<statusType[]>([])
 	const [isUpdate, setIsUpdate] = useState(false)
 	const [columnId, setColumnId] = useState<string>()
@@ -381,6 +369,7 @@ const taskBoard: NextLayout = () => {
 						>
 							{columns.map((column, key: number) => (
 								<Column
+									isDragDisabled={currentUser?.role === "Admin" ? false : true}
 									setEditForm={setEditForm}
 									key={column.id}
 									column={column}

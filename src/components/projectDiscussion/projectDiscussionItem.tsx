@@ -21,12 +21,14 @@ export interface IProjectDiscussionItemProps {
 	onDelete: (input: {
 		ProjectDiscussionRoomId: number
 	}) => Promise<ProjectDisucssionRoomMutaionResponse | undefined>
+	isOnChange?: boolean
 }
 
 export default function ProjectDiscussionItem({
 	discussionRoom,
 	onClick,
 	onDelete,
+	isOnChange = true,
 }: IProjectDiscussionItemProps) {
 	return (
 		<HStack
@@ -69,18 +71,22 @@ export default function ProjectDiscussionItem({
 					<Text>{discussionRoom.project_discussion_replies.length || 0}</Text>
 				</HStack>
 
-				<Menu isLazy>
-					<MenuButton>
-						<BsThreeDots />
-					</MenuButton>
-					<MenuList>
-						<MenuItem
-							onClick={() => onDelete({ ProjectDiscussionRoomId: discussionRoom.id })}
-						>
-							Delete
-						</MenuItem>
-					</MenuList>
-				</Menu>
+				{isOnChange && (
+					<Menu isLazy>
+						<MenuButton>
+							<BsThreeDots />
+						</MenuButton>
+						<MenuList>
+							<MenuItem
+								onClick={() =>
+									onDelete({ ProjectDiscussionRoomId: discussionRoom.id })
+								}
+							>
+								Delete
+							</MenuItem>
+						</MenuList>
+					</Menu>
+				)}
 			</VStack>
 		</HStack>
 	)

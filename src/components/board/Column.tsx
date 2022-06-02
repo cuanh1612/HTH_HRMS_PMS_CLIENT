@@ -9,30 +9,35 @@ import {
 	useColorMode,
 	Menu,
 } from '@chakra-ui/react'
-import React from 'react'
+import { AuthContext } from 'contexts/AuthContext'
+import React, { useContext } from 'react'
 import { Draggable, Droppable } from 'react-beautiful-dnd'
 import { IoIosAdd } from 'react-icons/io'
 import { MdOutlineDeleteOutline, MdOutlineMoreVert } from 'react-icons/md'
 import { RiPencilLine } from 'react-icons/ri'
 import { statusType } from 'type/basicTypes'
-import {Task} from './Task'
+import { Task } from './Task'
 
 export const Column = ({
 	column,
 	index,
 	setEditForm,
 	setIdColumnToDl,
-	setIdTaskToDl
+	setIdTaskToDl,
+	isDragDisabled = false,
 }: {
 	column: statusType
 	index: number
 	setEditForm: ({ title, color, id }: { title: string; color: string; id: string }) => void
 	setIdTaskToDl: (id: string) => void
 	setIdColumnToDl: (id: string) => void
-})=> {
+	isDragDisabled?: boolean
+}) => {
 	const { colorMode } = useColorMode()
+	const { currentUser } = useContext(AuthContext)
+
 	return (
-		<Draggable draggableId={`${column.id}`} index={index}>
+		<Draggable isDragDisabled={isDragDisabled} draggableId={`${column.id}`} index={index}>
 			{(provided) => (
 				<Box
 					marginRight={10}
@@ -106,7 +111,20 @@ export const Column = ({
 							>
 								{column.tasks &&
 									column.tasks.map((value, key: number) => {
-										return <Task setIdTaskToDl={setIdTaskToDl} data={value} key={value.id} index={key} />
+										return (
+											<Task
+												isDragDisabled={
+													currentUser?.role === 'Admin' ||
+													value.assignBy?.id === currentUser?.id
+														? false
+														: true
+												}
+												setIdTaskToDl={setIdTaskToDl}
+												data={value}
+												key={value.id}
+												index={key}
+											/>
+										)
 									})}
 								{provided.placeholder}
 							</Box>

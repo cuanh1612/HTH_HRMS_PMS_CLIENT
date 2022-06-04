@@ -77,6 +77,7 @@ const Event: NextLayout = () => {
 	const { data: allEmployees } = allEmployeesQuery(isAuthenticated)
 	const { data: allClients } = allClientsQuery(isAuthenticated)
 
+	
 	//User effect ---------------------------------------------------------------
 	useEffect(() => {
 		if (allEvents) {
@@ -94,7 +95,7 @@ const Event: NextLayout = () => {
 			setData(newData || [])
 		}
 	}, [allEvents, colorMode])
-
+	
 	// set calendar
 	useEffect(() => {
 		setCalendar(

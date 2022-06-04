@@ -1,51 +1,52 @@
 import {
+	Avatar,
 	Box,
 	Button,
 	ButtonGroup,
+	Drawer as CDrawer,
 	DrawerBody,
 	DrawerCloseButton,
 	DrawerContent,
 	DrawerHeader,
 	DrawerOverlay,
 	HStack,
+	Text,
 	useColorMode,
 	useColorModeValue,
 	useDisclosure,
 	VStack,
-	Drawer as CDrawer,
-	Avatar,
-	Text,
 } from '@chakra-ui/react'
 import { EventInput } from '@fullcalendar/common'
 import { Calendar } from '@fullcalendar/core'
-import interactionPlugin from '@fullcalendar/interaction'
 import dayGridPlugin from '@fullcalendar/daygrid'
+import interactionPlugin from '@fullcalendar/interaction'
 import listPlugin from '@fullcalendar/list'
 import timeGridPlugin from '@fullcalendar/timegrid'
+import { AlertDialog, ButtonIcon } from 'components/common'
+import { Drawer } from 'components/Drawer'
+import { Select, SelectCustom } from 'components/filter'
 import { ClientLayout } from 'components/layouts'
 import { AuthContext } from 'contexts/AuthContext'
+import { deleteTaskMutation } from 'mutations'
 import { useRouter } from 'next/router'
 import {
 	allClientsNormalQuery,
 	allEmployeesNormalQuery,
 	allProjectsNormalQuery,
+	allTasksCalendarByEmployeeQuery,
 	allTasksCalendarQuery,
 } from 'queries'
-import React, { useContext, useEffect, useState } from 'react'
-import { NextLayout } from 'type/element/layout'
-import { AlertDialog, ButtonIcon } from 'components/common'
+import { useContext, useEffect, useState } from 'react'
 import { MdOutlineNavigateBefore, MdOutlineNavigateNext } from 'react-icons/md'
-import AddTask from './add-tasks'
-import { Drawer } from 'components/Drawer'
-import DetailTask from './[taskId]'
-import { deleteTaskMutation } from 'mutations'
-import UpdateTask from './[taskId]/update-task'
-import { Select, SelectCustom } from 'components/filter'
-import { IFilter } from 'type/tableTypes'
 import { IOption } from 'type/basicTypes'
+import { NextLayout } from 'type/element/layout'
+import { IFilter } from 'type/tableTypes'
+import AddTask from './add-tasks'
+import DetailTask from './[taskId]'
+import UpdateTask from './[taskId]/update-task'
 
 const calendar: NextLayout = () => {
-	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
+	const { isAuthenticated, handleLoading, setToast, currentUser } = useContext(AuthContext)
 	const router = useRouter()
 	const { colorMode } = useColorMode()
 
@@ -75,10 +76,17 @@ const calendar: NextLayout = () => {
 
 	// query
 	// get all tasks
-	const { data: allTasks, mutate: refetchTasks } = allTasksCalendarQuery({
-		isAuthenticated,
-		...filter,
-	})
+	const { data: allTasks, mutate: refetchTasks } =
+		currentUser?.role === 'Admin'
+			? allTasksCalendarQuery({
+					isAuthenticated,
+					...filter,
+			  })
+			: allTasksCalendarByEmployeeQuery({
+					isAuthenticated,
+					employeeId: currentUser?.id,
+					...filter,
+			  })
 
 	// get all projects to filter
 	const { data: dataAllProjects } = allProjectsNormalQuery(isAuthenticated)
@@ -262,9 +270,15 @@ const calendar: NextLayout = () => {
 		<>
 			<HStack paddingBlock={'5'} justifyContent={'space-between'}>
 				<ButtonGroup spacing={4}>
-					<Button color={'white'} bg={'hu-Green.normal'} onClick={() => onOpenAddTask()}>
-						Add new
-					</Button>
+					{currentUser?.role === 'Admin' && (
+						<Button
+							color={'white'}
+							bg={'hu-Green.normal'}
+							onClick={() => onOpenAddTask()}
+						>
+							Add new
+						</Button>
+					)}
 					<Button
 						color={'white'}
 						bg={'hu-Green.normal'}
@@ -399,29 +413,34 @@ const calendar: NextLayout = () => {
 								label="Project"
 								placeholder="Select project"
 							/>
-							<SelectCustom
-								handleSearch={(field: any) => {
-									setFilter((state) => ({
-										...state,
-										employee: Number(field.value),
-									}))
-								}}
-								label={'Employee'}
-								name={'employee'}
-								options={[
-									{
-										label: (
-											<Text color={colorMode == 'light' ? 'black' : 'white'}>
-												all
-											</Text>
-										),
-										value: '',
-									},
 
-									...employeesFilter,
-								]}
-								required={false}
-							/>
+							{currentUser?.role === 'Admin' && (
+								<SelectCustom
+									handleSearch={(field: any) => {
+										setFilter((state) => ({
+											...state,
+											employee: Number(field.value),
+										}))
+									}}
+									label={'Employee'}
+									name={'employee'}
+									options={[
+										{
+											label: (
+												<Text
+													color={colorMode == 'light' ? 'black' : 'white'}
+												>
+													all
+												</Text>
+											),
+											value: '',
+										},
+
+										...employeesFilter,
+									]}
+									required={false}
+								/>
+							)}
 							<SelectCustom
 								handleSearch={(field: any) => {
 									setFilter((state) => ({

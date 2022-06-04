@@ -75,7 +75,7 @@ const tasks: NextLayout = () => {
 	// query
 	// get all tasks
 	const { data: allTasks, mutate: refetchTasks } =
-		currentUser && currentUser.role === 'Admin'
+		currentUser && (currentUser.role === 'Admin' || currentUser.role === 'Client')
 			? allTasksQuery(isAuthenticated)
 			: allTasksByEmployeeQuery(isAuthenticated, currentUser?.id)
 
@@ -340,7 +340,8 @@ const tasks: NextLayout = () => {
 									</MenuItem>
 
 									{(currentUser?.role === 'Admin' ||
-										row.original?.assignBy?.id === currentUser?.id) && (
+										(currentUser?.role === 'Employee' &&
+											row.original?.assignBy?.id === currentUser?.id)) && (
 										<>
 											<MenuItem
 												onClick={() => {
@@ -401,7 +402,7 @@ const tasks: NextLayout = () => {
 				data={allTasks?.tasks || []}
 				columns={columns}
 				isLoading={isLoading}
-				isSelect
+				isSelect={currentUser?.role === "Admin"}
 				selectByColumn="id"
 				setSelect={(data: Array<number>) => setDataSl(data)}
 				filter={filter}
@@ -545,7 +546,7 @@ const tasks: NextLayout = () => {
 								]}
 								required={false}
 							/>
-							{currentUser?.role === 'Admin' && (
+							{(currentUser?.role === 'Admin' || currentUser?.role === 'Client') && (
 								<SelectCustom
 									handleSearch={(field: any) => {
 										setFilter({

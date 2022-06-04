@@ -21,7 +21,7 @@ import { ClientLayout } from 'components/layouts'
 import { AuthContext } from 'contexts/AuthContext'
 import { deleteNoticeMutation, deleteNoticesMutation } from 'mutations'
 import { useRouter } from 'next/router'
-import { allNoticeBoardQuery } from 'queries'
+import { allNoticeBoardQuery, allNoticeBoardToQuery } from 'queries'
 import { useContext, useEffect, useState } from 'react'
 import { AiOutlineSearch } from 'react-icons/ai'
 import { IoEyeOutline } from 'react-icons/io5'
@@ -36,7 +36,7 @@ import UpdateNoticeBoard from './[noticeBoardId]/update'
 export interface IProjectProps {}
 
 const NoticeBoard: NextLayout = ({}: IProjectProps) => {
-	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
+	const { isAuthenticated, handleLoading, setToast, currentUser } = useContext(AuthContext)
 	const router = useRouter()
 
 	//State ---------------------------------------------------------------------
@@ -74,7 +74,12 @@ const NoticeBoard: NextLayout = ({}: IProjectProps) => {
 	} = useDisclosure()
 
 	// query
-	const { data: allNotices, mutate: refetchNotices } = allNoticeBoardQuery(isAuthenticated)
+	const { data: allNotices, mutate: refetchNotices } =
+		currentUser?.role === 'Admin'
+			? allNoticeBoardQuery(isAuthenticated)
+			: currentUser?.role === 'Employee'
+			? allNoticeBoardToQuery(isAuthenticated, 'Employees')
+			: allNoticeBoardToQuery(isAuthenticated, 'Clients')
 
 	// mutation
 	// delete one
@@ -148,25 +153,29 @@ const NoticeBoard: NextLayout = ({}: IProjectProps) => {
 							</MenuButton>
 							<MenuList>
 								<MenuItem icon={<IoEyeOutline fontSize={'15px'} />}>View</MenuItem>
-								<MenuItem
-									onClick={() => {
-										setNoticeId(Number(row.values['id']))
-										onOpenUpdate()
-									}}
-									icon={<RiPencilLine fontSize={'15px'} />}
-								>
-									Edit
-								</MenuItem>
+								{currentUser?.role === 'Admin' && (
+									<>
+										<MenuItem
+											onClick={() => {
+												setNoticeId(Number(row.values['id']))
+												onOpenUpdate()
+											}}
+											icon={<RiPencilLine fontSize={'15px'} />}
+										>
+											Edit
+										</MenuItem>
 
-								<MenuItem
-									onClick={() => {
-										setNoticeId(Number(row.values['id']))
-										onOpenDl()
-									}}
-									icon={<MdOutlineDeleteOutline fontSize={'15px'} />}
-								>
-									Delete
-								</MenuItem>
+										<MenuItem
+											onClick={() => {
+												setNoticeId(Number(row.values['id']))
+												onOpenDl()
+											}}
+											icon={<MdOutlineDeleteOutline fontSize={'15px'} />}
+										>
+											Delete
+										</MenuItem>
+									</>
+								)}
 							</MenuList>
 						</Menu>
 					),
@@ -221,13 +230,20 @@ const NoticeBoard: NextLayout = ({}: IProjectProps) => {
 
 	return (
 		<>
-			<Button colorScheme="blue" onClick={onOpenAdd}>
-				Add notice
-			</Button>
+			{currentUser?.role === 'Admin' && (
+				<>
+					<Button colorScheme="blue" onClick={onOpenAdd}>
+						Add notice
+					</Button>
 
-			<Button disabled={!dataSl || dataSl.length == 0 ? true : false} onClick={onOpenDlMany}>
-				Delete all
-			</Button>
+					<Button
+						disabled={!dataSl || dataSl.length == 0 ? true : false}
+						onClick={onOpenDlMany}
+					>
+						Delete all
+					</Button>
+				</>
+			)}
 
 			<Button
 				onClick={() => {
@@ -246,7 +262,7 @@ const NoticeBoard: NextLayout = ({}: IProjectProps) => {
 				data={allNotices?.noticeBoards || []}
 				columns={columns}
 				isLoading={isLoading}
-				isSelect
+				isSelect={currentUser?.role === 'Admin'}
 				selectByColumn="id"
 				setSelect={(data: Array<number>) => setDataSl(data)}
 				filter={filter}
@@ -322,24 +338,26 @@ const NoticeBoard: NextLayout = ({}: IProjectProps) => {
 								label="Select date"
 							/>
 
-							<Select
-								options={[
-									{
-										label: 'Employees',
-										value: 'Employees',
-									},
-									{
-										label: 'Clients',
-										value: 'Clients',
-									},
-								]}
-								handleSearch={(data: IFilter) => {
-									setFilter(data)
-								}}
-								columnId={'notice_to'}
-								label="To"
-								placeholder="Select role"
-							/>
+							{currentUser?.role === 'Admin' && (
+								<Select
+									options={[
+										{
+											label: 'Employees',
+											value: 'Employees',
+										},
+										{
+											label: 'Clients',
+											value: 'Clients',
+										},
+									]}
+									handleSearch={(data: IFilter) => {
+										setFilter(data)
+									}}
+									columnId={'notice_to'}
+									label="To"
+									placeholder="Select role"
+								/>
+							)}
 						</VStack>
 					</DrawerBody>
 				</DrawerContent>

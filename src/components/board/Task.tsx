@@ -12,7 +12,8 @@ import {
 	useColorMode,
 	VStack,
 } from '@chakra-ui/react'
-import React from 'react'
+import { AuthContext } from 'contexts/AuthContext'
+import React, { useContext } from 'react'
 import { Draggable } from 'react-beautiful-dnd'
 import { AiOutlineFile } from 'react-icons/ai'
 import { BiMessageDots } from 'react-icons/bi'
@@ -25,14 +26,18 @@ export const Task = ({
 	data,
 	index,
 	setIdTaskToDl,
+	isDragDisabled = false,
 }: {
 	data: taskType
 	index: number
 	setIdTaskToDl: (id: string) => void
-})=> {
+	isDragDisabled?: boolean
+}) => {
 	const { colorMode } = useColorMode()
+	const { currentUser } = useContext(AuthContext)
+
 	return (
-		<Draggable draggableId={`task-${data.id}`} index={index}>
+		<Draggable isDragDisabled={isDragDisabled} draggableId={`task-${data.id}`} index={index}>
 			{(provided, snapShot) => {
 				return (
 					<VStack
@@ -79,21 +84,27 @@ export const Task = ({
 									<MenuItem icon={<IoEyeOutline fontSize={'15px'} />}>
 										View
 									</MenuItem>
-									<MenuItem
-										onClick={() => {}}
-										icon={<RiPencilLine fontSize={'15px'} />}
-									>
-										Edit
-									</MenuItem>
+									{(currentUser?.role === 'Admin' ||
+										(currentUser?.role === 'Employee' &&
+											data?.assignBy?.id === currentUser?.id)) && (
+										<>
+											<MenuItem
+												onClick={() => {}}
+												icon={<RiPencilLine fontSize={'15px'} />}
+											>
+												Edit
+											</MenuItem>
 
-									<MenuItem
-										onClick={() => {
-											setIdTaskToDl(String(data.id))
-										}}
-										icon={<MdOutlineDeleteOutline fontSize={'15px'} />}
-									>
-										Delete
-									</MenuItem>
+											<MenuItem
+												onClick={() => {
+													setIdTaskToDl(String(data.id))
+												}}
+												icon={<MdOutlineDeleteOutline fontSize={'15px'} />}
+											>
+												Delete
+											</MenuItem>
+										</>
+									)}
 								</MenuList>
 							</Menu>
 						</HStack>

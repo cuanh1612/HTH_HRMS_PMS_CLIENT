@@ -81,9 +81,7 @@ export default function UpdateEvent({ onCloseDrawer, eventIdUpdate }: IUpdateEve
 				mutateUpEvent({
 					eventId: eventIdUpdate,
 					inputUpdate: {
-						...values,
-						starts_on_date: new Date(values.starts_on_date).toLocaleDateString(),
-						ends_on_date: new Date(values.ends_on_date).toLocaleDateString(),
+						...values
 					},
 				})
 			} else {

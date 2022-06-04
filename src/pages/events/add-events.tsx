@@ -192,11 +192,8 @@ export default function AddEvent({ onCloseDrawer }: IAddEventProps) {
 				values.repeatEvery = Number(values.repeatEvery)
 				values.cycles = Number(values.cycles)
 			}
-
 			mutateCreEvent({
-				...values,
-				starts_on_date: new Date(values.starts_on_date).toLocaleDateString(),
-				ends_on_date: new Date(values.ends_on_date).toLocaleDateString(),
+				...values
 			})
 		}
 	}

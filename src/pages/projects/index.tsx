@@ -34,7 +34,7 @@ import {
 	allEmployeesQuery,
 	allProjectsQuery,
 	allProjectCategoriesQuery,
-	allProjectsByEmployeeQuery,
+	allProjectsByCurrentUserQuery,
 } from 'queries'
 import { useContext, useEffect, useState } from 'react'
 import { AiOutlineSearch } from 'react-icons/ai'
@@ -99,9 +99,7 @@ const Projects: NextLayout = () => {
 
 	// query and mutation
 	const { data: allProjects, mutate: refetchAllProjects } =
-		currentUser?.role === 'Admin'
-			? allProjectsQuery(isAuthenticated)
-			: allProjectsByEmployeeQuery(isAuthenticated, currentUser?.id)
+		allProjectsByCurrentUserQuery(isAuthenticated)
 
 	const { data: allPjCategories } = allProjectCategoriesQuery(isAuthenticated)
 
@@ -133,10 +131,19 @@ const Projects: NextLayout = () => {
 					accessor: 'name',
 					minWidth: 200,
 					width: 200,
-					Cell: ({ value, row }) => (<Link href={`/projects/${row.values['id']}/overview`} passHref><Text _hover={{
-						textDecoration: 'underline',
-						cursor: 'pointer'
-					}} isTruncated={true}>{value}</Text></Link>),
+					Cell: ({ value, row }) => (
+						<Link href={`/projects/${row.values['id']}/overview`} passHref>
+							<Text
+								_hover={{
+									textDecoration: 'underline',
+									cursor: 'pointer',
+								}}
+								isTruncated={true}
+							>
+								{value}
+							</Text>
+						</Link>
+					),
 					filter: textFilter(['name']),
 				},
 				{
@@ -452,7 +459,7 @@ const Projects: NextLayout = () => {
 				data={allProjects?.projects || []}
 				columns={columns}
 				isLoading={isLoading}
-				isSelect = {currentUser && currentUser.role === "Admin" ? true : false}
+				isSelect={currentUser && currentUser.role === 'Admin' ? true : false}
 				selectByColumn="id"
 				setSelect={(data: Array<number>) => setDataSl(data)}
 				filter={filter}

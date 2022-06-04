@@ -10,7 +10,7 @@ import {
 	VStack,
 } from '@chakra-ui/react'
 import { ContractLayout } from 'components/layouts/Contract'
-import {Loading, ItemContractFile, ItemFileUpload} from 'components/common'
+import { Loading, ItemContractFile, ItemFileUpload } from 'components/common'
 import { AuthContext } from 'contexts/AuthContext'
 import { createContractFileMutation, deleteContractFileMutation } from 'mutations'
 import { GetStaticPaths, GetStaticProps } from 'next'
@@ -26,7 +26,8 @@ import { generateImgFile } from 'utils/helper'
 import { uploadFile } from 'utils/uploadFile'
 
 const Files: NextLayout = () => {
-	const { isAuthenticated, handleLoading, setToast, socket } = useContext(AuthContext)
+	const { isAuthenticated, handleLoading, setToast, socket, currentUser } =
+		useContext(AuthContext)
 	const router = useRouter()
 	const { contractId } = router.query
 
@@ -218,80 +219,92 @@ const Files: NextLayout = () => {
 					Files
 				</Text>
 
-				<Box position={'relative'} p={2} w={'full'}>
-					{isOpenAdd ? (
-						<VStack w={'full'} spacing={5} position={'relative'}>
-							<VStack
-								align={'center'}
-								w={'full'}
-								border={'4px dotted #009F9D30'}
-								p={10}
-								spacing={10}
-								borderRadius={20}
-								{...getRootProps()}
-							>
-								<Img
-									width={150}
-									height={100}
-									alt="upload_file"
-									src="/assets/uploadFiles.svg"
-								/>
-								<input {...getInputProps()} />
-								{isDragActive ? (
-									<Text fontSize={16} fontWeight={'semibold'} color={'gray'}>
-										Drop the files here ...
-									</Text>
-								) : (
-									<Text fontSize={16} fontWeight={'semibold'} color={'gray'}>
-										Drag your documents, photos, or videos here to start
-										uploading
-									</Text>
-								)}
-							</VStack>
+				{currentUser?.role === 'Admin' && (
+					<>
+						<Box position={'relative'} p={2} w={'full'}>
+							{isOpenAdd ? (
+								<VStack w={'full'} spacing={5} position={'relative'}>
+									<VStack
+										align={'center'}
+										w={'full'}
+										border={'4px dotted #009F9D30'}
+										p={10}
+										spacing={10}
+										borderRadius={20}
+										{...getRootProps()}
+									>
+										<Img
+											width={150}
+											height={100}
+											alt="upload_file"
+											src="/assets/uploadFiles.svg"
+										/>
+										<input {...getInputProps()} />
+										{isDragActive ? (
+											<Text
+												fontSize={16}
+												fontWeight={'semibold'}
+												color={'gray'}
+											>
+												Drop the files here ...
+											</Text>
+										) : (
+											<Text
+												fontSize={16}
+												fontWeight={'semibold'}
+												color={'gray'}
+											>
+												Drag your documents, photos, or videos here to start
+												uploading
+											</Text>
+										)}
+									</VStack>
 
-							<HStack w={'full'} justify={'end'}>
-								<Button onClick={handleCancel} variant={'ghost'}>
-									Cancel
-								</Button>
+									<HStack w={'full'} justify={'end'}>
+										<Button onClick={handleCancel} variant={'ghost'}>
+											Cancel
+										</Button>
+										<Button
+											colorScheme={'teal'}
+											leftIcon={<AiOutlineSave />}
+											disabled={filesUpload.length === 0}
+											onClick={onUploadFiles}
+										>
+											Save
+										</Button>
+									</HStack>
+								</VStack>
+							) : (
 								<Button
-									colorScheme={'teal'}
-									leftIcon={<AiOutlineSave />}
-									disabled={filesUpload.length === 0}
-									onClick={onUploadFiles}
+									leftIcon={<AiOutlinePlusCircle />}
+									variant="ghost"
+									color={'blue.400'}
+									_hover={{
+										color: 'black',
+									}}
+									onClick={onOpenAdd}
 								>
-									Save
+									Add Files
 								</Button>
-							</HStack>
-						</VStack>
-					) : (
-						<Button
-							leftIcon={<AiOutlinePlusCircle />}
-							variant="ghost"
-							color={'blue.400'}
-							_hover={{
-								color: 'black',
-							}}
-							onClick={onOpenAdd}
-						>
-							Add Files
-						</Button>
-					)}
+							)}
 
-					{(isLoadUpFiles || statusCreContractFile === 'running') && <Loading />}
-				</Box>
+							{(isLoadUpFiles || statusCreContractFile === 'running') && <Loading />}
+						</Box>
 
-				{filesUpload.length > 0 && (
-					<VStack w={'full'} px={2}>
-						{filesUpload.map((file, index) => (
-							<ItemFileUpload
-								key={index}
-								src={generateImgFile(file.name)}
-								fileName={file.name}
-								index={index}
-								onRemoveFile={onRemoveFile}
-							/>
-						))}
-					</VStack>
+						{filesUpload.length > 0 && (
+							<VStack w={'full'} px={2}>
+								{filesUpload.map((file, index) => (
+									<ItemFileUpload
+										key={index}
+										src={generateImgFile(file.name)}
+										fileName={file.name}
+										index={index}
+										onRemoveFile={onRemoveFile}
+									/>
+								))}
+							</VStack>
+						)}
+					</>
 				)}
 
 				<Grid templateColumns="repeat(4, 1fr)" gap={4} w={'full'} p={2}>
@@ -311,6 +324,7 @@ const Files: NextLayout = () => {
 									onDeleteFile={onDeleteFile}
 									srcImg={generateImgFile(contractFile.name)}
 									urlFile={contractFile.url}
+									isChange={currentUser?.role === "Admin"}
 								/>
 							</GridItem>
 						))}

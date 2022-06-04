@@ -29,3 +29,17 @@ export const allNoticeBoardQuery = (
 		}
 	)
 }
+
+export const allNoticeBoardToQuery = (
+	isAuthenticated: boolean | null,
+	noticeTo?: string
+) => {
+	return useSWR<NoticeBoardMutaionResponse, AxiosError>(
+		isAuthenticated && noticeTo ? `notice-boards/notice-to/${noticeTo}` : null,
+		allNoticeBoardRequest,
+		{
+			errorRetryCount: 2,
+			revalidateOnFocus: false,
+		}
+	)
+}

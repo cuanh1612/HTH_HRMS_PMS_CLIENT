@@ -10,7 +10,7 @@ import {
 	DrawerBody,
 	DrawerFooter,
 	Button,
-    CloseButton,
+	CloseButton,
 } from '@chakra-ui/react'
 import { AuthContext } from 'contexts/AuthContext'
 import React, { useState, useEffect, useContext } from 'react'
@@ -24,53 +24,42 @@ import { MdOutlineEditNote, MdOutlineEvent } from 'react-icons/md'
 import LinkGroup from './LinkGroup'
 import LinkItem from './LinkItem'
 
-const SideLeft = () => (
-	<Box
-		minW={300}
-		zIndex={10}
-		h={'100vh'}
-		borderRight={'1px solid gray'}
-		style={{
-			top: '0px',
-			position: 'sticky',
-		}}
-		paddingLeft={5}
-	>
-		<HStack spacing={5} w={'full'} h={'73px'}>
-			<Box w={'50px'} h={'50px'} borderRadius={4} border={'1px solid red'}></Box>
-			<Text fontWeight={'bold'} fontSize={'xl'}>
-				HUPROM
-			</Text>
-		</HStack>
+const LinkItems = () => {
+	const { currentUser } = useContext(AuthContext)
+	return (
+		<>
+			{currentUser?.role != ('Client' && 'Employee') && (
+				<LinkItem link="/clients" title="Clients" icon={<BsPerson fontSize={20} />} />
+			)}
+			{currentUser?.role != 'Client' && (
+				<LinkGroup
+					data={[
+						{
+							icon: <BsPerson fontSize={20} />,
+							link: '/employees',
+							title: 'Employees',
+						},
+						{
+							icon: <IoExitOutline fontSize={20} />,
+							link: '/leaves',
+							title: 'Leaves',
+						},
+						{
+							icon: <BsCheck2 fontSize={20} />,
+							link: '/attendance',
+							title: 'Attendance',
+						},
+						{
+							icon: <IoAirplaneOutline fontSize={20} />,
+							link: '/holidays',
+							title: 'Holiday',
+						},
+					]}
+					title="HR"
+					icon={<AiOutlineUsergroupAdd fontSize={20} />}
+				/>
+			)}
 
-		<VStack paddingTop={4} height={'calc( 100vh - 75px )'} overflow={'auto'} spacing={4}>
-			<LinkItem link="/clients" title="Clients" icon={<BsPerson fontSize={20} />} />
-			<LinkGroup
-				data={[
-					{
-						icon: <BsPerson fontSize={20} />,
-						link: '/employees',
-						title: 'Employees',
-					},
-					{
-						icon: <IoExitOutline fontSize={20} />,
-						link: '/leaves',
-						title: 'Leaves',
-					},
-					{
-						icon: <BsCheck2 fontSize={20} />,
-						link: '/attendance',
-						title: 'Attendance',
-					},
-					{
-						icon: <IoAirplaneOutline fontSize={20} />,
-						link: '/holidays',
-						title: 'Holiday',
-					},
-				]}
-				title="HR"
-				icon={<AiOutlineUsergroupAdd fontSize={20} />}
-			/>
 			<LinkGroup
 				data={[
 					{
@@ -103,10 +92,43 @@ const SideLeft = () => (
 				title="Notice boards"
 				icon={<MdOutlineEditNote fontSize={20} />}
 			/>
-			<LinkItem link="/messages" title="Messages" icon={<BiMessageDots fontSize={20} />} />
-		</VStack>
-	</Box>
-)
+			{currentUser?.role != 'Client' && (
+				<LinkItem
+					link="/messages"
+					title="Messages"
+					icon={<BiMessageDots fontSize={20} />}
+				/>
+			)}
+		</>
+	)
+}
+
+const SideLeft = () => {
+	return (
+		<Box
+			minW={300}
+			zIndex={10}
+			h={'100vh'}
+			borderRight={'1px solid gray'}
+			style={{
+				top: '0px',
+				position: 'sticky',
+			}}
+			paddingLeft={5}
+		>
+			<HStack spacing={5} w={'full'} h={'73px'}>
+				<Box w={'50px'} h={'50px'} borderRadius={4} border={'1px solid red'}></Box>
+				<Text fontWeight={'bold'} fontSize={'xl'}>
+					HUPROM
+				</Text>
+			</HStack>
+
+			<VStack paddingTop={4} height={'calc( 100vh - 75px )'} overflow={'auto'} spacing={4}>
+				<LinkItems />
+			</VStack>
+		</Box>
+	)
+}
 
 const SideLeftInDrawer = ({ onClose, isOpen }: { isOpen: boolean; onClose: any }) => (
 	<Drawer isOpen={isOpen} placement="left" onClose={onClose}>
@@ -129,7 +151,7 @@ const SideLeftInDrawer = ({ onClose, isOpen }: { isOpen: boolean; onClose: any }
 						<Text fontWeight={'bold'} fontSize={'xl'}>
 							HUPROM
 						</Text>
-                        <CloseButton onClick={onClose}/>
+						<CloseButton onClick={onClose} />
 					</HStack>
 				</HStack>
 
@@ -139,63 +161,7 @@ const SideLeftInDrawer = ({ onClose, isOpen }: { isOpen: boolean; onClose: any }
 					overflow={'auto'}
 					spacing={4}
 				>
-					<LinkGroup
-						data={[
-							{
-								icon: <BsPerson fontSize={20} />,
-								link: '/employees',
-								title: 'Employees',
-							},
-							{
-								icon: <IoExitOutline fontSize={20} />,
-								link: '/leaves',
-								title: 'Leaves',
-							},
-							{
-								icon: <BsCheck2 fontSize={20} />,
-								link: '/attendance',
-								title: 'Attendance',
-							},
-							{
-								icon: <IoAirplaneOutline fontSize={20} />,
-								link: '/holidays',
-								title: 'Holiday',
-							},
-						]}
-						title="HR"
-						icon={<AiOutlineUsergroupAdd fontSize={20} />}
-					/>
-					<LinkGroup
-						data={[
-							{
-								icon: <AiOutlineFile fontSize={20} />,
-								link: '/contracts',
-								title: 'Contracts',
-							},
-							{
-								icon: <AiOutlineProject fontSize={20} />,
-								link: '/projects',
-								title: 'Projects',
-							},
-						]}
-						title="Work"
-						icon={<IoIosGitNetwork fontSize={20} />}
-					/>
-					<LinkItem
-						link="/events"
-						title="Events"
-						icon={<MdOutlineEvent fontSize={20} />}
-					/>
-					<LinkItem
-						link="/notice-boards"
-						title="Notice boards"
-						icon={<MdOutlineEditNote fontSize={20} />}
-					/>
-					<LinkItem
-						link="/messages"
-						title="Messages"
-						icon={<BiMessageDots fontSize={20} />}
-					/>
+					<LinkItems />
 				</VStack>
 			</DrawerBody>
 

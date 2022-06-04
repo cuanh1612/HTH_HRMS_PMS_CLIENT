@@ -65,12 +65,11 @@ export const allProjectsQuery = (isAuthenticated?: boolean | null) => {
 }
 
 // get all projects with info employees and client
-export const allProjectsByEmployeeQuery = (
+export const allProjectsByCurrentUserQuery = (
 	isAuthenticated?: boolean | null,
-	employeeId?: string | number
 ) => {
 	return useSWR<projectMutaionResponse, AxiosError>(
-		isAuthenticated && employeeId ? `projects/employee/${employeeId}` : null,
+		isAuthenticated ? `projects/current-user` : null,
 		allProjectsByEmployeeRequest,
 		{
 			errorRetryCount: 2,

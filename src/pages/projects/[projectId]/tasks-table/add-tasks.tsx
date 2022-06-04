@@ -77,6 +77,8 @@ export default function AddTask({ onCloseDrawer, statusId }: IAddTaskProps) {
 	//Query -------------------------------------------------------------
 	const { data: dataTaskCategories } = allTaskCategoriesQuery()
 	const { data: dataDetailProject } = detailProjectQuery(isAuthenticated, projectId as string)
+	console.log("huy", dataDetailProject);
+	
 	const { data: dataAllStatus } = allStatusQuery(isAuthenticated, projectId)
 	const { data: dataDetailStatus } = detailStatusQuery(isAuthenticated, statusId)
 	

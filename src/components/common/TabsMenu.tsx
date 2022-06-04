@@ -32,13 +32,12 @@ export const TabsMenu = ({ tabs }: { tabs: ITab[] }) => {
 	}, [tabs])
 
 	useEffect(() => {
-			tabProjects.map((item, key) => {
-				if (pathname.includes(item.link.split('/')[item.link.split('/').length - 1])) {
-					setTabSl(key)
-					setMenuSl(-1)
-				}
-			})
-	
+		tabProjects.map((item, key) => {
+			if (pathname.includes(item.link.split('/')[item.link.split('/').length - 1])) {
+				setTabSl(key)
+				setMenuSl(-1)
+			}
+		})
 	}, [tabProjects, pathname])
 	useEffect(() => {
 		tabMenus.map((item, key) => {
@@ -85,14 +84,17 @@ export const TabsMenu = ({ tabs }: { tabs: ITab[] }) => {
 	}, [breakpoint])
 
 	// set style tab
-	const tabStyle= useMemo(()=> ({
-		border: 'none',
-		borderBottom: '3px solid',
-		borderColor: 'hu-Pink.lightA',
-		color: 'hu-Pink.normal',
-		fontWeight: 'bold',
-		ring: 'none',
-	}), [])
+	const tabStyle = useMemo(
+		() => ({
+			border: 'none',
+			borderBottom: '3px solid',
+			borderColor: 'hu-Pink.lightA',
+			color: 'hu-Pink.normal',
+			fontWeight: 'bold',
+			ring: 'none',
+		}),
+		[]
+	)
 
 	return (
 		<HStack alignItems={'start'} spacing={'0px'}>
@@ -102,9 +104,13 @@ export const TabsMenu = ({ tabs }: { tabs: ITab[] }) => {
 						<Tab
 							_focus={tabStyle}
 							_selected={tabStyle}
-							style={key == tabSl ? tabStyle : {
-								border: 'none',
-							}}
+							style={
+								key == tabSl
+									? tabStyle
+									: {
+											border: 'none',
+									  }
+							}
 							key={key}
 						>
 							<Link href={tab.link} passHref>
@@ -116,32 +122,33 @@ export const TabsMenu = ({ tabs }: { tabs: ITab[] }) => {
 					))}
 				</TabList>
 			</Tabs>
-
-			<Menu>
-				<MenuButton>
-					<HStack
-						padding={'9px 16px 9px'}
-						borderBottom={'1px solid'}
-						borderColor={'gray.200'}
-						spacing={2}
-					>
-						<Text>More</Text>
-						<BsArrowDown />
-					</HStack>
-				</MenuButton>
-				<MenuList>
-					{tabMenus.map((item, key) => (
-						<Link key={item.link} href={item.link} passHref>
-							<MenuItem
-								color={key == menuSl ? 'hu-Pink.normalH' : 'gray'}
-								icon={item.icon}
-							>
-								{item.title}
-							</MenuItem>
-						</Link>
-					))}
-				</MenuList>
-			</Menu>
+			{tabMenus.length != 0 && (
+				<Menu>
+					<MenuButton>
+						<HStack
+							padding={'9px 16px 9px'}
+							borderBottom={'1px solid'}
+							borderColor={'gray.200'}
+							spacing={2}
+						>
+							<Text>More</Text>
+							<BsArrowDown />
+						</HStack>
+					</MenuButton>
+					<MenuList>
+						{tabMenus.map((item, key) => (
+							<Link key={item.link} href={item.link} passHref>
+								<MenuItem
+									color={key == menuSl ? 'hu-Pink.normalH' : 'gray'}
+									icon={item.icon}
+								>
+									{item.title}
+								</MenuItem>
+							</Link>
+						))}
+					</MenuList>
+				</Menu>
+			)}
 		</HStack>
 	)
 }

@@ -82,6 +82,7 @@ const Event: NextLayout = () => {
 	useEffect(() => {
 		if (allEvents) {
 			const newData = allEvents.Events?.map((item): EventInput => {
+				console.log(new Date(item.starts_on_date).getMonth()+1)
 				return {
 					title: item.name,
 					id: `${item.id}`,
@@ -98,6 +99,7 @@ const Event: NextLayout = () => {
 	
 	// set calendar
 	useEffect(() => {
+		console.log(data)
 		setCalendar(
 			new Calendar(document.getElementById('calendar') as HTMLElement, {
 				plugins: [interactionPlugin, dayGridPlugin, listPlugin, timeGridPlugin],

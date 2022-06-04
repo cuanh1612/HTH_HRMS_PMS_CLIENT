@@ -17,7 +17,7 @@ export const Receiver = ({
 	isActive,
 	conversation,
 	onDeleteConversation,
-}: IReceiverProps)=> {
+}: IReceiverProps) => {
 	return (
 		<Box
 			onClick={() => onChangeReceiver(conversation, employee)}
@@ -40,10 +40,12 @@ export const Receiver = ({
 						</Text>
 					</VStack>
 				</HStack>
-				<MdOutlineRemoveCircleOutline
-					color="red"
-					onClick={() => onDeleteConversation(conversation.id)}
-				/>
+				<Box>
+					<MdOutlineRemoveCircleOutline
+						color="red"
+						onClick={() => onDeleteConversation(conversation.id)}
+					/>
+				</Box>
 			</HStack>
 		</Box>
 	)

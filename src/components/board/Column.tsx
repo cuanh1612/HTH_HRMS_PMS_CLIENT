@@ -115,7 +115,8 @@ export const Column = ({
 											<Task
 												isDragDisabled={
 													currentUser?.role === 'Admin' ||
-													value.assignBy?.id === currentUser?.id
+													(currentUser?.role === 'Employee' &&
+														value.assignBy?.id === currentUser?.id)
 														? false
 														: true
 												}

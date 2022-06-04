@@ -220,81 +220,95 @@ const Files: NextLayout = () => {
 					Files
 				</Text>
 
-				<Box position={'relative'} p={2} w={'full'}>
-					{isOpenAdd ? (
-						<VStack w={'full'} spacing={5} position={'relative'}>
-							<VStack
-								align={'center'}
-								w={'full'}
-								border={'4px dotted #009F9D30'}
-								p={10}
-								spacing={10}
-								borderRadius={20}
-								{...getRootProps()}
-							>
-								<Img
-									width={150}
-									height={100}
-									alt="upload_file"
-									src="/assets/uploadFiles.svg"
-								/>
-								<input {...getInputProps()} />
-								{isDragActive ? (
-									<Text fontSize={16} fontWeight={'semibold'} color={'gray'}>
-										Drop the files here ...
-									</Text>
+				{currentUser?.role === 'Admin' ||
+					(currentUser?.role === 'Employee' && (
+						<>
+							<Box position={'relative'} p={2} w={'full'}>
+								{isOpenAdd ? (
+									<VStack w={'full'} spacing={5} position={'relative'}>
+										<VStack
+											align={'center'}
+											w={'full'}
+											border={'4px dotted #009F9D30'}
+											p={10}
+											spacing={10}
+											borderRadius={20}
+											{...getRootProps()}
+										>
+											<Img
+												width={150}
+												height={100}
+												alt="upload_file"
+												src="/assets/uploadFiles.svg"
+											/>
+											<input {...getInputProps()} />
+											{isDragActive ? (
+												<Text
+													fontSize={16}
+													fontWeight={'semibold'}
+													color={'gray'}
+												>
+													Drop the files here ...
+												</Text>
+											) : (
+												<Text
+													fontSize={16}
+													fontWeight={'semibold'}
+													color={'gray'}
+												>
+													Drag your documents, photos, or videos here to
+													start uploading
+												</Text>
+											)}
+										</VStack>
+
+										<HStack w={'full'} justify={'end'}>
+											<Button onClick={handleCancel} variant={'ghost'}>
+												Cancel
+											</Button>
+											<Button
+												colorScheme={'teal'}
+												leftIcon={<AiOutlineSave />}
+												disabled={filesUpload.length === 0}
+												onClick={onUploadFiles}
+											>
+												Save
+											</Button>
+										</HStack>
+									</VStack>
 								) : (
-									<Text fontSize={16} fontWeight={'semibold'} color={'gray'}>
-										Drag your documents, photos, or videos here to start
-										uploading
-									</Text>
+									<Button
+										leftIcon={<AiOutlinePlusCircle />}
+										variant="ghost"
+										color={'blue.400'}
+										_hover={{
+											color: 'black',
+										}}
+										onClick={onOpenAdd}
+									>
+										Add Files
+									</Button>
 								)}
-							</VStack>
 
-							<HStack w={'full'} justify={'end'}>
-								<Button onClick={handleCancel} variant={'ghost'}>
-									Cancel
-								</Button>
-								<Button
-									colorScheme={'teal'}
-									leftIcon={<AiOutlineSave />}
-									disabled={filesUpload.length === 0}
-									onClick={onUploadFiles}
-								>
-									Save
-								</Button>
-							</HStack>
-						</VStack>
-					) : (
-						<Button
-							leftIcon={<AiOutlinePlusCircle />}
-							variant="ghost"
-							color={'blue.400'}
-							_hover={{
-								color: 'black',
-							}}
-							onClick={onOpenAdd}
-						>
-							Add Files
-						</Button>
-					)}
-
-					{(isLoadUpFiles || statusCreProjectFile === 'running') && <Loading />}
-				</Box>
-
-				{filesUpload.length > 0 && (
-					<VStack w={'full'} px={2}>
-						{filesUpload.map((file, index) => (
-							<ItemFileUpload
-								key={index}
-								src={generateImgFile(file.name)}
-								fileName={file.name}
-								index={index}
-								onRemoveFile={onRemoveFile}
-							/>
-						))}
-					</VStack>
-				)}
+								{(isLoadUpFiles || statusCreProjectFile === 'running') && (
+									<Loading />
+								)}
+							</Box>
+							{filesUpload.length > 0 && (
+								<VStack w={'full'} px={2}>
+									{filesUpload.map((file, index) => (
+										<ItemFileUpload
+											key={index}
+											src={generateImgFile(file.name)}
+											fileName={file.name}
+											index={index}
+											onRemoveFile={onRemoveFile}
+										/>
+									))}
+								</VStack>
+							)}
+						</>
+					))}
 
 				<Grid templateColumns="repeat(4, 1fr)" gap={4} w={'full'} p={2}>
 					{dataAllProjectFiles?.projectFiles &&
@@ -313,7 +327,10 @@ const Files: NextLayout = () => {
 									onDeleteFile={onDeleteFile}
 									srcImg={generateImgFile(projectFile.name)}
 									urlFile={projectFile.url}
-									isChange={currentUser?.role === "Admin" || projectFile.assignBy?.id === currentUser?.id}
+									isChange={
+										currentUser?.role === 'Admin' ||
+										currentUser?.role === 'Employee' && projectFile.assignBy?.id === currentUser?.id
+									}
 								/>
 							</GridItem>
 						))}

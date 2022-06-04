@@ -85,7 +85,8 @@ export const Task = ({
 										View
 									</MenuItem>
 									{(currentUser?.role === 'Admin' ||
-										data?.assignBy?.id === currentUser?.id) && (
+										(currentUser?.role === 'Employee' &&
+											data?.assignBy?.id === currentUser?.id)) && (
 										<>
 											<MenuItem
 												onClick={() => {}}

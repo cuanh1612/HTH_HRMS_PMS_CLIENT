@@ -29,6 +29,7 @@ import {
 	allClientsNormalQuery,
 	allEmployeesNormalQuery,
 	allProjectsNormalQuery,
+	timeLogsCalendarByEmployeeQuery,
 	timeLogsCalendarQuery,
 } from 'queries'
 import React, { useContext, useEffect, useState } from 'react'
@@ -45,7 +46,7 @@ import { IFilter } from 'type/tableTypes'
 import { IOption } from 'type/basicTypes'
 
 const calendar: NextLayout = () => {
-	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
+	const { isAuthenticated, handleLoading, setToast, currentUser } = useContext(AuthContext)
 	const router = useRouter()
 	const { colorMode } = useColorMode()
 
@@ -74,10 +75,17 @@ const calendar: NextLayout = () => {
 
 	// query ------------------------------------------------------------------------------------------
 	// get all time logs to show in calendar
-	const { data: allTimeLogs, mutate: refetchTimeLogs } = timeLogsCalendarQuery({
-		isAuthenticated,
-		...filter,
-	})
+	const { data: allTimeLogs, mutate: refetchTimeLogs } =
+		currentUser?.role === 'Admin'
+			? timeLogsCalendarQuery({
+					isAuthenticated,
+					...filter,
+			  })
+			: timeLogsCalendarByEmployeeQuery({
+					isAuthenticated,
+					employeeId: currentUser?.id,
+					...filter,
+			  })
 
 	// get all projects to filter
 	const { data: dataAllProjects } = allProjectsNormalQuery(isAuthenticated)
@@ -263,9 +271,11 @@ const calendar: NextLayout = () => {
 		<>
 			<HStack paddingBlock={'5'} justifyContent={'space-between'}>
 				<ButtonGroup spacing={4}>
-					<Button color={'white'} bg={'hu-Green.normal'} onClick={onOpenAddTimeLog}>
-						Add new
-					</Button>
+					{currentUser?.role === 'Admin' && (
+						<Button color={'white'} bg={'hu-Green.normal'} onClick={onOpenAddTimeLog}>
+							Add new
+						</Button>
+					)}
 					<Button
 						color={'white'}
 						bg={'hu-Green.normal'}
@@ -407,29 +417,34 @@ const calendar: NextLayout = () => {
 								label="Project"
 								placeholder="Select project"
 							/>
-							<SelectCustom
-								handleSearch={(field: any) => {
-									setFilter((state) => ({
-										...state,
-										employee: Number(field.value),
-									}))
-								}}
-								label={'Employee'}
-								name={'employee'}
-								options={[
-									{
-										label: (
-											<Text color={colorMode == 'light' ? 'black' : 'white'}>
-												all
-											</Text>
-										),
-										value: '',
-									},
 
-									...employeesFilter,
-								]}
-								required={false}
-							/>
+							{currentUser?.role === 'Admin' && (
+								<SelectCustom
+									handleSearch={(field: any) => {
+										setFilter((state) => ({
+											...state,
+											employee: Number(field.value),
+										}))
+									}}
+									label={'Employee'}
+									name={'employee'}
+									options={[
+										{
+											label: (
+												<Text
+													color={colorMode == 'light' ? 'black' : 'white'}
+												>
+													all
+												</Text>
+											),
+											value: '',
+										},
+
+										...employeesFilter,
+									]}
+									required={false}
+								/>
+							)}
 							<SelectCustom
 								handleSearch={(field: any) => {
 									setFilter((state) => ({

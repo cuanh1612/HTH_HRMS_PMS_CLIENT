@@ -1,12 +1,10 @@
 import { Avatar, Box, Button, Grid, GridItem, HStack, Text, VStack } from '@chakra-ui/react'
 import { AuthContext } from 'contexts/AuthContext'
-import { GetServerSideProps } from 'next'
 import { useRouter } from 'next/router'
 import { detailTimeLogQuery } from 'queries/timeLog'
 import { useContext, useEffect } from 'react'
 import 'react-quill/dist/quill.bubble.css'
 import 'react-quill/dist/quill.snow.css'
-import { projectMutaionResponse } from 'type/mutationResponses'
 
 export interface IDetailTimeLogProps {
 	timeLogIdProp?: string | number
@@ -19,7 +17,7 @@ export default function DetailTimeLog({
 	onOpenDl,
 	onOpenUpdate,
 }: IDetailTimeLogProps) {
-	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
+	const { isAuthenticated, handleLoading, currentUser } = useContext(AuthContext)
 	const router = useRouter()
 	const { timeLogId: timeLogIdRouter } = router.query
 
@@ -113,51 +111,14 @@ export default function DetailTimeLog({
 						</HStack>
 					</GridItem>
 				</Grid>
-				{onOpenDl && <Button onClick={onOpenDl}>delete</Button>}
-				{onOpenUpdate && <Button onClick={onOpenUpdate}>update</Button>}
+				{currentUser?.role === 'Admin' && onOpenDl && (
+					<Button onClick={onOpenDl}>delete</Button>
+				)}
+
+				{currentUser?.role === 'Admin' && onOpenUpdate && (
+					<Button onClick={onOpenUpdate}>update</Button>
+				)}
 			</Box>
 		</>
 	)
-}
-
-export const getServerSideProps: GetServerSideProps = async (context) => {
-	//Get accesstoken
-	const getAccessToken: { accessToken: string; code: number; message: string; success: boolean } =
-		await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/refresh_token`, {
-			method: 'GET',
-			headers: {
-				cookie: context.req.headers.cookie,
-			} as HeadersInit,
-		}).then((e) => e.json())
-
-	//Redirect login page when error
-	if (getAccessToken.code !== 200) {
-		return {
-			redirect: {
-				destination: '/login',
-				permanent: false,
-			},
-		}
-	}
-
-	//Check assigned
-	const checkAsignedProject: projectMutaionResponse = await fetch(
-		`${process.env.NEXT_PUBLIC_API_URL}/api/projects/${context.query.projectId}/check-asigned`,
-		{
-			method: 'GET',
-			headers: {
-				authorization: `Bear ${getAccessToken.accessToken}`,
-			} as HeadersInit,
-		}
-	).then((e) => e.json())
-
-	if (!checkAsignedProject.success) {
-		return {
-			notFound: true,
-		}
-	}
-
-	return {
-		props: {},
-	}
 }

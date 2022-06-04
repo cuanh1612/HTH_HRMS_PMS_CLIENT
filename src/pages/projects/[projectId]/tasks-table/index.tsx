@@ -110,7 +110,7 @@ const tasks: NextLayout = () => {
 
 	// get all task by project
 	const { data: allTasks, mutate: refetchTasks } =
-		currentUser && currentUser.role === 'Admin'
+		currentUser && (currentUser.role === 'Admin' || currentUser.role === 'Client')
 			? allTasksByProjectQuery(isAuthenticated, projectId)
 			: allTasksByEmployeeAndProjectQuery(
 					isAuthenticated,
@@ -293,7 +293,8 @@ const tasks: NextLayout = () => {
 								</MenuItem>
 
 								{(currentUser?.role === 'Admin' ||
-									row.original?.assignBy?.id === currentUser?.id) && (
+									(currentUser?.role === 'Employee' &&
+										row.original?.assignBy?.id === currentUser?.id)) && (
 									<>
 										<MenuItem
 											onClick={() => {

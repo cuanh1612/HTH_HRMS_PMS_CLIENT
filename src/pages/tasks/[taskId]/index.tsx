@@ -38,7 +38,7 @@ export default function DetailTask({
 	onOpenDl,
 	onOpenUpdate,
 }: IDetailTaskProps) {
-	const { isAuthenticated, handleLoading } = useContext(AuthContext)
+	const { isAuthenticated, handleLoading, currentUser } = useContext(AuthContext)
 	const router = useRouter()
 	const { taskId: taskIdRouter } = router.query
 
@@ -148,7 +148,9 @@ export default function DetailTask({
 								size={'xs'}
 							/>
 						</Tooltip>
-					) : "--"}
+					) : (
+						'--'
+					)}
 				</GridItem>
 				<GridItem w="100%" colSpan={[2, 1]} color={'gray.400'}>
 					Task Category:
@@ -221,8 +223,19 @@ export default function DetailTask({
 			>
 				<TaskCategory />
 			</Modal>
-			{onOpenDl && <Button onClick={onOpenDl}>delete</Button>}
-			{onOpenUpdate && <Button onClick={onOpenUpdate}>update</Button>}
+			{((onOpenDl && currentUser?.role === 'Admin') ||
+				dataDetailTask?.task?.assignBy.id === currentUser?.id) && (
+				<>
+					<Button onClick={onOpenDl}>delete</Button>
+				</>
+			)}
+
+			{((onOpenUpdate && currentUser?.role === 'Admin') ||
+				dataDetailTask?.task?.assignBy.id === currentUser?.id) && (
+				<>
+					<Button onClick={onOpenDl}>delete</Button>
+				</>
+			)}
 		</Box>
 	)
 }

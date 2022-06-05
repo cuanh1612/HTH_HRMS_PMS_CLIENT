@@ -28,6 +28,7 @@ import {
 	salaryType,
 	signType,
 	statusType,
+	stickyNoteType,
 	taskCategoryType,
 	taskCommentType,
 	taskFileType,
@@ -56,6 +57,26 @@ export interface userMutaionResponse extends commonResponse {
 export interface employeeMutaionResponse extends commonResponse {
 	employee?: employeeType
 	employees?: employeeType[]
+}
+
+export interface openTasksEmployeeMutaionResponse extends commonResponse {
+	countOpentasks?: number
+}
+
+export interface hoursLoggedEmployeeMutaionResponse extends commonResponse {
+	hoursLogged?: number
+}
+
+export interface lateAttendanceEmployeeMutaionResponse extends commonResponse {
+	lateAttendance?: number
+}
+
+export interface countLeavesTakenEmployeeMutaionResponse extends commonResponse {
+	countLeavesTaken?: number
+}
+
+export interface countProjectsEmployeeMutaionResponse extends commonResponse {
+	countProjects?: number
 }
 
 export interface leaveTypeMutaionResponse extends commonResponse {
@@ -120,6 +141,14 @@ export interface attendanceMutaionResponse {
 export interface clientMutaionResponse extends commonResponse {
 	client?: clientType
 	clients?: clientType[]
+}
+
+export interface clientTotalProjectsMutaionResponse extends commonResponse {
+	totalProjects?: number
+}
+
+export interface clientTotalEarningMutaionResponse extends commonResponse {
+	totalEarnings?: number
 }
 
 export interface holidayMutaionResponse extends commonResponse {
@@ -227,4 +256,9 @@ export interface TaskCommentMutationResponse extends commonResponse {
 export interface TimeLogMutaionResponse extends commonResponse {
 	timeLog?: timeLogType
 	timeLogs?: timeLogType[]
+}
+
+export interface stickyNoteMutaionResponse extends commonResponse {
+	stickyNote?: stickyNoteType
+	stickyNotes?: stickyNoteType[]
 }

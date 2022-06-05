@@ -31,8 +31,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import {
 	allClientsQuery,
-	allEmployeesQuery,
-	allProjectsQuery,
+	allEmployeesNormalQuery,
 	allProjectCategoriesQuery,
 	allProjectsByCurrentUserQuery,
 } from 'queries'
@@ -105,7 +104,7 @@ const Projects: NextLayout = () => {
 
 	const { data: allClients } = allClientsQuery(isAuthenticated)
 
-	const { data: allEmployees } = allEmployeesQuery(isAuthenticated)
+	const { data: allEmployees } = allEmployeesNormalQuery(isAuthenticated)
 
 	// delete project
 	const [mutateDeletePj, { status: statusDl }] = deleteProjectMutation(setToast)

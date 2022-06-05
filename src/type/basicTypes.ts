@@ -19,7 +19,7 @@ export interface attendanceType {
 export interface Hourly_rate_project {
 	id: number
 	hourly_rate: number
-	[index: string]: any 
+	[index: string]: any
 }
 
 export interface employeeType {
@@ -49,7 +49,6 @@ export interface employeeType {
 	attendances: attendanceType[]
 	salaries: salaryType[]
 	hourly_rate_project: Hourly_rate_project
-
 }
 
 export interface departmentType {
@@ -95,10 +94,10 @@ export interface leaveType {
 export interface milestoneType {
 	id: number
 	title: string
-    cost: number
-    addtobudget: boolean | number
-    status: boolean | number
-    summary: string
+	cost: number
+	addtobudget: boolean | number
+	status: boolean | number
+	summary: string
 	tasks: taskType[]
 }
 
@@ -223,7 +222,7 @@ export interface contractFileType {
 }
 
 export interface IOption {
-	value?: string | number 
+	value?: string | number
 	label: string | ReactNode
 }
 
@@ -280,7 +279,6 @@ export interface statusType {
 	title: string
 	count?: number
 	tasks?: taskType[]
-	
 }
 
 export interface projectType {
@@ -340,7 +338,7 @@ export interface taskFileType {
 export interface salaryType {
 	id: number
 	date: Date
-	type: 'Increment' | 'Decrement' | '' | undefined 
+	type: 'Increment' | 'Decrement' | '' | undefined
 	employee: employeeType
 	amount: number
 	[index: string]: any
@@ -412,25 +410,25 @@ export interface taskCategoryType {
 }
 
 export interface taskType {
-    id: number
-    name: string
-    start_date: Date
-    deadline: Date
-    index: number
-    task_category: taskCategoryType
-    project: projectType
+	id: number
+	name: string
+	start_date: Date
+	deadline: Date
+	index: number
+	task_category: taskCategoryType
+	project: projectType
 	employees: employeeType[]
-    description: string
-    priority: string
+	description: string
+	priority: string
 	milestone?: milestoneType
 	assignBy: employeeType
-    tasks?: taskType[]
-    task_files?: {
+	tasks?: taskType[]
+	task_files?: {
 		url: string
 		public_id: string
 		name: string
 	}[]
-    status: statusType
+	status: statusType
 	createdAt: Date
 	updatedAt: Date
 }
@@ -455,4 +453,11 @@ export interface timeLogType {
 	memo: string
 	total_hours: number
 	earnings: Number
+}
+
+export interface stickyNoteType {
+	id: number
+	color: string
+	note: string
+	employee?: employeeType
 }

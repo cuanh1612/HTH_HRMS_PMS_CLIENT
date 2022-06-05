@@ -20,7 +20,7 @@ import { AuthContext } from 'contexts/AuthContext'
 import { createProjectMutation } from 'mutations'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
-import { allClientsQuery, allDepartmentsQuery, allEmployeesQuery, allProjectsQuery, allProjectCategoriesQuery } from 'queries'
+import { allClientsQuery, allDepartmentsQuery, allEmployeesNormalQuery, allProjectsQuery, allProjectCategoriesQuery } from 'queries'
 import { useCallback, useContext, useEffect, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { useForm } from 'react-hook-form'
@@ -81,7 +81,7 @@ export default function AddProject({ onCloseDrawer }: IAddProjectProps) {
 
 	//query ----------------------------------------------------------------------
 	// get all employees
-	const { data: allEmployees } = allEmployeesQuery(isAuthenticated)
+	const { data: allEmployees } = allEmployeesNormalQuery(isAuthenticated)
 
 	// get all clients
 	const { data: allClients } = allClientsQuery(isAuthenticated)

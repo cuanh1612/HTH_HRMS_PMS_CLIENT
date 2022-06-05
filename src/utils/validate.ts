@@ -214,3 +214,11 @@ export const validateResetPass = yup.object({
 export const updateStatusProjectValidate = yup.object({
 	project_status: yup.string().required('Please select project'),
 })
+
+export const createStickyNoteValidate = yup.object({
+	color: yup.string().required('Please select color sticky note'),
+})
+
+export const updateStickyNoteValidate = yup.object({
+	color: yup.string().required('Please select color sticky note'),
+})

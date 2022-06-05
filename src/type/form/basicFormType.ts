@@ -584,3 +584,14 @@ export type updateStatusProjectForm = {
 	project: number | string 
 	project_status?: "Not Started" | "In Progress" | "On Hold" | "Canceled" | "Finished"
 }
+
+export type createStickyNoteForm = {
+	note: string
+	color: string
+}
+
+export type updateStickyNoteForm = {
+	note: string
+	color: string
+}
+

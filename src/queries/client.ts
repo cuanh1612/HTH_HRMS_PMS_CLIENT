@@ -1,11 +1,33 @@
 import { AxiosError } from 'axios'
 import { allClientsRequest, detailClientRequest } from 'requests/client'
 import useSWR from 'swr'
-import { clientMutaionResponse } from 'type/mutationResponses'
+import { clientMutaionResponse, clientTotalEarningMutaionResponse, clientTotalProjectsMutaionResponse } from 'type/mutationResponses'
 
-export const detailClientQuery = (isAuthenticated: boolean | null, clientId: number | null) => {
+export const detailClientQuery = (isAuthenticated: boolean | null, clientId: string | number | null) => {
 	return useSWR<clientMutaionResponse, AxiosError>(
 		isAuthenticated && clientId ? `clients/${clientId}` : null,
+		detailClientRequest,
+		{
+			errorRetryCount: 2,
+			revalidateOnFocus: false,
+		}
+	)
+}
+
+export const clientTotalProejctsQuery = (isAuthenticated: boolean | null, clientId: string | number | null) => {
+	return useSWR<clientTotalProjectsMutaionResponse, AxiosError>(
+		isAuthenticated && clientId ? `clients/${clientId}/total-projects` : null,
+		detailClientRequest,
+		{
+			errorRetryCount: 2,
+			revalidateOnFocus: false,
+		}
+	)
+}
+
+export const clientTotalEarningQuery = (isAuthenticated: boolean | null, clientId: string | number | null) => {
+	return useSWR<clientTotalEarningMutaionResponse, AxiosError>(
+		isAuthenticated && clientId ? `clients/${clientId}/total-earnings` : null,
 		detailClientRequest,
 		{
 			errorRetryCount: 2,

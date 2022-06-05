@@ -25,6 +25,7 @@ import {
 	projectFileType,
 	projectNoteType,
 	projectType,
+	roomType,
 	salaryType,
 	signType,
 	statusType,
@@ -51,6 +52,11 @@ export interface authMutaionResponse extends commonResponse {
 export interface userMutaionResponse extends commonResponse {
 	user?: userType
 	users?: userType[]
+}
+
+export interface roomMutaionResponse extends commonResponse {
+	another_rooms?: roomType
+	your_rooms?: roomType[]
 }
 
 export interface employeeMutaionResponse extends commonResponse {

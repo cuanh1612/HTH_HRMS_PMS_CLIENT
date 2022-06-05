@@ -28,7 +28,7 @@ import {Drawer} from 'components/Drawer'
 import { ClientLayout } from 'components/layouts'
 import { AuthContext } from 'contexts/AuthContext'
 import { useRouter } from 'next/router'
-import { allEventsQuery, allEmployeesQuery, allClientsQuery } from 'queries'
+import { allEventsQuery, allEmployeesNormalQuery, allClientsQuery } from 'queries'
 import { useContext, useEffect, useState } from 'react'
 import { NextLayout } from 'type/element/layout'
 import AddEvent from './add-events'
@@ -74,7 +74,7 @@ const Event: NextLayout = () => {
 
 	// get all event
 	const { data: allEvents } = allEventsQuery(isAuthenticated, employee, client, name)
-	const { data: allEmployees } = allEmployeesQuery(isAuthenticated)
+	const { data: allEmployees } = allEmployeesNormalQuery(isAuthenticated)
 	const { data: allClients } = allClientsQuery(isAuthenticated)
 
 	

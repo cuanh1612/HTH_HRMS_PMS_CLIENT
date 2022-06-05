@@ -472,3 +472,13 @@ export interface stickyNoteType {
 	note: string
 	employee?: employeeType
 }
+
+export interface notificationType {
+	id: number
+	content: string
+	url: string
+	employee?: employeeType
+	client?: clientType
+	createdAt: Date
+	updatedAt: Date
+}

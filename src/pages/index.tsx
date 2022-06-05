@@ -1,209 +1,20 @@
-import { Box } from '@chakra-ui/react'
+import { Box, HStack, Menu, MenuButton, MenuList, Text, VStack } from '@chakra-ui/react'
+import NotificationItem from 'components/NotificationItem'
 import { AuthContext } from 'contexts/AuthContext'
+import Link from 'next/link'
 import { useRouter } from 'next/router'
-import React, { useContext, useEffect, useState } from 'react'
-import { DragDropContext, DropResult, Droppable, Draggable } from 'react-beautiful-dnd'
-
-const Task = ({ data, index }: any) => {
-	return (
-		<Draggable draggableId={data.id} index={Number(index)}>
-			{(provided, snapshot) => {
-				return (
-					<div
-						{...provided.draggableProps}
-						ref={provided.innerRef}
-						style={{
-							border: snapshot.isDragging ? '1px solid white' : '1px solid red',
-							padding: 8,
-							marginBottom: 8,
-							display: 'flex',
-							...provided.draggableProps.style,
-						}}
-					>
-						<div
-							{...provided.dragHandleProps}
-							style={{ width: 30, height: 30, background: 'white' }}
-						></div>
-						{data.content}
-					</div>
-				)
-			}}
-		</Draggable>
-	)
-}
-
-const Column = ({ data, index }: any) => {
-	return (
-		<Draggable draggableId={data.id} index={index}>
-			{(provided) => (
-				<div
-					{...provided.draggableProps}
-					style={{
-						margin: '8px',
-						border: '1px solid red',
-						borderRadius: '2px',
-						width: 300,
-						minWidth: 300,
-						...provided.draggableProps.style,
-					}}
-					ref={provided.innerRef}
-				>
-					<h3
-						style={{
-							padding: 8,
-						}}
-						{...provided.dragHandleProps}
-					>
-						{data.title}
-					</h3>
-					<Droppable droppableId={data.id}>
-						{(provided, snapshot) => (
-							<div
-								{...provided.droppableProps}
-								ref={provided.innerRef}
-								style={{
-									padding: 8,
-									border: snapshot.isDraggingOver
-										? '1px solid white'
-										: '1px solid red',
-									height: 200,
-									overflow: 'auto',
-								}}
-							>
-								{data.task.map((item: any, key: number) => {
-									return <Task key={item.id} data={item} index={key} />
-								})}
-								{provided.placeholder}
-							</div>
-						)}
-					</Droppable>
-				</div>
-			)}
-		</Draggable>
-	)
-}
+import { NotificationByCurrentUserQuery } from 'queries/notification'
+import { useContext, useEffect } from 'react'
+import { AiOutlineBell } from 'react-icons/ai'
+import { BsFillBellSlashFill } from 'react-icons/bs'
 
 export default function index() {
-	const [columns, setColumns] = useState<Array<any>>()
-	const onDragEnd = (result: DropResult) => {
-		if (result.destination) {
-			const destination = result.destination
-			const source = result.source
-			if (destination.droppableId == 'ALL-COLUMNS') {
-				if (columns) {
-					const column = columns[source.index]
-					const data = [...columns]
-					data?.splice(source.index, 1)
-					data?.splice(destination.index, 0, column)
-					setColumns(data)
-				}
-				return
-			}
-			if (
-				destination.droppableId == source.droppableId &&
-				destination.index == source.index
-			) {
-				return
-			}
-
-			if (destination.droppableId == source.droppableId) {
-				const column = columns?.find((value: any) => {
-					return value.id == source.droppableId
-				})
-
-				const getTask1 = column.task[source.index]
-				column.task.splice(source.index, 1)
-				column.task.splice(destination.index, 0, getTask1)
-
-				const data = columns?.map((e) => {
-					if (e.id == column.id) {
-						return column
-					}
-					return e
-				})
-				setColumns(data)
-			}
-
-			const column1 = columns?.find((value: any) => {
-				return value.id == source.droppableId
-			})
-
-			const column2 = columns?.find((value: any) => {
-				return value.id == destination.droppableId
-			})
-
-			const getTask1 = column1.task[source.index]
-			column1.task.splice(source.index, 1)
-			column2.task.splice(destination.index, 0, getTask1)
-
-			const data = columns?.map((e) => {
-				if (e.id == column1.id) {
-					return column1
-				}
-				if (e.id == column2.id) {
-					return column2
-				}
-				return e
-			})
-
-			setColumns(data)
-		}
-
-		return
-	}
-
-	useEffect(() => {
-		setTimeout(() => {
-			setColumns([
-				{
-					id: 'column-1',
-					index: 1,
-					title: 'column 1',
-					task: [
-						{
-							id: 'task-1',
-							content: 'task-1',
-							description: 'hello everyone, to day i fell very good',
-						},
-						{
-							id: 'task-2',
-							content: 'task-2',
-							description: 'hello everyone, to day i fell very good',
-						},
-						{
-							id: 'task-3',
-							content: 'task-3',
-							description: 'hello everyone, to day i fell very good',
-						},
-						{
-							id: 'task-4',
-							content: 'task-4',
-							description: 'hello everyone, to day i fell very good',
-						},
-						{
-							id: 'task-6',
-							content: 'task-6',
-							description: 'hello everyone, to day i fell very good',
-						},
-						{
-							id: 'task-7',
-							content: 'task-7',
-							description: 'hello everyone, to day i fell very good',
-						},
-					],
-				},
-				{
-					id: 'column-2',
-					index: 2,
-					title: 'column 2',
-					task: [],
-				},
-				
-			])
-		})
-	}, [])
 	const { isAuthenticated, handleLoading } = useContext(AuthContext)
 	const { push } = useRouter()
+
+	//Query -------------------------------------------------
+	const { data: dataNotification } = NotificationByCurrentUserQuery(isAuthenticated)
+
 	//Handle check loged in
 	useEffect(() => {
 		if (isAuthenticated) {
@@ -221,119 +32,48 @@ export default function index() {
 			style={{
 				position: 'relative',
 				overflow: 'auto',
-				minHeight: '100vh'
+				minHeight: '100vh',
 			}}
 		>
-			<p style={{position: 'sticky', top: 0, width: 200, height: 50, marginTop: 100, background:'red'}}>
-				{
-					new Date(`${new Date().getMonth() + 1}-`).getHours()
-				}
-			</p>
-			<p>fgfgdgdfdfdg</p>
-			<p>fgfgdgdfdfdg</p>
-			<p>fgfgdgdfdfdg</p>
-			<p>fgfgdgdfdfdg</p>
-			<p>fgfgdgdfdfdg</p>
-			<p>fgfgdgdfdfdg</p>
-			<p>fgfgdgdfdfdg</p>
-			<p>fgfgdgdfdfdg</p>
-			<p>fgfgdgdfdfdg</p>
-			<p>fgfgdgdfdfdg</p>
-			<p>fgfgdgdfdfdg</p>
-			<p>fgfgdgdfdfdg</p>
-			<p>fgfgdgdfdfdg</p>
-			<p>fgfgdgdfdfdg</p>
-			<p>fgfgdgdfdfdg</p>
-			<p>fgfgdgdfdfdg</p>
-			<p>fgfgdgdfdfdg</p>
-			<p>fgfgdgdfdfdg</p>
-			<p>fgfgdgdfdfdg</p>
-			<p>fgfgdgdfdfdg</p>
-			<p>fgfgdgdfdfdg</p>
-			<p>fgfgdgdfdfdg</p>
-			<p>fgfgdgdfdfdg</p>
-			<p>fgfgdgdfdfdg</p>
-			<p>fgfgdgdfdfdg</p>
-			<p>fgfgdgdfdfdg</p>
-			<p>fgfgdgdfdfdg</p>
-			<p>fgfgdgdfdfdg</p>
-			<p>fgfgdgdfdfdg</p>
-			<p>fgfgdgdfdfdg</p>
-			<p>fgfgdgdfdfdg</p>
-			<p>fgfgdgdfdfdg</p>
-			<p>fgfgdgdfdfdg</p>
-			<p>fgfgdgdfdfdg</p>
-			<p>fgfgdgdfdfdg</p>
-			<p>fgfgdgdfdfdg</p>
-			<p>fgfgdgdfdfdg</p>
-			<p>fgfgdgdfdfdg</p>
-			<p>fgfgdgdfdfdg</p>
-			<p>fgfgdgdfdfdg</p>
-			<p>fgfgdgdfdfdg</p>
-			<p>fgfgdgdfdfdg</p>
-			<p>fgfgdgdfdfdg</p>
-			<p>fgfgdgdfdfdg</p>
-			<p>fgfgdgdfdfdg</p>
-			<p>fgfgdgdfdfdg</p>
-			<p>fgfgdgdfdfdg</p>
-			<p>fgfgdgdfdfdg</p>
-			<p>fgfgdgdfdfdg</p>
-			<p>fgfgdgdfdfdg</p>
-			<p>fgfgdgdfdfdg</p>
-			<p>fgfgdgdfdfdg</p>
-			<p>fgfgdgdfdfdg</p>
-			<p>fgfgdgdfdfdg</p>
-			<p>fgfgdgdfdfdg</p>
-			<p>fgfgdgdfdfdg</p>
-			<p>fgfgdgdfdfdg</p>
-			<p>fgfgdgdfdfdg</p>
-			<p>fgfgdgdfdfdg</p>
-			<p>fgfgdgdfdfdg</p>
-			<p>fgfgdgdfdfdg</p>
-			<p>fgfgdgdfdfdg</p>
-			<p>fgfgdgdfdfdg</p>
-			<p>fgfgdgdfdfdg</p>
-			<p>fgfgdgdfdfdg</p>
-			<p>fgfgdgdfdfdg</p>
-			<p>fgfgdgdfdfdg</p>
-			<p>fgfgdgdfdfdg</p>
-			<p>fgfgdgdfdfdg</p>
-			<p>fgfgdgdfdfdg</p>
-			<p>fgfgdgdfdfdg</p>
-			<p>fgfgdgdfdfdg</p>
-			<p>fgfgdgdfdfdg</p>
-			<p>fgfgdgdfdfdg</p>
-			<p>fgfgdgdfdfdg</p>
-			<p>fgfgdgdfdfdg</p>
-			<p>fgfgdgdfdfdg</p>
-			<p>fgfgdgdfdfdg</p>
-			<p>fgfgdgdfdfdg</p>
-			<p>fgfgdgdfdfdg</p>
-			<p>fgfgdgdfdfdg</p>
-			<p>fgfgdgdfdfdg</p>
-			<DragDropContext onDragEnd={onDragEnd}>
-				<Droppable
-					isCombineEnabled={true}
-					droppableId="ALL-COLUMNS"
-					direction="horizontal"
-					type="task"
-				>
-					{(provided) => (
-						<div
-							{...provided.droppableProps}
-							style={{ display: 'flex', overflow: 'auto' }}
-							ref={provided.innerRef}
-						>
-							{columns &&
-								columns.map((e: any, key: number) => {
-									return <Column key={key} data={e} index={key} />
-								})}
-
-							{provided.placeholder}
-						</div>
-					)}
-				</Droppable>
-			</DragDropContext>
+			<Box ml={'500px'} mt={'100px'}>
+				<Menu placement="bottom-end">
+					<MenuButton position={'relative'}>
+						<HStack>
+							<AiOutlineBell fontSize={20} />
+							<Box
+								bgColor={'red'}
+								color={'white'}
+								minH={5}
+								minW={5}
+								borderRadius={'50%'}
+								fontSize={12}
+								position={'absolute'}
+								left={'2px'}
+								top={'-10px'}
+							>
+								23
+							</Box>
+						</HStack>
+					</MenuButton>
+					<MenuList padding={0} borderRadius={0}>
+						<Box width={'400px'} bgColor={'#f2f4f7'} minH={'150px'}>
+							{dataNotification?.notifications ? (
+								dataNotification.notifications.map((notification) => (
+									<NotificationItem
+										key={notification.id}
+										notification={notification}
+									/>
+								))
+							) : (
+								<VStack spacing={2} w={'full'} minH={'150px'} justify={'center'}>
+									<BsFillBellSlashFill color="#a3aebc" />
+									<Text color={'#a3aebc'}>No new notification</Text>
+								</VStack>
+							)}
+						</Box>
+					</MenuList>
+				</Menu>
+			</Box>
 		</Box>
 	)
 }

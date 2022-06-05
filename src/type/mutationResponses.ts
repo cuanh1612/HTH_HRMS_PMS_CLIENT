@@ -58,6 +58,7 @@ export interface userMutaionResponse extends commonResponse {
 export interface roomMutaionResponse extends commonResponse {
 	another_rooms?: roomType
 	your_rooms?: roomType[]
+	your_room?: roomType
 }
 
 export interface employeeMutaionResponse extends commonResponse {

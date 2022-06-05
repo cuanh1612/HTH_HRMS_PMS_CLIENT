@@ -134,8 +134,3 @@ export const countStatusTasksQuery = (isAuthenticated: boolean | null, idProject
 		}
 	)
 }
-
-
-
-
-

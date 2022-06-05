@@ -1,7 +1,8 @@
 import { Box, Button, Collapse, HStack, Text, useDisclosure, VStack } from '@chakra-ui/react'
+import { AuthContext } from 'contexts/AuthContext'
 import { useRouter } from 'next/router'
 
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { BiChevronRight } from 'react-icons/bi'
 import { ILinkItem } from 'type/element/commom'
 import LinkItem from './LinkItem'
@@ -17,6 +18,7 @@ export default function LinkGroup({ title, icon, data }: ILinkGroup) {
 	const { pathname } = useRouter()
 	const [links, setLinks] = useState<string[]>([])
 	const [paths, setPaths] = useState<string[]>([])
+	const { currentUser } = useContext(AuthContext)
 
 	useEffect(() => {
 		if (data) {
@@ -83,9 +85,22 @@ export default function LinkGroup({ title, icon, data }: ILinkGroup) {
 						borderLeft={'1px solid'}
 						borderColor={'gray.300'}
 					>
-						{data.map((item, key) => (
-							<LinkItem key={key} title={item.title} icon={item.icon} link={item.link} />
-						))}
+						{data.map((item, key) => {
+							if (item.title == 'Contracts') {
+								if (currentUser?.role == 'Employee') {
+									return
+								}
+							}
+
+							return (
+								<LinkItem
+									key={key}
+									title={item.title}
+									icon={item.icon}
+									link={item.link}
+								/>
+							)
+						})}
 					</VStack>
 				</Box>
 			</Collapse>

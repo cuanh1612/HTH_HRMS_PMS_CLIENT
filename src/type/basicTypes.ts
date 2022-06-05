@@ -1,5 +1,16 @@
 import { ReactNode } from 'react'
 
+export interface roomType {
+	title: string
+	description: string
+	id: number
+	start_time: string
+	date: Date
+	empl_create: employeeType
+	employees: employeeType[];
+	clients: ClientTypes[];
+}
+
 export interface userType {
 	email: string
 	username: string

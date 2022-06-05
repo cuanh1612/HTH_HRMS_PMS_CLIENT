@@ -27,7 +27,7 @@ export interface IUpdateRoomProps {
 }
 
 export default function UpdateRoom({ roomId: RoomIdProp, onCloseDrawer }: IUpdateRoomProps) {
-	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
+	const { isAuthenticated, handleLoading, setToast, currentUser } = useContext(AuthContext)
 	const router = useRouter()
 	const { roomId: roomIdRouter } = router.query
 
@@ -103,30 +103,32 @@ export default function UpdateRoom({ roomId: RoomIdProp, onCloseDrawer }: IUpdat
 
 	//Set data option employees state
 	useEffect(() => {
-		if (allEmployees && allEmployees.employees) {
+		if (allEmployees && allEmployees.employees && currentUser) {
 			let newOptionEmployees: IOption[] = []
 
 			allEmployees.employees.map((employee) => {
-				newOptionEmployees.push({
-					label: (
-						<>
-							<HStack>
-								<Avatar
-									size={'xs'}
-									name={employee.name}
-									src={employee.avatar?.url}
-								/>
-								<Text>{employee.email}</Text>
-							</HStack>
-						</>
-					),
-					value: employee.id,
-				})
+				if (currentUser.id != employee.id) {
+					newOptionEmployees.push({
+						label: (
+							<>
+								<HStack>
+									<Avatar
+										size={'xs'}
+										name={employee.name}
+										src={employee.avatar?.url}
+									/>
+									<Text>{employee.email}</Text>
+								</HStack>
+							</>
+						),
+						value: employee.id,
+					})
+				}
 			})
 
 			setOptionEmployees(newOptionEmployees)
 		}
-	}, [allEmployees])
+	}, [allEmployees, currentUser])
 
 	//Set data option clients state
 	useEffect(() => {
@@ -230,7 +232,7 @@ export default function UpdateRoom({ roomId: RoomIdProp, onCloseDrawer }: IUpdat
 
 			//set data form
 			formSetting.reset({
-				title: dataDetailRoom.room.title || '',
+				title: dataDetailRoom.room.title.replace(/-/g, ' ') || '',
 				start_time: dataDetailRoom.room.start_time,
 				description: dataDetailRoom.room.description || '',
 				date: dataDetailRoom.room.date || undefined,
@@ -300,7 +302,7 @@ export default function UpdateRoom({ roomId: RoomIdProp, onCloseDrawer }: IUpdat
 							name={'employees'}
 							required={true}
 							options={optionEmployees}
-                            selectedOptions={selectedOptionEmployees}
+							selectedOptions={selectedOptionEmployees}
 						/>
 					</GridItem>
 
@@ -311,7 +313,7 @@ export default function UpdateRoom({ roomId: RoomIdProp, onCloseDrawer }: IUpdat
 							name={'clients'}
 							required={true}
 							options={optionClients}
-                            selectedOptions={selectedOptionClients}
+							selectedOptions={selectedOptionClients}
 						/>
 					</GridItem>
 				</Grid>

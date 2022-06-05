@@ -226,7 +226,7 @@ export const updateStickyNoteValidate = yup.object({
 })
 
 export const createRoomValidate = yup.object({
-	title: yup.string().required('Please enter field title'),
+	title: yup.string().required('Please enter field title').matches(/^[^-\s][a-zA-Z0-9_\s-]+$/, 'This field cannot contain special character'),
 	date: yup.date().required('Please select start on date'),
 	description: yup.string().required('Please enter field description'),
 	employees: yup.array().required('Please select employees'),
@@ -234,7 +234,7 @@ export const createRoomValidate = yup.object({
 })
 
 export const updateRoomValidate = yup.object({
-	title: yup.string().required('Please enter field title'),
+	title: yup.string().required('Please enter field title').matches(/^[^-\s][a-zA-Z0-9_\s-]+$/, 'This field cannot contain and special character'),
 	date: yup.date().required('Please select start on date'),
 	description: yup.string().required('Please enter field description'),
 	employees: yup.array().required('Please select employees'),

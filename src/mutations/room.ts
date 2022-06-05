@@ -1,4 +1,5 @@
 import { createRoomRequest, updateRoomRequest } from 'requests/room'
+import { deleteRoomRequest } from 'requests/zoom'
 import { TToast } from 'type/basicTypes'
 import useMutation from 'use-mutation'
 
@@ -25,4 +26,18 @@ export const updateRoomMutation = (setToast: TToast) => {
 		},
 	})
 }
+
+//delete
+export const deleteRoomMutation = (setToast: TToast) => {
+	return useMutation(deleteRoomRequest, {
+		onFailure({ error }) {
+			setToast({
+				msg: error.message,
+				type: 'error',
+			})
+		},
+	})
+}
+
+
 

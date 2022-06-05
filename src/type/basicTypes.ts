@@ -6,6 +6,7 @@ export interface roomType {
 	id: number
 	start_time: string
 	date: Date
+	link: string
 	empl_create: employeeType
 	employees: employeeType[];
 	clients: clientType[];

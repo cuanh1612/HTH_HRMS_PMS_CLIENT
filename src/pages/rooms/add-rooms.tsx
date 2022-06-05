@@ -6,7 +6,7 @@ import { AuthContext } from 'contexts/AuthContext'
 import { createRoomMutation } from 'mutations/room'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
-import { allClientsNormalQuery, allEmployeesNormalQuery } from 'queries'
+import { allClientsNormalQuery, allEmployeesNormalQuery, allRoomsQuery } from 'queries'
 import { useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { AiOutlineCheck } from 'react-icons/ai'
@@ -35,6 +35,12 @@ export default function AddRooms({ onCloseDrawer }: IAddRoomsProps) {
 	//query ----------------------------------------------------------------------
 	// get all employees
 	const { data: allEmployees } = allEmployeesNormalQuery(isAuthenticated)
+	// refetch all employee
+	const { mutate: refetchAllRooms } = allRoomsQuery({
+		isAuthenticated,
+		role: currentUser?.role,
+		id: currentUser?.id,
+	})
 
 	// get all clients
 	const { data: allClients } = allClientsNormalQuery(isAuthenticated)
@@ -67,35 +73,39 @@ export default function AddRooms({ onCloseDrawer }: IAddRoomsProps) {
 				type: 'success',
 				msg: dataCreRoom?.message as string,
 			})
+
+			refetchAllRooms()
 		}
 	}, [statusCreRoom])
 
 	//Set data option employees state
 	useEffect(() => {
-		if (allEmployees && allEmployees.employees) {
+		if (allEmployees && allEmployees.employees && currentUser) {
 			let newOptionEmployees: IOption[] = []
 
 			allEmployees.employees.map((employee) => {
-				newOptionEmployees.push({
-					label: (
-						<>
-							<HStack>
-								<Avatar
-									size={'xs'}
-									name={employee.name}
-									src={employee.avatar?.url}
-								/>
-								<Text>{employee.email}</Text>
-							</HStack>
-						</>
-					),
-					value: employee.id,
-				})
+				if (currentUser.id != employee.id) {
+					newOptionEmployees.push({
+						label: (
+							<>
+								<HStack>
+									<Avatar
+										size={'xs'}
+										name={employee.name}
+										src={employee.avatar?.url}
+									/>
+									<Text>{employee.email}</Text>
+								</HStack>
+							</>
+						),
+						value: employee.id,
+					})
+				}
 			})
 
 			setOptionEmployees(newOptionEmployees)
 		}
-	}, [allEmployees])
+	}, [allEmployees, currentUser])
 
 	//Set data option clients state
 	useEffect(() => {

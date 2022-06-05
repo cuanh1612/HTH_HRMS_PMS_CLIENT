@@ -8,7 +8,7 @@ export interface roomType {
 	date: Date
 	empl_create: employeeType
 	employees: employeeType[];
-	clients: ClientTypes[];
+	clients: clientType[];
 }
 
 export interface userType {

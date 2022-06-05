@@ -35,6 +35,6 @@
 
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "src/type/form"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "src/type/form", "../zoom.tsx"],
   "exclude": ["node_modules"]
 }

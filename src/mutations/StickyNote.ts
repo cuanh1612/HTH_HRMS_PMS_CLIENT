@@ -1,5 +1,8 @@
-import { changePositionRequest } from 'requests/status'
-import { createStickyNoteRequest, deleteStickyNoteRequest, updateStickyNoteRequest } from 'requests/stickyNote'
+import {
+	createStickyNoteRequest,
+	deleteStickyNoteRequest,
+	updateStickyNoteRequest
+} from 'requests/stickyNote'
 import { TToast } from 'type/basicTypes'
 import useMutation from 'use-mutation'
 

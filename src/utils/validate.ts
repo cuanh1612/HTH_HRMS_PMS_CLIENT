@@ -9,10 +9,10 @@ export const LoginValidate = yup.object({
 })
 
 export const recoverPassValidate = yup.object({
-	email:  yup
-	.string()
-	.required('Please, enter your email')
-	.email('Please, Enter the correct email format')
+	email: yup
+		.string()
+		.required('Please, enter your email')
+		.email('Please, Enter the correct email format'),
 })
 
 export const CreateEmployeeValidate = yup.object({
@@ -116,6 +116,8 @@ export const createEventValidate = yup.object({
 	where: yup.string().required('Please enter field where'),
 	starts_on_date: yup.date().required('Please sele3ct start on date event'),
 	ends_on_date: yup.date().required('Please enter field end on date event'),
+	employeeEmails: yup.array().required('Please select employees for event'),
+	clientEmails: yup.array().required('Please select clients for event'),
 })
 
 export const updateEventValidate = yup.object({
@@ -165,9 +167,9 @@ export const CreateProjectNoteValidate = yup.object({
 })
 
 export const milestoneValidate = yup.object({
-	cost:  yup.number().required('Please enter add to budget'),
+	cost: yup.number().required('Please enter add to budget'),
 	title: yup.string().required('Please enter title'),
-	summary: yup.string().required('Please enter summary')
+	summary: yup.string().required('Please enter summary'),
 })
 
 export const UpdateProjectNoteValidate = yup.object({
@@ -198,19 +200,19 @@ export const CreateProjectTimeLogValidate = yup.object({
 
 export const validateResetPass = yup.object({
 	password: yup
-	  .string()
-	  .required('Please Enter your password')
-	  .matches(
-		/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{6,}$/,
-		'Must Contain 6 Characters, One Uppercase, One Lowercase, One Number and one special case Character'
-	  ),
+		.string()
+		.required('Please Enter your password')
+		.matches(
+			/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{6,}$/,
+			'Must Contain 6 Characters, One Uppercase, One Lowercase, One Number and one special case Character'
+		),
 	passwordConfirm: yup
-	  .string()
-	  .label('Password Confirm')
-	  .required()
-	  .oneOf([yup.ref('password')], 'Passwords does not match'),
-  });
-  
+		.string()
+		.label('Password Confirm')
+		.required()
+		.oneOf([yup.ref('password')], 'Passwords does not match'),
+})
+
 export const updateStatusProjectValidate = yup.object({
 	project_status: yup.string().required('Please select project'),
 })
@@ -221,4 +223,20 @@ export const createStickyNoteValidate = yup.object({
 
 export const updateStickyNoteValidate = yup.object({
 	color: yup.string().required('Please select color sticky note'),
+})
+
+export const createRoomValidate = yup.object({
+	title: yup.string().required('Please enter field title'),
+	date: yup.date().required('Please select start on date'),
+	description: yup.string().required('Please enter field description'),
+	employees: yup.array().required('Please select employees'),
+	clients: yup.array().required('Please select clients'),
+})
+
+export const updateRoomValidate = yup.object({
+	title: yup.string().required('Please enter field title'),
+	date: yup.date().required('Please select start on date'),
+	description: yup.string().required('Please enter field description'),
+	employees: yup.array().required('Please select employees'),
+	clients: yup.array().required('Please select clients'),
 })

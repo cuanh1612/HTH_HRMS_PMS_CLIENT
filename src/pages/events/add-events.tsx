@@ -16,7 +16,7 @@ import { AuthContext } from 'contexts/AuthContext'
 import { createEventMutation } from 'mutations'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
-import { allClientsQuery, allEmployeesQuery, allEventsQuery } from 'queries'
+import { allClientsNormalQuery, allClientsQuery, allEmployeesNormalQuery, allEventsQuery } from 'queries'
 import { useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { AiOutlineBgColors, AiOutlineCheck } from 'react-icons/ai'
@@ -48,10 +48,10 @@ export default function AddEvent({ onCloseDrawer }: IAddEventProps) {
 
 	//query ----------------------------------------------------------------------
 	// get all employees
-	const { data: allEmployees } = allEmployeesQuery(isAuthenticated)
+	const { data: allEmployees } = allEmployeesNormalQuery(isAuthenticated)
 
 	// get all clients
-	const { data: allClients } = allClientsQuery(isAuthenticated)
+	const { data: allClients } = allClientsNormalQuery(isAuthenticated)
 
 	// refetch all event
 	const { mutate: refetchAllEvents } = allEventsQuery(isAuthenticated)

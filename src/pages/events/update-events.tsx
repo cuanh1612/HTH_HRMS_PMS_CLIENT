@@ -5,7 +5,7 @@ import {Loading }from 'components/common'
 import { AuthContext } from 'contexts/AuthContext'
 import { updateEventMutation } from 'mutations'
 import dynamic from 'next/dynamic'
-import { allClientsQuery, allEmployeesQuery, allEventsQuery, detailEventQuery } from 'queries'
+import { allClientsQuery, allEmployeesNormalQuery, allEventsQuery, detailEventQuery } from 'queries'
 import { useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { AiOutlineBgColors, AiOutlineCheck } from 'react-icons/ai'
@@ -38,7 +38,7 @@ export default function UpdateEvent({ onCloseDrawer, eventIdUpdate }: IUpdateEve
 	const { data: dataDetailEvent } = detailEventQuery(isAuthenticated, eventIdUpdate)
 
 	// get all employees
-	const { data: allEmployees } = allEmployeesQuery(isAuthenticated)
+	const { data: allEmployees } = allEmployeesNormalQuery(isAuthenticated)
 
 	// refetch all event
 	const { mutate: refetchAllEvents } = allEventsQuery(isAuthenticated)

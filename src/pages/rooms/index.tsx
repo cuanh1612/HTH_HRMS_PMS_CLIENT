@@ -11,30 +11,50 @@ import {
 	MenuList,
 	SimpleGrid,
 	Text,
+	useDisclosure,
 	VStack,
 } from '@chakra-ui/react'
+import { Drawer } from 'components/Drawer'
 import { ClientLayout } from 'components/layouts'
 import { AuthContext } from 'contexts/AuthContext'
 import { useRouter } from 'next/router'
 import { allRoomsQuery } from 'queries'
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { IoEyeOutline, IoVideocamOutline } from 'react-icons/io5'
 import { MdOutlineDeleteOutline, MdOutlineMoreVert } from 'react-icons/md'
 import { RiPencilLine } from 'react-icons/ri'
 import { NextLayout } from 'type/element/layout'
+import AddRooms from './add-rooms'
+import UpdateRoom from './[roomId]/update-room'
 
 const zoom: NextLayout = () => {
 	const { isAuthenticated, handleLoading, currentUser } = useContext(AuthContext)
 	const router = useRouter()
 
+	//State ---------------------------------------------------------------------
+	const [roomIdShow, setRoomIdShow] = useState<string | number>(7)
+
+	//Setup modal ----------------------------------------------------------------
+	const {
+		isOpen: isOpenCreRoom,
+		onOpen: onOpenCreRoom,
+		onClose: onCloseCreRoom,
+	} = useDisclosure()
+
+	const {
+		isOpen: isOpenUpRoom,
+		onOpen: onOpenUpRoom,
+		onClose: onCloseUpRoom,
+	} = useDisclosure()
+
 	// query
-	const {data: dataRooms, mutate: refetchAllRooms} = allRoomsQuery({
+	const { data: dataRooms, mutate: refetchAllRooms } = allRoomsQuery({
 		isAuthenticated,
 		role: currentUser?.role,
-		id: currentUser?.id
+		id: currentUser?.id,
 	})
 
-	console.log( dataRooms)
+	console.log(dataRooms)
 	const data = [
 		{
 			url: '',
@@ -206,8 +226,11 @@ const zoom: NextLayout = () => {
 	}, [isAuthenticated])
 	return (
 		<>
-			<Button mb={5}>
+			<Button mb={5} onClick={onOpenCreRoom}>
 				create room
+			</Button>
+			<Button mb={5} onClick={onOpenUpRoom}>
+				update room
 			</Button>
 			<SimpleGrid minChildWidth="300px" spacing={10}>
 				{data.map((item, key) => (
@@ -249,13 +272,25 @@ const zoom: NextLayout = () => {
 								</MenuList>
 							</Menu>
 						</HStack>
-						<Text color={'white'} paddingInline={5} isTruncated fontSize={'xl'} fontWeight={'bold'}>
+						<Text
+							color={'white'}
+							paddingInline={5}
+							isTruncated
+							fontSize={'xl'}
+							fontWeight={'bold'}
+						>
 							{item.title}
 						</Text>
 						<Text color={'white'} paddingInline={5} opacity={0.6}>
 							{item.date}
 						</Text>
-						<Text color={'white'} mb={'10px!important'} paddingInline={5} flex={1} opacity={0.6}>
+						<Text
+							color={'white'}
+							mb={'10px!important'}
+							paddingInline={5}
+							flex={1}
+							opacity={0.6}
+						>
 							{item.description}
 						</Text>
 						<HStack
@@ -285,6 +320,24 @@ const zoom: NextLayout = () => {
 					</VStack>
 				))}
 			</SimpleGrid>
+
+			<Drawer
+				size="xl"
+				title="Add Room"
+				onClose={onCloseCreRoom}
+				isOpen={isOpenCreRoom}
+			>
+				<AddRooms onCloseDrawer={onCloseCreRoom} />
+			</Drawer>
+
+			<Drawer
+				size="xl"
+				title="Update Room"
+				onClose={onCloseUpRoom}
+				isOpen={isOpenUpRoom}
+			>
+				<UpdateRoom onCloseDrawer={onCloseUpRoom} roomId={roomIdShow} />
+			</Drawer>
 		</>
 	)
 }

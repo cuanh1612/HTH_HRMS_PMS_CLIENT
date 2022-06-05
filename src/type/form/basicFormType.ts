@@ -595,3 +595,23 @@ export type updateStickyNoteForm = {
 	color: string
 }
 
+export type createRoomForm = {
+	title: string
+	description: string
+	id: number
+	start_time: string
+	date: Date
+	empl_create: number
+	employees: number[];
+	clients: number[];
+}
+
+export type updateRoomForm = {
+	title: string
+	description: string
+	id: number
+	start_time: string
+	date: Date
+	employees: number[];
+	clients: number[];
+}

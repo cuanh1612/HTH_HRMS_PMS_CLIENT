@@ -268,3 +268,8 @@ export interface stickyNoteMutaionResponse extends commonResponse {
 	stickyNote?: stickyNoteType
 	stickyNotes?: stickyNoteType[]
 }
+
+export interface roomMutaionResponse extends commonResponse {
+	room?: roomType
+	rooms?: roomType[]
+}

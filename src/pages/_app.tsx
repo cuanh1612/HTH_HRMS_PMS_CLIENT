@@ -9,16 +9,28 @@ import AuthContextProvider from 'contexts/AuthContext'
 import { AppPropsWithLayout } from 'type/element/layout'
 import { EmptyLayout } from 'components/layouts'
 
+import { DailyProvider } from '@daily-co/daily-react-hooks';
+import DailyIframe from '@daily-co/daily-js';
+import { useEffect, useState} from 'react';
+
 function MyApp({ Component, pageProps }: AppPropsWithLayout) {
+	const [co, setCo] = useState<any>()
+
+	useEffect(()=> {
+		setCo(DailyIframe.createCallObject())
+	}, [])
+
 	const Layout = Component.getLayout || EmptyLayout
 	return (
-		<ChakraProvider resetCSS theme={theme}>
-			<AuthContextProvider>
-				<Layout>
-					<Component {...pageProps} />
-				</Layout>
-			</AuthContextProvider>
-		</ChakraProvider>
+		<DailyProvider callObject={co}>
+			<ChakraProvider resetCSS theme={theme}>
+				<AuthContextProvider>
+					<Layout>
+						<Component {...pageProps} />
+					</Layout>
+				</AuthContextProvider>
+			</ChakraProvider>
+		</DailyProvider>
 	)
 }
 

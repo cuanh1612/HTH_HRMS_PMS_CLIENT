@@ -11,7 +11,7 @@ import DetailStickyNote from './[stickyNoteId]'
 import UpdateStickyNote from './[stickyNoteId]/update-sticky-note'
 
 export default function StickysNote() {
-	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
+	const { isAuthenticated, handleLoading } = useContext(AuthContext)
 	const router = useRouter()
 
 	//State --------------------------------------------------------------------

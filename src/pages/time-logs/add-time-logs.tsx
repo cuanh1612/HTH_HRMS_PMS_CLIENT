@@ -11,13 +11,11 @@ import { Loading } from 'components/common'
 import { Input, SelectCustom, TimePicker } from 'components/form'
 import { AuthContext } from 'contexts/AuthContext'
 import { createTimeLogMutation } from 'mutations/timeLog'
-import { GetServerSideProps } from 'next'
 import { useRouter } from 'next/router'
 import {
 	allProjectsNormalQuery,
 	allTasksByProjectQuery,
 	detailTaskQuery,
-	timeLogsByProjectQuery,
 	timeLogsCalendarQuery,
 	timeLogsQuery
 } from 'queries'
@@ -30,7 +28,6 @@ import 'react-quill/dist/quill.bubble.css'
 import 'react-quill/dist/quill.snow.css'
 import { IOption } from 'type/basicTypes'
 import { createProjectTimeLogForm } from 'type/form/basicFormType'
-import { projectMutaionResponse } from 'type/mutationResponses'
 import { compareDateTime } from 'utils/time'
 import { CreateProjectTimeLogValidate } from 'utils/validate'
 

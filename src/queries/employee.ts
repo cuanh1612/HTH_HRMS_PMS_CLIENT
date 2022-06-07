@@ -80,4 +80,14 @@ export const allEmployeesNormalQuery = (isAuthenticated: boolean | null) => {
 	)
 }
 
+export const allEmployeesQuery = (isAuthenticated: boolean | null) => {
+	return useSWR<employeeMutaionResponse, AxiosError>(
+		isAuthenticated ? `employees` : null,
+		allEmployeesRequest,
+		{
+			errorRetryCount: 2,
+			revalidateOnFocus: false,
+		}
+	)
+}
 

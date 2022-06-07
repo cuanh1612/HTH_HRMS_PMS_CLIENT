@@ -31,7 +31,7 @@ export const Input = ({
 			control={form?.control}
 			name={name}
 			render={({ field }) => (
-				<FormControl  color={'gray.400'}>
+				<FormControl color={'gray.400'}>
 					{label && (
 						<FormLabel fontWeight={'normal'} htmlFor={name}>
 							{label} { required && <Text as='span' color={'red'}>*</Text>}

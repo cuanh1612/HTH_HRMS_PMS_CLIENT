@@ -6,6 +6,7 @@ import { NotificationByCurrentUserQuery } from 'queries/notification'
 import { useContext, useEffect } from 'react'
 import { AiOutlineBell } from 'react-icons/ai'
 import { BsFillBellSlashFill } from 'react-icons/bs'
+import { notificationType } from 'type/basicTypes'
 
 export default function index() {
 	const { isAuthenticated, handleLoading, socket } = useContext(AuthContext)
@@ -62,7 +63,7 @@ export default function index() {
 				<MenuList padding={0} borderRadius={0}>
 					<Box width={'400px'} bgColor={'#f2f4f7'} minH={'150px'} maxH={'290px'} overflow={"auto"}>
 						{dataNotification?.notifications && dataNotification.notifications.length > 0 ? (
-							dataNotification.notifications.map((notification) => (
+							dataNotification.notifications.map((notification: notificationType) => (
 								<NotificationItem
 									key={notification.id}
 									notification={notification}

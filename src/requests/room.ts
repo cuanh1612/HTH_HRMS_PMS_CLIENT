@@ -28,7 +28,7 @@ export async function updateRoomRequest({
 	inputUpdate: updateRoomForm
 }) {
 	const resultFetch = await putData<roomMutaionResponse>({
-		url: `http://localhost:4000/api/room/${roomId}`,
+		url: `http://localhost:4000/api/rooms/${roomId}`,
 		body: inputUpdate,
 	})
 	return resultFetch

@@ -16,3 +16,17 @@ export const detailRoomQuery = (
 		}
 	)
 }
+
+export const getRoomByTitleQuery = (
+	isAuthenticated: boolean | null,
+	title?: string | string[]
+) => {
+	return useSWR<roomMutaionResponse, AxiosError>(
+		isAuthenticated && title ? `rooms/title/${title}` : null,
+		detailRoomRequest,
+		{
+			errorRetryCount: 2,
+			revalidateOnFocus: false,
+		}
+	)
+}

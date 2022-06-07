@@ -3,11 +3,6 @@ import jwtDecode, { JwtPayload } from 'jwt-decode'
 
 export function middleware(req: NextRequest) {
 	const paths = String(req.page.name).split('/')
-	const redirect404 = () => {
-		const url = req.nextUrl
-		url.pathname = `/404`
-		return NextResponse.rewrite(url)
-	}
 
 	const redirect403 = () => {
 		return NextResponse.redirect('http://localhost:3000/403')

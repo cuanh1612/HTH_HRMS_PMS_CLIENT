@@ -14,7 +14,6 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import React, { useEffect, useMemo, useState } from 'react'
 import { BsArrowDown } from 'react-icons/bs'
-import { RiPencilLine } from 'react-icons/ri'
 import { ITab } from 'type/element/commom'
 
 export const TabsMenu = ({ tabs }: { tabs: ITab[] }) => {

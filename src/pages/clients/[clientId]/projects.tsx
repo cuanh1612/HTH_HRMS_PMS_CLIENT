@@ -1,7 +1,6 @@
 import { Box } from '@chakra-ui/react'
 import { AuthContext } from 'contexts/AuthContext'
 import { useRouter } from 'next/router'
-import { allProjectsByCurrentUserQuery } from 'queries'
 import { useContext, useEffect } from 'react'
 
 export default function ProjectsClient() {
@@ -9,7 +8,7 @@ export default function ProjectsClient() {
 	const router = useRouter()
 
 	//Query -------------------------------------------------------------------
-	const { data: dataAllProjects } = allProjectsByCurrentUserQuery(isAuthenticated)
+	// const { data: dataAllProjects } = allProjectsByCurrentUserQuery(isAuthenticated)
 
 	//Funcion -----------------------------------------------------------------
 

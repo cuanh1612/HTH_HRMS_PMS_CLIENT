@@ -19,7 +19,7 @@ import {
 	projectEarningsQuery,
 	projectHoursLoggedQuery,
 } from 'queries'
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect } from 'react'
 import { NextLayout } from 'type/element/layout'
 import { ProjectLayout } from 'components/layouts'
 import { StatisticPrj } from 'components/common'

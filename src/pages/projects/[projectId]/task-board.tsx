@@ -49,7 +49,7 @@ const taskBoard: NextLayout = () => {
 	const [isUpdate, setIsUpdate] = useState(false)
 	const [columnId, setColumnId] = useState<string>()
 	const [taskId, setTaskId] = useState<string | number>(1)
-	const [statusIdShow, setStatusIdShow] = useState<number>(1)
+	const [statusIdShow] = useState<number>(1)
 
 	const { colorMode } = useColorMode()
 	const { query } = useRouter()
@@ -421,7 +421,7 @@ const taskBoard: NextLayout = () => {
 			</HStack>
 			<DragDropContext onDragEnd={onDragEnd}>
 				<Droppable droppableId="ALL-COLUMNS" direction="horizontal" type="column">
-					{(provided, snapshot) => (
+					{(provided) => (
 						<Box
 							w={'full'}
 							display={'flex'}

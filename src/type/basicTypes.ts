@@ -171,12 +171,15 @@ export interface clientType {
 	can_login: boolean
 	can_receive_email: boolean
 	avatar?: {
+		id: number
 		url: string
 		name: string
 		public_id: string
 	}
 	id: number
-	note?: string
+	note?: string,
+	createdAt: Date,
+	updatedAt: Date,
 }
 
 export interface holidayType {

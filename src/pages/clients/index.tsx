@@ -1,5 +1,6 @@
 // get all country
 import countryList from 'react-select-country-list'
+import { CSVLink } from 'react-csv'
 
 // query and mutation
 import { allClientsQuery, allClientCategoriesQuery, allClientSubCategoriesQuery } from 'queries'
@@ -27,8 +28,8 @@ import {
 	useDisclosure,
 	VStack,
 } from '@chakra-ui/react'
-import {AlertDialog, Table} from 'components/common'
-import {Drawer} from 'components/Drawer'
+import { AlertDialog, Table } from 'components/common'
+import { Drawer } from 'components/Drawer'
 
 // use layout
 import { ClientLayout } from 'components/layouts'
@@ -41,6 +42,7 @@ import { useContext, useEffect, useMemo, useState } from 'react'
 
 // icons
 import { AiOutlineCaretDown, AiOutlineCaretUp, AiOutlineSearch } from 'react-icons/ai'
+import { FaFileCsv } from 'react-icons/fa'
 import { BiExport, BiImport } from 'react-icons/bi'
 import { IoAdd, IoEyeOutline } from 'react-icons/io5'
 import { MdOutlineDeleteOutline, MdOutlineMoreVert } from 'react-icons/md'
@@ -72,6 +74,9 @@ const Clients: NextLayout = () => {
 
 	const options = useMemo(() => countryList().getData(), [])
 
+	//state
+	const [dataCSV, setDataCSV] = useState<any[]>([])
+
 	// set filter
 	const [filter, setFilter] = useState<IFilter>({
 		columnId: '',
@@ -99,6 +104,34 @@ const Clients: NextLayout = () => {
 	const { isOpen, onToggle } = useDisclosure({
 		defaultIsOpen: true,
 	})
+
+	//Setup download csv --------------------------------------------------------
+	const headersCSV = [
+		{ label: 'id', key: 'id' },
+		{ label: 'name', key: 'name' },
+		{ label: 'salutation', key: 'salutation' },
+		{ label: 'gender', key: 'gender' },
+		{ label: 'email', key: 'email' },
+		{ label: 'mobile', key: 'mobile' },
+		{ label: 'avatar', key: 'avatar' },
+		{ label: 'can_login', key: 'can_login' },
+		{ label: 'can_receive_email', key: 'can_receive_email' },
+		{ label: 'city', key: 'city' },
+		{ label: 'client_category', key: 'client_category' },
+		{ label: 'client_sub_category', key: 'client_sub_category' },
+		{ label: 'company_address', key: 'company_address' },
+		{ label: 'company_name', key: 'company_name' },
+		{ label: 'country', key: 'country' },
+		{ label: 'gst_vat_number', key: 'gst_vat_number' },
+		{ label: 'note', key: 'note' },
+		{ label: 'office_phone_number', key: 'office_phone_number' },
+		{ label: 'official_website', key: 'official_website' },
+		{ label: 'postal_code', key: 'postal_code' },
+		{ label: 'shipping_address', key: 'shipping_address' },
+		{ label: 'state', key: 'state' },
+		{ label: 'createdAt', key: 'createdAt' },
+		{ label: 'updatedAt', key: 'updatedAt' },
+	]
 
 	//State ---------------------------------------------------------------------
 	// get id to delete client
@@ -178,7 +211,7 @@ const Clients: NextLayout = () => {
 	// set loading == false when get all clients successfully
 	useEffect(() => {
 		console.log(allClients)
-		if (allClients) {
+		if (allClients?.clients) {
 			const users = allClients.clients?.map((item): IPeople => {
 				return {
 					id: item.id,
@@ -188,6 +221,36 @@ const Clients: NextLayout = () => {
 			})
 			setAllusersSl(users || [])
 			setIsloading(false)
+
+			//Set data csv
+			const dataCSV: any[] = allClients.clients.map((client) => ({
+				id: client.id,
+				name: client.name,
+				salutation: client.salutation,
+				gender: client.gender,
+				email: client.email,
+				mobile: client.mobile,
+				avatar: client.avatar?.id,
+				can_login: client.can_login ? 'true' : 'false',
+				can_receive_email: client.can_receive_email ? 'true' : 'false',
+				city: client.city,
+				client_category: client.client_category?.id,
+				client_sub_category: client.client_sub_category?.id,
+				company_address: client.company_address,
+				company_name: client.company_name,
+				country: client.country,
+				gst_vat_number: client.gst_vat_number,
+				note: client.note,
+				office_phone_number: client.office_phone_number,
+				official_website: client.official_website,
+				postal_code: client.postal_code,
+				shipping_address: client.shipping_address,
+				state: client.state,
+				createdAt: client.createdAt,
+				updatedAt: client.updatedAt,
+			}))
+
+			setDataCSV(dataCSV)
 		}
 	}, [allClients])
 
@@ -402,6 +465,25 @@ const Clients: NextLayout = () => {
 					>
 						Add clients
 					</Button>
+
+					{currentUser && currentUser.role === 'Admin' && (
+						<Button
+							transform={'auto'}
+							bg={'hu-Green.lightA'}
+							_hover={{
+								bg: 'hu-Green.normal',
+								color: 'white',
+								scale: 1.05,
+							}}
+							color={'hu-Green.normal'}
+							leftIcon={<FaFileCsv />}
+						>
+							<CSVLink filename={'clients.csv'} headers={headersCSV} data={dataCSV}>
+								export to csv
+							</CSVLink>
+						</Button>
+					)}
+					
 					<Button
 						transform={'auto'}
 						_hover={{

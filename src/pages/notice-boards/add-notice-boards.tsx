@@ -33,7 +33,7 @@ export interface IAddNoticeBoardProps {
 }
 
 export default function AddNoticeBoard({ onCloseDrawer }: IAddNoticeBoardProps) {
-	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
+	const { isAuthenticated, handleLoading, setToast, socket } = useContext(AuthContext)
 	const router = useRouter()
 
 	//State ----------------------------------------------------------------------
@@ -65,6 +65,10 @@ export default function AddNoticeBoard({ onCloseDrawer }: IAddNoticeBoardProps) 
 			//Close drawer when using drawer
 			if (onCloseDrawer) {
 				onCloseDrawer()
+			}
+
+			if(socket){
+				socket.emit('newNoticeBoard')
 			}
 
 			setToast({

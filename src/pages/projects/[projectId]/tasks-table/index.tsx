@@ -2,54 +2,39 @@ import {
 	Avatar,
 	AvatarGroup,
 	Box,
-	Button,
-	MenuButton,
+	Button, Drawer as CDrawer, DrawerBody, DrawerCloseButton, DrawerContent, DrawerHeader, DrawerOverlay, HStack, Menu, MenuButton,
 	MenuItem,
 	MenuList,
 	Text,
-	useDisclosure,
-	Menu,
-	Select,
-	HStack,
-	DrawerOverlay,
-	DrawerContent,
-	DrawerCloseButton,
-	DrawerHeader,
-	DrawerBody,
-	Drawer as CDrawer,
-	VStack,
+	useDisclosure, VStack
 } from '@chakra-ui/react'
+import { AlertDialog, Table } from 'components/common'
 import { Drawer } from 'components/Drawer'
-import { ClientLayout, ProjectLayout } from 'components/layouts'
-import { useContext, useEffect, useState } from 'react'
-import { NextLayout } from 'type/element/layout'
-import AddTask from './add-tasks'
-import DetailTask from './[taskId]'
-import UpdateTask from './[taskId]/update-task'
+import { DateRange, Input, Select as SelectF } from 'components/filter'
+import { ProjectLayout } from 'components/layouts'
 import { AuthContext } from 'contexts/AuthContext'
+import { deleteTaskMutation, deleteTasksMutation } from 'mutations'
 import { useRouter } from 'next/router'
 import {
 	allStatusQuery,
-	allTasksByEmployeeAndProjectQuery,
-	allTasksByEmployeeQuery,
-	allTasksByProjectQuery,
-	milestonesByProjectNormalQuery,
+	allTasksByEmployeeAndProjectQuery, allTasksByProjectQuery,
+	milestonesByProjectNormalQuery
 } from 'queries'
-import { IFilter, TColumn } from 'type/tableTypes'
-import { AlertDialog, Table } from 'components/common'
-import { dateFilter, selectFilter, textFilter } from 'utils/tableFilters'
-import { employeeType, timeLogType } from 'type/basicTypes'
-import { MdOutlineDeleteOutline, MdOutlineMoreVert } from 'react-icons/md'
-import { IoEyeOutline } from 'react-icons/io5'
-import { RiPencilLine } from 'react-icons/ri'
-import { deleteTaskMutation, deleteTasksMutation } from 'mutations'
-import { DateRange, Input } from 'components/filter'
+import { useContext, useEffect, useState } from 'react'
 import { AiOutlineSearch } from 'react-icons/ai'
-import { Select as SelectF } from 'components/filter'
-import { allMilestoneNormalRequest } from 'requests/milestone'
+import { IoEyeOutline } from 'react-icons/io5'
+import { MdOutlineDeleteOutline, MdOutlineMoreVert } from 'react-icons/md'
+import { RiPencilLine } from 'react-icons/ri'
+import { employeeType, timeLogType } from 'type/basicTypes'
+import { NextLayout } from 'type/element/layout'
+import { IFilter, TColumn } from 'type/tableTypes'
+import { dateFilter, selectFilter, textFilter } from 'utils/tableFilters'
+import AddTask from './add-tasks'
+import DetailTask from './[taskId]'
+import UpdateTask from './[taskId]/update-task'
 
 const tasks: NextLayout = () => {
-	const { isAuthenticated, handleLoading, currentUser, setToast } = useContext(AuthContext)
+	const { isAuthenticated, handleLoading, currentUser, setToast, socket } = useContext(AuthContext)
 	const router = useRouter()
 	const { projectId } = router.query
 
@@ -158,6 +143,9 @@ const tasks: NextLayout = () => {
 			})
 			refetchTasks()
 			setIsloading(false)
+			if (socket && projectId) {
+				socket.emit('newProjectTask', projectId)
+			}
 		}
 	}, [statusDlOne])
 
@@ -170,8 +158,32 @@ const tasks: NextLayout = () => {
 			refetchTasks()
 			setDataSl([])
 			setIsloading(false)
+			if (socket && projectId) {
+				socket.emit('newProjectTask', projectId)
+			}
 		}
 	}, [statusDlMany])
+
+	//Join room socket
+	useEffect(() => {
+		//Join room
+		if (socket && projectId) {
+			socket.emit('joinRoomProjectTask', projectId)
+
+			socket.on('getNewProjectTask', () => {
+				refetchTasks()
+			})
+		}
+
+		//Leave room
+		function leaveRoom() {
+			if (socket && projectId) {
+				socket.emit('leaveRoomProjectTask', projectId)
+			}
+		}
+
+		return leaveRoom
+	}, [socket, projectId])
 
 	// header ----------------------------------------
 	const columns: TColumn[] = [

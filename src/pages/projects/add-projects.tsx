@@ -10,17 +10,21 @@ import {
 	Img,
 	Text,
 	useDisclosure,
-	VStack,
+	VStack
 } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { ItemFileUpload, Loading } from 'components/common'
 import { Input, InputNumber, Select, SelectCustom, SelectMany } from 'components/form'
-import {ItemFileUpload, Loading} from 'components/common'
 import Modal from 'components/modal/Modal'
 import { AuthContext } from 'contexts/AuthContext'
 import { createProjectMutation } from 'mutations'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
-import { allClientsQuery, allDepartmentsQuery, allEmployeesNormalQuery, allProjectsQuery, allProjectCategoriesQuery } from 'queries'
+import {
+	allClientsQuery,
+	allDepartmentsQuery,
+	allEmployeesNormalQuery, allProjectCategoriesQuery, allProjectsQuery
+} from 'queries'
 import { useCallback, useContext, useEffect, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { useForm } from 'react-hook-form'
@@ -46,7 +50,8 @@ export interface IAddProjectProps {
 }
 
 export default function AddProject({ onCloseDrawer }: IAddProjectProps) {
-	const { isAuthenticated, handleLoading, setToast, currentUser } = useContext(AuthContext)
+	const { isAuthenticated, handleLoading, setToast, currentUser, socket } =
+		useContext(AuthContext)
 	const router = useRouter()
 
 	//Setup modal ----------------------------------------------------------------
@@ -192,7 +197,7 @@ export default function AddProject({ onCloseDrawer }: IAddProjectProps) {
 
 	//Note when request success
 	useEffect(() => {
-		if (statusCreProject === 'success') {
+		if (statusCreProject === 'success' && dataCreProject) {
 			//Close drawer when using drawer
 			if (onCloseDrawer) {
 				onCloseDrawer()
@@ -202,9 +207,17 @@ export default function AddProject({ onCloseDrawer }: IAddProjectProps) {
 
 			setToast({
 				type: 'success',
-				msg: dataCreProject?.message as string,
+				msg: dataCreProject.message as string,
 			})
 			refetchAllProjects()
+
+			if (socket) {
+				socket.emit(
+					'newProjectNotification',
+					dataCreProject.project?.client,
+					dataCreProject.project?.employees?.map((employee) => employee.id)
+				)
+			}
 		}
 	}, [statusCreProject])
 

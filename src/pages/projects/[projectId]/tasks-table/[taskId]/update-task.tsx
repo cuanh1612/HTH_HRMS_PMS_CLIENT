@@ -48,7 +48,7 @@ export interface IUpdateTaskProps {
 }
 
 export default function UpdateTask({ onCloseDrawer, taskIdProp }: IUpdateTaskProps) {
-	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
+	const { isAuthenticated, handleLoading, setToast, socket } = useContext(AuthContext)
 	const router = useRouter()
 	const { taskId: taskIdRouter, projectId } = router.query
 
@@ -281,6 +281,10 @@ export default function UpdateTask({ onCloseDrawer, taskIdProp }: IUpdateTaskPro
 			})
 			refetchStatusTasks()
 			refetchTasks()
+
+			if (socket && projectId) {
+				socket.emit('newProjectTask', projectId)
+			}
 		}
 	}, [statusUpTask])
 

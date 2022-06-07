@@ -49,7 +49,7 @@ export interface IAddTaskProps {
 }
 
 export default function AddTask({ onCloseDrawer }: IAddTaskProps) {
-	const { isAuthenticated, handleLoading, setToast, currentUser } = useContext(AuthContext)
+	const { isAuthenticated, handleLoading, setToast, currentUser, socket } = useContext(AuthContext)
 	const router = useRouter()
 
 	//state -------------------------------------------------------------
@@ -205,7 +205,7 @@ export default function AddTask({ onCloseDrawer }: IAddTaskProps) {
 
 	//Note when request success
 	useEffect(() => {
-		if (statusCreTask === 'success') {
+		if (statusCreTask === 'success' && dataCreTask) {
 			//Close drawer when using drawer
 			if (onCloseDrawer) {
 				onCloseDrawer()
@@ -218,6 +218,14 @@ export default function AddTask({ onCloseDrawer }: IAddTaskProps) {
 			refetchTasks()
 			refetchStatusTasks()
 			refetchTasksCalendar()
+
+			if (socket) {
+				socket.emit('newTask')
+				socket.emit(
+					'newTaskNotification',
+					dataCreTask.task?.employees.map((employee) => employee.id)
+				)
+			}
 		}
 	}, [statusCreTask])
 

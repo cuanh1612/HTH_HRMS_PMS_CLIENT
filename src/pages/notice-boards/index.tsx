@@ -36,7 +36,7 @@ import UpdateNoticeBoard from './[noticeBoardId]/update'
 export interface IProjectProps {}
 
 const NoticeBoard: NextLayout = ({}: IProjectProps) => {
-	const { isAuthenticated, handleLoading, setToast, currentUser } = useContext(AuthContext)
+	const { isAuthenticated, handleLoading, setToast, currentUser, socket } = useContext(AuthContext)
 	const router = useRouter()
 
 	//State ---------------------------------------------------------------------
@@ -212,6 +212,9 @@ const NoticeBoard: NextLayout = ({}: IProjectProps) => {
 			})
 			refetchNotices()
 			setIsloading(false)
+			if (socket) {
+				socket.emit('newNoticeBoard')
+			}
 		}
 	}, [statusDlOne])
 
@@ -225,8 +228,33 @@ const NoticeBoard: NextLayout = ({}: IProjectProps) => {
 			setDataSl([])
 			refetchNotices()
 			setIsloading(false)
+
+			if (socket) {
+				socket.emit('newNoticeBoard')
+			}
 		}
 	}, [statusDlMany])
+
+	//Join room socket
+	useEffect(() => {
+		//Join room
+		if (socket) {
+			socket.emit('joinRoomNoticeBoard')
+
+			socket.on('getNewNoticeBoard', () => {
+				refetchNotices()
+			})
+		}
+
+		//Leave room
+		function leaveRoom() {
+			if (socket) {
+				socket.emit('leaveRoomNoticeBoard')
+			}
+		}
+
+		return leaveRoom
+	}, [socket])
 
 	return (
 		<>

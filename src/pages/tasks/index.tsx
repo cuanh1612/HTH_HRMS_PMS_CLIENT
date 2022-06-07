@@ -48,7 +48,7 @@ import { DateRange, Input, Select as SelectF, SelectCustom } from 'components/fi
 import { AiOutlineSearch } from 'react-icons/ai'
 
 const tasks: NextLayout = () => {
-	const { isAuthenticated, handleLoading, setToast, currentUser } = useContext(AuthContext)
+	const { isAuthenticated, handleLoading, setToast, currentUser, socket } = useContext(AuthContext)
 	const router = useRouter()
 	const { colorMode } = useColorMode()
 
@@ -159,6 +159,10 @@ const tasks: NextLayout = () => {
 			})
 			refetchTasks()
 			setIsloading(false)
+
+			if (socket) {
+				socket.emit('newTask')
+			}
 		}
 	}, [statusDlOne])
 
@@ -171,6 +175,10 @@ const tasks: NextLayout = () => {
 			refetchTasks()
 			setDataSl([])
 			setIsloading(false)
+
+			if (socket) {
+				socket.emit('newTask')
+			}
 		}
 	}, [statusDlMany])
 
@@ -199,6 +207,27 @@ const tasks: NextLayout = () => {
 			setEmployees(valuesFilter)
 		}
 	}, [allEmplsNormal, colorMode])
+
+	//Join room socket
+	useEffect(() => {
+		//Join room
+		if (socket) {
+			socket.emit('joinRoomTask')
+
+			socket.on('getNewTask', () => {
+				refetchTasks()
+			})
+		}
+
+		//Leave room
+		function leaveRoom() {
+			if (socket) {
+				socket.emit('leaveRoomTask')
+			}
+		}
+
+		return leaveRoom
+	}, [socket])
 
 	// header ----------------------------------------
 	const columns: TColumn[] = [

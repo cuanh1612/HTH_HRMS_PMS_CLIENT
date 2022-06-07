@@ -7,7 +7,7 @@ import {
 	HStack,
 	Input as ChakraInput,
 	Text,
-	VStack,
+	VStack
 } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Loading } from 'components/common'
@@ -20,7 +20,7 @@ import {
 	allTasksByProjectQuery,
 	detailProjectQuery,
 	detailTaskQuery,
-	timeLogsByProjectQuery,
+	timeLogsByProjectQuery
 } from 'queries'
 import { useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -187,6 +187,11 @@ export default function AddTimeLog({ onCloseDrawer }: IAddTimeLogProps) {
 			})
 
 			refetchTimeLogs()
+
+			if (socket && projectId) {
+				socket.emit('newProjectTimeLog', projectId)
+				socket.emit('newTimeLogNotification', dataCreTimeLog?.timeLog?.employee?.id)
+			}
 		}
 	}, [statusCreTimeLog])
 

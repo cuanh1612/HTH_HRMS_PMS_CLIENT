@@ -37,7 +37,7 @@ export default function UpdateNoticeBoard({
 	onCloseDrawer,
 	noticeBoardIdProp,
 }: IUpdateNoticeBoardProps) {
-	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
+	const { isAuthenticated, handleLoading, setToast, socket } = useContext(AuthContext)
 	const router = useRouter()
 	const { noticeBoardIdRouter } = router.query
 
@@ -132,6 +132,10 @@ export default function UpdateNoticeBoard({
 			})
 
 			refetchNotice()
+
+			if (socket) {
+				socket.emit('newNoticeBoard')
+			}
 		}
 	}, [statusUpNoticeBoard])
 

@@ -39,7 +39,7 @@ export interface IAddTimeLogProps {
 }
 
 export default function AddTimeLog({ onCloseDrawer }: IAddTimeLogProps) {
-	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
+	const { isAuthenticated, handleLoading, setToast, socket } = useContext(AuthContext)
 	const router = useRouter()
 
 	//State -------------------------------------------------------------
@@ -219,6 +219,10 @@ export default function AddTimeLog({ onCloseDrawer }: IAddTimeLogProps) {
 
 			refetchTimeLogs()
 			refetchTimeLogsCalendar()
+			if (socket) {
+				socket.emit('newTimeLog')
+				socket.emit('newTimeLogNotification', dataCreTimeLog?.timeLog?.employee?.id)
+			}
 		}
 	}, [statusCreTimeLog])
 

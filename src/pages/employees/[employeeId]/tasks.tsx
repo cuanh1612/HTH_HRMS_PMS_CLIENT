@@ -1,16 +1,16 @@
 import { Box } from '@chakra-ui/react'
 import { AuthContext } from 'contexts/AuthContext'
 import { useRouter } from 'next/router'
-import { allTasksByEmployeeQuery } from 'queries'
+// import { allTasksByEmployeeQuery } from 'queries'
 import { useContext, useEffect } from 'react'
 
 export default function TasksEmployee() {
 	const { isAuthenticated, handleLoading } = useContext(AuthContext)
 	const router = useRouter()
-	const { employeeId } = router.query
+	// const { employeeId } = router.query
 
 	//Query -------------------------------------------------------------------
-	const { data: allTasks } = allTasksByEmployeeQuery(isAuthenticated, employeeId as string)
+	// const { data: allTasks } = allTasksByEmployeeQuery(isAuthenticated, employeeId as string)
 
 	//Funcion -----------------------------------------------------------------
 

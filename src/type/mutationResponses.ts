@@ -18,6 +18,7 @@ import {
 	leaveTypeType,
 	milestoneType,
 	noticeBoardType,
+	notificationType,
 	projectCategoryType,
 	projectDiscussionCategoryType,
 	projectDiscussionReplyType,
@@ -267,5 +268,13 @@ export interface stickyNoteMutaionResponse extends commonResponse {
 export interface roomMutaionResponse extends commonResponse {
 	room?: roomType
 	rooms?: roomType[]
+<<<<<<< HEAD
 	another_rooms?: roomType[]
+=======
+}
+
+export interface NotificationMutaionResponse extends commonResponse {
+	notification?: notificationType
+	notifications?: notificationType[]
+>>>>>>> 1ace05b2ebaaf5440a7db0e9087ca8c17264d3d0
 }

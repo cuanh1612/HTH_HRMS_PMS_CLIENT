@@ -44,7 +44,6 @@ import {
 	allDepartmentsQuery,
 	allLeaveQuery,
 	allHolidaysQuery,
-	allEmployeesQuery,
 	allEmployeesNormalQuery,
 } from 'queries'
 

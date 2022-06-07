@@ -1,7 +1,7 @@
 import { Box } from '@chakra-ui/react'
 import { AuthContext } from 'contexts/AuthContext'
 import { useRouter } from 'next/router'
-import { timeLogsCurrentUserQuery } from 'queries'
+// import { timeLogsCurrentUserQuery } from 'queries'
 import { useContext, useEffect } from 'react'
 
 export default function TimeLogsEmployee() {
@@ -9,7 +9,7 @@ export default function TimeLogsEmployee() {
 	const router = useRouter()
 
 	//Query -------------------------------------------------------------------
-	const { data: allTimeLogs } = timeLogsCurrentUserQuery(isAuthenticated)
+	// const { data: allTimeLogs } = timeLogsCurrentUserQuery(isAuthenticated)
 
 	//Funcion -----------------------------------------------------------------
 

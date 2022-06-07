@@ -3,7 +3,6 @@ import { AuthContext } from 'contexts/AuthContext'
 import { useRouter } from 'next/router'
 import { getRoomByTitleQuery } from 'queries/room'
 import React, { useContext, useEffect, useRef, useState } from 'react'
-import { Swiper } from 'swiper/react'
 import {
 	useDaily,
 	useLocalParticipant,
@@ -174,26 +173,7 @@ export default function join() {
 				height={'calc( 100% - 100px )'}
 			>
 				<Box padding={6} w={'full'} height={'calc( 100% - 10px )'}>
-					<Swiper
-						slidesPerView={5}
-						spaceBetween={30}
-						style={{
-							width: '100%',
-						}}
-					>
-						<div className="swiper-wrapper">
-							{tiles.map((tile, key) => {
-								return (
-									<Tile
-										id={tile.id}
-										key={key}
-										isCurrentUser={tile.isCurrentUser}
-									/>
-								)
-							})}
-						</div>
-					</Swiper>
-
+					
 					<Box
 						mt={'30px'}
 						borderRadius={'20px'}

@@ -5,7 +5,6 @@ import {
 	Divider,
 	Grid,
 	GridItem,
-	HStack,
 	Text,
 	Tooltip,
 	VStack,
@@ -15,7 +14,6 @@ import {
 import { AuthContext } from 'contexts/AuthContext'
 import { useRouter } from 'next/router'
 import { detailEventQuery } from 'queries'
-import { detailTimeLogQuery } from 'queries/timeLog'
 import { useContext, useEffect } from 'react'
 import 'react-quill/dist/quill.bubble.css'
 import 'react-quill/dist/quill.snow.css'

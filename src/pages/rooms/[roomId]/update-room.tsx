@@ -4,7 +4,6 @@ import { Loading } from 'components/common'
 import { Input, SelectMany, Textarea, TimePicker } from 'components/form'
 import { AuthContext } from 'contexts/AuthContext'
 import { updateRoomMutation } from 'mutations/room'
-import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 import { allClientsNormalQuery, allEmployeesNormalQuery } from 'queries'
 import { detailRoomQuery } from 'queries/room'
@@ -19,7 +18,6 @@ import { IOption } from 'type/basicTypes'
 import { updateRoomForm } from 'type/form/basicFormType'
 import { updateRoomValidate } from 'utils/validate'
 
-const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
 
 export interface IUpdateRoomProps {
 	onCloseDrawer?: () => void

@@ -1,7 +1,6 @@
 import {
 	createProjectNoteForm,
 	updateProjectNoteForm,
-	updateSalaryForm,
 } from 'type/form/basicFormType'
 import { projectMutaionResponse, ProjectNoteMutaionResponse } from 'type/mutationResponses'
 import { getData, postData, putData } from 'utils/fetchData'

@@ -39,7 +39,7 @@ const tasks: NextLayout = () => {
 	const { projectId } = router.query
 
 	const [taskId, setTaskId] = useState<number>()
-	const [statusIdShow, setStatusIdShow] = useState<number>(1)
+	const [statusIdShow] = useState<number>(1)
 
 	// data select to delete all
 	const [dataSl, setDataSl] = useState<Array<number> | null>()
@@ -48,7 +48,7 @@ const tasks: NextLayout = () => {
 	const [isLoading, setIsloading] = useState(true)
 
 	// is reset table
-	const [isResetFilter, setIsReset] = useState(false)
+	const [isResetFilter] = useState(false)
 
 	// set filter
 	const [filter, setFilter] = useState<IFilter>({

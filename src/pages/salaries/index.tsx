@@ -7,14 +7,14 @@ import { useContext, useEffect, useState } from 'react'
 import HistorySalary from './history'
 import UpdateSalary from './update'
 
-export interface ISalariesProps {}
 
-export default function Salaries(props: ISalariesProps) {
-	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
+
+export default function Salaries() {
+	const { isAuthenticated, handleLoading } = useContext(AuthContext)
 	const router = useRouter()
 
 	//State -------------------------------------------------------------
-	const [employeeIdShow, setEmployeeIdShow] = useState<string | number | null>(6)
+	const [employeeIdShow] = useState<string | number | null>(6)
 
 	//Modal -------------------------------------------------------------
 	// set open modal to show salary history
@@ -32,7 +32,7 @@ export default function Salaries(props: ISalariesProps) {
 	} = useDisclosure()
 
 	//Query -------------------------------------------------------------
-	const { data: dataSalaries, mutate: refetchSalaries } = allSalariesQuery(isAuthenticated)
+	const { data: dataSalaries } = allSalariesQuery(isAuthenticated)
 	console.log(dataSalaries)
 
 	//Useeffect ---------------------------------------------------------

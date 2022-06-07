@@ -1,4 +1,4 @@
-import { Box, HStack, Text, StackDivider, VStack } from '@chakra-ui/react'
+import { Box, HStack, Text, StackDivider } from '@chakra-ui/react'
 import { AuthContext } from 'contexts/AuthContext'
 import { useRouter } from 'next/router'
 import { getRoomByTitleQuery } from 'queries/room'
@@ -13,6 +13,9 @@ import {
 	useVideoTrack,
 } from '@daily-co/daily-react-hooks'
 import Tile from 'components/room/Tile'
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css"; 
+import "slick-carousel/slick/slick-theme.css";
 
 export default function join() {
 	const { isAuthenticated, handleLoading, currentUser } = useContext(AuthContext)
@@ -52,7 +55,7 @@ export default function join() {
 			})
 		}
 		if (remoteParticipantIds) {
-			remoteParticipantIds.map(id=> {
+			remoteParticipantIds.map((id) => {
 				data.push({
 					id,
 					isCurrentUser: false,
@@ -90,8 +93,63 @@ export default function join() {
 		}
 	}, [name, currentUser, co])
 
+	const settings = {
+		dots: false,
+		infinite: false,
+		speed: 500,
+		slidesToShow: 5,
+		slidesToScroll: 5,
+		initialSlide: 0,
+		responsive: [
+		  {
+			breakpoint: 1024,
+			settings: {
+			  slidesToShow: 3,
+			  slidesToScroll: 3,
+			  infinite: true,
+			  dots: true
+			}
+		  },
+		  {
+			breakpoint: 600,
+			settings: {
+			  slidesToShow: 2,
+			  slidesToScroll: 2,
+			  initialSlide: 2
+			}
+		  },
+		  {
+			breakpoint: 480,
+			settings: {
+			  slidesToShow: 1,
+			  slidesToScroll: 1
+			}
+		  }
+		]
+	  };
+
 	return (
-		<Box bg={'#1b1a1d'} pos={'relative'} w={'100%'} h={'100vh'}>
+		<Box pos={'relative'} w={'100%'} h={'100vh'}>
+			<Slider {...settings}>
+          <div>
+            <h3>1</h3>
+          </div>
+          <div>
+            <h3>2</h3>
+          </div>
+          <div>
+            <h3>3</h3>
+          </div>
+          <div>
+            <h3>4</h3>
+          </div>
+          <div>
+            <h3>5</h3>
+          </div>
+          <div>
+            <h3>6</h3>
+          </div>
+        </Slider>
 			<HStack
 				borderBottom={'1px solid'}
 				borderColor={'gray'}

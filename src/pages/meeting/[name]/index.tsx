@@ -1,5 +1,4 @@
 import {
-	AspectRatio,
 	Avatar,
 	AvatarGroup,
 	Box,
@@ -7,7 +6,6 @@ import {
 	Center,
 	HStack,
 	IconButton,
-	Stack,
 	Text,
 	VStack,
 } from '@chakra-ui/react'
@@ -16,7 +14,7 @@ import { AuthContext } from 'contexts/AuthContext'
 import { useRouter } from 'next/router'
 import { getRoomByTitleQuery } from 'queries/room'
 import React, { useContext, useEffect, useRef } from 'react'
-import { useDaily, useLocalParticipant, useMediaTrack, useVideoTrack } from '@daily-co/daily-react-hooks'
+import { useDaily, useLocalParticipant, useVideoTrack } from '@daily-co/daily-react-hooks'
 import { BiMicrophone, BiMicrophoneOff } from 'react-icons/bi'
 import { BsCameraVideo, BsCameraVideoOff } from 'react-icons/bs'
 import Link from 'next/link'

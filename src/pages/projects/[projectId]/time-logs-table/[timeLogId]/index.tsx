@@ -7,14 +7,13 @@ import { useContext, useEffect } from 'react'
 import 'react-quill/dist/quill.bubble.css'
 import 'react-quill/dist/quill.snow.css'
 import { projectMutaionResponse } from 'type/mutationResponses'
-import {deleteTimeLogMutation} from 'mutations'
 
 export interface IDetailTimeLogProps {
 	timeLogIdProp?: string | number
 }
 
 export default function DetailTimeLog({ timeLogIdProp }: IDetailTimeLogProps) {
-	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
+	const { isAuthenticated, handleLoading } = useContext(AuthContext)
 	const router = useRouter()
 	const { timeLogId: timeLogIdRouter } = router.query
 

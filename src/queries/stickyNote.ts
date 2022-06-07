@@ -1,6 +1,5 @@
 import { AxiosError } from 'axios'
 import { allStickyNoteRequest, detailStickyNoteRequest } from 'requests/stickyNote'
-import { detailTaskRequest } from 'requests/task'
 import useSWR from 'swr'
 import { stickyNoteMutaionResponse } from 'type/mutationResponses'
 

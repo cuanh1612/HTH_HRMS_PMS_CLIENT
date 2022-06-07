@@ -1,4 +1,4 @@
-import { createLeaveTypeForm, createProjectDiscussionRoomForm } from 'type/form/basicFormType'
+import { createProjectDiscussionRoomForm } from 'type/form/basicFormType'
 import { ProjectDisucssionRoomMutaionResponse } from 'type/mutationResponses'
 import { deleteData, getData, postData } from 'utils/fetchData'
 

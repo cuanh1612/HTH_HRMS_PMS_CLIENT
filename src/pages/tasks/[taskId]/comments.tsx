@@ -6,7 +6,6 @@ import {
 	deleteTaskCommentMutation,
 	updateTaskCommentMutation,
 } from 'mutations/taskComment'
-import { GetServerSideProps } from 'next'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 import { detailTaskQuery } from 'queries'
@@ -16,7 +15,7 @@ import { AiOutlinePlusCircle, AiOutlineSend } from 'react-icons/ai'
 import 'react-quill/dist/quill.bubble.css'
 import 'react-quill/dist/quill.snow.css'
 import { updateTaskCommentForm } from 'type/form/basicFormType'
-import { projectMutaionResponse } from 'type/mutationResponses'
+
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
 

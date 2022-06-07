@@ -33,7 +33,6 @@ export interface IDetailTaskProps {
 }
 
 export default function DetailTask({
-	onCloseDrawer,
 	taskIdProp,
 	onOpenDl,
 	onOpenUpdate,

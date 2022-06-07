@@ -6,9 +6,6 @@ import {
 	GridItem,
 	HStack,
 	Text,
-	Th,
-	Thead,
-	Tr,
 	VStack,
 } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'

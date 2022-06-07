@@ -29,7 +29,7 @@ export interface IDetailTaskProps {
 	taskIdProp?: string | number
 }
 
-export default function DetailTask({ onCloseDrawer, taskIdProp }: IDetailTaskProps) {
+export default function DetailTask({ taskIdProp }: IDetailTaskProps) {
 	const { isAuthenticated, handleLoading } = useContext(AuthContext)
 	const router = useRouter()
 	const { taskId: taskIdRouter } = router.query
@@ -44,9 +44,7 @@ export default function DetailTask({ onCloseDrawer, taskIdProp }: IDetailTaskPro
 	} = useDisclosure()
 
 	const {
-		isOpen: isOpenOtherDetails,
-		onOpen: onOpenOtherDetails,
-		onClose: onCloseOtherDetails,
+		isOpen: isOpenOtherDetails
 	} = useDisclosure()
 
 	//Query -------------------------------------------------------------

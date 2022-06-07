@@ -4,7 +4,6 @@ import { Loading } from 'components/common'
 import { Input, SelectMany, Textarea, TimePicker } from 'components/form'
 import { AuthContext } from 'contexts/AuthContext'
 import { createRoomMutation } from 'mutations/room'
-import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 import { allClientsNormalQuery, allEmployeesNormalQuery, allRoomsQuery } from 'queries'
 import { useContext, useEffect, useState } from 'react'
@@ -17,8 +16,6 @@ import 'react-quill/dist/quill.snow.css'
 import { IOption } from 'type/basicTypes'
 import { createRoomForm } from 'type/form/basicFormType'
 import { createRoomValidate } from 'utils/validate'
-
-const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
 
 export interface IAddRoomsProps {
 	onCloseDrawer: () => void

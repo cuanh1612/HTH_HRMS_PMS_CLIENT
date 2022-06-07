@@ -42,7 +42,7 @@ export interface IUpdateTimeLogProps {
 }
 
 export default function UpdateTimeLog({ onCloseDrawer, timeLogIdProp }: IUpdateTimeLogProps) {
-	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
+	const { isAuthenticated, handleLoading, setToast, socket } = useContext(AuthContext)
 	const router = useRouter()
 	const { projectId, timeLogId: timeLogIdRouter } = router.query
 
@@ -196,6 +196,9 @@ export default function UpdateTimeLog({ onCloseDrawer, timeLogIdProp }: IUpdateT
 				msg: dataUpdateTimeLog?.message as string,
 			})
 			refetchTimeLogs()
+			if (socket && projectId) {
+				socket.emit('newProjectTimeLog', projectId)
+			}
 		}
 	}, [statusUpdateTimeLog])
 

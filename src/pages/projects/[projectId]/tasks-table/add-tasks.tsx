@@ -9,24 +9,20 @@ import {
 	Input as InputChakra,
 	Text,
 	useDisclosure,
-	VStack,
+	VStack
 } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { Input, Select, SelectCustom, SelectMany } from 'components/form'
 import { Loading } from 'components/common'
+import { Input, Select, SelectCustom, SelectMany } from 'components/form'
 import Modal from 'components/modal/Modal'
 import { AuthContext } from 'contexts/AuthContext'
 import { createTaskMutation } from 'mutations'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 import {
-	milestonesByProjectNormalQuery,
-	detailProjectQuery,
 	allStatusQuery,
 	allStatusTasksQuery,
-	allTaskCategoriesQuery,
-	detailStatusQuery,
-	allTasksByProjectQuery,
+	allTaskCategoriesQuery, allTasksByProjectQuery, detailProjectQuery, detailStatusQuery, milestonesByProjectNormalQuery
 } from 'queries'
 import { useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -49,7 +45,8 @@ export interface IAddTaskProps {
 }
 
 export default function AddTask({ onCloseDrawer, statusId }: IAddTaskProps) {
-	const { isAuthenticated, handleLoading, setToast, currentUser } = useContext(AuthContext)
+	const { isAuthenticated, handleLoading, setToast, currentUser, socket } =
+		useContext(AuthContext)
 	const router = useRouter()
 	const { projectId } = router.query
 
@@ -77,19 +74,16 @@ export default function AddTask({ onCloseDrawer, statusId }: IAddTaskProps) {
 	//Query -------------------------------------------------------------
 	const { data: dataTaskCategories } = allTaskCategoriesQuery()
 	const { data: dataDetailProject } = detailProjectQuery(isAuthenticated, projectId as string)
-	console.log("huy", dataDetailProject);
-	
+	console.log('huy', dataDetailProject)
+
 	const { data: dataAllStatus } = allStatusQuery(isAuthenticated, projectId)
 	const { data: dataDetailStatus } = detailStatusQuery(isAuthenticated, statusId)
-	
+
 	const { data: dataAllMilestones } = milestonesByProjectNormalQuery(isAuthenticated, projectId)
 	// get all status tasks
 	const { mutate: refetchStatusTasks } = allStatusTasksQuery(isAuthenticated, projectId)
 	// refetch all task
-	const { mutate: refetchTasks } = allTasksByProjectQuery(
-		isAuthenticated,
-		projectId
-	)
+	const { mutate: refetchTasks } = allTasksByProjectQuery(isAuthenticated, projectId)
 
 	//mutation -----------------------------------------------------------
 	const [mutateCreTask, { status: statusCreTask, data: dataCreTask }] =
@@ -157,7 +151,7 @@ export default function AddTask({ onCloseDrawer, statusId }: IAddTaskProps) {
 		if (dataDetailStatus?.status) {
 			setSelectedOptionStatus({
 				label: dataDetailStatus.status.title,
-				value: dataDetailStatus.status.id
+				value: dataDetailStatus.status.id,
 			})
 		}
 	}, [dataDetailStatus])
@@ -204,7 +198,7 @@ export default function AddTask({ onCloseDrawer, statusId }: IAddTaskProps) {
 
 	//Note when request success
 	useEffect(() => {
-		if (statusCreTask === 'success') {
+		if (statusCreTask === 'success' && dataCreTask) {
 			//Close drawer when using drawer
 			if (onCloseDrawer) {
 				onCloseDrawer()
@@ -212,10 +206,18 @@ export default function AddTask({ onCloseDrawer, statusId }: IAddTaskProps) {
 
 			setToast({
 				type: 'success',
-				msg: dataCreTask?.message as string,
+				msg: dataCreTask.message as string,
 			})
 			refetchStatusTasks()
 			refetchTasks()
+
+			if (socket && projectId) {
+				socket.emit('newProjectTask', projectId)
+				socket.emit(
+					'newTaskNotification',
+					dataCreTask.task?.employees.map((employee) => employee.id)
+				)
+			}
 		}
 	}, [statusCreTask])
 

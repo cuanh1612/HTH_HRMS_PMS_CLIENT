@@ -1,11 +1,9 @@
 import {
 	Avatar,
 	Badge,
-	Button,
-	DrawerBody,
+	Button, Drawer as CDrawer, DrawerBody,
 	DrawerCloseButton,
-	DrawerContent,
-	DrawerOverlay,
+	DrawerContent, DrawerHeader, DrawerOverlay,
 	HStack,
 	Menu,
 	MenuButton,
@@ -13,14 +11,12 @@ import {
 	MenuList,
 	Text,
 	useDisclosure,
-	VStack,
-	Drawer as CDrawer,
-	DrawerHeader,
+	VStack
 } from '@chakra-ui/react'
 import { AlertDialog, Table } from 'components/common'
 import { Drawer } from 'components/Drawer'
 import { DateRange, Input, Select } from 'components/filter'
-import { ClientLayout, ProjectLayout } from 'components/layouts'
+import { ProjectLayout } from 'components/layouts'
 import { AuthContext } from 'contexts/AuthContext'
 import { deleteTimeLogMutation, deleteTimeLogsMutation } from 'mutations'
 import { GetServerSideProps } from 'next'
@@ -40,7 +36,7 @@ import DetailTimeLog from './[timeLogId]'
 import UpdateTimeLog from './[timeLogId]/update-time-logs'
 
 const TimeLogs: NextLayout = () => {
-	const { isAuthenticated, handleLoading, currentUser, setToast } = useContext(AuthContext)
+	const { isAuthenticated, handleLoading, currentUser, setToast, socket } = useContext(AuthContext)
 	const router = useRouter()
 
 	const { projectId } = router.query
@@ -128,6 +124,27 @@ const TimeLogs: NextLayout = () => {
 		}
 	}, [isAuthenticated])
 
+	//Join room socket
+	useEffect(() => {
+		//Join room
+		if (socket && projectId) {
+			socket.emit('joinRoomProjectTimeLog', projectId)
+
+			socket.on('getNewProjectTimeLog', () => {
+				refetchTimeLogs()
+			})
+		}
+
+		//Leave room
+		function leaveRoom() {
+			if (socket && projectId) {
+				socket.emit('leaveRoomProjectTimeLog', projectId)
+			}
+		}
+
+		return leaveRoom
+	}, [socket, projectId])
+
 	// when get all data success
 	useEffect(() => {
 		if (allTimeLogs) {
@@ -145,6 +162,9 @@ const TimeLogs: NextLayout = () => {
 			})
 			refetchTimeLogs()
 			setIsloading(false)
+			if (socket && projectId) {
+				socket.emit('newProjectTimeLog', projectId)
+			}
 		}
 	}, [statusDlOne])
 
@@ -158,6 +178,9 @@ const TimeLogs: NextLayout = () => {
 			setDataSl(null)
 			refetchTimeLogs()
 			setIsloading(false)
+			if (socket && projectId) {
+				socket.emit('newProjectTimeLog', projectId)
+			}
 		}
 	}, [statusDlMany])
 

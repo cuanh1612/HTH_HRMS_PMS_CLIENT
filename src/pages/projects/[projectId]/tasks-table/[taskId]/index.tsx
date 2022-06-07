@@ -58,14 +58,6 @@ export default function DetailTask({ onCloseDrawer, taskIdProp }: IDetailTaskPro
 	//mutation -----------------------------------------------------------
 
 	//Function -----------------------------------------------------------
-	//Handle trigger other detail
-	const onTriggerOtherDetails = () => {
-		if (isOpenOtherDetails) {
-			onCloseOtherDetails()
-		} else {
-			onOpenOtherDetails()
-		}
-	}
 
 	//User effect ---------------------------------------------------------------
 	//Handle check loged in

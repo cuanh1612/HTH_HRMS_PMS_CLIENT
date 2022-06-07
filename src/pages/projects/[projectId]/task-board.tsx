@@ -1,8 +1,14 @@
 import {
 	Avatar,
 	AvatarGroup,
-	Box, Button, HStack, StackDivider, Text, Tooltip, useColorMode,
-	useDisclosure
+	Box,
+	Button,
+	HStack,
+	StackDivider,
+	Text,
+	Tooltip,
+	useColorMode,
+	useDisclosure,
 } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Column } from 'components/board'
@@ -13,8 +19,12 @@ import { ProjectLayout } from 'components/layouts'
 import Modal from 'components/modal/Modal'
 import { AuthContext } from 'contexts/AuthContext'
 import {
-	changePositionMutation, changePositionTaskMutation, createStatusColumnMutation,
-	deleteStatusColumnMutation, deleteTaskMutation, updateStatusColumnMutation
+	changePositionMutation,
+	changePositionTaskMutation,
+	createStatusColumnMutation,
+	deleteStatusColumnMutation,
+	deleteTaskMutation,
+	updateStatusColumnMutation,
 } from 'mutations'
 import { useRouter } from 'next/router'
 import { allStatusTasksQuery, detailProjectQuery } from 'queries'
@@ -33,7 +43,8 @@ import DetailTask from './tasks-table/[taskId]'
 import UpdateTask from './tasks-table/[taskId]/update-task'
 
 const taskBoard: NextLayout = () => {
-	const { isAuthenticated, handleLoading, setToast, currentUser } = useContext(AuthContext)
+	const { isAuthenticated, handleLoading, setToast, currentUser, socket } =
+		useContext(AuthContext)
 	const [columns, setColumns] = useState<statusType[]>([])
 	const [isUpdate, setIsUpdate] = useState(false)
 	const [columnId, setColumnId] = useState<string>()
@@ -41,8 +52,8 @@ const taskBoard: NextLayout = () => {
 	const [statusIdShow, setStatusIdShow] = useState<number>(1)
 
 	const { colorMode } = useColorMode()
-
 	const { query } = useRouter()
+	const { projectId } = query
 
 	//Modal -------------------------------------------------------------
 	// set open add task
@@ -76,10 +87,11 @@ const taskBoard: NextLayout = () => {
 	const { data: projectDetail } = detailProjectQuery(isAuthenticated, query.projectId as string)
 
 	// change position status column
-	const [changePosition] = changePositionMutation(setToast)
+	const [changePosition, { status: statusChangePosition }] = changePositionMutation(setToast)
 
 	// change position task column
-	const [changeTaskPosition] = changePositionTaskMutation(setToast)
+	const [changeTaskPosition, { status: statusChangeTaskPosition }] =
+		changePositionTaskMutation(setToast)
 
 	// create status column
 	const [createColumn, { data: dataCreateColumn, status: createColumnStatus }] =
@@ -164,6 +176,9 @@ const taskBoard: NextLayout = () => {
 				color: '',
 				title: '',
 			})
+			if (socket && projectId) {
+				socket.emit('newProjectTaskBoard', projectId)
+			}
 		}
 	}, [createColumnStatus])
 
@@ -174,6 +189,10 @@ const taskBoard: NextLayout = () => {
 				msg: dataDeleteColumn.message,
 			})
 			refetchStatusTasks()
+
+			if (socket && projectId) {
+				socket.emit('newProjectTaskBoard', projectId)
+			}
 		}
 	}, [deleteColumnStatus])
 
@@ -189,6 +208,10 @@ const taskBoard: NextLayout = () => {
 				color: '',
 				title: '',
 			})
+
+			if (socket && projectId) {
+				socket.emit('newProjectTaskBoard', projectId)
+			}
 		}
 	}, [statusUpdateColumn])
 
@@ -200,8 +223,47 @@ const taskBoard: NextLayout = () => {
 				msg: dataDeleteTask.message,
 			})
 			refetchStatusTasks()
+
+			if (socket && projectId) {
+				socket.emit('newProjectTaskBoard', projectId)
+			}
 		}
 	}, [deleteTaskStatus])
+
+	// emit socket when change position column
+	useEffect(() => {
+		if (statusChangePosition == 'success' && socket && projectId) {
+			socket.emit('newProjectTaskBoard', projectId)
+		}
+	}, [statusChangePosition])
+
+	// emit socket when change position task
+	useEffect(() => {
+		if (statusChangeTaskPosition == 'success' && socket && projectId) {
+			socket.emit('newProjectTaskBoard', projectId)
+		}
+	}, [statusChangeTaskPosition])
+
+	//Join room socket
+	useEffect(() => {
+		//Join room
+		if (socket && projectId) {
+			socket.emit('joinRoomProjectTaskBoard', projectId)
+
+			socket.on('getNewProjectTaskBoard', () => {
+				refetchStatusTasks()
+			})
+		}
+
+		//Leave room
+		function leaveRoom() {
+			if (socket && projectId) {
+				socket.emit('leaveRoomProjectTaskBoard', projectId)
+			}
+		}
+
+		return leaveRoom
+	}, [socket, projectId])
 
 	const onDragEnd = (result: DropResult) => {
 		if (result.destination) {
@@ -278,13 +340,13 @@ const taskBoard: NextLayout = () => {
 						return e
 					})
 					setColumns(data)
-					if(!task2) {
+					if (!task2) {
 						changeTaskPosition({
 							id1: task1.id,
 							status1: column1.id,
 							status2: column2.id,
 						})
-						return 
+						return
 					}
 					changeTaskPosition({
 						id1: task1.id,
@@ -369,7 +431,7 @@ const taskBoard: NextLayout = () => {
 						>
 							{columns.map((column, key: number) => (
 								<Column
-									isDragDisabled={currentUser?.role === "Admin" ? false : true}
+									isDragDisabled={currentUser?.role === 'Admin' ? false : true}
 									setEditForm={setEditForm}
 									key={column.id}
 									column={column}
@@ -471,12 +533,7 @@ const taskBoard: NextLayout = () => {
 				onClose={onCloseDlTask}
 			/>
 
-			<Drawer
-				size="xl"
-				title="Add New Task"
-				onClose={onCloseAddTask}
-				isOpen={isOpenAddTask}
-			>
+			<Drawer size="xl" title="Add New Task" onClose={onCloseAddTask} isOpen={isOpenAddTask}>
 				<AddTask statusId={statusIdShow} onCloseDrawer={onCloseAddTask} />
 			</Drawer>
 

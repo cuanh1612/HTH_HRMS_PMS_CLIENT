@@ -9,7 +9,7 @@ import {
 	useDisclosure,
 	VStack,
 } from '@chakra-ui/react'
-import {ItemContractFile, ItemFileUpload, Loading } from 'components/common'
+import { ItemContractFile, ItemFileUpload, Loading } from 'components/common'
 import { AuthContext } from 'contexts/AuthContext'
 import { createTaskFileMutation, deleteTaskFileMutation } from 'mutations/taskFile'
 import { GetServerSideProps } from 'next'
@@ -24,10 +24,10 @@ import { generateImgFile } from 'utils/helper'
 import { uploadFile } from 'utils/uploadFile'
 
 export interface ITaskFilesProps {
-	taskIdProp?:  string | number
+	taskIdProp?: string | number
 }
 
-export default function TaskFiles({taskIdProp}: ITaskFilesProps) {
+export default function TaskFiles({ taskIdProp }: ITaskFilesProps) {
 	const { isAuthenticated, handleLoading, setToast, socket } = useContext(AuthContext)
 	const router = useRouter()
 	const { projectId, taskId: taskIdRouter } = router.query
@@ -184,10 +184,9 @@ export default function TaskFiles({taskIdProp}: ITaskFilesProps) {
 	const onUploadFiles = async () => {
 		//Upload contract files
 		const dataUploadFiles: ICloudinaryImg[] | null = await handleUploadFiles()
-		
+
 		//Check upload files success
 		if ((taskIdProp || taskIdRouter) && dataUploadFiles && dataUploadFiles?.length > 0) {
-
 			//Create task file
 			mutateCreTaskFile({
 				files: dataUploadFiles,

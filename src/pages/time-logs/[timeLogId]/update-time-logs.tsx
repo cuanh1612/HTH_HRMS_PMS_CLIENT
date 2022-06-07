@@ -7,23 +7,18 @@ import {
 	HStack,
 	Input as ChakraInput,
 	Text,
-	VStack,
+	VStack
 } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Loading } from 'components/common'
 import { Input, SelectCustom, TimePicker } from 'components/form'
 import { AuthContext } from 'contexts/AuthContext'
 import { updateTimeLogMutation } from 'mutations/timeLog'
-import { GetServerSideProps } from 'next'
 import { useRouter } from 'next/router'
 import {
-	allTasksByProjectQuery,
-	detailProjectQuery,
-	detailTaskQuery,
-	detailTimeLogQuery,
-	timeLogsByProjectQuery,
-	timeLogsCalendarQuery,
-	timeLogsQuery,
+	allTasksByProjectQuery, detailTaskQuery,
+	detailTimeLogQuery, timeLogsCalendarQuery,
+	timeLogsQuery
 } from 'queries'
 import { useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -34,7 +29,6 @@ import 'react-quill/dist/quill.bubble.css'
 import 'react-quill/dist/quill.snow.css'
 import { IOption } from 'type/basicTypes'
 import { updateProjectTimeLogForm } from 'type/form/basicFormType'
-import { projectMutaionResponse } from 'type/mutationResponses'
 import { compareDateTime } from 'utils/time'
 import { CreateProjectTimeLogValidate } from 'utils/validate'
 
@@ -44,7 +38,7 @@ export interface IUpdateTimeLogProps {
 }
 
 export default function UpdateTimeLog({ onCloseDrawer, timeLogIdProp }: IUpdateTimeLogProps) {
-	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
+	const { isAuthenticated, handleLoading, setToast, socket } = useContext(AuthContext)
 	const router = useRouter()
 	const { timeLogId: timeLogIdRouter } = router.query
 
@@ -207,6 +201,10 @@ export default function UpdateTimeLog({ onCloseDrawer, timeLogIdProp }: IUpdateT
 			})
 			refetchTimeLogs()
 			refetchTimeLogsCalendar()
+
+			if (socket) {
+				socket.emit('newTimeLog')
+			}
 		}
 	}, [statusUpdateTimeLog])
 

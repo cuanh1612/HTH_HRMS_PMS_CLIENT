@@ -43,7 +43,7 @@ import { IFilter } from 'type/tableTypes'
 var timeoutName: NodeJS.Timeout
 
 const Event: NextLayout = () => {
-	const { isAuthenticated, handleLoading } = useContext(AuthContext)
+	const { isAuthenticated, handleLoading, socket } = useContext(AuthContext)
 	const router = useRouter()
 
 	const { colorMode } = useColorMode()
@@ -73,7 +73,7 @@ const Event: NextLayout = () => {
 	const { isOpen: isOpenFilter, onClose: onCloseFilter, onOpen: onOpenFilter } = useDisclosure()
 
 	// get all event
-	const { data: allEvents } = allEventsQuery(isAuthenticated, employee, client, name)
+	const { data: allEvents, mutate: refetchEvents } = allEventsQuery(isAuthenticated, employee, client, name)
 	const { data: allEmployees } = allEmployeesNormalQuery(isAuthenticated)
 	const { data: allClients } = allClientsQuery(isAuthenticated)
 
@@ -206,6 +206,28 @@ const Event: NextLayout = () => {
 			setClientsFilter(valuesFilter)
 		}
 	}, [allClients, colorMode])
+
+	//Join room socket
+	useEffect(() => {
+		//Join room
+		if (socket) {
+			socket.emit('joinRoomEvent')
+
+			socket.on('getNewEvent', () => {
+				refetchEvents()
+			})
+		}
+
+		//Leave room
+		function leaveRoom() {
+			if (socket) {
+				socket.emit('leaveRoomEvent')
+			}
+		}
+
+		return leaveRoom
+	}, [socket])
+
 
 	return (
 		<>

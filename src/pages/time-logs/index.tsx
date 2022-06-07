@@ -38,7 +38,7 @@ import DetailTimeLog from './[timeLogId]'
 import UpdateTimeLog from './[timeLogId]/update-time-logs'
 
 const TimeLogs: NextLayout = () => {
-	const { isAuthenticated, handleLoading, setToast, currentUser } = useContext(AuthContext)
+	const { isAuthenticated, handleLoading, setToast, currentUser, socket } = useContext(AuthContext)
 	const router = useRouter()
 
 	// data select to delete all
@@ -141,6 +141,10 @@ const TimeLogs: NextLayout = () => {
 			})
 			refetchTimeLogs()
 			setIsloading(false)
+			
+			if (socket) {
+				socket.emit('newTimeLog')
+			}
 		}
 	}, [statusDlOne])
 
@@ -154,8 +158,33 @@ const TimeLogs: NextLayout = () => {
 			setDataSl(null)
 			refetchTimeLogs()
 			setIsloading(false)
+
+			if (socket) {
+				socket.emit('newTimeLog')
+			}
 		}
 	}, [statusDlMany])
+
+	//Join room socket
+	useEffect(() => {
+		//Join room
+		if (socket) {
+			socket.emit('joinRoomTimeLog')
+
+			socket.on('getNewTimeLog', () => {
+				refetchTimeLogs()
+			})
+		}
+
+		//Leave room
+		function leaveRoom() {
+			if (socket) {
+				socket.emit('leaveRoomTimeLog')
+			}
+		}
+
+		return leaveRoom
+	}, [socket])
 
 	// header ----------------------------------------
 	const columns: TColumn[] = [

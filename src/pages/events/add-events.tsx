@@ -10,13 +10,13 @@ import {
 	VStack,
 } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { Input, InputNumber, Select, SelectMany, TimePicker} from 'components/form'
-import {Loading} from 'components/common'
+import { Loading } from 'components/common'
+import { Input, InputNumber, Select, SelectMany, TimePicker } from 'components/form'
 import { AuthContext } from 'contexts/AuthContext'
 import { createEventMutation } from 'mutations'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
-import { allClientsNormalQuery, allClientsQuery, allEmployeesNormalQuery, allEventsQuery } from 'queries'
+import { allClientsNormalQuery, allEmployeesNormalQuery, allEventsQuery } from 'queries'
 import { useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { AiOutlineBgColors, AiOutlineCheck } from 'react-icons/ai'
@@ -37,7 +37,7 @@ export interface IAddEventProps {
 }
 
 export default function AddEvent({ onCloseDrawer }: IAddEventProps) {
-	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
+	const { isAuthenticated, handleLoading, setToast, socket } = useContext(AuthContext)
 	const router = useRouter()
 
 	//State ----------------------------------------------------------------------
@@ -130,12 +130,20 @@ export default function AddEvent({ onCloseDrawer }: IAddEventProps) {
 				onCloseDrawer()
 			}
 
+			if (socket) {
+				socket.emit('newEvent')
+			}
+
 			setToast({
 				type: 'success',
 				msg: dataCreEvent?.message as string,
 			})
 
 			refetchAllEvents()
+
+			if (socket) {
+				socket.emit('newEvent')
+			}
 		}
 	}, [statusCreEvent])
 
@@ -193,7 +201,7 @@ export default function AddEvent({ onCloseDrawer }: IAddEventProps) {
 				values.cycles = Number(values.cycles)
 			}
 			mutateCreEvent({
-				...values
+				...values,
 			})
 		}
 	}

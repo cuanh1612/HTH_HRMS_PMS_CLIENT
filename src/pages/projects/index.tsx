@@ -48,7 +48,8 @@ import AddProject from './add-projects'
 import UpdateProject from './update-projects'
 
 const Projects: NextLayout = () => {
-	const { isAuthenticated, handleLoading, setToast, currentUser } = useContext(AuthContext)
+	const { isAuthenticated, handleLoading, setToast, currentUser, socket } =
+		useContext(AuthContext)
 	const router = useRouter()
 	const { colorMode } = useColorMode()
 

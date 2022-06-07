@@ -25,7 +25,7 @@ export interface IUpdateEventProps {
 }
 
 export default function UpdateEvent({ onCloseDrawer, eventIdUpdate }: IUpdateEventProps) {
-	const { isAuthenticated, setToast } = useContext(AuthContext)
+	const { isAuthenticated, setToast, socket } = useContext(AuthContext)
 
 	//State ----------------------------------------------------------------------
 	const [description, setDescription] = useState<string>('')
@@ -156,6 +156,10 @@ export default function UpdateEvent({ onCloseDrawer, eventIdUpdate }: IUpdateEve
 				msg: dataUpEvent?.message as string,
 			})
 			refetchAllEvents()
+
+			if (socket) {
+				socket.emit('newEvent')
+			}
 		}
 	}, [statusUpEvent])
 

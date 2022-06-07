@@ -51,12 +51,6 @@ export default function DetailTask({
 		onClose: onCloseTaskCategory,
 	} = useDisclosure()
 
-	const {
-		isOpen: isOpenOtherDetails,
-		onOpen: onOpenOtherDetails,
-		onClose: onCloseOtherDetails,
-	} = useDisclosure()
-
 	//Query -------------------------------------------------------------
 	const { data: dataDetailTask } = detailTaskQuery(
 		isAuthenticated,
@@ -64,16 +58,6 @@ export default function DetailTask({
 	)
 
 	//mutation -----------------------------------------------------------
-
-	//Function -----------------------------------------------------------
-	//Handle trigger other detail
-	const onTriggerOtherDetails = () => {
-		if (isOpenOtherDetails) {
-			onCloseOtherDetails()
-		} else {
-			onOpenOtherDetails()
-		}
-	}
 
 	//User effect ---------------------------------------------------------------
 	//Handle check loged in
@@ -204,14 +188,6 @@ export default function DetailTask({
 					</TabPanel>
 				</TabPanels>
 			</Tabs>
-
-			{isOpenOtherDetails && (
-				<Grid templateColumns="repeat(2, 1fr)" gap={6} mt={6}>
-					<GridItem w="100%" colSpan={[2, 1]}></GridItem>
-				</Grid>
-			)}
-
-			{/* {statusCreProjectNote == 'running' && <Loading />} */}
 
 			{/* Modal department and designation */}
 			<Modal

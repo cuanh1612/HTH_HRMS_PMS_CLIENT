@@ -4,8 +4,6 @@ import { useRouter } from 'next/router'
 import { getRoomByTitleQuery } from 'queries/room'
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { Swiper } from 'swiper/react'
-import 'swiper/css'
-import 'swiper/css/pagination'
 import {
 	useDaily,
 	useLocalParticipant,

@@ -5,7 +5,7 @@ import { deleteData, getData, postData, putData } from 'utils/fetchData'
 //Function handle create leave
 export async function createLeaveRequest(inputCreate: createLeaveForm) {
 	const resultFetch = await postData<leaveMutaionResponse>({
-		url: 'http://localhost:4000/api/leaves',
+		url: '${process.env.NEXT_PUBLIC_API_URL}/api/leaves',
 		body: inputCreate,
 	})
 
@@ -15,7 +15,7 @@ export async function createLeaveRequest(inputCreate: createLeaveForm) {
 //Function handle get all leaves
 export async function allLeavesRequest(url: string) {
 	const resultFetch = await getData<leaveMutaionResponse>({
-		url: `http://localhost:4000/api/${url}`,
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/${url}`,
 	})
 
 	return resultFetch
@@ -31,7 +31,7 @@ export async function updateLeaveRequest({
 	leaveId: number
 }) {
 	const resultFetch = await putData<leaveMutaionResponse>({
-		url: `http://localhost:4000/api/leaves/${leaveId}`,
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/leaves/${leaveId}`,
 		body: inputUpdate,
 	})
 
@@ -41,7 +41,7 @@ export async function updateLeaveRequest({
 //Function handle get detail leave
 export const detailLeaveRequest = async (url: string) => {
 	return await getData<leaveMutaionResponse>({
-		url: `http://localhost:4000/api/${url}`,
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/${url}`,
 	})
 }
 
@@ -54,7 +54,7 @@ export const updateStatusRequest = async ({
 	leaveId: number
 }) => {
 	return await putData<leaveMutaionResponse>({
-		url: `http://localhost:4000/api/leaves/status/${leaveId}`,
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/leaves/status/${leaveId}`,
 		body: {
 			status
 		}
@@ -65,7 +65,7 @@ export const updateStatusRequest = async ({
 //Handle to delete leave
 export const deleteLeaveRequest = async (id: string) => {
 	return await deleteData<leaveMutaionResponse>({
-		url: `http://localhost:4000/api/leaves/${id}`,
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/leaves/${id}`,
 	})
 }
 
@@ -73,7 +73,7 @@ export const deleteLeaveRequest = async (id: string) => {
 // Handle to delete many leave
 export const deleteLeavesRequest = async (ids: number[]) => {
 	return await postData<leaveMutaionResponse>({
-		url: `http://localhost:4000/api/leaves/delete-many`,
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/leaves/delete-many`,
 		body: {
 			leaves: ids,
 		},

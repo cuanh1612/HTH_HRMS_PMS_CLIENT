@@ -5,14 +5,14 @@ import { deleteData, getData, postData, putData } from 'utils/fetchData'
 //Function handle get all department
 export const allDesignationRequest = async (url: string) => {
 	return await getData<DesignationMutaionResponse>({
-		url: `http://localhost:4000/api/${url}`,
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/${url}`,
 	})
 }
 
 //Function handle create designation
 export async function createDesignationRequest(inputCreate: createDesignationForm) {
 	const resultFetch = await postData<DesignationMutaionResponse>({
-		url: 'http://localhost:4000/api/designations',
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/designations`,
 		body: inputCreate,
 	})
 
@@ -22,7 +22,7 @@ export async function createDesignationRequest(inputCreate: createDesignationFor
 //Function handle delete designation
 export async function deleteDesignationRequest(inputDelete: { designationId: number }) {
 	const resultFetch = await deleteData<DesignationMutaionResponse>({
-		url: `http://localhost:4000/api/designations/${inputDelete.designationId}`,
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/designations/${inputDelete.designationId}`,
 	})
 
 	return resultFetch
@@ -37,7 +37,7 @@ export async function updateDesignationRequest({
 	name: string
 }) {
 	const resultFetch = await putData<DesignationMutaionResponse>({
-		url: `http://localhost:4000/api/designations/${designationId}`,
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/designations/${designationId}`,
 		body: {
 			name,
 		},

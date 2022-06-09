@@ -1,18 +1,16 @@
 import {
 	Avatar,
-	Box,
 	Container,
 	Grid,
 	GridItem,
 	HStack,
-	Image,
 	Text,
 	VStack,
 } from '@chakra-ui/react'
 import { AuthContext } from 'contexts/AuthContext'
 import { useRouter } from 'next/router'
 import {
-	allProjectsByCurrentUserQuery,
+	// allProjectsByCurrentUserQuery,
 	clientTotalEarningQuery,
 	clientTotalProejctsQuery,
 	detailClientQuery,
@@ -33,7 +31,7 @@ export default function DetailClient() {
 		clientId as string
 	)
 	const { data: dataTotalEarnings } = clientTotalEarningQuery(isAuthenticated, clientId as string)
-	const { data: dataAllProjects } = allProjectsByCurrentUserQuery(isAuthenticated)
+	// const { data: dataAllProjects } = allProjectsByCurrentUserQuery(isAuthenticated)
 
 	//Funcion -----------------------------------------------------------------
 

@@ -5,7 +5,7 @@ import { deleteData, getData, postData, putData } from 'utils/fetchData'
 //Function handle create client
 export async function createClientRequest(inputCreate: createClientForm) {
 	const resultFetch = await postData<clientMutaionResponse>({
-		url: 'http://localhost:4000/api/clients',
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/clients`,
 		body: inputCreate,
 	})
 
@@ -21,7 +21,7 @@ export async function updateClientRequest({
 	clientId: number
 }) {
 	const resultFetch = await putData<clientMutaionResponse>({
-		url: `http://localhost:4000/api/clients/${clientId}`,
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/clients/${clientId}`,
 		body: inputeUpdate,
 	})
 
@@ -31,7 +31,7 @@ export async function updateClientRequest({
 //Function handle get all clients
 export async function allClientsRequest(url: string) {
 	const resultFetch = await getData<clientMutaionResponse>({
-		url: `http://localhost:4000/api/${url}`,
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/${url}`,
 	})
 
 	return resultFetch
@@ -40,7 +40,7 @@ export async function allClientsRequest(url: string) {
 //Function handle get detail client
 export async function detailClientRequest(url: string) {
 	const resultFetch = await getData<clientMutaionResponse>({
-		url: `http://localhost:4000/api/${url}`,
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/${url}`,
 	})
 
 	return resultFetch
@@ -50,14 +50,14 @@ export async function detailClientRequest(url: string) {
 //Handle to delete client
 export const deleteClientRequest = async (id: string) => {
 	return await deleteData<clientMutaionResponse>({
-		url: `http://localhost:4000/api/clients/${id}`,
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/clients/${id}`,
 	})
 }
 
 // Handle to delete many clients
 export const deleteClientsRequest = async (ids: number[]) => {
 	return await postData<clientMutaionResponse>({
-		url: `http://localhost:4000/api/clients/delete-many`,
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/clients/delete-many`,
 		body: {
 			clients: ids,
 		},

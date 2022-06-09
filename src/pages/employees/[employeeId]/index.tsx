@@ -2,7 +2,7 @@ import { Avatar, Container, Divider, Grid, GridItem, HStack, Text, VStack } from
 import { AuthContext } from 'contexts/AuthContext'
 import { useRouter } from 'next/router'
 import {
-	allTasksByEmployeeQuery,
+	// allTasksByEmployeeQuery,
 	countProjectsEmployeeQuery,
 	detailEmployeeQuery,
 	hoursLoggedEmployeeQuery,
@@ -48,7 +48,7 @@ export default function DetailEmployee() {
 		employeeId as string
 	)
 
-	const { data: allTasks } = allTasksByEmployeeQuery(isAuthenticated, employeeId as string)
+	// const { data: allTasks } = allTasksByEmployeeQuery(isAuthenticated, employeeId as string)
 
 	//mutation ----------------------------------------------------------------------------------------------
 

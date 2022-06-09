@@ -5,7 +5,7 @@ import { deleteData, getData, postData, putData } from 'utils/fetchData'
 //Function handle create
 export async function createTimeLogRequest(inputCreate: createProjectTimeLogForm) {
 	const resultFetch = await postData<TimeLogMutaionResponse>({
-		url: 'http://localhost:4000/api/time-logs',
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/time-logs`,
 		body: inputCreate,
 	})
 
@@ -15,14 +15,14 @@ export async function createTimeLogRequest(inputCreate: createProjectTimeLogForm
 //Function handle get detail timelog
 export const detailTimeLogRequest = async (url: string) => {
 	return await getData<TimeLogMutaionResponse>({
-		url: `http://localhost:4000/api/${url}`,
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/${url}`,
 	})
 }
 
 //Function handle get detail timelog
 export const allTimeLogByProjectRequest = async (url: string) => {
 	return await getData<TimeLogMutaionResponse>({
-		url: `http://localhost:4000/api/${url}`,
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/${url}`,
 	})
 }
 
@@ -35,7 +35,7 @@ export async function updateTimeLogRequest({
 	timeLogId: number | string
 }) {
 	const resultFetch = await putData<TimeLogMutaionResponse>({
-		url: `http://localhost:4000/api/time-logs/${timeLogId}`,
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/time-logs/${timeLogId}`,
 		body: inputUpdate,
 	})
 
@@ -45,14 +45,14 @@ export async function updateTimeLogRequest({
 //Handle to delete time log
 export const deleteTimeLogRequest = async (id: string) => {
 	return await deleteData<TimeLogMutaionResponse>({
-		url: `http://localhost:4000/api/time-logs/${id}`,
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/time-logs/${id}`,
 	})
 }
 
 // Handle to delete many time logs
 export const deleteTimeLogsRequest = async (ids: number[]) => {
 	return await postData<TimeLogMutaionResponse>({
-		url: `http://localhost:4000/api/time-logs/delete-many`,
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/time-logs/delete-many`,
 		body: {
 			timelogs: ids,
 		},

@@ -5,14 +5,14 @@ import { deleteData, getData, postData, putData } from 'utils/fetchData'
 //Function handle get all department
 export const allDepartmentRequest = async (url: string) => {
 	return await getData<DepartmentMutaionResponse>({
-		url: `http://localhost:4000/api/${url}`,
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/${url}`,
 	})
 }
 
 //Function handle create department
 export async function createDepartmentRequest(inputCreate: createDepartmentForm) {
 	const resultFetch = await postData<DepartmentMutaionResponse>({
-		url: 'http://localhost:4000/api/departments',
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/departments`,
 		body: inputCreate,
 	})
 
@@ -22,7 +22,7 @@ export async function createDepartmentRequest(inputCreate: createDepartmentForm)
 //Function handle delete department
 export async function deleteDepartmentRequest(inputDelete: { departmentId: number }) {
 	const resultFetch = await deleteData<DepartmentMutaionResponse>({
-		url: `http://localhost:4000/api/departments/${inputDelete.departmentId}`,
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/departments/${inputDelete.departmentId}`,
 	})
 
 	return resultFetch
@@ -37,7 +37,7 @@ export async function updateDepartmentRequest({
 	name: string
 }) {
 	const resultFetch = await putData<DepartmentMutaionResponse>({
-		url: `http://localhost:4000/api/departments/${departmentId}`,
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/departments/${departmentId}`,
 		body: {
 			name,
 		},

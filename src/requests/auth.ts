@@ -9,7 +9,7 @@ import { getData, postData } from 'utils/fetchData'
 //Function handle fetch register
 export async function registerRequest(inputRegister: registerForm) {
 	const resultFetch = await postData<authMutaionResponse>({
-		url: 'http://localhost:4000/api/auth/register',
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/auth/register`,
 		body: inputRegister,
 	})
 
@@ -19,7 +19,7 @@ export async function registerRequest(inputRegister: registerForm) {
 //Function handle fetch login
 export async function loginRequest(inputLogin: loginForm) {
 	const resultFetch = await postData<authMutaionResponse>({
-		url: 'http://localhost:4000/api/auth/login',
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`,
 		body: inputLogin,
 	})
 
@@ -29,7 +29,7 @@ export async function loginRequest(inputLogin: loginForm) {
 //Function handle fetch login google 
 export async function loginGoogleRequest(inputLoginGoogle: loginGoogleForm) {
 	const resultFetch = await postData<authMutaionResponse>({
-		url: 'http://localhost:4000/api/auth/login-google',
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/auth/login-google`,
 		body: inputLoginGoogle,
 	})
 
@@ -39,7 +39,7 @@ export async function loginGoogleRequest(inputLoginGoogle: loginGoogleForm) {
 //Function handle fetch logout
 export async function logoutRequest(inputLogout: logoutForm) {
 	const resultFetch = await postData<authMutaionResponse>({
-		url: 'http://localhost:4000/api/auth/logout',
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/auth/logout`,
 		body: inputLogout,
 	})
 
@@ -52,7 +52,7 @@ export async function logoutRequest(inputLogout: logoutForm) {
 
 export const currentUserRequest = async (url: string) => {
 	return await getData<authMutaionResponse>({
-		url: `http://localhost:4000/api/auth/${url}`,
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/auth/${url}`,
 	})
 }
 
@@ -60,7 +60,7 @@ export const currentUserRequest = async (url: string) => {
 //Function handle re enter password
 export async function reEnterPasswordRequest(inputReEnterPassword: {email: string, password: string}) {
 	const resultFetch = await postData<authMutaionResponse>({
-		url: 'http://localhost:4000/api/auth/ask-re-enter-password',
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/auth/ask-re-enter-password`,
 		body: inputReEnterPassword,
 	})
 
@@ -70,7 +70,7 @@ export async function reEnterPasswordRequest(inputReEnterPassword: {email: strin
 // recover password
 export async function recoverPasswordRequest(inputReEnterPassword: {email: string}) {
 	const resultFetch = await postData<authMutaionResponse>({
-		url: 'http://localhost:4000/api/auth/recover-password',
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/auth/recover-password`,
 		body: inputReEnterPassword,
 	})
 
@@ -80,7 +80,7 @@ export async function recoverPasswordRequest(inputReEnterPassword: {email: strin
 // reset password
 export async function resetPasswordRequest(inputReEnterPassword: TResetPassword) {
 	const resultFetch = await postData<authMutaionResponse>({
-		url: 'http://localhost:4000/api/auth/reset-password',
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/auth/reset-password`,
 		body: inputReEnterPassword,
 	})
 

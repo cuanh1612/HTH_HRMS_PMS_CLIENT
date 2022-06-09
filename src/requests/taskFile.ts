@@ -5,7 +5,7 @@ import { deleteData, getData, postData } from 'utils/fetchData'
 //Function handle create task file
 export async function createTaskFileRequest(inputCreate: createTaskFileForm) {
 	const resultFetch = await postData<taskFileMutaionResponse>({
-		url: 'http://localhost:4000/api/task-files',
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/task-files`,
 		body: inputCreate,
 	})
 
@@ -18,7 +18,7 @@ export async function deleteTaskFileRequest(inputDelete: {
 	taskId: number
 }) {
 	const resultFetch = await deleteData<taskFileMutaionResponse>({
-		url: `http://localhost:4000/api/task-files/${inputDelete.taskFileId}/task/${inputDelete.taskId}`,
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/task-files/${inputDelete.taskFileId}/task/${inputDelete.taskId}`,
 	})
 
 	return resultFetch
@@ -27,6 +27,6 @@ export async function deleteTaskFileRequest(inputDelete: {
 //Function handle get all task file
 export const allTaskFilesRequest = async (url: string) => {
 	return await getData<taskFileMutaionResponse>({
-		url: `http://localhost:4000/api/${url}`,
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/${url}`,
 	})
 }

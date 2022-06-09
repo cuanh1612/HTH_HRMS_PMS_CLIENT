@@ -7,7 +7,7 @@ export async function createMilestoneRequest(inputCreate: milestoneForm & {
     project?: string | string[]
 }) {
 	const resultFetch = await postData<milestoneMutaionResponse>({
-	url: 'http://localhost:4000/api/milestone',
+	url: `${process.env.NEXT_PUBLIC_API_URL}/api/milestone`,
 		body: inputCreate,
 	})
 
@@ -17,21 +17,21 @@ export async function createMilestoneRequest(inputCreate: milestoneForm & {
 // get all by project with task
 export const allMilestoneRequest = async (url: string) => {
 	return await getData<milestoneMutaionResponse>({
-		url: `http://localhost:4000/api/${url}`,
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/${url}`,
 	})
 }
 
 // get all by project
 export const allMilestoneNormalRequest = async (url: string) => {
 	return await getData<milestoneMutaionResponse>({
-		url: `http://localhost:4000/api/${url}`,
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/${url}`,
 	})
 }
 
 // get detail milestone
 export const detailMilestoneRequest = async (url: string) => {
 	return await getData<milestoneMutaionResponse>({
-		url: `http://localhost:4000/api/${url}`,
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/${url}`,
 	})
 }
 
@@ -39,7 +39,7 @@ export const detailMilestoneRequest = async (url: string) => {
 //Handle to delete milestone
 export const deleteMilestoneRequest = async (id: string) => {
 	return await deleteData<milestoneMutaionResponse>({
-		url: `http://localhost:4000/api/milestone/${id}`,
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/milestone/${id}`,
 	})
 }
 
@@ -52,7 +52,7 @@ export async function updateMilestoneRequest({
 	milestoneId?: number | string | string []
 }) {
 	const resultFetch = await putData<milestoneMutaionResponse>({
-		url: `http://localhost:4000/api/milestone/${milestoneId}`,
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/milestone/${milestoneId}`,
 		body: inputUpdate,
 	})
 

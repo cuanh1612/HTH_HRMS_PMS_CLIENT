@@ -5,7 +5,7 @@ import { deleteData, getData, postData, putData } from 'utils/fetchData'
 //Function handle create employee
 export async function createEmployeeRequest(inputCreate: createEmployeeForm) {
 	const resultFetch = await postData<employeeMutaionResponse>({
-		url: 'http://localhost:4000/api/employees',
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/employees`,
 		body: inputCreate,
 	})
 
@@ -21,7 +21,7 @@ export async function updateEmployeeRequest({
 	employeeId: number
 }) {
 	const resultFetch = await putData<employeeMutaionResponse>({
-		url: `http://localhost:4000/api/employees/${employeeId}`,
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/employees/${employeeId}`,
 		body: inputUpdate,
 	})
 
@@ -31,28 +31,28 @@ export async function updateEmployeeRequest({
 //Function handle get detail employee
 export const detailEmployeeRequest = async (url: string) => {
 	return await getData<employeeMutaionResponse>({
-		url: `http://localhost:4000/api/${url}`,
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/${url}`,
 	})
 }
 
 //Function handle get all employees
 export const allEmployeesRequest = async (url: string) => {
 	return await getData<employeeMutaionResponse>({
-		url: `http://localhost:4000/api/${url}`,
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/${url}`,
 	})
 }
 
 //Handle to delete employee
 export const deleteEmplRequest = async (id: string) => {
 	return await deleteData<employeeMutaionResponse>({
-		url: `http://localhost:4000/api/employees/${id}`,
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/employees/${id}`,
 	})
 }
 
 // Handle to delete many employees
 export const deleteEmplsRequest = async (ids: number[]) => {
 	return await postData<employeeMutaionResponse>({
-		url: `http://localhost:4000/api/employees/delete-many`,
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/employees/delete-many`,
 		body: {
 			employees: ids,
 		},
@@ -65,7 +65,7 @@ export const changeRoleRequest = async ({employeeId, role}: {
 	role: string
 }) => {
 	return await putData<employeeMutaionResponse>({
-		url: `http://localhost:4000/api/employees/role`,
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/employees/role`,
 		body: {
 			employeeId,
 			role,

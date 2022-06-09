@@ -8,7 +8,7 @@ export async function updatehourlyRateRequest(inputUpdate: {
 	hourly_rate?: number
 }) {
 	const resultFetch = await putData<commonResponse>({
-		url: `http://localhost:4000/api/hourly-Rate`,
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/hourly-Rate`,
 		body: inputUpdate,
 	})
 

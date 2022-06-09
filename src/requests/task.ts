@@ -5,7 +5,7 @@ import { deleteData, getData, postData, putData } from "utils/fetchData"
 //Handle to delete task
 export const deleteTaskRequest = async (id: string) => {
 	return await deleteData<commonResponse>({
-		url: `http://localhost:4000/api/tasks/${id}`,
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/tasks/${id}`,
 	})
 }
 
@@ -22,7 +22,7 @@ export async function changePositionRequest({
 	status2: number
 }) {
 	const resultFetch = await putData<commonResponse>({
-		url: `http://localhost:4000/api/tasks/position`,
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/tasks/position`,
 		body: {
 			id1,
 			id2,
@@ -36,7 +36,7 @@ export async function changePositionRequest({
 //Function handle create
 export async function createTaskRequest(inputCreate: createProjectTaskForm) {
 	const resultFetch = await postData<TaskMutaionResponse>({
-		url: 'http://localhost:4000/api/tasks',
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/tasks`,
 		body: inputCreate,
 	})
 
@@ -47,28 +47,28 @@ export async function createTaskRequest(inputCreate: createProjectTaskForm) {
 //Function handle get detail task
 export const detailTaskRequest = async (url: string) => {
 	return await getData<TaskMutaionResponse>({
-		url: `http://localhost:4000/api/${url}`,
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/${url}`,
 	})
 }
 
 //Function handle get all task by project
 export const allTaskByProjectRequest = async (url: string) => {
 	return await getData<TaskMutaionResponse>({
-		url: `http://localhost:4000/api/${url}`,
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/${url}`,
 	})
 }
 
 //Function handle get all task
 export const allTasksRequest = async (url: string) => {
 	return await getData<TaskMutaionResponse>({
-		url: `http://localhost:4000/api/${url}`,
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/${url}`,
 	})
 }
 
 //Function handle get all tasks by employee
 export const allTasksByEmployeeRequest = async (url: string) => {
 	return await getData<TaskMutaionResponse>({
-		url: `http://localhost:4000/api/${url}`,
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/${url}`,
 	})
 }
 
@@ -81,7 +81,7 @@ export async function updateTaskRequest({
 	taskId: number | string
 }) {
 	const resultFetch = await putData<TaskMutaionResponse>({
-		url: `http://localhost:4000/api/tasks/${taskId}`,
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/tasks/${taskId}`,
 		body: inputUpdate,
 	})
 
@@ -91,7 +91,7 @@ export async function updateTaskRequest({
 // Handle to delete many leave
 export const deleteTasksRequest = async (ids: number[]) => {
 	return await postData<TaskMutaionResponse>({
-		url: `http://localhost:4000/api/tasks/delete-many`,
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/tasks/delete-many`,
 		body: {
 			tasks: ids,
 		},

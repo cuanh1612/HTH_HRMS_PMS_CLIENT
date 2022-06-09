@@ -5,7 +5,7 @@ import { getData, postData, putData } from 'utils/fetchData'
 //Function handle create
 export async function createRoomRequest(inputCreate: createRoomForm) {
 	const resultFetch = await postData<roomMutaionResponse>({
-		url: 'http://localhost:4000/api/rooms',
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/rooms`,
 		body: inputCreate,
 	})
 
@@ -15,7 +15,7 @@ export async function createRoomRequest(inputCreate: createRoomForm) {
 //Function handle get detail 
 export const detailRoomRequest = async (url: string) => {
 	return await getData<roomMutaionResponse>({
-		url: `http://localhost:4000/api/${url}`,
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/${url}`,
 	})
 }
 
@@ -28,7 +28,7 @@ export async function updateRoomRequest({
 	inputUpdate: updateRoomForm
 }) {
 	const resultFetch = await putData<roomMutaionResponse>({
-		url: `http://localhost:4000/api/rooms/${roomId}`,
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/rooms/${roomId}`,
 		body: inputUpdate,
 	})
 	return resultFetch

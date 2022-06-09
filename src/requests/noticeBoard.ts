@@ -7,7 +7,7 @@ import { deleteData, getData, postData, putData } from 'utils/fetchData'
 //Function handle create
 export async function createNoticeBoardRequest(inputCreate: createNoticeBoardForm) {
 	const resultFetch = await postData<NoticeBoardMutaionResponse>({
-		url: 'http://localhost:4000/api/notice-boards',
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/notice-boards`,
 		body: inputCreate,
 	})
 
@@ -17,14 +17,14 @@ export async function createNoticeBoardRequest(inputCreate: createNoticeBoardFor
 //Function handle get detail notice board
 export const detailNoticeBoardRequest = async (url: string) => {
 	return await getData<NoticeBoardMutaionResponse>({
-		url: `http://localhost:4000/api/${url}`,
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/${url}`,
 	})
 }
 
 // get all notice board
 export const allNoticeBoardRequest = async (url: string) => {
 	return await getData<NoticeBoardMutaionResponse>({
-		url: `http://localhost:4000/api/${url}`,
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/${url}`,
 	})
 }
 
@@ -37,7 +37,7 @@ export async function updateNoticeBoardtRequest({
 	noticeBoardId: number | string
 }) {
 	const resultFetch = await putData<NoticeBoardMutaionResponse>({
-		url: `http://localhost:4000/api/notice-boards/${noticeBoardId}`,
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/notice-boards/${noticeBoardId}`,
 		body: inputUpdate,
 	})
 
@@ -48,7 +48,7 @@ export async function updateNoticeBoardtRequest({
 //Handle to delete notice
 export const deleteNoticeRequest = async (id?: string | number) => {
 	return await deleteData<NoticeBoardMutaionResponse>({
-		url: `http://localhost:4000/api/notice-boards/${id}`,
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/notice-boards/${id}`,
 	})
 }
 
@@ -56,7 +56,7 @@ export const deleteNoticeRequest = async (id?: string | number) => {
 // Handle to delete many notices
 export const deleteNoticesRequest = async (ids: number[]) => {
 	return await postData<NoticeBoardMutaionResponse>({
-		url: `http://localhost:4000/api/notice-boards/delete-many`,
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/notice-boards/delete-many`,
 		body: {
 			noticeBoards: ids,
 		},

@@ -5,14 +5,14 @@ import { deleteData, getData, postData, putData } from 'utils/fetchData'
 //Function handle get all client category
 export const allClientCategoryRequest = async (url: string) => {
 	return await getData<ClientCategoryMutaionResponse>({
-		url: `http://localhost:4000/api/${url}`,
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/${url}`,
 	})
 }
 
 //Function handle create client category
 export async function createCategoryRequest(inputCreate: createCategoryForm) {
 	const resultFetch = await postData<ClientCategoryMutaionResponse>({
-		url: 'http://localhost:4000/api/client-categories',
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/client-categories`,
 		body: inputCreate,
 	})
 
@@ -22,7 +22,7 @@ export async function createCategoryRequest(inputCreate: createCategoryForm) {
 //Function handle delete client category
 export async function deleteCategoryRequest(inputDelete: { clientCategoryId: number }) {
 	const resultFetch = await deleteData<ClientCategoryMutaionResponse>({
-		url: `http://localhost:4000/api/client-categories/${inputDelete.clientCategoryId}`,
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/client-categories/${inputDelete.clientCategoryId}`,
 	})
 
 	return resultFetch
@@ -37,7 +37,7 @@ export async function updateCategoryRequest({
 	name: string
 }) {
 	const resultFetch = await putData<ClientCategoryMutaionResponse>({
-		url: `http://localhost:4000/api/client-categories/${clientCategoryId}`,
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/client-categories/${clientCategoryId}`,
 		body: {
 			name,
 		},

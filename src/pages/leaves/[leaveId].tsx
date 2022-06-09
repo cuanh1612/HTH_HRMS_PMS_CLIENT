@@ -129,7 +129,7 @@ export const getStaticProps: GetStaticProps = async () => {
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-	const res: leaveMutaionResponse = await fetch('http://localhost:4000/api/leaves').then((result) => result.json())
+	const res: leaveMutaionResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/leaves`).then((result) => result.json())
 	
 	if(!res || !res.leaves){
 		return { paths: [], fallback: false }

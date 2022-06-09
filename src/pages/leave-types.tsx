@@ -12,8 +12,9 @@ import { MdOutlineDriveFileRenameOutline } from 'react-icons/md'
 import { useSWRConfig } from 'swr'
 import { createLeaveTypeForm } from 'type/form/basicFormType'
 import { CreateLeaveTypeValidate } from 'utils/validate'
-
+ 
 export interface ILeaveTypeProps {}
+
 
 export default function LeaveType({}: ILeaveTypeProps) {
 	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)

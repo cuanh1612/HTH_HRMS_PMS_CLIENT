@@ -129,6 +129,14 @@ export const getStaticProps: GetStaticProps = async () => {
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
+	console.log(process.env.NEXT_PUBLIC_API_URL)
+	console.log(process.env.NEXT_PUBLIC_API_URL)
+	console.log(process.env.NEXT_PUBLIC_API_URL)
+	console.log(process.env.NEXT_PUBLIC_API_URL)
+	console.log(process.env.NEXT_PUBLIC_API_URL)
+	console.log(process.env.NEXT_PUBLIC_API_URL)
+	console.log(process.env.NEXT_PUBLIC_API_URL)
+	console.log(process.env.NEXT_PUBLIC_API_URL)
 	const res: leaveMutaionResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/leaves`).then((result) => result.json())
 	
 	if(!res || !res.leaves){

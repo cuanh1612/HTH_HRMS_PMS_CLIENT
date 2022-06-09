@@ -46,13 +46,19 @@ import { IoEyeOutline } from 'react-icons/io5'
 import { deleteTaskMutation, deleteTasksMutation } from 'mutations'
 import { DateRange, Input, Select as SelectF, SelectCustom } from 'components/filter'
 import { AiOutlineSearch } from 'react-icons/ai'
+import { CSVLink } from 'react-csv'
+import { FaFileCsv } from 'react-icons/fa'
 
 const tasks: NextLayout = () => {
-	const { isAuthenticated, handleLoading, setToast, currentUser, socket } = useContext(AuthContext)
+	const { isAuthenticated, handleLoading, setToast, currentUser, socket } =
+		useContext(AuthContext)
 	const router = useRouter()
 	const { colorMode } = useColorMode()
 
 	const [taskId, setTaskId] = useState<string | number>()
+
+	//state csv
+	const [dataCSV, setDataCSV] = useState<any[]>([])
 
 	// set loading table
 	const [isLoading, setIsloading] = useState(true)
@@ -91,7 +97,24 @@ const tasks: NextLayout = () => {
 	// get all milestones to filter
 	const { data: allMilestones } = allMilestonesQuery(isAuthenticated)
 
-	// mutation
+	//Setup download csv --------------------------------------------------------
+	const headersCSV = [
+		{ label: 'id', key: 'id' },
+		{ label: 'name', key: 'name' },
+		{ label: 'assignBy', key: 'assignBy' },
+		{ label: 'start_date', key: 'start_date' },
+		{ label: 'deadline', key: 'deadline' },
+		{ label: 'description', key: 'description' },
+		{ label: 'milestone', key: 'milestone' },
+		{ label: 'priority', key: 'priority' },
+		{ label: 'project', key: 'project' },
+		{ label: 'status', key: 'status' },
+		{ label: 'task_category', key: 'task_category' },
+		{ label: 'createdAt', key: 'createdAt' },
+		{ label: 'updatedAt', key: 'updatedAt' },
+	]
+
+	// mutation----------------------------------------------------------
 	// delete one
 	const [deleteOne, { data: dataDlOne, status: statusDlOne }] = deleteTaskMutation(setToast)
 	// delete many
@@ -148,6 +171,27 @@ const tasks: NextLayout = () => {
 		if (allTasks) {
 			console.log(allTasks)
 			setIsloading(false)
+
+			if (allTasks.tasks) {
+				//Set data csv
+				const dataCSV: any[] = allTasks.tasks.map((task) => ({
+					id: task.id,
+					name: task.name,
+					assignBy: task.assignBy?.id,
+					start_date: task.start_date,
+					deadline: task.deadline,
+					description: task.description,
+					milestone: task.milestone?.id,
+					priority: task.priority,
+					project: task.project.id,
+					status: task.status.id,
+					task_category: task.task_category?.id,
+					createdAt: task.createdAt,
+					updatedAt: task.updatedAt,
+				}))
+
+				setDataCSV(dataCSV)
+			}
 		}
 	}, [allTasks])
 
@@ -413,6 +457,21 @@ const tasks: NextLayout = () => {
 					>
 						Delete all
 					</Button>
+					<Button
+						transform={'auto'}
+						bg={'hu-Green.lightA'}
+						_hover={{
+							bg: 'hu-Green.normal',
+							color: 'white',
+							scale: 1.05,
+						}}
+						color={'hu-Green.normal'}
+						leftIcon={<FaFileCsv />}
+					>
+						<CSVLink filename={'tasks.csv'} headers={headersCSV} data={dataCSV}>
+							export to csv
+						</CSVLink>
+					</Button>
 				</>
 			)}
 			<Button onClick={onOpenFilter}>Filter</Button>
@@ -431,7 +490,7 @@ const tasks: NextLayout = () => {
 				data={allTasks?.tasks || []}
 				columns={columns}
 				isLoading={isLoading}
-				isSelect={currentUser?.role === "Admin"}
+				isSelect={currentUser?.role === 'Admin'}
 				selectByColumn="id"
 				setSelect={(data: Array<number>) => setDataSl(data)}
 				filter={filter}

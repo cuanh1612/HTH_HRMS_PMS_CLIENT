@@ -46,15 +46,19 @@ import { IFilter, TColumn } from 'type/tableTypes'
 import { arrayFilter, selectFilter, textFilter } from 'utils/tableFilters'
 import AddProject from './add-projects'
 import UpdateProject from './update-projects'
+import { CSVLink } from 'react-csv'
+import { FaFileCsv } from 'react-icons/fa'
 
 const Projects: NextLayout = () => {
-	const { isAuthenticated, handleLoading, setToast, currentUser } =
-		useContext(AuthContext)
+	const { isAuthenticated, handleLoading, setToast, currentUser } = useContext(AuthContext)
 	const router = useRouter()
 	const { colorMode } = useColorMode()
 
 	//State ---------------------------------------------------------------------
 	const [projectIdUpdate, setProjectId] = useState<number | undefined>(12)
+
+	//state csv
+	const [dataCSV, setDataCSV] = useState<any[]>([])
 
 	// data select to delete all
 	const [dataSl, setDataSl] = useState<Array<number> | null>()
@@ -80,6 +84,24 @@ const Projects: NextLayout = () => {
 	// get employee to select to filter
 	const [employeesFilter, setEmployeesFilter] = useState<IOption[]>([])
 
+	//Setup download csv --------------------------------------------------------
+	const headersCSV = [
+		{ label: 'id', key: 'id' },
+		{ label: 'name', key: 'name' },
+		{ label: 'Progress', key: 'Progress' },
+		{ label: 'client', key: 'client' },
+		{ label: 'createdAt', key: 'createdAt' },
+		{ label: 'currency', key: 'currency' },
+		{ label: 'deadline', key: 'deadline' },
+		{ label: 'hours_estimate', key: 'hours_estimate' },
+		{ label: 'notes', key: 'notes' },
+		{ label: 'project_budget', key: 'project_budget' },
+		{ label: 'project_summary', key: 'project_summary' },
+		{ label: 'send_task_noti', key: 'send_task_noti' },
+		{ label: 'start_date', key: 'start_date' },
+		{ label: 'updatedAt', key: 'updatedAt' },
+	]
+
 	//Setup drawer --------------------------------------------------------------
 	const { isOpen: isOpenAdd, onOpen: onOpenAdd, onClose: onCloseAdd } = useDisclosure()
 	const { isOpen: isOpenUpdate, onOpen: onOpenUpdate, onClose: onCloseUpdate } = useDisclosure()
@@ -100,6 +122,8 @@ const Projects: NextLayout = () => {
 	// query and mutation
 	const { data: allProjects, mutate: refetchAllProjects } =
 		allProjectsByCurrentUserQuery(isAuthenticated)
+
+	console.log(allProjects)
 
 	const { data: allPjCategories } = allProjectCategoriesQuery(isAuthenticated)
 
@@ -355,6 +379,28 @@ const Projects: NextLayout = () => {
 		if (allProjects) {
 			console.log(allProjects.projects)
 			setIsloading(false)
+
+			if (allProjects.projects) {
+				//Set data csv
+				const dataCSV: any[] = allProjects.projects.map((contract) => ({
+					id: contract.id,
+					name: contract.name,
+					Progress: contract.Progress,
+					client: contract.client?.id,
+					currency: contract.currency,
+					start_date: contract.start_date,
+					deadline: contract.deadline,
+					hours_estimate: contract.hours_estimate,
+					notes: contract.notes,
+					project_budget: contract.project_budget,
+					project_summary: contract.project_summary,
+					send_task_noti: contract.send_task_noti ? "true" : "false",
+					createdAt: contract.createdAt,
+					updatedAt: contract.updatedAt,
+				}))
+
+				setDataCSV(dataCSV)
+			}
 		}
 	}, [allProjects])
 
@@ -435,6 +481,21 @@ const Projects: NextLayout = () => {
 				<>
 					<Button colorScheme="blue" onClick={onOpenAdd}>
 						open add project
+					</Button>
+					<Button
+						transform={'auto'}
+						bg={'hu-Green.lightA'}
+						_hover={{
+							bg: 'hu-Green.normal',
+							color: 'white',
+							scale: 1.05,
+						}}
+						color={'hu-Green.normal'}
+						leftIcon={<FaFileCsv />}
+					>
+						<CSVLink filename={'projects.csv'} headers={headersCSV} data={dataCSV}>
+							export to csv
+						</CSVLink>
 					</Button>
 					<Button
 						disabled={!dataSl || dataSl.length == 0 ? true : false}

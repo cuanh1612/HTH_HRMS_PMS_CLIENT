@@ -2,11 +2,21 @@ import {
 	Avatar,
 	AvatarGroup,
 	Box,
-	Button, Drawer as CDrawer, DrawerBody, DrawerCloseButton, DrawerContent, DrawerHeader, DrawerOverlay, HStack, Menu, MenuButton,
+	Button,
+	Drawer as CDrawer,
+	DrawerBody,
+	DrawerCloseButton,
+	DrawerContent,
+	DrawerHeader,
+	DrawerOverlay,
+	HStack,
+	Menu,
+	MenuButton,
 	MenuItem,
 	MenuList,
 	Text,
-	useDisclosure, VStack
+	useDisclosure,
+	VStack,
 } from '@chakra-ui/react'
 import { AlertDialog, Table } from 'components/common'
 import { Drawer } from 'components/Drawer'
@@ -17,8 +27,9 @@ import { deleteTaskMutation, deleteTasksMutation } from 'mutations'
 import { useRouter } from 'next/router'
 import {
 	allStatusQuery,
-	allTasksByEmployeeAndProjectQuery, allTasksByProjectQuery,
-	milestonesByProjectNormalQuery
+	allTasksByEmployeeAndProjectQuery,
+	allTasksByProjectQuery,
+	milestonesByProjectNormalQuery,
 } from 'queries'
 import { useContext, useEffect, useState } from 'react'
 import { AiOutlineSearch } from 'react-icons/ai'
@@ -32,14 +43,20 @@ import { dateFilter, selectFilter, textFilter } from 'utils/tableFilters'
 import AddTask from './add-tasks'
 import DetailTask from './[taskId]'
 import UpdateTask from './[taskId]/update-task'
+import { CSVLink } from 'react-csv'
+import { FaFileCsv } from 'react-icons/fa'
 
 const tasks: NextLayout = () => {
-	const { isAuthenticated, handleLoading, currentUser, setToast, socket } = useContext(AuthContext)
+	const { isAuthenticated, handleLoading, currentUser, setToast, socket } =
+		useContext(AuthContext)
 	const router = useRouter()
 	const { projectId } = router.query
 
 	const [taskId, setTaskId] = useState<number>()
 	const [statusIdShow] = useState<number>(1)
+
+	//state csv
+	const [dataCSV, setDataCSV] = useState<any[]>([])
 
 	// data select to delete all
 	const [dataSl, setDataSl] = useState<Array<number> | null>()
@@ -115,6 +132,23 @@ const tasks: NextLayout = () => {
 	const [deleteOne, { data: dataDlOne, status: statusDlOne }] = deleteTaskMutation(setToast)
 	const [deleteMany, { data: dataDlMany, status: statusDlMany }] = deleteTasksMutation(setToast)
 
+	//Setup download csv --------------------------------------------------------
+	const headersCSV = [
+		{ label: 'id', key: 'id' },
+		{ label: 'name', key: 'name' },
+		{ label: 'assignBy', key: 'assignBy' },
+		{ label: 'start_date', key: 'start_date' },
+		{ label: 'deadline', key: 'deadline' },
+		{ label: 'description', key: 'description' },
+		{ label: 'milestone', key: 'milestone' },
+		{ label: 'priority', key: 'priority' },
+		{ label: 'project', key: 'project' },
+		{ label: 'status', key: 'status' },
+		{ label: 'task_category', key: 'task_category' },
+		{ label: 'createdAt', key: 'createdAt' },
+		{ label: 'updatedAt', key: 'updatedAt' },
+	]
+
 	//Useeffect ---------------------------------------------------------
 	//Handle check login successfully
 	useEffect(() => {
@@ -132,6 +166,27 @@ const tasks: NextLayout = () => {
 		if (allTasks) {
 			console.log(allTasks)
 			setIsloading(false)
+
+			if (allTasks.tasks) {
+				//Set data csv
+				const dataCSV: any[] = allTasks.tasks.map((task) => ({
+					id: task.id,
+					name: task.name,
+					assignBy: task.assignBy?.id,
+					start_date: task.start_date,
+					deadline: task.deadline,
+					description: task.description,
+					milestone: task.milestone?.id,
+					priority: task.priority,
+					project: task.project.id,
+					status: task.status.id,
+					task_category: task.task_category?.id,
+					createdAt: task.createdAt,
+					updatedAt: task.updatedAt,
+				}))
+
+				setDataCSV(dataCSV)
+			}
 		}
 	}, [allTasks])
 
@@ -340,6 +395,23 @@ const tasks: NextLayout = () => {
 	return (
 		<Box>
 			<Button onClick={onOpenAddTask}>Add task Incomplete</Button>
+			{currentUser && currentUser.role === 'Admin' && (
+				<Button
+					transform={'auto'}
+					bg={'hu-Green.lightA'}
+					_hover={{
+						bg: 'hu-Green.normal',
+						color: 'white',
+						scale: 1.05,
+					}}
+					color={'hu-Green.normal'}
+					leftIcon={<FaFileCsv />}
+				>
+					<CSVLink filename={'tasks.csv'} headers={headersCSV} data={dataCSV}>
+						export to csv
+					</CSVLink>
+				</Button>
+			)}
 			<Button disabled={!dataSl || dataSl.length == 0 ? true : false} onClick={onOpenDlMany}>
 				Delete all
 			</Button>

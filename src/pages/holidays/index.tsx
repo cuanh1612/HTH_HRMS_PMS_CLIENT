@@ -33,6 +33,8 @@ import DetailHoliday from './[holidayId]'
 import { deleteHolidayMutation, deleteHolidaysMutation } from 'mutations'
 import { AiOutlineSearch } from 'react-icons/ai'
 import { Input, Select } from 'components/filter'
+import { CSVLink } from 'react-csv'
+import { FaFileCsv } from 'react-icons/fa'
 
 const Holiday: NextLayout = () => {
 	const { isAuthenticated, handleLoading, setToast, currentUser } = useContext(AuthContext)
@@ -57,6 +59,9 @@ const Holiday: NextLayout = () => {
 	const { isOpen: isOpenFilter, onOpen: onOpenFilter, onClose: onCloseFilter } = useDisclosure()
 
 	//State ---------------------------------------------------------------------
+	//state csv
+	const [dataCSV, setDataCSV] = useState<any[]>([])
+
 	const [holidayIdDetail, setHolidayIdDetail] = useState<number | null>(null)
 
 	const [holidayIdUpdate, setHolidayIdUpdate] = useState<number | null>(1)
@@ -71,6 +76,7 @@ const Holiday: NextLayout = () => {
 
 	// get all holidays
 	const { data: allHolidays, mutate: refetchAllHolidays } = allHolidaysQuery()
+	console.log(allHolidays)
 
 	// set filter
 	const [filter, setFilter] = useState<IFilter>({
@@ -87,6 +93,15 @@ const Holiday: NextLayout = () => {
 
 	// delete holiday
 	const [mutateDeleteHoliday, { status: statusDl }] = deleteHolidayMutation(setToast)
+
+	//Setup download csv --------------------------------------------------------
+	const headersCSV = [
+		{ label: 'id', key: 'id' },
+		{ label: 'holiday_date', key: 'holiday_date' },
+		{ label: 'occasion', key: 'occasion' },
+		{ label: 'createdAt', key: 'createdAt' },
+		{ label: 'updatedAt', key: 'updatedAt' },
+	]
 
 	//User effect ---------------------------------------------------------------
 	//Handle check loged in
@@ -246,6 +261,19 @@ const Holiday: NextLayout = () => {
 	useEffect(() => {
 		if (allHolidays) {
 			setIsloading(false)
+
+			if (allHolidays.holidays) {
+				//Set data csv
+				const dataCSV: any[] = allHolidays.holidays.map((holiday) => ({
+					id: holiday.id,
+					occasion: holiday.occasion,
+					holiday_date: holiday.holiday_date,
+					createdAt: holiday.createdAt,
+					updatedAt: holiday.updatedAt,
+				}))
+
+				setDataCSV(dataCSV)
+			}
 		}
 	}, [allHolidays])
 
@@ -256,6 +284,23 @@ const Holiday: NextLayout = () => {
 					<Button colorScheme="blue" onClick={onOpenAdd}>
 						add new
 					</Button>
+					{currentUser && currentUser.role === 'Admin' && (
+						<Button
+							transform={'auto'}
+							bg={'hu-Green.lightA'}
+							_hover={{
+								bg: 'hu-Green.normal',
+								color: 'white',
+								scale: 1.05,
+							}}
+							color={'hu-Green.normal'}
+							leftIcon={<FaFileCsv />}
+						>
+							<CSVLink filename={'leaves.csv'} headers={headersCSV} data={dataCSV}>
+								export to csv
+							</CSVLink>
+						</Button>
+					)}
 					<Button
 						disabled={!dataSl || dataSl.length == 0 ? true : false}
 						onClick={onOpenDlMany}

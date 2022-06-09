@@ -52,6 +52,7 @@ export interface employeeType {
 	date_of_birth?: Date
 	[index: string]: any
 	avatar?: {
+		id: number
 		url: string
 		public_id: string
 		name: string
@@ -172,12 +173,15 @@ export interface clientType {
 	can_login: boolean
 	can_receive_email: boolean
 	avatar?: {
+		id: number
 		url: string
 		name: string
 		public_id: string
 	}
 	id: number
-	note?: string
+	note?: string,
+	createdAt: Date,
+	updatedAt: Date,
 }
 
 export interface holidayType {
@@ -205,17 +209,21 @@ export interface contractType {
 	alternate_address?: string
 	notes?: string
 	company_logo?: {
+		id: number
 		url: string
 		name: string
 		public_id: string
 	}
 	sign?: {
+		id: number
 		url: string
 		first_name: string
 		last_name: string
 		public_id: string
 	}
 	contract_type?: contractTypeType
+	createdAt: Date,
+	updatedAt: Date,
 }
 
 export interface contractTypeType {
@@ -259,6 +267,8 @@ export interface eventType {
 	color: string
 	where: string
 	description: string
+	createdAt: Date,
+	updatedAt: Date,
 }
 
 export interface ITime {
@@ -313,6 +323,8 @@ export interface projectType {
 	Progress: number
 	project_files?: projectFileType[]
 	project_Admin: employeeType
+	createdAt: Date,
+	updatedAt: Date,
 }
 
 export interface UserAttendance {
@@ -465,6 +477,8 @@ export interface timeLogType {
 	memo: string
 	total_hours: number
 	earnings: Number
+	createdAt: Date,
+	updatedAt: Date,
 }
 
 export interface stickyNoteType {

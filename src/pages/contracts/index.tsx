@@ -17,9 +17,9 @@ import {
 	Drawer as CDrawer,
 	useColorMode,
 } from '@chakra-ui/react'
-import {AlertDialog, Table} from 'components/common'
-import { DateRange} from 'components/filter'
-import {Drawer} from 'components/Drawer'
+import { AlertDialog, Table } from 'components/common'
+import { DateRange } from 'components/filter'
+import { Drawer } from 'components/Drawer'
 import { Input, SelectCustom, Select } from 'components/filter'
 import { ClientLayout } from 'components/layouts'
 import { AuthContext } from 'contexts/AuthContext'
@@ -30,7 +30,7 @@ import {
 } from 'mutations'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { allClientsQuery, allContractsQuery, allContractTypesQuery} from 'queries'
+import { allClientsQuery, allContractsQuery, allContractTypesQuery } from 'queries'
 import { useContext, useEffect, useState } from 'react'
 import { AiOutlineSearch } from 'react-icons/ai'
 import { BiLinkAlt } from 'react-icons/bi'
@@ -43,15 +43,20 @@ import { IFilter, TColumn } from 'type/tableTypes'
 import { dateFilter, selectFilter, textFilter } from 'utils/tableFilters'
 import AddContract from './add-contracts'
 import UpdateContract from './update-contracts'
+import { CSVLink } from 'react-csv'
+import { FaFileCsv } from 'react-icons/fa'
 
 const Contracts: NextLayout = () => {
-	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
+	const { isAuthenticated, handleLoading, setToast, currentUser } = useContext(AuthContext)
 	const router = useRouter()
 	const { colorMode } = useColorMode()
 
 	//State ---------------------------------------------------------------------
 	// is reset table
 	const [contractIdUpdate, setContractIdUpdate] = useState<number | null>(6)
+
+	//state csv
+	const [dataCSV, setDataCSV] = useState<any[]>([])
 
 	// set loading table
 	const [isLoading, setIsloading] = useState(true)
@@ -77,12 +82,38 @@ const Contracts: NextLayout = () => {
 	// query and mutation -=------------------------------------------------------
 	// get all contracts
 	const { data: allContracts, mutate: refetchAllContracts } = allContractsQuery(isAuthenticated)
+	console.log(allContracts)
 
 	const { data: allContractTypes } = allContractTypesQuery()
 
 	const { data: allClients } = allClientsQuery(isAuthenticated)
 
-	// mutation
+	//Setup download csv --------------------------------------------------------
+	const headersCSV = [
+		{ label: 'id', key: 'id' },
+		{ label: 'alternate_address', key: 'alternate_address' },
+		{ label: 'cell', key: 'cell' },
+		{ label: 'city', key: 'city' },
+		{ label: 'client', key: 'client' },
+		{ label: 'company_logo', key: 'company_logo' },
+		{ label: 'contract_type', key: 'contract_type' },
+		{ label: 'contract_value', key: 'contract_value' },
+		{ label: 'country', key: 'country' },
+		{ label: 'currency', key: 'currency' },
+		{ label: 'description', key: 'description' },
+		{ label: 'notes', key: 'notes' },
+		{ label: 'office_phone_number', key: 'office_phone_number' },
+		{ label: 'postal_code', key: 'postal_code' },
+		{ label: 'sign', key: 'sign' },
+		{ label: 'state', key: 'state' },
+		{ label: 'subject', key: 'subject' },
+		{ label: 'end_date', key: 'end_date' },
+		{ label: 'start_date', key: 'start_date' },
+		{ label: 'createdAt', key: 'createdAt' },
+		{ label: 'updatedAt', key: 'updatedAt' },
+	]
+
+	// mutation -------------------------------------------------------------------
 	// delete holidays
 	const [mutateDeleteContracts, { status: statusDlContracts }] = deleteContractsMutation(setToast)
 
@@ -90,7 +121,8 @@ const Contracts: NextLayout = () => {
 	const [mutateDeleteContract, { status: statusDl }] = deleteContractMutation(setToast)
 
 	// get public link
-	const [mutateGetPublic, { data: contractToken, status: statusToken }] = publicLinkContractMutation(setToast)
+	const [mutateGetPublic, { data: contractToken, status: statusToken }] =
+		publicLinkContractMutation(setToast)
 
 	//Setup drawer --------------------------------------------------------------
 	const { isOpen: isOpenAdd, onOpen: onOpenAdd, onClose: onCloseAdd } = useDisclosure()
@@ -147,6 +179,35 @@ const Contracts: NextLayout = () => {
 		if (allContracts) {
 			console.log(allContracts)
 			setIsloading(false)
+
+			if (allContracts.contracts) {
+				//Set data csv
+				const dataCSV: any[] = allContracts.contracts.map((contract) => ({
+					id: contract.id,
+					alternate_address: contract.alternate_address,
+					cell: contract.cell,
+					city: contract.city,
+					client: contract.client,
+					company_logo: contract.company_logo?.id,
+					contract_type: contract.contract_type?.id,
+					contract_value: contract.contract_value,
+					country: contract.country,
+					currency: contract.currency,
+					description: contract.description,
+					notes: contract.notes,
+					office_phone_number: contract.office_phone_number,
+					postal_code: contract.postal_code,
+					sign: contract.sign,
+					state: contract.state,
+					subject: contract.subject,
+					end_date: contract.end_date,
+					start_date: contract.start_date,
+					createdAt: contract.createdAt,
+					updatedAt: contract.updatedAt,
+				}))
+
+				setDataCSV(dataCSV)
+			}
 		}
 	}, [allContracts])
 
@@ -174,7 +235,7 @@ const Contracts: NextLayout = () => {
 	}, [statusDl])
 
 	useEffect(() => {
-		if(statusToken == 'success' && contractToken) {
+		if (statusToken == 'success' && contractToken) {
 			router.push(`/contracts/public/${contractToken.token}`)
 		}
 	}, [statusToken])
@@ -349,6 +410,23 @@ const Contracts: NextLayout = () => {
 			<Button colorScheme="blue" onClick={onOpenAdd}>
 				Add new
 			</Button>
+			{currentUser && currentUser.role === 'Admin' && (
+				<Button
+					transform={'auto'}
+					bg={'hu-Green.lightA'}
+					_hover={{
+						bg: 'hu-Green.normal',
+						color: 'white',
+						scale: 1.05,
+					}}
+					color={'hu-Green.normal'}
+					leftIcon={<FaFileCsv />}
+				>
+					<CSVLink filename={'contracts.csv'} headers={headersCSV} data={dataCSV}>
+						export to csv
+					</CSVLink>
+				</Button>
+			)}
 			<Button disabled={!dataSl || dataSl.length == 0 ? true : false} onClick={onOpenDlMany}>
 				Delete all
 			</Button>

@@ -1,6 +1,6 @@
 import { Box, Button, Divider, Grid, GridItem, Text, useDisclosure, VStack } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
-import {Loading} from 'components/common'
+import { Loading } from 'components/common'
 import { AuthContext } from 'contexts/AuthContext'
 import { createContractMutation } from 'mutations'
 import dynamic from 'next/dynamic'
@@ -13,18 +13,18 @@ import { createContractForm } from 'type/form/basicFormType'
 import { dataCurrency } from 'utils/basicData'
 import { CreateContractValidate } from 'utils/validate'
 //CSS
-import { InputNumber, CoutrySelector, Textarea, UploadAvatar, Input, Select } from 'components/form'
+import { CoutrySelector, Input, InputNumber, Select, Textarea, UploadAvatar } from 'components/form'
 import Modal from 'components/modal/Modal'
-import { allClientsQuery, allContractTypesQuery, allContractsQuery } from 'queries'
+import { allClientsQuery, allContractsQuery, allContractTypesQuery } from 'queries'
 import { BsCalendarDate } from 'react-icons/bs'
 import { FaCity } from 'react-icons/fa'
 import { GiMatterStates } from 'react-icons/gi'
 import 'react-quill/dist/quill.bubble.css'
 import 'react-quill/dist/quill.snow.css'
 import { IOption } from 'type/basicTypes'
-import ContractTypes from '../contract-types'
 import { ICloudinaryImg, IImg } from 'type/fileType'
 import { uploadFile } from 'utils/uploadFile'
+import ContractTypes from '../contract-types'
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
 
@@ -33,7 +33,7 @@ export interface IAddContractProps {
 }
 
 export default function AddContract({ onCloseDrawer }: IAddContractProps) {
-	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
+	const { isAuthenticated, handleLoading, setToast, socket } = useContext(AuthContext)
 	const router = useRouter()
 
 	//State ----------------------------------------------------------------------
@@ -144,7 +144,7 @@ export default function AddContract({ onCloseDrawer }: IAddContractProps) {
 
 	//Note when request success
 	useEffect(() => {
-		if (statusCreContract === 'success') {
+		if (statusCreContract === 'success' && dataCreContract) {
 			//Close drawer when using drawer
 			if (onCloseDrawer) {
 				onCloseDrawer()
@@ -155,6 +155,10 @@ export default function AddContract({ onCloseDrawer }: IAddContractProps) {
 				msg: dataCreContract?.message as string,
 			})
 			refetchAllContracts()
+
+			if (socket) {
+				socket.emit('newContractNotification', dataCreContract.contract?.client.id)
+			}
 		}
 	}, [statusCreContract])
 

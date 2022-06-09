@@ -117,6 +117,9 @@ const attendance: NextLayout = () => {
 		currentUser?.role === "Admin" ? employeeSl : currentUser?.id
 	)
 
+	console.log(allAttendances);
+	
+
 	// get all employees
 	const { data: allEmployees } = allEmployeesNormalQuery(isAuthenticated)
 

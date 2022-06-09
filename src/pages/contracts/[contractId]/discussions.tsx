@@ -303,7 +303,7 @@ export const getStaticProps: GetStaticProps = async () => {
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-	const res: contractMutaionResponse = await fetch('http://localhost:4000/api/contracts').then((result) => result.json()).catch(() => undefined)
+	const res: contractMutaionResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/contracts`).then((result) => result.json()).catch(() => undefined)
 
 	if (!res || !res.contracts) {
 		return { paths: [], fallback: false }

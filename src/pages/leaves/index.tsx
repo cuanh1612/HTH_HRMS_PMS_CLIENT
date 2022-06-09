@@ -27,6 +27,7 @@ import {
 } from '@chakra-ui/react'
 import { AlertDialog, Table } from 'components/common'
 import { Drawer } from 'components/Drawer'
+import { CSVLink } from 'react-csv'
 
 // use layout
 import { ClientLayout } from 'components/layouts'
@@ -64,6 +65,7 @@ import { DateRange, Input, Select, SelectUser } from 'components/filter'
 import { BsCheck2 } from 'react-icons/bs'
 import { IOption } from 'type/basicTypes'
 import { IPeople } from 'type/element/commom'
+import { FaFileCsv } from 'react-icons/fa'
 
 // get current year
 const year = new Date().getFullYear()
@@ -104,6 +106,9 @@ const Leaves: NextLayout = () => {
 	// get id to delete leave
 	const [idDeleteLeave, setIdDeleteLeave] = useState<number>()
 
+	//state csv
+	const [dataCSV, setDataCSV] = useState<any[]>([])
+
 	// set loading table
 	const [isLoading, setIsloading] = useState(true)
 
@@ -139,6 +144,19 @@ const Leaves: NextLayout = () => {
 
 	// delete all leaves
 	const [mutateDeleteLeaves, { status: statusDlMany }] = deleteLeavesMutation(setToast)
+
+	//Setup download csv --------------------------------------------------------
+	const headersCSV = [
+		{ label: 'id', key: 'id' },
+		{ label: 'date', key: 'date' },
+		{ label: 'duration', key: 'duration' },
+		{ label: 'employee', key: 'employee' },
+		{ label: 'leave_type', key: 'leave_type' },
+		{ label: 'reason', key: 'reason' },
+		{ label: 'status', key: 'status' },
+		{ label: 'createdAt', key: 'createdAt' },
+		{ label: 'updatedAt', key: 'updatedAt' },
+	]
 
 	//User effect ---------------------------------------------------------------
 	// check authenticate in
@@ -177,7 +195,7 @@ const Leaves: NextLayout = () => {
 
 	// set loading == false when get all leaves successfully
 	useEffect(() => {
-		if (allLeaves) {
+		if (allLeaves && allLeaves.leaves) {
 			const users = allLeaves.leaves?.map((item): IPeople => {
 				return {
 					id: item.id,
@@ -187,6 +205,21 @@ const Leaves: NextLayout = () => {
 			})
 			setAllusersSl(users || [])
 			setIsloading(false)
+
+			//Set data csv
+			const dataCSV: any[] = allLeaves.leaves.map((leave) => ({
+				id: leave.id,
+				date: leave.date,
+				duration: leave.duration,
+				employee: leave.employee.id,
+				leave_type: leave.leave_type.id,
+				reason: leave.reason,
+				status: leave.status,
+				createdAt: leave.createdAt,
+				updatedAt: leave.updatedAt,
+			}))
+
+			setDataCSV(dataCSV)
 		}
 	}, [allLeaves])
 
@@ -435,6 +468,25 @@ const Leaves: NextLayout = () => {
 					>
 						Add leaves
 					</Button>
+
+					{currentUser && currentUser.role === 'Admin' && (
+						<Button
+							transform={'auto'}
+							bg={'hu-Green.lightA'}
+							_hover={{
+								bg: 'hu-Green.normal',
+								color: 'white',
+								scale: 1.05,
+							}}
+							color={'hu-Green.normal'}
+							leftIcon={<FaFileCsv />}
+						>
+							<CSVLink filename={'leaves.csv'} headers={headersCSV} data={dataCSV}>
+								export to csv
+							</CSVLink>
+						</Button>
+					)}
+
 					<Button
 						transform={'auto'}
 						_hover={{

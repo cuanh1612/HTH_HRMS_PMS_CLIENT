@@ -32,11 +32,14 @@ import { IFilter, TColumn } from 'type/tableTypes'
 import { dateFilter, selectFilter, textFilter } from 'utils/tableFilters'
 import AddNoticeBoard from './add-notice-boards'
 import UpdateNoticeBoard from './[noticeBoardId]/update'
+import { CSVLink } from 'react-csv'
+import { FaFileCsv } from 'react-icons/fa'
 
 export interface IProjectProps {}
 
 const NoticeBoard: NextLayout = ({}: IProjectProps) => {
-	const { isAuthenticated, handleLoading, setToast, currentUser, socket } = useContext(AuthContext)
+	const { isAuthenticated, handleLoading, setToast, currentUser, socket } =
+		useContext(AuthContext)
 	const router = useRouter()
 
 	//State ---------------------------------------------------------------------
@@ -46,6 +49,9 @@ const NoticeBoard: NextLayout = ({}: IProjectProps) => {
 		columnId: '',
 		filterValue: '',
 	})
+
+	//state csv
+	const [dataCSV, setDataCSV] = useState<any[]>([])
 
 	// data select to delete all
 	const [dataSl, setDataSl] = useState<Array<number> | null>()
@@ -73,6 +79,16 @@ const NoticeBoard: NextLayout = ({}: IProjectProps) => {
 		onClose: onCloseDlMany,
 	} = useDisclosure()
 
+	//Setup download csv --------------------------------------------------------
+	const headersCSV = [
+		{ label: 'id', key: 'id' },
+		{ label: 'details', key: 'details' },
+		{ label: 'heading', key: 'heading' },
+		{ label: 'notice_to', key: 'notice_to' },
+		{ label: 'createdAt', key: 'createdAt' },
+		{ label: 'updatedAt', key: 'updatedAt' },
+	]
+
 	// query
 	const { data: allNotices, mutate: refetchNotices } =
 		currentUser?.role === 'Admin'
@@ -80,6 +96,8 @@ const NoticeBoard: NextLayout = ({}: IProjectProps) => {
 			: currentUser?.role === 'Employee'
 			? allNoticeBoardToQuery(isAuthenticated, 'Employees')
 			: allNoticeBoardToQuery(isAuthenticated, 'Clients')
+
+	console.log(allNotices)
 
 	// mutation
 	// delete one
@@ -189,6 +207,20 @@ const NoticeBoard: NextLayout = ({}: IProjectProps) => {
 		if (allNotices) {
 			console.log(allNotices)
 			setIsloading(false)
+
+			if (allNotices.noticeBoards) {
+				//Set data csv
+				const dataCSV: any[] = allNotices.noticeBoards.map((noticeboard) => ({
+					id: noticeboard.id,
+					details: noticeboard.details,
+					heading: noticeboard.heading,
+					notice_to: noticeboard.notice_to,
+					createdAt: noticeboard.createdAt,
+					updatedAt: noticeboard.updatedAt,
+				}))
+
+				setDataCSV(dataCSV)
+			}
 		}
 	}, [allNotices])
 
@@ -262,6 +294,22 @@ const NoticeBoard: NextLayout = ({}: IProjectProps) => {
 				<>
 					<Button colorScheme="blue" onClick={onOpenAdd}>
 						Add notice
+					</Button>
+
+					<Button
+						transform={'auto'}
+						bg={'hu-Green.lightA'}
+						_hover={{
+							bg: 'hu-Green.normal',
+							color: 'white',
+							scale: 1.05,
+						}}
+						color={'hu-Green.normal'}
+						leftIcon={<FaFileCsv />}
+					>
+						<CSVLink filename={'noticeBoards.csv'} headers={headersCSV} data={dataCSV}>
+							export to csv
+						</CSVLink>
 					</Button>
 
 					<Button

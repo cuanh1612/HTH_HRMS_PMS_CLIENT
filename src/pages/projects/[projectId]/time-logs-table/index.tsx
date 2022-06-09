@@ -34,6 +34,8 @@ import { dateFilter, selectFilter, textFilter } from 'utils/tableFilters'
 import AddTimeLog from './add-time-logs'
 import DetailTimeLog from './[timeLogId]'
 import UpdateTimeLog from './[timeLogId]/update-time-logs'
+import { CSVLink } from 'react-csv'
+import { FaFileCsv } from 'react-icons/fa'
 
 const TimeLogs: NextLayout = () => {
 	const { isAuthenticated, handleLoading, currentUser, setToast, socket } = useContext(AuthContext)
@@ -43,6 +45,9 @@ const TimeLogs: NextLayout = () => {
 
 	// data select to delete all
 	const [dataSl, setDataSl] = useState<Array<number> | null>()
+
+	//state csv
+	const [dataCSV, setDataCSV] = useState<any[]>([])
 
 	// set id time log to delete or update
 	const [idTimeLog, setIdTimeLog] = useState<number>()
@@ -58,6 +63,24 @@ const TimeLogs: NextLayout = () => {
 
 	// is reset table
 	const [isResetFilter, setIsReset] = useState(false)
+
+	//Setup download csv --------------------------------------------------------
+	const headersCSV = [
+		{ label: 'id', key: 'id' },
+		{ label: 'earnings', key: 'earnings' },
+		{ label: 'employee', key: 'employee' },
+		{ label: 'ends_on_date', key: 'ends_on_date' },
+		{ label: 'ends_on_time', key: 'ends_on_time' },
+		{ label: 'memo', key: 'memo' },
+		{ label: 'project', key: 'project' },
+		{ label: 'starts_on_date', key: 'starts_on_date' },
+		{ label: 'starts_on_time', key: 'starts_on_time' },
+		{ label: 'task', key: 'task' },
+		{ label: 'total_hours', key: 'total_hours' },
+		{ label: 'createdAt', key: 'createdAt' },
+		{ label: 'updatedAt', key: 'updatedAt' },
+	]
+
 
 	//Modal -------------------------------------------------------------
 	// set open add time log
@@ -150,6 +173,27 @@ const TimeLogs: NextLayout = () => {
 		if (allTimeLogs) {
 			console.log(allTimeLogs)
 			setIsloading(false)
+
+			if (allTimeLogs.timeLogs) {
+				//Set data csv
+				const dataCSV: any[] = allTimeLogs.timeLogs.map((timeLog) => ({
+					id: timeLog.id,
+					earnings: timeLog.earnings,
+					employee: timeLog.employee,
+					ends_on_date: timeLog.ends_on_date,
+					ends_on_time: timeLog.ends_on_time,
+					memo: timeLog.memo,
+					project: timeLog.project.id,
+					starts_on_date: timeLog.starts_on_date,
+					starts_on_time: timeLog.starts_on_time,
+					task: timeLog.task?.id,
+					total_hours: timeLog.total_hours,
+					createdAt: timeLog.createdAt,
+					updatedAt: timeLog.updatedAt,
+				}))
+
+				setDataCSV(dataCSV)
+			}
 		}
 	}, [allTimeLogs])
 
@@ -371,6 +415,21 @@ const TimeLogs: NextLayout = () => {
 			{currentUser?.role === 'Admin' && (
 				<>
 					<Button onClick={onOpenAddTimeLog}>Add new</Button>
+					<Button
+						transform={'auto'}
+						bg={'hu-Green.lightA'}
+						_hover={{
+							bg: 'hu-Green.normal',
+							color: 'white',
+							scale: 1.05,
+						}}
+						color={'hu-Green.normal'}
+						leftIcon={<FaFileCsv />}
+					>
+						<CSVLink filename={'timelogs.csv'} headers={headersCSV} data={dataCSV}>
+							export to csv
+						</CSVLink>
+					</Button>
 					<Button
 						disabled={!dataSl || dataSl.length == 0 ? true : false}
 						onClick={onOpenDlMany}

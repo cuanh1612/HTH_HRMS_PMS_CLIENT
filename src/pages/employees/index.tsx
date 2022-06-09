@@ -3,7 +3,14 @@ import {
 	Avatar,
 	Badge,
 	Box,
+	Button,
 	Collapse,
+	Drawer as CDrawer,
+	DrawerBody,
+	DrawerCloseButton,
+	DrawerContent,
+	DrawerHeader,
+	DrawerOverlay,
 	HStack,
 	Menu,
 	MenuButton,
@@ -11,18 +18,12 @@ import {
 	MenuList,
 	Select as CSelect,
 	Text,
-	Button,
 	useDisclosure,
-	DrawerOverlay,
-	DrawerContent,
-	DrawerHeader,
-	Drawer as CDrawer,
-	DrawerBody,
-	DrawerCloseButton,
 	VStack,
 } from '@chakra-ui/react'
-import {AlertDialog, Table} from 'components/common'
-import {Drawer} from 'components/Drawer'
+import { AlertDialog, Table } from 'components/common'
+import { Drawer } from 'components/Drawer'
+import { CSVLink } from 'react-csv'
 
 // use layout
 import { ClientLayout } from 'components/layouts'
@@ -34,7 +35,7 @@ import { changeRoleMutation, deleteEmployeeMutation, deleteEmployeesMutation } f
 import { useRouter } from 'next/router'
 
 // get all employees
-import { allEmployeesQuery, allDesignationsQuery, allDepartmentsQuery } from 'queries'
+import { allDepartmentsQuery, allDesignationsQuery, allEmployeesQuery } from 'queries'
 
 import { useContext, useEffect, useState } from 'react'
 
@@ -58,8 +59,9 @@ import { selectFilter, textFilter } from 'utils/tableFilters'
 import AddEmployees from './add-employees'
 import UpdateEmployees from './update-employees'
 
-import { IOption } from 'type/basicTypes'
 import { Input, Select, SelectUser } from 'components/filter'
+import { FaFileCsv } from 'react-icons/fa'
+import { IOption } from 'type/basicTypes'
 import { IPeople } from 'type/element/commom'
 
 const Employees: NextLayout = () => {
@@ -70,7 +72,30 @@ const Employees: NextLayout = () => {
 	const [filter, setFilter] = useState<IFilter>({
 		columnId: '',
 		filterValue: '',
-	}) 
+	})
+
+	//Setup download csv --------------------------------------------------------
+	const headersCSV = [
+		{ label: 'id', key: 'id' },
+		{ label: 'name', key: 'name' },
+		{ label: 'gender', key: 'gender' },
+		{ label: 'email', key: 'email' },
+		{ label: 'mobile', key: 'mobile' },
+		{ label: 'address', key: 'address' },
+		{ label: 'avatar', key: 'avatar' },
+		{ label: 'can_login', key: 'can_login' },
+		{ label: 'can_receive_email', key: 'can_receive_email' },
+		{ label: 'date_of_birth', key: 'date_of_birth' },
+		{ label: 'department', key: 'department' },
+		{ label: 'designation', key: 'designation' },
+		{ label: 'employeeId', key: 'employeeId' },
+		{ label: 'hourly_rate', key: 'hourly_rate' },
+		{ label: 'joining_date', key: 'joining_date' },
+		{ label: 'role', key: 'role' },
+		{ label: 'skills', key: 'skills' },
+		{ label: 'createdAt', key: 'createdAt' },
+		{ label: 'updatedAt', key: 'updatedAt' },
+	]
 
 	// set isOpen drawer to add, update
 	const { isOpen: isOpenAdd, onOpen: onOpenAdd, onClose: onCloseAdd } = useDisclosure()
@@ -95,6 +120,9 @@ const Employees: NextLayout = () => {
 	})
 
 	//State ---------------------------------------------------------------------
+	//state csv
+	const [dataCSV, setDataCSV] = useState<any[]>([])
+
 	// get id to delete employee
 	const [idDeleteEmpl, setIdDeleteEmpl] = useState<number>()
 
@@ -121,6 +149,8 @@ const Employees: NextLayout = () => {
 	// query and mutation -=------------------------------------------------------
 	// get all employees
 	const { data: allEmployees, mutate: refetchAllEmpl } = allEmployeesQuery(isAuthenticated)
+	console.log(allEmployees);
+	
 
 	// get all department
 	const { data: allDepartments } = allDepartmentsQuery(isAuthenticated)
@@ -187,7 +217,7 @@ const Employees: NextLayout = () => {
 
 	// set loading == false when get all employees successfully
 	useEffect(() => {
-		if (allEmployees) {
+		if (allEmployees && allEmployees.employees) {
 			const users = allEmployees.employees?.map((item): IPeople => {
 				return {
 					id: item.id,
@@ -197,6 +227,31 @@ const Employees: NextLayout = () => {
 			})
 			setAllusersSl(users || [])
 			setIsloading(false)
+
+			//Set data csv
+			const dataCSV: any[] = allEmployees.employees.map((employee) => ({
+				id: employee.id,
+				name: employee.name,
+				gender: employee.gender,
+				email: employee.email,
+				mobile: employee.mobile,
+				address: employee.address,
+				avatar: employee.avatar?.id,
+				can_login: employee.can_login ? 'true' : 'false',
+				can_receive_email: employee.can_receive_email ? 'true' : 'false',
+				date_of_birth: employee.date_of_birth,
+				department: employee.department?.id,
+				designation: employee.designation?.id,
+				employeeId: employee.employeeId,
+				hourly_rate: employee.hourly_rate,
+				joining_date: employee.joining_date,
+				role: employee.role,
+				skills: employee.skills,
+				createdAt: employee.createdAt,
+				updatedAt: employee.updatedAt,
+			}))
+
+			setDataCSV(dataCSV)
 		}
 	}, [allEmployees])
 
@@ -436,6 +491,25 @@ const Employees: NextLayout = () => {
 					>
 						Add employees
 					</Button>
+
+					{currentUser && currentUser.role === 'Admin' && (
+						<Button
+							transform={'auto'}
+							bg={'hu-Green.lightA'}
+							_hover={{
+								bg: 'hu-Green.normal',
+								color: 'white',
+								scale: 1.05,
+							}}
+							color={'hu-Green.normal'}
+							leftIcon={<FaFileCsv />}
+						>
+							<CSVLink filename={'employees.csv'} headers={headersCSV} data={dataCSV}>
+								export to csv
+							</CSVLink>
+						</Button>
+					)}
+
 					<Button
 						transform={'auto'}
 						_hover={{
@@ -539,7 +613,6 @@ const Employees: NextLayout = () => {
 				content="You will not be able to recover the deleted record!"
 				isOpen={isOpenDialogDlMany}
 				onClose={onCloseDlMany}
-				
 			/>
 
 			{/* drawer to add employee */}

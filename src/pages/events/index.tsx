@@ -24,7 +24,7 @@ import dayGridPlugin from '@fullcalendar/daygrid'
 import listPlugin from '@fullcalendar/list'
 import timeGridPlugin from '@fullcalendar/timegrid'
 
-import {Drawer} from 'components/Drawer'
+import { Drawer } from 'components/Drawer'
 import { ClientLayout } from 'components/layouts'
 import { AuthContext } from 'contexts/AuthContext'
 import { useRouter } from 'next/router'
@@ -33,17 +33,19 @@ import { useContext, useEffect, useState } from 'react'
 import { NextLayout } from 'type/element/layout'
 import AddEvent from './add-events'
 import UpdateEvent from './update-events'
-import {ButtonIcon }from 'components/common'
+import { ButtonIcon } from 'components/common'
 import { MdOutlineNavigateBefore, MdOutlineNavigateNext } from 'react-icons/md'
 import { IOption } from 'type/basicTypes'
 import { Input, SelectCustom } from 'components/filter'
 import { AiOutlineSearch } from 'react-icons/ai'
 import { IFilter } from 'type/tableTypes'
+import { CSVLink } from 'react-csv'
+import { FaFileCsv } from 'react-icons/fa'
 
 var timeoutName: NodeJS.Timeout
 
 const Event: NextLayout = () => {
-	const { isAuthenticated, handleLoading, socket } = useContext(AuthContext)
+	const { isAuthenticated, handleLoading, socket, currentUser } = useContext(AuthContext)
 	const router = useRouter()
 
 	const { colorMode } = useColorMode()
@@ -52,6 +54,9 @@ const Event: NextLayout = () => {
 
 	//State ---------------------------------------------------------------------
 	const [eventIdUpdate, setEventIdUpdate] = useState<number | null>(null)
+
+	//state csv
+	const [dataCSV, setDataCSV] = useState<any[]>([])
 
 	// set data to handle to calendar
 	const [data, setData] = useState<EventInput[]>([])
@@ -65,6 +70,21 @@ const Event: NextLayout = () => {
 
 	const [name, setName] = useState<string>()
 
+	//Setup download csv --------------------------------------------------------
+	const headersCSV = [
+		{ label: 'id', key: 'id' },
+		{ label: 'name', key: 'name' },
+		{ label: 'color', key: 'color' },
+		{ label: 'description', key: 'description' },
+		{ label: 'where', key: 'where' },
+		{ label: 'starts_on_date', key: 'starts_on_date' },
+		{ label: 'starts_on_time', key: 'starts_on_time' },
+		{ label: 'ends_on_date', key: 'ends_on_date' },
+		{ label: 'ends_on_time', key: 'ends_on_time' },
+		{ label: 'createdAt', key: 'createdAt' },
+		{ label: 'updatedAt', key: 'updatedAt' },
+	]
+
 	//Setup drawer --------------------------------------------------------------
 	const { isOpen: isOpenAdd, onOpen: onOpenAdd, onClose: onCloseAdd } = useDisclosure()
 	const { isOpen: isOpenUpdate, onOpen: onOpenUpdate, onClose: onCloseUpdate } = useDisclosure()
@@ -73,16 +93,21 @@ const Event: NextLayout = () => {
 	const { isOpen: isOpenFilter, onClose: onCloseFilter, onOpen: onOpenFilter } = useDisclosure()
 
 	// get all event
-	const { data: allEvents, mutate: refetchEvents } = allEventsQuery(isAuthenticated, employee, client, name)
+	const { data: allEvents, mutate: refetchEvents } = allEventsQuery(
+		isAuthenticated,
+		employee,
+		client,
+		name
+	)
+
 	const { data: allEmployees } = allEmployeesNormalQuery(isAuthenticated)
 	const { data: allClients } = allClientsQuery(isAuthenticated)
 
-	
 	//User effect ---------------------------------------------------------------
 	useEffect(() => {
 		if (allEvents) {
 			const newData = allEvents.Events?.map((item): EventInput => {
-				console.log(new Date(item.starts_on_date).getMonth()+1)
+				console.log(new Date(item.starts_on_date).getMonth() + 1)
 				return {
 					title: item.name,
 					id: `${item.id}`,
@@ -94,9 +119,28 @@ const Event: NextLayout = () => {
 				}
 			})
 			setData(newData || [])
+
+			if (allEvents.Events) {
+				//Set data csv
+				const dataCSV: any[] = allEvents.Events.map((event) => ({
+					id: event.id,
+					name: event.name,
+					color: event.color,
+					description: event.description,
+					where: event.where,
+					starts_on_date: event.starts_on_date,
+					starts_on_time: event.starts_on_time,
+					ends_on_date: event.ends_on_date,
+					ends_on_time: event.ends_on_time,
+					createdAt: event.createdAt,
+					updatedAt: event.updatedAt,
+				}))
+
+				setDataCSV(dataCSV)
+			}
 		}
 	}, [allEvents, colorMode])
-	
+
 	// set calendar
 	useEffect(() => {
 		console.log(data)
@@ -228,7 +272,6 @@ const Event: NextLayout = () => {
 		return leaveRoom
 	}, [socket])
 
-
 	return (
 		<>
 			<HStack paddingBlock={'5'} justifyContent={'space-between'}>
@@ -236,6 +279,23 @@ const Event: NextLayout = () => {
 					<Button color={'white'} bg={'hu-Green.normal'} onClick={() => onOpenAdd()}>
 						Add event
 					</Button>
+					{currentUser && currentUser.role === 'Admin' && (
+						<Button
+							transform={'auto'}
+							bg={'hu-Green.lightA'}
+							_hover={{
+								bg: 'hu-Green.normal',
+								color: 'white',
+								scale: 1.05,
+							}}
+							color={'hu-Green.normal'}
+							leftIcon={<FaFileCsv />}
+						>
+							<CSVLink filename={'events.csv'} headers={headersCSV} data={dataCSV}>
+								export to csv
+							</CSVLink>
+						</Button>
+					)}
 					<Button
 						color={'white'}
 						bg={'hu-Green.normal'}
@@ -328,8 +388,7 @@ const Event: NextLayout = () => {
 									clearTimeout(timeoutName)
 									timeoutName = setTimeout(() => {
 										setName(data.filterValue)
-									}, 500);
-									
+									}, 500)
 								}}
 								columnId={'name'}
 								label="Event name"

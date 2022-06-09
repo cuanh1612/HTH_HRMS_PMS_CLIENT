@@ -47,16 +47,18 @@ export default function join() {
 
 	/* This is for displaying our self-view. */
 	const localParticipant = useLocalParticipant()
-	const localParticipantVideoTrack = useVideoTrack(localParticipant?.session_id)
+	const localParticipantVideoTrack = useVideoTrack(localParticipant?.session_id || ' ')
 	const localVideoElement = useRef<any>(null)
 	//get MediaStream of current user
 	useEffect(() => {
-		if (!localParticipantVideoTrack.persistentTrack) return
-		localVideoElement?.current &&
-			(localVideoElement.current.srcObject =
-				localParticipantVideoTrack.persistentTrack &&
-				new MediaStream([localParticipantVideoTrack?.persistentTrack]))
-	}, [localParticipantVideoTrack.persistentTrack])
+		if(localParticipantVideoTrack) {
+			if (!localParticipantVideoTrack.persistentTrack) return
+			localVideoElement?.current &&
+				(localVideoElement.current.srcObject =
+					localParticipantVideoTrack.persistentTrack &&
+					new MediaStream([localParticipantVideoTrack?.persistentTrack]))
+		}
+	}, [localParticipantVideoTrack])
 
 	// set all id of participants
 	useEffect(() => {

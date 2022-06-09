@@ -94,9 +94,9 @@ export default function index() {
 
 	/* This is for displaying our self-view. */
 	const localParticipant = useLocalParticipant()
-	const localParticipantVideoTrack = useVideoTrack(localParticipant?.session_id)
+	console.log(localParticipant)
+	const localParticipantVideoTrack = useVideoTrack(localParticipant?.session_id || ' ')
 	const localVideoElement = useRef<any>(null)
-	const localVideoElement2 = useRef<any>(null)
 
 	// query
 	const { data: dataRoom } = getRoomByTitleQuery(isAuthenticated, name)
@@ -131,16 +131,14 @@ export default function index() {
 	}, [co, dataRoom])
 
 	useEffect(() => {
-		if (!localParticipantVideoTrack.persistentTrack) return
-		localVideoElement?.current &&
-			(localVideoElement.current.srcObject =
-				localParticipantVideoTrack.persistentTrack &&
-				new MediaStream([localParticipantVideoTrack?.persistentTrack]))
-		localVideoElement2?.current &&
-			(localVideoElement2.current.srcObject =
-				localParticipantVideoTrack.persistentTrack &&
-				new MediaStream([localParticipantVideoTrack?.persistentTrack]))
-	}, [localParticipantVideoTrack.persistentTrack])
+		if (localParticipantVideoTrack) {
+			if (!localParticipantVideoTrack.persistentTrack) return
+			localVideoElement?.current &&
+				(localVideoElement.current.srcObject =
+					localParticipantVideoTrack.persistentTrack &&
+					new MediaStream([localParticipantVideoTrack?.persistentTrack]))
+		}
+	}, [localParticipantVideoTrack])
 
 	return (
 		<Box boxSizing="border-box" padding={5} w={'full'} h={'96vh'}>

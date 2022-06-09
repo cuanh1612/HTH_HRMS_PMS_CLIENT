@@ -349,7 +349,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 		(result) => result.json()
 	).catch(() => undefined)
 	
-	if (!res.contracts) {
+	if (!res || !res.contracts) {
 		return { paths: [], fallback: false }
 	}
 

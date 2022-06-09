@@ -294,7 +294,7 @@ export const getStaticProps: GetStaticProps = async () => {
 export const getStaticPaths: GetStaticPaths = async () => {
 	const res = await fetch('http://localhost:4000/api/contracts').then((result) => result.json()).catch(() => undefined)
 
-	if (!res.contracts) {
+	if (!res || !res.contracts) {
 		return { paths: [], fallback: false }
 	}
 

@@ -47,7 +47,7 @@ const JWTManager = () => {
 			const response = await getData<{
 				accessToken: string
 			}>({
-				url: `${process.env.NEXT_PUBLIC_API_URL}/auth/refresh_token`,
+				url: `${process.env.NEXT_PUBLIC_API_URL}/api/auth/refresh_token`,
 			})
 
 			setToken(response.accessToken)

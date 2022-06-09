@@ -164,14 +164,16 @@ export const getStaticProps: GetStaticProps = async () => {
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-	const res: holidayMutaionResponse = await fetch('http://localhost:4000/api/holidays').then(
+	const res: holidayMutaionResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/holidays`).then(
 		(result) => result.json()
 	)
-	const holidays = res.holidays
 
-	if (!holidays) {
+	if (!res || !res.holidays) {
 		return { paths: [], fallback: false }
 	}
+
+	const holidays = res.holidays
+
 
 	// Get the paths we want to pre-render based on leave
 	const paths = holidays.map((holiday) => ({

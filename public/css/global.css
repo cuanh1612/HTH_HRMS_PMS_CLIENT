@@ -239,3 +239,6 @@ td.fc-day-today {
     background: #ffffff10
 }
 
+.slick-track {
+    height: 100%!important
+}

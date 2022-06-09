@@ -12,7 +12,7 @@ export async function createLeaveRequest(inputCreate: createLeaveForm) {
 	return resultFetch
 }
 
-//Function handle get all clients
+//Function handle get all leaves
 export async function allLeavesRequest(url: string) {
 	const resultFetch = await getData<leaveMutaionResponse>({
 		url: `http://localhost:4000/api/${url}`,

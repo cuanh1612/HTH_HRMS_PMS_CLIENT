@@ -21,14 +21,24 @@ export interface IModalProps {
 	title: string
 	onOk?: () => void
 	form?: string
+	isFooter?: boolean
 }
 
-export default function Modal({ isOpen, onClose, children, size, title, onOk, form}: IModalProps) {
+export default function Modal({
+	isOpen,
+	onClose,
+	children,
+	size,
+	title,
+	onOk,
+	form,
+	isFooter = true,
+}: IModalProps) {
 	return (
 		<>
 			<ModalChkra size={size} isOpen={isOpen} onClose={onClose}>
 				<ModalOverlay />
-				<ModalContent>
+				<ModalContent borderRadius={10}>
 					<ModalHeader>{title}</ModalHeader>
 					<ModalCloseButton />
 
@@ -37,29 +47,29 @@ export default function Modal({ isOpen, onClose, children, size, title, onOk, fo
 					{children}
 					<br />
 					<Divider />
-
-					<ModalFooter>
-						<HStack>
-							<Button onClick={onClose}>Cancel</Button>
-							{onOk && (
-								<Button
-									onClick={() => {
-										if(!form) {
-											onClose()
-											onOk()
-										}
-								
-									}}
-									form={form}
-									type={!form ? 'button' : 'submit'}
-									colorScheme={'teal'}
-									leftIcon={<AiOutlineCheck />}
-								>
-									Save
-								</Button>
-							)}
-						</HStack>
-					</ModalFooter>
+					{isFooter && (
+						<ModalFooter>
+							<HStack>
+								<Button onClick={onClose}>Cancel</Button>
+								{onOk && (
+									<Button
+										onClick={() => {
+											if (!form) {
+												onClose()
+												onOk()
+											}
+										}}
+										form={form}
+										type={!form ? 'button' : 'submit'}
+										colorScheme={'teal'}
+										leftIcon={<AiOutlineCheck />}
+									>
+										Save
+									</Button>
+								)}
+							</HStack>
+						</ModalFooter>
+					)}
 				</ModalContent>
 			</ModalChkra>
 		</>

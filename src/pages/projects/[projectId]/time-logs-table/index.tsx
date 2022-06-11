@@ -183,7 +183,7 @@ const TimeLogs: NextLayout = () => {
 					ends_on_date: timeLog.ends_on_date,
 					ends_on_time: timeLog.ends_on_time,
 					memo: timeLog.memo,
-					project: timeLog.project.id,
+					project: timeLog.project?.id,
 					starts_on_date: timeLog.starts_on_date,
 					starts_on_time: timeLog.starts_on_time,
 					task: timeLog.task?.id,

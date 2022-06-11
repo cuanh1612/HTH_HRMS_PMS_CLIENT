@@ -145,6 +145,10 @@ export interface clientMutaionResponse extends commonResponse {
 	clients?: clientType[]
 }
 
+export interface clientProjectStatusMutaionResponse extends commonResponse {
+	countProjectStatus?: { project_status: string; count: string | number }[]
+}
+
 export interface clientTotalProjectsMutaionResponse extends commonResponse {
 	totalProjects?: number
 }
@@ -174,7 +178,7 @@ export interface contractFileMutaionResponse extends commonResponse {
 	[index: string]: any
 }
 
-export interface eventMutaionResponse  extends commonResponse {
+export interface eventMutaionResponse extends commonResponse {
 	event?: eventType
 	Events?: eventType[]
 }
@@ -190,10 +194,10 @@ export interface projectMutaionResponse extends commonResponse {
 	projects?: projectType[]
 	projectEarnings?: number
 	projectHoursLogged?: number
-	countstatusTasks: statusType[] 
+	countstatusTasks: statusType[]
 }
 
-export interface statusMutaionResponse extends commonResponse  {
+export interface statusMutaionResponse extends commonResponse {
 	status?: statusType
 	statuses?: statusType[]
 }

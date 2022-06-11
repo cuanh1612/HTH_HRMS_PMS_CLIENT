@@ -1,9 +1,17 @@
 import { AxiosError } from 'axios'
-import { allClientsRequest, detailClientRequest } from 'requests/client'
+import { allClientsRequest, countProjectStatusRequest, detailClientRequest } from 'requests/client'
 import useSWR from 'swr'
-import { clientMutaionResponse, clientTotalEarningMutaionResponse, clientTotalProjectsMutaionResponse } from 'type/mutationResponses'
+import {
+	clientMutaionResponse,
+	clientProjectStatusMutaionResponse,
+	clientTotalEarningMutaionResponse,
+	clientTotalProjectsMutaionResponse
+} from 'type/mutationResponses'
 
-export const detailClientQuery = (isAuthenticated: boolean | null, clientId: string | number | null) => {
+export const detailClientQuery = (
+	isAuthenticated: boolean | null,
+	clientId: string | number | null
+) => {
 	return useSWR<clientMutaionResponse, AxiosError>(
 		isAuthenticated && clientId ? `clients/${clientId}` : null,
 		detailClientRequest,
@@ -14,7 +22,10 @@ export const detailClientQuery = (isAuthenticated: boolean | null, clientId: str
 	)
 }
 
-export const clientTotalProejctsQuery = (isAuthenticated: boolean | null, clientId: string | number | null) => {
+export const clientTotalProejctsQuery = (
+	isAuthenticated: boolean | null,
+	clientId: string | number | null
+) => {
 	return useSWR<clientTotalProjectsMutaionResponse, AxiosError>(
 		isAuthenticated && clientId ? `clients/${clientId}/total-projects` : null,
 		detailClientRequest,
@@ -25,10 +36,27 @@ export const clientTotalProejctsQuery = (isAuthenticated: boolean | null, client
 	)
 }
 
-export const clientTotalEarningQuery = (isAuthenticated: boolean | null, clientId: string | number | null) => {
+export const clientTotalEarningQuery = (
+	isAuthenticated: boolean | null,
+	clientId: string | number | null
+) => {
 	return useSWR<clientTotalEarningMutaionResponse, AxiosError>(
 		isAuthenticated && clientId ? `clients/${clientId}/total-earnings` : null,
 		detailClientRequest,
+		{
+			errorRetryCount: 2,
+			revalidateOnFocus: false,
+		}
+	)
+}
+
+export const clientCountProjectStatusQuery = (
+	isAuthenticated: boolean | null,
+	clientId: string | number | null
+) => {
+	return useSWR<clientProjectStatusMutaionResponse, AxiosError>(
+		isAuthenticated && clientId ? `projects/client/${clientId}/project-status` : null,
+		countProjectStatusRequest,
 		{
 			errorRetryCount: 2,
 			revalidateOnFocus: false,

@@ -1,5 +1,5 @@
 import { createClientForm, updateClientForm } from 'type/form/basicFormType'
-import { clientMutaionResponse } from 'type/mutationResponses'
+import { clientMutaionResponse, clientProjectStatusMutaionResponse } from 'type/mutationResponses'
 import { deleteData, getData, postData, putData } from 'utils/fetchData'
 
 //Function handle create client
@@ -40,6 +40,15 @@ export async function allClientsRequest(url: string) {
 //Function handle get detail client
 export async function detailClientRequest(url: string) {
 	const resultFetch = await getData<clientMutaionResponse>({
+		url: `http://localhost:4000/api/${url}`,
+	})
+
+	return resultFetch
+}
+
+//Function handle get count project status by client
+export async function countProjectStatusRequest(url: string) {
+	const resultFetch = await getData<clientProjectStatusMutaionResponse>({
 		url: `http://localhost:4000/api/${url}`,
 	})
 

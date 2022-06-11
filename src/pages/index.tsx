@@ -1,4 +1,15 @@
-import { Box, HStack, Menu, MenuButton, MenuList, Text, VStack } from '@chakra-ui/react'
+import {
+	Box,
+	Button,
+	HStack,
+	Menu,
+	MenuButton,
+	MenuList,
+	Text,
+	useDisclosure,
+	VStack,
+} from '@chakra-ui/react'
+import { Drawer } from 'components/Drawer'
 import NotificationItem from 'components/NotificationItem'
 import { AuthContext } from 'contexts/AuthContext'
 import { useRouter } from 'next/router'
@@ -7,10 +18,19 @@ import { useContext, useEffect } from 'react'
 import { AiOutlineBell } from 'react-icons/ai'
 import { BsFillBellSlashFill } from 'react-icons/bs'
 import { notificationType } from 'type/basicTypes'
+import UpdateClient from './clients/update-clients'
+import UpdateEmployees from './employees/update-employees'
 
 export default function index() {
-	const { isAuthenticated, handleLoading, socket } = useContext(AuthContext)
+	const { isAuthenticated, handleLoading, socket, currentUser } = useContext(AuthContext)
 	const { push } = useRouter()
+
+	// set isOpen of dialog to UpdateProfiles
+	const {
+		isOpen: isOpenUpdateProfile,
+		onOpen: onOpenUpdateProfile,
+		onClose: onCloseUpdateProfile,
+	} = useDisclosure()
 
 	//Query -------------------------------------------------
 	const { data: dataNotification, mutate: refetchNotifications } =
@@ -61,8 +81,15 @@ export default function index() {
 					</HStack>
 				</MenuButton>
 				<MenuList padding={0} borderRadius={0}>
-					<Box width={'400px'} bgColor={'#f2f4f7'} minH={'150px'} maxH={'290px'} overflow={"auto"}>
-						{dataNotification?.notifications && dataNotification.notifications.length > 0 ? (
+					<Box
+						width={'400px'}
+						bgColor={'#f2f4f7'}
+						minH={'150px'}
+						maxH={'290px'}
+						overflow={'auto'}
+					>
+						{dataNotification?.notifications &&
+						dataNotification.notifications.length > 0 ? (
 							dataNotification.notifications.map((notification: notificationType) => (
 								<NotificationItem
 									key={notification.id}
@@ -78,6 +105,33 @@ export default function index() {
 					</Box>
 				</MenuList>
 			</Menu>
+			
+			{currentUser && (
+				<Button colorScheme="blue" onClick={onOpenUpdateProfile}>
+					Button
+				</Button>
+			)}
+			{/* drawer to update client */}
+			{currentUser && (
+				<Drawer
+					size="xl"
+					title="Update client"
+					onClose={onCloseUpdateProfile}
+					isOpen={isOpenUpdateProfile}
+				>
+					{currentUser.role === 'Client' ? (
+						<UpdateClient
+							onCloseDrawer={onCloseUpdateProfile}
+							clientUpdateId={currentUser.id}
+						/>
+					) : (
+						<UpdateEmployees
+							onCloseDrawer={onCloseUpdateProfile}
+							employeeId={currentUser.id}
+						/>
+					)}
+				</Drawer>
+			)}
 		</Box>
 	)
 }

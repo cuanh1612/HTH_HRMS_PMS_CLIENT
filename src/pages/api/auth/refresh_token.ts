@@ -21,6 +21,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 			success: false,
 		})
 	}
+	
 
 	//Return promise
 	return new Promise((resolve) => {

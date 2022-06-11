@@ -32,7 +32,6 @@ export async function loginGoogleRequest(inputLoginGoogle: loginGoogleForm) {
 		url: `${process.env.NEXT_PUBLIC_UI_URL}/api/auth/login-google`,
 		body: inputLoginGoogle,
 	})
-
 	return resultFetch
 }
 

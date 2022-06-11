@@ -63,8 +63,6 @@ import { Input, Select, SelectUser } from 'components/filter'
 import { FaFileCsv } from 'react-icons/fa'
 import { IOption } from 'type/basicTypes'
 import { IPeople } from 'type/element/commom'
-import { GetStaticPaths, GetStaticProps } from 'next'
-import { contractMutaionResponse } from 'type/mutationResponses'
 
 const Employees: NextLayout = () => {
 	const { isAuthenticated, handleLoading, currentUser, setToast } = useContext(AuthContext)

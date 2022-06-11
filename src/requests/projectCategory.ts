@@ -5,14 +5,14 @@ import { deleteData, getData, postData, putData } from 'utils/fetchData'
 //Function handle get all project category
 export const allProjectCategoryRequest = async (url: string) => {
 	return await getData<ProjectCategoryMutaionResponse>({
-		url: `http://localhost:4000/api/${url}`,
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/${url}`,
 	})
 }
 
 //Function handle create project category
 export async function createProjectCategoryRequest(inputCreate: createProjetCategoryForm) {
 	const resultFetch = await postData<ProjectCategoryMutaionResponse>({
-		url: 'http://localhost:4000/api/project-categories',
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/project-categories`,
 		body: inputCreate,
 	})
 
@@ -22,7 +22,7 @@ export async function createProjectCategoryRequest(inputCreate: createProjetCate
 //Function handle delete project category
 export async function deleteProjectCategoryRequest(inputDelete: { projectCategoryId: number }) {
 	const resultFetch = await deleteData<ProjectCategoryMutaionResponse>({
-		url: `http://localhost:4000/api/project-categories/${inputDelete.projectCategoryId}`,
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/project-categories/${inputDelete.projectCategoryId}`,
 	})
 
 	return resultFetch
@@ -37,7 +37,7 @@ export async function updateProjectCategoryRequest({
 	name: string
 }) {
 	const resultFetch = await putData<ProjectCategoryMutaionResponse>({
-		url: `http://localhost:4000/api/project-categories/${projectCategoryId}`,
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/project-categories/${projectCategoryId}`,
 		body: {
 			name,
 		},

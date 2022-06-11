@@ -5,7 +5,7 @@ import { deleteData, getData, postData } from 'utils/fetchData'
 //Function handle create conversation
 export async function createConversationRequest(inputCreate: createConversationForm) {
 	const resultFetch = await postData<ConversationMutationResponse>({
-		url: 'http://localhost:4000/api/conversations',
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/conversations`,
 		body: inputCreate,
 	})
 
@@ -15,7 +15,7 @@ export async function createConversationRequest(inputCreate: createConversationF
 //Function handle get all coversations by user
 export const allCoversationsByUserRequest = async (url: string) => {
 	return await getData<ConversationMutationResponse>({
-		url: `http://localhost:4000/api/${url}`,
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/${url}`,
 	})
 }
 
@@ -28,6 +28,6 @@ export const deleteCoversationRequest = async ({
 	userId: number
 }) => {
 	return await deleteData<ConversationMutationResponse>({
-		url: `http://localhost:4000/api/conversations/${conversationId}/user/${userId}`,
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/conversations/${conversationId}/user/${userId}`,
 	})
 }

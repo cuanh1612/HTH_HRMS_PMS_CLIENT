@@ -351,7 +351,7 @@ export const getStaticProps: GetStaticProps = async () => {
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-	const res: projectMutaionResponse = await fetch('http://localhost:4000/api/projects').then(
+	const res: projectMutaionResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/projects`).then(
 		(result) => result.json()
 	)
 	const projects = res.projects

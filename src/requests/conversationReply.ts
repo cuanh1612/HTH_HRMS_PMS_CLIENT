@@ -5,14 +5,14 @@ import { getData, postData } from 'utils/fetchData'
 //Function handle get all coversations replies by conversation
 export const allConversationRepliesByConversationRequest = async (url: string) => {
 	return await getData<ConversationReplyMutationResponse>({
-		url: `http://localhost:4000/api/${url}`,
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/${url}`,
 	})
 }
 
 //Function handle create conversation reply
 export async function createConversationReplyRequest(inputCreate: createConversationReplyForm) {
 	const resultFetch = await postData<ConversationReplyMutationResponse>({
-		url: 'http://localhost:4000/api/conversation-replies',
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/conversation-replies`,
 		body: inputCreate,
 	})
 

@@ -4,6 +4,7 @@ import { GetServerSideProps } from 'next'
 import { useRouter } from 'next/router'
 import {
 	clientCountProjectStatusQuery,
+	// allProjectsByCurrentUserQuery,
 	clientTotalEarningQuery,
 	clientTotalProejctsQuery,
 	detailClientQuery,
@@ -39,6 +40,7 @@ export default function DetailClient({
 		isAuthenticated,
 		clientId as string
 	)
+	// const { data: dataAllProjects } = allProjectsByCurrentUserQuery(isAuthenticated)
 
 	//Funcion -----------------------------------------------------------------
 
@@ -276,9 +278,9 @@ export default function DetailClient({
 								p={'20px'}
 								boxShadow={'0 0 4px 0 #e8eef3'}
 								borderRadius={5}
-								maxH={"400px"}
+								maxH={'400px'}
 							>
-								<Doughnut data={dataChart} height={20}/>
+								<Doughnut data={dataChart} height={20} />
 							</GridItem>
 						</Grid>
 					</VStack>

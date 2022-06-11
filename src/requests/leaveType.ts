@@ -5,14 +5,14 @@ import { getData, postData } from 'utils/fetchData'
 //Function handle get all leave type
 export const allLeaveTypesRequest = async (url: string) => {
 	return await getData<leaveTypeMutaionResponse>({
-		url: `http://localhost:4000/api/${url}`,
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/${url}`,
 	})
 }
 
 //Function handle create leave type
 export async function createLeaveTypeRequest(inputCreate: createLeaveTypeForm) {
 	const resultFetch = await postData<leaveTypeMutaionResponse>({
-		url: 'http://localhost:4000/api/leave-types',
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/leave-types`,
 		body: inputCreate,
 	})
 

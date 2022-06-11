@@ -5,7 +5,7 @@ import { deleteData, getData, postData } from 'utils/fetchData'
 //Function handle create project file
 export async function createProjectFileRequest(inputCreate: createProjectFileForm) {
 	const resultFetch = await postData<projectFileMutaionResponse>({
-		url: 'http://localhost:4000/api/project-files',
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/project-files`,
 		body: inputCreate,
 	})
 
@@ -18,7 +18,7 @@ export async function deleteProjectFileRequest(inputDelete: {
 	projectId: number
 }) {
 	const resultFetch = await deleteData<projectFileMutaionResponse>({
-		url: `http://localhost:4000/api/project-files/${inputDelete.projectFileId}/project/${inputDelete.projectId}`,
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/project-files/${inputDelete.projectFileId}/project/${inputDelete.projectId}`,
 	})
 
 	return resultFetch
@@ -27,6 +27,6 @@ export async function deleteProjectFileRequest(inputDelete: {
 //Function handle get all project file
 export const allProjectFilesRequest = async (url: string) => {
 	return await getData<projectFileMutaionResponse>({
-		url: `http://localhost:4000/api/${url}`,
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/${url}`,
 	})
 }

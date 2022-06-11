@@ -4,6 +4,7 @@ import { GetStaticPaths, GetStaticProps } from 'next'
 import { useRouter } from 'next/router'
 import { detailLeaveQuery } from 'queries'
 import { useContext, useEffect } from 'react'
+import { leaveMutaionResponse } from 'type/mutationResponses'
 
 export interface IDetailLeaveProps {}
 
@@ -128,7 +129,20 @@ export const getStaticProps: GetStaticProps = async () => {
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-	const res = await fetch('http://localhost:4000/api/leaves').then((result) => result.json())
+	console.log(process.env.NEXT_PUBLIC_API_URL)
+	console.log(process.env.NEXT_PUBLIC_API_URL)
+	console.log(process.env.NEXT_PUBLIC_API_URL)
+	console.log(process.env.NEXT_PUBLIC_API_URL)
+	console.log(process.env.NEXT_PUBLIC_API_URL)
+	console.log(process.env.NEXT_PUBLIC_API_URL)
+	console.log(process.env.NEXT_PUBLIC_API_URL)
+	console.log(process.env.NEXT_PUBLIC_API_URL)
+	const res: leaveMutaionResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/leaves`).then((result) => result.json())
+	
+	if(!res || !res.leaves){
+		return { paths: [], fallback: false }
+	}
+
 	const leaves = res.leaves
 
 	// Get the paths we want to pre-render based on leave

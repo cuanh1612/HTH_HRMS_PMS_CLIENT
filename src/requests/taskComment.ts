@@ -5,7 +5,7 @@ import { deleteData, getData, postData, putData } from 'utils/fetchData'
 //Function handle create task comment
 export async function createTaskCommentRequest(inputCreate: createTaskCommentForm) {
 	const resultFetch = await postData<TaskCommentMutationResponse>({
-		url: 'http://localhost:4000/api/task-comments',
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/task-comments`,
 		body: inputCreate,
 	})
 
@@ -15,14 +15,14 @@ export async function createTaskCommentRequest(inputCreate: createTaskCommentFor
 //Function handle get all task comments
 export const allTaskCommentsRequest = async (url: string) => {
 	return await getData<TaskCommentMutationResponse>({
-		url: `http://localhost:4000/api/${url}`,
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/${url}`,
 	})
 }
 
 //Function handle delete task Comment
 export async function deleteTaskCommentRequest({ taskCommentId }: { taskCommentId: string | number }) {
 	const resultFetch = await deleteData<TaskCommentMutationResponse>({
-		url: `http://localhost:4000/api/task-comments/${taskCommentId}`,
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/task-comments/${taskCommentId}`,
 	})
 
 	return resultFetch
@@ -31,7 +31,7 @@ export async function deleteTaskCommentRequest({ taskCommentId }: { taskCommentI
 //Function handle update task Comment
 export async function updateTaskCommentRequest({ taskCommentId, content }: updateTaskCommentForm) {
 	const resultFetch = await putData<TaskCommentMutationResponse>({
-		url: `http://localhost:4000/api/task-comments/${taskCommentId}`,
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/task-comments/${taskCommentId}`,
 		body: {
 			content,
 		},

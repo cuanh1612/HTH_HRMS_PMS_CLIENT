@@ -3,7 +3,7 @@ import { AuthContext } from 'contexts/AuthContext'
 import { GetServerSideProps } from 'next'
 import { useRouter } from 'next/router'
 import {
-	allTasksByEmployeeQuery,
+	// allTasksByEmployeeQuery,
 	countProjectsEmployeeQuery,
 	detailEmployeeQuery,
 	hoursLoggedEmployeeQuery,
@@ -51,7 +51,7 @@ export default function DetailEmployee({dataDetailEmployee} : {dataDetailEmploye
 		employeeId as string
 	)
 
-	const { data: allTasks } = allTasksByEmployeeQuery(isAuthenticated, employeeId as string)
+	// const { data: allTasks } = allTasksByEmployeeQuery(isAuthenticated, employeeId as string)
 
 	//mutation ----------------------------------------------------------------------------------------------
 

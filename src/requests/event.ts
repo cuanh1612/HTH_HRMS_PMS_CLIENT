@@ -5,7 +5,7 @@ import { getData, postData, putData } from 'utils/fetchData'
 //Function handle create
 export async function createEventRequest(inputCreate: createEventForm) {
 	const resultFetch = await postData<eventMutaionResponse>({
-		url: 'http://localhost:4000/api/events',
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/events`,
 		body: inputCreate,
 	})
 
@@ -15,7 +15,7 @@ export async function createEventRequest(inputCreate: createEventForm) {
 //Function handle get detail event
 export const detailEventRequest = async (url: string) => {
 	return await getData<eventMutaionResponse>({
-		url: `http://localhost:4000/api/${url}`,
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/${url}`,
 	})
 }
 
@@ -28,7 +28,7 @@ export async function updateEventRequest({
 	eventId: number
 }) {
 	const resultFetch = await putData<eventMutaionResponse>({
-		url: `http://localhost:4000/api/events/${eventId}`,
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/events/${eventId}`,
 		body: inputUpdate,
 	})
 
@@ -38,6 +38,6 @@ export async function updateEventRequest({
 //Function handle get all events
 export const allEventsRequest = async (url: string) => {
 	return await getData<eventMutaionResponse>({
-		url: `http://localhost:4000/api/${url}`,
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/${url}`,
 	})
 }

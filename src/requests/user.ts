@@ -3,6 +3,6 @@ import { getData } from 'utils/fetchData'
 
 export const allUsersRequest = async (url: string) => {
 	return await getData<userMutaionResponse>({
-		url: `http://localhost:4000/api/${url}`,
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/${url}`,
 	})
 }

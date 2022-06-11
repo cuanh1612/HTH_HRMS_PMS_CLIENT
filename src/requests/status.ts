@@ -5,21 +5,21 @@ import { deleteData, getData, postData, putData } from "utils/fetchData"
 // get all
 export const allStatusTasksRequest = async (url: string) => {
 	return await getData<statusMutaionResponse>({
-		url: `http://localhost:4000/api/${url}`,
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/${url}`,
 	})
 }
 
 // get all status normal
 export const allStatusRequest = async (url: string) => {
 	return await getData<statusMutaionResponse>({
-		url: `http://localhost:4000/api/${url}`,
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/${url}`,
 	})
 }
 
 // get detail status 
 export const detailStatusRequest = async (url: string) => {
 	return await getData<statusMutaionResponse>({
-		url: `http://localhost:4000/api/${url}`,
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/${url}`,
 	})
 }
 
@@ -35,7 +35,7 @@ export async function changePositionRequest({
 	idStatus2: number
 }) {
 	const resultFetch = await putData<statusMutaionResponse>({
-		url: `http://localhost:4000/api/status/position`,
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/status/position`,
 		body: {
 			id1: idStatus1,
 			id2: idStatus2,
@@ -50,7 +50,7 @@ export async function createStatusColumnRequest(inputCreate: statusForm & {
 	projectId?: string | string[]
 }) {
 	const resultFetch = await postData<statusMutaionResponse>({
-		url: 'http://localhost:4000/api/status',
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/status`,
 		body: inputCreate,
 	})
 
@@ -60,7 +60,7 @@ export async function createStatusColumnRequest(inputCreate: statusForm & {
 //Handle to delete status column
 export const deleteStatusColumnRequest = async (id: string) => {
 	return await deleteData<statusMutaionResponse>({
-		url: `http://localhost:4000/api/status/${id}`,
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/status/${id}`,
 	})
 }
 
@@ -73,7 +73,7 @@ export async function updateStatusRequest({
 	columnId: string
 }) {
 	const resultFetch = await putData<statusMutaionResponse>({
-		url: `http://localhost:4000/api/status/${columnId}`,
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/status/${columnId}`,
 		body: inputUpdate,
 	})
 

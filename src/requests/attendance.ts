@@ -5,7 +5,7 @@ import { getData, postData } from "utils/fetchData"
 //Function handle get all attendance
 export async function allAttendancesRequest(url: any) {
 	const resultFetch = await getData<attendanceMutaionResponse>({
-		url: `http://localhost:4000/api/${url}`,
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/${url}`,
 	})
 
 	return resultFetch
@@ -14,7 +14,7 @@ export async function allAttendancesRequest(url: any) {
 //Function handle create attendance
 export async function createAttendanceRequest(inputCreate: AttendanceForm) {
 	const resultFetch = await postData<commonResponse>({
-		url: 'http://localhost:4000/api/attendances',
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/attendances`,
 		body: inputCreate,
 	})
 

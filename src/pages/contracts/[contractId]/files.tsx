@@ -347,12 +347,13 @@ export const getStaticProps: GetStaticProps = async () => {
 export const getStaticPaths: GetStaticPaths = async () => {
 	const res: contractMutaionResponse = await fetch('http://localhost:4000/api/contracts').then(
 		(result) => result.json()
-	)
-	const contracts = res.contracts
-
-	if (!contracts) {
+	).catch(() => undefined)
+	
+	if (!res || !res.contracts) {
 		return { paths: [], fallback: false }
 	}
+
+	const contracts = res.contracts
 
 	// Get the paths we want to pre-render based on leave
 	const paths = contracts.map((contract: any) => ({

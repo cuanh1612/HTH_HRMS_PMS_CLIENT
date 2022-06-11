@@ -51,7 +51,7 @@ export async function logoutRequest(inputLogout: logoutForm) {
 
 export const currentUserRequest = async (url: string) => {
 	return await getData<authMutaionResponse>({
-		url: `${process.env.NEXT_PUBLIC_UI_URL}/api/auth/${url}`,
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/auth/${url}`,
 	})
 }
 

@@ -11,6 +11,7 @@ import {
 import { FocusableElement } from '@chakra-ui/theme-tools/node_modules/@chakra-ui/utils'
 import { useRef } from 'react'
 
+
 interface IDialog {
 	isOpen: boolean
 	onClose: () => void

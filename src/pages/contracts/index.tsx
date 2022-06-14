@@ -1,6 +1,7 @@
 import {
 	Avatar,
 	Button,
+	Drawer as CDrawer,
 	DrawerBody,
 	DrawerCloseButton,
 	DrawerContent,
@@ -12,28 +13,31 @@ import {
 	MenuItem,
 	MenuList,
 	Text,
+	useColorMode,
 	useDisclosure,
 	VStack,
-	Drawer as CDrawer,
-	useColorMode,
 } from '@chakra-ui/react'
 import { AlertDialog, Table } from 'components/common'
-import { DateRange } from 'components/filter'
 import { Drawer } from 'components/Drawer'
-import { Input, SelectCustom, Select } from 'components/filter'
+import { DateRange, Input, Select, SelectCustom } from 'components/filter'
+import ImportCSV from 'components/importCSV'
 import { ClientLayout } from 'components/layouts'
 import { AuthContext } from 'contexts/AuthContext'
 import {
+	createContractMutation,
 	deleteContractMutation,
 	deleteContractsMutation,
+	importCSVContractsMutation,
 	publicLinkContractMutation,
 } from 'mutations'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { allClientsQuery, allContractsQuery, allContractTypesQuery } from 'queries'
 import { useContext, useEffect, useState } from 'react'
+import { CSVLink } from 'react-csv'
 import { AiOutlineSearch } from 'react-icons/ai'
 import { BiLinkAlt } from 'react-icons/bi'
+import { FaFileCsv } from 'react-icons/fa'
 import { IoEyeOutline } from 'react-icons/io5'
 import { MdOutlineDeleteOutline, MdOutlineMoreVert } from 'react-icons/md'
 import { RiPencilLine } from 'react-icons/ri'
@@ -43,8 +47,6 @@ import { IFilter, TColumn } from 'type/tableTypes'
 import { dateFilter, selectFilter, textFilter } from 'utils/tableFilters'
 import AddContract from './add-contracts'
 import UpdateContract from './update-contracts'
-import { CSVLink } from 'react-csv'
-import { FaFileCsv } from 'react-icons/fa'
 
 const Contracts: NextLayout = () => {
 	const { isAuthenticated, handleLoading, setToast, currentUser } = useContext(AuthContext)
@@ -113,6 +115,113 @@ const Contracts: NextLayout = () => {
 		{ label: 'updatedAt', key: 'updatedAt' },
 	]
 
+	//Setup download csv --------------------------------------------------------
+	const headersCSVTemplate = [
+		{ label: 'alternate_address', key: 'alternate_address' },
+		{ label: 'cell', key: 'cell' },
+		{ label: 'city', key: 'city' },
+		{ label: 'client', key: 'client' },
+		{ label: 'contract_type', key: 'contract_type' },
+		{ label: 'contract_value', key: 'contract_value' },
+		{ label: 'country', key: 'country' },
+		{ label: 'currency', key: 'currency' },
+		{ label: 'notes', key: 'notes' },
+		{ label: 'office_phone_number', key: 'office_phone_number' },
+		{ label: 'postal_code', key: 'postal_code' },
+		{ label: 'state', key: 'state' },
+		{ label: 'subject', key: 'subject' },
+		{ label: 'end_date', key: 'end_date' },
+		{ label: 'start_date', key: 'start_date' },
+	]
+
+	const dataCSVTemplate = [
+		{
+			subject: 'Subject example',
+			alternate_address: '196/31 Cong Hoa',
+			cell: '84888888888',
+			city: 'HCM',
+			client: 1,
+			contract_type: 1,
+			contract_value: 100,
+			country: 'VN',
+			currency: 'USD',
+			notes: 'Note',
+			office_phone_number: '84888888888',
+			postal_code: '1000',
+			state: 'Tan Binh',
+			end_date: '6/13/2022',
+			start_date: '7/13/2022',
+		},
+		{
+			subject: 'Subject example',
+			alternate_address: '196/31 Cong Hoa',
+			cell: '84888888888',
+			city: 'HCM',
+			client: 1,
+			contract_type: 1,
+			contract_value: 100,
+			country: 'VN',
+			currency: 'GBP',
+			notes: 'Note',
+			office_phone_number: '84888888888',
+			postal_code: '1000',
+			state: 'Tan Binh',
+			end_date: '6/13/2022',
+			start_date: '7/13/2022',
+		},
+		{
+			subject: 'Subject example',
+			alternate_address: '196/31 Cong Hoa',
+			cell: '84888888888',
+			city: 'HCM',
+			client: 1,
+			contract_type: 1,
+			contract_value: 100,
+			country: 'VN',
+			currency: 'EUR',
+			notes: 'Note',
+			office_phone_number: '84888888888',
+			postal_code: '1000',
+			state: 'Tan Binh',
+			end_date: '6/13/2022',
+			start_date: '7/13/2022',
+		},
+		{
+			subject: 'Subject example',
+			alternate_address: '196/31 Cong Hoa',
+			cell: '84888888888',
+			city: 'HCM',
+			client: 1,
+			contract_type: 1,
+			contract_value: 100,
+			country: 'VN',
+			currency: 'INR',
+			notes: 'Note',
+			office_phone_number: '84888888888',
+			postal_code: '1000',
+			state: 'Tan Binh',
+			end_date: '6/13/2022',
+			start_date: '7/13/2022',
+		},
+		{
+			subject: 'Subject example',
+			alternate_address: '196/31 Cong Hoa',
+			cell: '84888888888',
+			city: 'HCM',
+			client: 1,
+			contract_type: 1,
+			contract_value: 100,
+			country: 'INR',
+			currency: 'VND',
+			notes: 'Note',
+			office_phone_number: '84888888888',
+			postal_code: '1000',
+			state: 'Tan Binh',
+			end_date: '6/13/2022',
+			start_date: '7/13/2022',
+		},
+	]
+
 	// mutation -------------------------------------------------------------------
 	// delete holidays
 	const [mutateDeleteContracts, { status: statusDlContracts }] = deleteContractsMutation(setToast)
@@ -124,11 +233,19 @@ const Contracts: NextLayout = () => {
 	const [mutateGetPublic, { data: contractToken, status: statusToken }] =
 		publicLinkContractMutation(setToast)
 
+	const [mutateImportCSV, { status: statusImportCSV, data: dataImportCSV }] =
+		importCSVContractsMutation(setToast)
+
 	//Setup drawer --------------------------------------------------------------
 	const { isOpen: isOpenAdd, onOpen: onOpenAdd, onClose: onCloseAdd } = useDisclosure()
 	const { isOpen: isOpenUpdate, onOpen: onOpenUpdate, onClose: onCloseUpdate } = useDisclosure()
 	// set isOpen of dialog to delete one
 	const { isOpen: isOpenDialogDl, onOpen: onOpenDl, onClose: onCloseDl } = useDisclosure()
+	const {
+		isOpen: isOpenImportCSV,
+		onOpen: onOpenImportCSV,
+		onClose: onCloseImportCSV,
+	} = useDisclosure()
 
 	// set isOpen of dialog to delete one
 	const {
@@ -174,6 +291,18 @@ const Contracts: NextLayout = () => {
 			}
 		}
 	}, [isAuthenticated])
+
+	// check is successfully import csv
+	useEffect(() => {
+		if (statusImportCSV == 'success' && dataImportCSV?.message) {
+			setToast({
+				msg: dataImportCSV?.message,
+				type: 'success',
+			})
+			setDataSl(null)
+			refetchAllContracts()
+		}
+	}, [statusImportCSV])
 
 	useEffect(() => {
 		if (allContracts) {
@@ -239,6 +368,15 @@ const Contracts: NextLayout = () => {
 			router.push(`/contracts/public/${contractToken.token}`)
 		}
 	}, [statusToken])
+
+	// function --------------------------------------
+	const handleImportCSV = (data: any) => {
+		mutateImportCSV({
+			contracts: data,
+		})
+
+		onCloseImportCSV()
+	}
 
 	// header ----------------------------------------
 	const columns: TColumn[] = [
@@ -411,21 +549,68 @@ const Contracts: NextLayout = () => {
 				Add new
 			</Button>
 			{currentUser && currentUser.role === 'Admin' && (
-				<Button
-					transform={'auto'}
-					bg={'hu-Green.lightA'}
-					_hover={{
-						bg: 'hu-Green.normal',
-						color: 'white',
-						scale: 1.05,
-					}}
-					color={'hu-Green.normal'}
-					leftIcon={<FaFileCsv />}
-				>
-					<CSVLink filename={'contracts.csv'} headers={headersCSV} data={dataCSV}>
-						export to csv
-					</CSVLink>
-				</Button>
+				<>
+					<Button
+						transform={'auto'}
+						bg={'hu-Green.lightA'}
+						_hover={{
+							bg: 'hu-Green.normal',
+							color: 'white',
+							scale: 1.05,
+						}}
+						color={'hu-Green.normal'}
+						leftIcon={<FaFileCsv />}
+					>
+						<CSVLink filename={'contracts.csv'} headers={headersCSV} data={dataCSV}>
+							export to csv
+						</CSVLink>
+					</Button>
+
+					<Button
+						transform={'auto'}
+						bg={'hu-Green.lightA'}
+						_hover={{
+							bg: 'hu-Green.normal',
+							color: 'white',
+							scale: 1.05,
+						}}
+						color={'hu-Green.normal'}
+						leftIcon={<FaFileCsv />}
+					>
+						<CSVLink
+							filename={'contractsTemplate.csv'}
+							headers={headersCSVTemplate}
+							data={dataCSVTemplate}
+						>
+							export csv Template
+						</CSVLink>
+					</Button>
+
+					<ImportCSV
+						fieldsValid={[
+							'alternate_address',
+							'cell',
+							'city',
+							'client',
+							'contract_type',
+							'contract_value',
+							'country',
+							'currency',
+							'notes',
+							'office_phone_number',
+							'postal_code',
+							'state',
+							'subject',
+							'end_date',
+							'start_date'
+						]}
+						handleImportCSV={handleImportCSV}
+						statusImport={statusImportCSV === 'running'}
+						isOpenImportCSV={isOpenImportCSV}
+						onCloseImportCSV={onCloseImportCSV}
+						onOpenImportCSV={onOpenImportCSV}
+					/>
+				</>
 			)}
 			<Button disabled={!dataSl || dataSl.length == 0 ? true : false} onClick={onOpenDlMany}>
 				Delete all

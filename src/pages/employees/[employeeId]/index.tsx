@@ -5,6 +5,7 @@ import { useRouter } from 'next/router'
 import {
 	// allTasksByEmployeeQuery,
 	countProjectsEmployeeQuery,
+	countTasksStatusEmployeeQuery,
 	detailEmployeeQuery,
 	hoursLoggedEmployeeQuery,
 	lateAttendanceEmployeeQuery,
@@ -16,6 +17,7 @@ import { AiOutlineProject } from 'react-icons/ai'
 import { FaRegMoneyBillAlt } from 'react-icons/fa'
 import { SWRConfig } from 'swr'
 import { authMutaionResponse, employeeMutaionResponse } from 'type/mutationResponses'
+import { uploadFile } from 'utils/uploadFile'
 
 export default function DetailEmployee({dataDetailEmployee} : {dataDetailEmployee: employeeMutaionResponse}) {
 	// const { isOpen, onOpen, onClose } = useDisclosure()
@@ -45,6 +47,14 @@ export default function DetailEmployee({dataDetailEmployee} : {dataDetailEmploye
 		isAuthenticated,
 		employeeId as string
 	)
+
+	const { data: countTasksStatus } = countTasksStatusEmployeeQuery(
+		isAuthenticated,
+		employeeId as string
+	)
+
+	console.log(countTasksStatus);
+	
 
 	const { data: countLeavesTakenEmployee } = leavesTakenEmployeeQuery(
 		isAuthenticated,

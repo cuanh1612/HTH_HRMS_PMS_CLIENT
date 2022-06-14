@@ -3,6 +3,7 @@ import {
 	createEmployeeRequest,
 	deleteEmplRequest,
 	deleteEmplsRequest,
+	importCSVEmployeeRequest,
 	updateEmployeeRequest,
 } from 'requests/employee'
 import { TToast } from 'type/basicTypes'
@@ -12,6 +13,18 @@ import useMutation from 'use-mutation'
 //create
 export const createEmployeeMutation = (setToast: TToast) => {
 	return useMutation(createEmployeeRequest, {
+		onFailure({ error }) {
+			setToast({
+				msg: error.message,
+				type: 'error',
+			})
+		},
+	})
+}
+
+//create
+export const importCSVEmployeesMutation = (setToast: TToast) => {
+	return useMutation(importCSVEmployeeRequest, {
 		onFailure({ error }) {
 			setToast({
 				msg: error.message,

@@ -1,10 +1,22 @@
-import { createClientRequest, deleteClientRequest, deleteClientsRequest, updateClientRequest } from 'requests/client'
+import { createClientRequest, deleteClientRequest, deleteClientsRequest, importCSVClientRequest, updateClientRequest } from 'requests/client'
 import { TToast } from 'type/basicTypes'
 import useMutation from 'use-mutation'
 
 //create
 export const createClientMutation = (setToast: TToast) => {
 	return useMutation(createClientRequest, {
+		onFailure({ error }) {
+			setToast({
+				msg: error.message,
+				type: 'error',
+			})
+		},
+	})
+}
+
+//create
+export const importCSVClientMutation = (setToast: TToast) => {
+	return useMutation(importCSVClientRequest, {
 		onFailure({ error }) {
 			setToast({
 				msg: error.message,

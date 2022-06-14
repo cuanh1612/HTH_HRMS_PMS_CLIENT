@@ -69,6 +69,17 @@ export const leavesTakenEmployeeQuery = (isAuthenticated: boolean | null, employ
 	)
 }
 
+export const countTasksStatusEmployeeQuery = (isAuthenticated: boolean | null, employeeId?: string | number) => {
+	return useSWR<countProjectsEmployeeMutaionResponse, AxiosError>(
+		isAuthenticated && employeeId ? `employees/${employeeId}/count-tasks-status` : null,
+		detailEmployeeRequest,
+		{
+			errorRetryCount: 2,
+			revalidateOnFocus: false,
+		}
+	)
+}
+
 export const allEmployeesNormalQuery = (isAuthenticated: boolean | null) => {
 	return useSWR<employeeMutaionResponse, AxiosError>(
 		isAuthenticated ? `employees/normal` : null,

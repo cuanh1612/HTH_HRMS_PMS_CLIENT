@@ -1,6 +1,5 @@
 import {
-	Button,
-	DrawerBody,
+	Button, Drawer as CDrawer, DrawerBody,
 	DrawerCloseButton,
 	DrawerContent,
 	DrawerHeader,
@@ -11,16 +10,21 @@ import {
 	MenuList,
 	Text,
 	useDisclosure,
-	VStack,
-	Drawer as CDrawer,
+	VStack
 } from '@chakra-ui/react'
+import { AlertDialog, Table } from 'components/common'
 import { Drawer } from 'components/Drawer'
+import { Input, Select } from 'components/filter'
+import ImportCSV from 'components/importCSV'
 import { ClientLayout } from 'components/layouts'
-import { Table, AlertDialog } from 'components/common'
 import { AuthContext } from 'contexts/AuthContext'
+import { createHolidaysMutation, deleteHolidayMutation, deleteHolidaysMutation } from 'mutations'
 import { useRouter } from 'next/router'
 import { allHolidaysQuery } from 'queries'
 import { useContext, useEffect, useState } from 'react'
+import { CSVLink } from 'react-csv'
+import { AiOutlineSearch } from 'react-icons/ai'
+import { FaFileCsv } from 'react-icons/fa'
 import { IoEyeOutline } from 'react-icons/io5'
 import { MdOutlineDeleteOutline, MdOutlineMoreVert } from 'react-icons/md'
 import { RiPencilLine } from 'react-icons/ri'
@@ -30,11 +34,6 @@ import { monthFilter, textFilter, yearFilter } from 'utils/tableFilters'
 import AddHoliday from './add-holidays'
 import UpdateHoliday from './update-holidays'
 import DetailHoliday from './[holidayId]'
-import { deleteHolidayMutation, deleteHolidaysMutation } from 'mutations'
-import { AiOutlineSearch } from 'react-icons/ai'
-import { Input, Select } from 'components/filter'
-import { CSVLink } from 'react-csv'
-import { FaFileCsv } from 'react-icons/fa'
 
 const Holiday: NextLayout = () => {
 	const { isAuthenticated, handleLoading, setToast, currentUser } = useContext(AuthContext)
@@ -44,6 +43,11 @@ const Holiday: NextLayout = () => {
 	const { isOpen: isOpenAdd, onOpen: onOpenAdd, onClose: onCloseAdd } = useDisclosure()
 	const { isOpen: isOpenUpdate, onOpen: onOpenUpdate, onClose: onCloseUpdate } = useDisclosure()
 	const { isOpen: isOpenDetail, onOpen: onOpenDetail, onClose: onCloseDetail } = useDisclosure()
+	const {
+		isOpen: isOpenImportCSV,
+		onOpen: onOpenImportCSV,
+		onClose: onCloseImportCSV,
+	} = useDisclosure()
 
 	// set isOpen of dialog to delete one
 	const {
@@ -94,6 +98,9 @@ const Holiday: NextLayout = () => {
 	// delete holiday
 	const [mutateDeleteHoliday, { status: statusDl }] = deleteHolidayMutation(setToast)
 
+	const [mutateCreHolidays, { status: statusCreHolidays, data: dataCreHolidays }] =
+		createHolidaysMutation(setToast)
+
 	//Setup download csv --------------------------------------------------------
 	const headersCSV = [
 		{ label: 'id', key: 'id' },
@@ -102,6 +109,14 @@ const Holiday: NextLayout = () => {
 		{ label: 'createdAt', key: 'createdAt' },
 		{ label: 'updatedAt', key: 'updatedAt' },
 	]
+
+	//Setup download csv template
+	const headersCSVTemplate = [
+		{ label: 'holiday_date', key: 'holiday_date' },
+		{ label: 'occasion', key: 'occasion' },
+	]
+
+	const dataCSVTemplate = [{ holiday_date: '1-1-2022', occasion: 'occasion example' }]
 
 	//User effect ---------------------------------------------------------------
 	//Handle check loged in
@@ -149,6 +164,28 @@ const Holiday: NextLayout = () => {
 			refetchAllHolidays()
 		}
 	}, [statusDl])
+
+	//Note when request success
+	useEffect(() => {
+		if (statusCreHolidays === 'success') {
+			//Close drawer when using drawer
+			setToast({
+				type: 'success',
+				msg: dataCreHolidays?.message as string,
+			})
+
+			onCloseImportCSV()
+
+			refetchAllHolidays()
+		}
+	}, [statusCreHolidays])
+
+	// function --------------------------------------
+	const handleImportCSV = (data: any) => {
+		mutateCreHolidays({
+			holidays: data,
+		})
+	}
 
 	// header ----------------------------------------
 	const columns: TColumn[] = [
@@ -285,21 +322,56 @@ const Holiday: NextLayout = () => {
 						add new
 					</Button>
 					{currentUser && currentUser.role === 'Admin' && (
-						<Button
-							transform={'auto'}
-							bg={'hu-Green.lightA'}
-							_hover={{
-								bg: 'hu-Green.normal',
-								color: 'white',
-								scale: 1.05,
-							}}
-							color={'hu-Green.normal'}
-							leftIcon={<FaFileCsv />}
-						>
-							<CSVLink filename={'leaves.csv'} headers={headersCSV} data={dataCSV}>
-								export to csv
-							</CSVLink>
-						</Button>
+						<>
+							<Button
+								transform={'auto'}
+								bg={'hu-Green.lightA'}
+								_hover={{
+									bg: 'hu-Green.normal',
+									color: 'white',
+									scale: 1.05,
+								}}
+								color={'hu-Green.normal'}
+								leftIcon={<FaFileCsv />}
+							>
+								<CSVLink
+									filename={'holidays.csv'}
+									headers={headersCSV}
+									data={dataCSV}
+								>
+									export to csv
+								</CSVLink>
+							</Button>
+
+							<Button
+								transform={'auto'}
+								bg={'hu-Green.lightA'}
+								_hover={{
+									bg: 'hu-Green.normal',
+									color: 'white',
+									scale: 1.05,
+								}}
+								color={'hu-Green.normal'}
+								leftIcon={<FaFileCsv />}
+							>
+								<CSVLink
+									filename={'holidaysTemplate.csv'}
+									headers={headersCSVTemplate}
+									data={dataCSVTemplate}
+								>
+									Download csv template
+								</CSVLink>
+							</Button>
+
+							<ImportCSV
+								fieldsValid={['holiday_date', 'occasion']}
+								handleImportCSV={handleImportCSV}
+								statusImport={statusCreHolidays === 'running'}
+								isOpenImportCSV={isOpenImportCSV}
+								onCloseImportCSV={onCloseImportCSV}
+								onOpenImportCSV={onOpenImportCSV}
+							/>
+						</>
 					)}
 					<Button
 						disabled={!dataSl || dataSl.length == 0 ? true : false}

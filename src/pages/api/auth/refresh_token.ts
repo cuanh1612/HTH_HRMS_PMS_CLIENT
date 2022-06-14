@@ -14,7 +14,8 @@ const proxy = httpProxy.createProxyServer()
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<any>) {
 	//Check method
-	if (req.method !== 'POST') {
+	if (req.method !== 'GET') {
+		console.log('nguyen quang hoang')
 		return res.status(400).json({
 			message: 'Method not valid.',
 			code: 400,
@@ -35,7 +36,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 		})
 
 		//Because selfHandleResponse is true so need to response
-		const handleLoginResponse: ProxyResCallback = (proxyRes, req, res) => {
+		const handleLoginResponse: ProxyResCallback = (proxyRes, _, res) => {
 			let body = ''
 			proxyRes.on('data', function (chunk) {
 				body += chunk

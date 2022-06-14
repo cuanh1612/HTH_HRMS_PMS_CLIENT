@@ -38,7 +38,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<any>) 
 			selfHandleResponse: true,
 		})
 
-		const handleLogoutResponse: ProxyResCallback = (proxyRes, req, res) => {
+		const handleLogoutResponse: ProxyResCallback = (proxyRes, _, res) => {
 			let body = ''
 			proxyRes.on('data', function (chunk) {
 				body += chunk

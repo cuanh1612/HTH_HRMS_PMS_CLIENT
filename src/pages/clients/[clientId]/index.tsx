@@ -1,4 +1,4 @@
-import { Avatar, Container, Grid, GridItem, HStack, Text, VStack } from '@chakra-ui/react'
+import { Avatar, Box, Container, Grid, GridItem, HStack, Text, VStack } from '@chakra-ui/react'
 import { AuthContext } from 'contexts/AuthContext'
 import { GetServerSideProps } from 'next'
 import { useRouter } from 'next/router'
@@ -278,9 +278,10 @@ export default function DetailClient({
 								p={'20px'}
 								boxShadow={'0 0 4px 0 #e8eef3'}
 								borderRadius={5}
-								maxH={'400px'}
 							>
-								<Doughnut data={dataChart} height={20} />
+								<Box w={"500px"}>
+									<Doughnut data={dataChart} height={20} />
+								</Box>
 							</GridItem>
 						</Grid>
 					</VStack>

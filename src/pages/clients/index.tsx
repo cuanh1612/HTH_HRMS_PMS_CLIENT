@@ -1,17 +1,20 @@
 // get all country
-import countryList from 'react-select-country-list'
 import { CSVLink } from 'react-csv'
+import countryList from 'react-select-country-list'
 
 // query and mutation
-import { allClientsQuery, allClientCategoriesQuery, allClientSubCategoriesQuery } from 'queries'
-import { deleteClientMutation, deleteClientsMutation } from 'mutations'
+import {
+	deleteClientMutation,
+	deleteClientsMutation,
+	importCSVClientMutation
+} from 'mutations'
+import { allClientCategoriesQuery, allClientsQuery, allClientSubCategoriesQuery } from 'queries'
 
 // components
 import {
 	Avatar,
 	Badge,
-	Box,
-	Collapse,
+	Box, Button, Collapse,
 	Drawer as CDrawer,
 	DrawerBody,
 	DrawerCloseButton,
@@ -23,10 +26,8 @@ import {
 	MenuButton,
 	MenuItem,
 	MenuList,
-	Text,
-	Button,
-	useDisclosure,
-	VStack,
+	Text, useDisclosure,
+	VStack
 } from '@chakra-ui/react'
 import { AlertDialog, Table } from 'components/common'
 import { Drawer } from 'components/Drawer'
@@ -42,8 +43,8 @@ import { useContext, useEffect, useMemo, useState } from 'react'
 
 // icons
 import { AiOutlineCaretDown, AiOutlineCaretUp, AiOutlineSearch } from 'react-icons/ai'
-import { FaFileCsv } from 'react-icons/fa'
 import { BiExport, BiImport } from 'react-icons/bi'
+import { FaFileCsv } from 'react-icons/fa'
 import { IoAdd, IoEyeOutline } from 'react-icons/io5'
 import { MdOutlineDeleteOutline, MdOutlineMoreVert } from 'react-icons/md'
 import { RiPencilLine } from 'react-icons/ri'
@@ -62,11 +63,11 @@ import AddClient from './add-clients'
 import UpdateClient from './update-clients'
 
 // component to filter
-import { Input, SelectUser, Select } from 'components/filter'
-import { DateRange } from 'components/filter'
+import { DateRange, Input, Select, SelectUser } from 'components/filter'
 
-import { IPeople } from 'type/element/commom'
+import ImportCSV from 'components/importCSV'
 import { IOption } from 'type/basicTypes'
+import { IPeople } from 'type/element/commom'
 
 const Clients: NextLayout = () => {
 	const { isAuthenticated, handleLoading, currentUser, setToast } = useContext(AuthContext)
@@ -100,6 +101,12 @@ const Clients: NextLayout = () => {
 		onClose: onCloseDlMany,
 	} = useDisclosure()
 
+	const {
+		isOpen: isOpenImportCSV,
+		onOpen: onOpenImportCSV,
+		onClose: onCloseImportCSV,
+	} = useDisclosure()
+
 	//set isopen of function
 	const { isOpen, onToggle } = useDisclosure({
 		defaultIsOpen: true,
@@ -131,6 +138,44 @@ const Clients: NextLayout = () => {
 		{ label: 'state', key: 'state' },
 		{ label: 'createdAt', key: 'createdAt' },
 		{ label: 'updatedAt', key: 'updatedAt' },
+	]
+
+	const headersCSVTemplate = [
+		{ label: 'name', key: 'name' },
+		{ label: 'gender', key: 'gender' },
+		{ label: 'email', key: 'email' },
+		{ label: 'password', key: 'password' },
+		{ label: 'mobile', key: 'mobile' },
+		{ label: 'city', key: 'city' },
+		{ label: 'company_address', key: 'company_address' },
+		{ label: 'company_name', key: 'company_name' },
+		{ label: 'country', key: 'country' },
+		{ label: 'gst_vat_number', key: 'gst_vat_number' },
+		{ label: 'office_phone_number', key: 'office_phone_number' },
+		{ label: 'official_website', key: 'official_website' },
+		{ label: 'postal_code', key: 'postal_code' },
+		{ label: 'shipping_address', key: 'shipping_address' },
+		{ label: 'state', key: 'state' },
+	]
+
+	const dataCSVTemplate = [
+		{
+			name: 'Nguyen Quang Huy',
+			gender: 'Female',
+			email: 'huy@gmail.com',
+			password: 'password',
+			mobile: 84888888888,
+			city: 'HCM',
+			company_address: 'HCM',
+			company_name: 'HUPROM',
+			country: 'VN',
+			gst_vat_number: 1000,
+			office_phone_number: 84888888888,
+			official_website: 'huprom.com',
+			postal_code: 1000,
+			shipping_address: '76 Cong Hoa HCM',
+			state: 'Tan Binh',
+		},
 	]
 
 	//State ---------------------------------------------------------------------
@@ -173,6 +218,10 @@ const Clients: NextLayout = () => {
 	// delete all clients
 	const [mutateDeleteClients, { status: statusDlMany }] = deleteClientsMutation(setToast)
 
+	//mutation ------------------------------------------------------------------
+	const [mutateImportCSV, { status: statusImportCSV, data: dataImportCSV }] =
+		importCSVClientMutation(setToast)
+
 	//User effect ---------------------------------------------------------------
 	// check authenticate in
 	useEffect(() => {
@@ -207,6 +256,18 @@ const Clients: NextLayout = () => {
 			refetchAllClients()
 		}
 	}, [statusDlMany])
+
+	// check is successfully import csv
+	useEffect(() => {
+		if (statusImportCSV == 'success' && dataImportCSV?.message) {
+			setToast({
+				msg: dataImportCSV?.message,
+				type: 'success',
+			})
+			setDataSl(null)
+			refetchAllClients()
+		}
+	}, [statusImportCSV])
 
 	// set loading == false when get all clients successfully
 	useEffect(() => {
@@ -279,6 +340,15 @@ const Clients: NextLayout = () => {
 			setSubCts(data)
 		}
 	}, [allSubCategories])
+
+	// function --------------------------------------
+	const handleImportCSV = (data: any) => {
+		mutateImportCSV({
+			clients: data,
+		})
+
+		onCloseImportCSV()
+	}
 
 	// header ----------------------------------------
 	const columns: TColumn[] = [
@@ -467,23 +537,74 @@ const Clients: NextLayout = () => {
 					</Button>
 
 					{currentUser && currentUser.role === 'Admin' && (
-						<Button
-							transform={'auto'}
-							bg={'hu-Green.lightA'}
-							_hover={{
-								bg: 'hu-Green.normal',
-								color: 'white',
-								scale: 1.05,
-							}}
-							color={'hu-Green.normal'}
-							leftIcon={<FaFileCsv />}
-						>
-							<CSVLink filename={'clients.csv'} headers={headersCSV} data={dataCSV}>
-								export to csv
-							</CSVLink>
-						</Button>
+						<>
+							<Button
+								transform={'auto'}
+								bg={'hu-Green.lightA'}
+								_hover={{
+									bg: 'hu-Green.normal',
+									color: 'white',
+									scale: 1.05,
+								}}
+								color={'hu-Green.normal'}
+								leftIcon={<FaFileCsv />}
+							>
+								<CSVLink
+									filename={'clients.csv'}
+									headers={headersCSV}
+									data={dataCSV}
+								>
+									export to csv
+								</CSVLink>
+							</Button>
+
+							<Button
+								transform={'auto'}
+								bg={'hu-Green.lightA'}
+								_hover={{
+									bg: 'hu-Green.normal',
+									color: 'white',
+									scale: 1.05,
+								}}
+								color={'hu-Green.normal'}
+								leftIcon={<FaFileCsv />}
+							>
+								<CSVLink
+									filename={'clientsTemplate.csv'}
+									headers={headersCSVTemplate}
+									data={dataCSVTemplate}
+								>
+									export csv template
+								</CSVLink>
+							</Button>
+
+							<ImportCSV
+								fieldsValid={[
+									'name',
+									'gender',
+									'email',
+									'password',
+									'mobile',
+									'city',
+									'company_address',
+									'company_name',
+									'country',
+									'gst_vat_number',
+									'office_phone_number',
+									'official_website',
+									'postal_code',
+									'shipping_address',
+									'state',
+								]}
+								handleImportCSV={handleImportCSV}
+								statusImport={statusImportCSV === "running"}
+								isOpenImportCSV={isOpenImportCSV}
+								onCloseImportCSV={onCloseImportCSV}
+								onOpenImportCSV={onOpenImportCSV}
+							/>
+						</>
 					)}
-					
+
 					<Button
 						transform={'auto'}
 						_hover={{

@@ -12,6 +12,16 @@ export async function createContractRequest(inputCreate: createContractForm) {
 	return resultFetch
 }
 
+//Function handle create contract by import csv 
+export async function importCSVContractRequest(inputCreate: {contracts: createContractForm[]}) {
+	const resultFetch = await postData<contractMutaionResponse>({
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/contracts/csv`,
+		body: inputCreate,
+	})
+
+	return resultFetch
+}
+
 
 //Function handle get detail contract
 export const detailContractRequest = async (url: string) => {

@@ -12,6 +12,17 @@ export async function createClientRequest(inputCreate: createClientForm) {
 	return resultFetch
 }
 
+//Function handle create client by import csv
+export async function importCSVClientRequest(inputCreate: {clients: createClientForm[]}) {
+	const resultFetch = await postData<clientMutaionResponse>({
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/clients/csv`,
+		body: inputCreate,
+	})
+
+	return resultFetch
+}
+
+
 //Function handle update client
 export async function updateClientRequest({
 	inputeUpdate,

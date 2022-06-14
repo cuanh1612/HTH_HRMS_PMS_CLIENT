@@ -1,4 +1,4 @@
-import { createContractRequest, deleteContractRequest, deleteContractsRequest, publicLinkRequest, updateContractRequest } from 'requests/contract'
+import { createContractRequest, deleteContractRequest, deleteContractsRequest, importCSVContractRequest, publicLinkRequest, updateContractRequest } from 'requests/contract'
 import { TToast } from 'type/basicTypes'
 import useMutation from 'use-mutation'
 
@@ -13,6 +13,19 @@ export const createContractMutation = (setToast: TToast) => {
 		},
 	})
 }
+
+//create
+export const importCSVContractsMutation = (setToast: TToast) => {
+	return useMutation(importCSVContractRequest, {
+		onFailure({ error }) {
+			setToast({
+				msg: error.message,
+				type: 'error',
+			})
+		},
+	})
+}
+
 
 //update
 export const updateContractMutation = (setToast: TToast) => {

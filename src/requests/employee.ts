@@ -12,6 +12,16 @@ export async function createEmployeeRequest(inputCreate: createEmployeeForm) {
 	return resultFetch
 }
 
+//Function handle create employee by csv
+export async function importCSVEmployeeRequest(inputCreate: {employees: createEmployeeForm[]}) {
+	const resultFetch = await postData<employeeMutaionResponse>({
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/employees/csv`,
+		body: inputCreate,
+	})
+
+	return resultFetch
+}
+
 //Function handle update employee
 export async function updateEmployeeRequest({
 	inputUpdate,

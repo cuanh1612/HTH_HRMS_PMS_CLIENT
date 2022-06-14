@@ -19,7 +19,7 @@ import {
 	Select as CSelect,
 	Text,
 	useDisclosure,
-	VStack,
+	VStack
 } from '@chakra-ui/react'
 import { AlertDialog, Table } from 'components/common'
 import { Drawer } from 'components/Drawer'
@@ -31,7 +31,11 @@ import { ClientLayout } from 'components/layouts'
 import { AuthContext } from 'contexts/AuthContext'
 
 // mutation
-import { changeRoleMutation, deleteEmployeeMutation, deleteEmployeesMutation } from 'mutations'
+import {
+	changeRoleMutation, deleteEmployeeMutation,
+	deleteEmployeesMutation,
+	importCSVEmployeesMutation
+} from 'mutations'
 import { useRouter } from 'next/router'
 
 // get all employees
@@ -60,11 +64,13 @@ import AddEmployees from './add-employees'
 import UpdateEmployees from './update-employees'
 
 import { Input, Select, SelectUser } from 'components/filter'
+import ImportCSV from 'components/importCSV'
 import { FaFileCsv } from 'react-icons/fa'
 import { IOption } from 'type/basicTypes'
 import { IPeople } from 'type/element/commom'
 
 const Employees: NextLayout = () => {
+	///setting for import csv--------------------------------------------------
 	const { isAuthenticated, handleLoading, currentUser, setToast } = useContext(AuthContext)
 	const router = useRouter()
 
@@ -97,9 +103,45 @@ const Employees: NextLayout = () => {
 		{ label: 'updatedAt', key: 'updatedAt' },
 	]
 
+	//Setup download csv template
+	const headersCSVTemplate = [
+		{ label: 'employeeId', key: 'employeeId' },
+		{ label: 'name', key: 'name' },
+		{ label: 'gender', key: 'gender' },
+		{ label: 'email', key: 'email' },
+		{ label: 'password', key: 'password' },
+		{ label: 'mobile', key: 'mobile' },
+		{ label: 'address', key: 'address' },
+		{ label: 'date_of_birth', key: 'date_of_birth' },
+		{ label: 'department', key: 'department' },
+		{ label: 'designation', key: 'designation' },
+		{ label: 'hourly_rate', key: 'hourly_rate' },
+		{ label: 'joining_date', key: 'joining_date' },
+	]
+
+	const dataCSVTemplate = [
+		{
+			employeeId: 'epl-1',
+			name: 'Nguyen Quang Huy',
+			gender: 'Female',
+			email: 'huy@gmail.com',
+			password: 'password',
+			mobile: 84888888888,
+			address: 'HCM',
+			date_of_birth: '1-1-2001',
+			department: 1,
+			designation: 1,
+			hourly_rate: 1,
+			joining_date: '1-1-2022',
+		},
+	]
+
 	// set isOpen drawer to add, update
 	const { isOpen: isOpenAdd, onOpen: onOpenAdd, onClose: onCloseAdd } = useDisclosure()
 	const { isOpen: isOpenUpdate, onOpen: onOpenUpdate, onClose: onCloseUpdate } = useDisclosure()
+
+	//State download csv
+	const [dataCSV, setDataCSV] = useState<any[]>([])
 
 	// set isOpen of drawer to filters
 	const { isOpen: isOpenFilter, onOpen: onOpenFilter, onClose: onCloseFilter } = useDisclosure()
@@ -114,15 +156,18 @@ const Employees: NextLayout = () => {
 		onClose: onCloseDlMany,
 	} = useDisclosure()
 
+	const {
+		isOpen: isOpenImportCSV,
+		onOpen: onOpenImportCSV,
+		onClose: onCloseImportCSV,
+	} = useDisclosure()
+
 	//set isopen of function
 	const { isOpen, onToggle } = useDisclosure({
 		defaultIsOpen: true,
 	})
 
 	//State ---------------------------------------------------------------------
-	//state csv
-	const [dataCSV, setDataCSV] = useState<any[]>([])
-
 	// get id to delete employee
 	const [idDeleteEmpl, setIdDeleteEmpl] = useState<number>()
 
@@ -149,14 +194,16 @@ const Employees: NextLayout = () => {
 	// query and mutation -=------------------------------------------------------
 	// get all employees
 	const { data: allEmployees, mutate: refetchAllEmpl } = allEmployeesQuery(isAuthenticated)
-	console.log(allEmployees);
-	
 
 	// get all department
 	const { data: allDepartments } = allDepartmentsQuery(isAuthenticated)
 
 	// get all Designations
 	const { data: allDesignations } = allDesignationsQuery(isAuthenticated)
+
+	//mutation --------------------------------------------------------------------
+	const [mutateImportCSV, { status: statusImportCSV, data: dataImportCSV }] =
+		importCSVEmployeesMutation(setToast)
 
 	// delete employee
 	const [mutateDeleteEmpl, { status: statusDl }] = deleteEmployeeMutation(setToast)
@@ -214,6 +261,18 @@ const Employees: NextLayout = () => {
 			refetchAllEmpl()
 		}
 	}, [statusChangeRole])
+
+	// check is successfully import csv
+	useEffect(() => {
+		if (statusImportCSV == 'success' && dataImportCSV?.message) {
+			setToast({
+				msg: dataImportCSV.message,
+				type: 'success',
+			})
+			refetchAllEmpl()
+			setIsloading(false)
+		}
+	}, [statusImportCSV])
 
 	// set loading == false when get all employees successfully
 	useEffect(() => {
@@ -280,6 +339,15 @@ const Employees: NextLayout = () => {
 			setDesignations(data)
 		}
 	}, [allDesignations])
+
+	// function --------------------------------------
+	const handleImportCSV = (data: any) => {
+		mutateImportCSV({
+			employees: data,
+		})
+
+		onCloseImportCSV()
+	}
 
 	// header ----------------------------------------
 	const columns: TColumn[] = [
@@ -358,7 +426,7 @@ const Employees: NextLayout = () => {
 							return (
 								<CSelect
 									defaultValue={value}
-									onChange={(event) => {
+									onChange={(event: any) => {
 										setIsloading(true)
 										mutateChangeRole({
 											employeeId: Number(row.values['id']),
@@ -372,7 +440,7 @@ const Employees: NextLayout = () => {
 						return (
 							<CSelect
 								defaultValue={value}
-								onChange={(event) => {
+								onChange={(event: any) => {
 									setIsloading(true)
 									mutateChangeRole({
 										employeeId: Number(row.values['id']),
@@ -493,21 +561,69 @@ const Employees: NextLayout = () => {
 					</Button>
 
 					{currentUser && currentUser.role === 'Admin' && (
-						<Button
-							transform={'auto'}
-							bg={'hu-Green.lightA'}
-							_hover={{
-								bg: 'hu-Green.normal',
-								color: 'white',
-								scale: 1.05,
-							}}
-							color={'hu-Green.normal'}
-							leftIcon={<FaFileCsv />}
-						>
-							<CSVLink filename={'employees.csv'} headers={headersCSV} data={dataCSV}>
-								export to csv
-							</CSVLink>
-						</Button>
+						<>
+							<Button
+								transform={'auto'}
+								bg={'hu-Green.lightA'}
+								_hover={{
+									bg: 'hu-Green.normal',
+									color: 'white',
+									scale: 1.05,
+								}}
+								color={'hu-Green.normal'}
+								leftIcon={<FaFileCsv />}
+							>
+								<CSVLink
+									filename={'employees.csv'}
+									headers={headersCSV}
+									data={dataCSV}
+								>
+									export to csv
+								</CSVLink>
+							</Button>
+
+							<Button
+								transform={'auto'}
+								bg={'hu-Green.lightA'}
+								_hover={{
+									bg: 'hu-Green.normal',
+									color: 'white',
+									scale: 1.05,
+								}}
+								color={'hu-Green.normal'}
+								leftIcon={<FaFileCsv />}
+							>
+								<CSVLink
+									filename={'employeesTemplate.csv'}
+									headers={headersCSVTemplate}
+									data={dataCSVTemplate}
+								>
+									export csv template
+								</CSVLink>
+							</Button>
+
+							<ImportCSV
+								fieldsValid={[
+									'employeeId',
+									'name',
+									'gender',
+									'email',
+									'password',
+									'mobile',
+									'address',
+									'date_of_birth',
+									'department',
+									'designation',
+									'hourly_rate',
+									'joining_date',
+								]}
+								handleImportCSV={handleImportCSV}
+								statusImport={statusImportCSV === 'running'}
+								isOpenImportCSV={isOpenImportCSV}
+								onCloseImportCSV={onCloseImportCSV}
+								onOpenImportCSV={onOpenImportCSV}
+							/>
+						</>
 					)}
 
 					<Button

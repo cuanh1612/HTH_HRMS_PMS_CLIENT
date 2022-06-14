@@ -1,4 +1,4 @@
-import { Avatar, Box, HStack, useBreakpoint, useColorMode, VStack } from '@chakra-ui/react'
+import { Avatar, HStack, useBreakpoint, useColorMode } from '@chakra-ui/react'
 import { ButtonIcon, ButtonMenu } from 'components/common'
 import { AuthContext } from 'contexts/AuthContext'
 import { useContext, useEffect, useState } from 'react'

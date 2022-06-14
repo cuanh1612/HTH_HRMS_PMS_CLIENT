@@ -1,6 +1,6 @@
 import { memo, useEffect, useRef, useState } from 'react'
 import { useMediaTrack, useParticipant } from '@daily-co/daily-react-hooks'
-import { Avatar, Box, Center, Text } from '@chakra-ui/react'
+import { Avatar, Box, Center } from '@chakra-ui/react'
 import { BiMicrophone, BiMicrophoneOff } from 'react-icons/bi'
 
 const Tile = ({

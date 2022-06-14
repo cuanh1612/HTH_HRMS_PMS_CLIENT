@@ -89,9 +89,7 @@ export const MessageBar = ({
 
 	useEffect(() => {
 		const result = listEmojis.filter((emoji) => {
-			if (emoji.group == category) {
-				return emoji
-			}
+			emoji.group == category && emoji
 		})
 		setDataEmojis(result)
 	}, [category])

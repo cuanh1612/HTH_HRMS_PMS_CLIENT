@@ -93,8 +93,8 @@ export default function join() {
 	const [isYourMsg, setIsYourMsg] = useState(true)
 
 	// share screen
-	const [idScreen, setIdScreen] = useState<string>()
-	const [idScreens, setIdScreens] = useState<string[]>([])
+	// const [idScreen, setIdScreen] = useState<string>()
+	// const [idScreens, setIdScreens] = useState<string[]>([])
 
 	// pin participant
 	const [pinId, setPinId] = useState<string>()

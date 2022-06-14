@@ -24,7 +24,6 @@ import ImportCSV from 'components/importCSV'
 import { ClientLayout } from 'components/layouts'
 import { AuthContext } from 'contexts/AuthContext'
 import {
-	createContractMutation,
 	deleteContractMutation,
 	deleteContractsMutation,
 	importCSVContractsMutation,

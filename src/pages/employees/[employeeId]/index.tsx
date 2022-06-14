@@ -17,7 +17,6 @@ import { AiOutlineProject } from 'react-icons/ai'
 import { FaRegMoneyBillAlt } from 'react-icons/fa'
 import { SWRConfig } from 'swr'
 import { authMutaionResponse, employeeMutaionResponse } from 'type/mutationResponses'
-import { uploadFile } from 'utils/uploadFile'
 
 export default function DetailEmployee({dataDetailEmployee} : {dataDetailEmployee: employeeMutaionResponse}) {
 	// const { isOpen, onOpen, onClose } = useDisclosure()

@@ -8,8 +8,8 @@ export interface roomType {
 	date: Date
 	link: string
 	empl_create: employeeType
-	employees: employeeType[];
-	clients: clientType[];
+	employees: employeeType[]
+	clients: clientType[]
 }
 
 export interface userType {
@@ -179,9 +179,9 @@ export interface clientType {
 		public_id: string
 	}
 	id: number
-	note?: string,
-	createdAt: Date,
-	updatedAt: Date,
+	note?: string
+	createdAt: Date
+	updatedAt: Date
 }
 
 export interface holidayType {
@@ -222,8 +222,8 @@ export interface contractType {
 		public_id: string
 	}
 	contract_type?: contractTypeType
-	createdAt: Date,
-	updatedAt: Date,
+	createdAt: Date
+	updatedAt: Date
 }
 
 export interface contractTypeType {
@@ -267,8 +267,8 @@ export interface eventType {
 	color: string
 	where: string
 	description: string
-	createdAt: Date,
-	updatedAt: Date,
+	createdAt: Date
+	updatedAt: Date
 }
 
 export interface ITime {
@@ -323,8 +323,8 @@ export interface projectType {
 	Progress: number
 	project_files?: projectFileType[]
 	project_Admin: employeeType
-	createdAt: Date,
-	updatedAt: Date,
+	createdAt: Date
+	updatedAt: Date
 }
 
 export interface UserAttendance {
@@ -477,8 +477,8 @@ export interface timeLogType {
 	memo: string
 	total_hours: number
 	earnings: Number
-	createdAt: Date,
-	updatedAt: Date,
+	createdAt: Date
+	updatedAt: Date
 }
 
 export interface stickyNoteType {
@@ -496,4 +496,23 @@ export interface notificationType {
 	client?: clientType
 	createdAt: Date
 	updatedAt: Date
+}
+
+export interface ImessageRoom {
+	name: string
+	text?: string
+	time: string
+	id: number
+	field?: string
+	isField?: boolean
+	peerId?: string
+}
+
+export interface IEmoji {
+	slug: string
+	character: string
+	unicodeName: string
+	codePoint: string
+	group: string
+	subGroup: string
 }

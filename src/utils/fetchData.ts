@@ -6,7 +6,7 @@ export interface IPropsFetchData {
 	params?: any
 }
 
-//Config default axios
+//Config default axios 
 axios.defaults.withCredentials = true
 
 //Post api

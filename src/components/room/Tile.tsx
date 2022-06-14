@@ -1,18 +1,20 @@
 import { memo, useEffect, useRef, useState } from 'react'
 import { useMediaTrack, useParticipant } from '@daily-co/daily-react-hooks'
-import { Box } from '@chakra-ui/react'
+import { Avatar, Box, Center, Text } from '@chakra-ui/react'
 import { BiMicrophone, BiMicrophoneOff } from 'react-icons/bi'
 
 const Tile = ({
 	id,
 	isCurrentUser = false,
 	isCenter = false,
-	screenShare = false
+	screenShare = false,
+	isTalking = false
 }: {
 	id: string
 	isCurrentUser?: boolean
 	isCenter?: boolean
 	screenShare?: boolean
+	isTalking?: boolean
 })=> {
 	const [muted, setMuted] = useState(false)
 	const videoTrack = useMediaTrack(id, screenShare ? 'screenVideo' : 'video')
@@ -56,7 +58,7 @@ const Tile = ({
 	}
 
 	return (
-		<Box as="div" paddingBlock={'10px'} h={'full'} height={'170px'}>
+		<Box as="div"  paddingBlock={'10px'} h={'full'} height={'170px'}>
 			<Box
 				w={'full'}
 				h={'100%'}
@@ -64,8 +66,9 @@ const Tile = ({
 				borderRadius={'15px'}
 				pos={'relative'}
 				overflow={'hidden'}
+				border={isTalking ? '2px solid': ''} borderColor={isTalking ? 'hu-Green.normal': ''}
 			>
-				{videoTrack && (
+				{!videoTrack.isOff ? (
 					<video
 						autoPlay
 						muted
@@ -76,6 +79,10 @@ const Tile = ({
 						}}
 						ref={videoElement}
 					/>
+				): (
+					<Center h={'100%'}>
+						<Avatar size={'lg'} name={participant?.user_name} src={''}/>
+					</Center>
 				)}
 				{!isCurrentUser && audioTrack && !screenShare && (
 					<audio muted={muted} autoPlay playsInline ref={audioElement} />

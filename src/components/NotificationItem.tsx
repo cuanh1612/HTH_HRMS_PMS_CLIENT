@@ -1,5 +1,5 @@
-import { Box, Text } from '@chakra-ui/react'
 import { AuthContext } from 'contexts/AuthContext'
+import { Box, Text } from '@chakra-ui/react'
 import { deleteNotificationMutation } from 'mutations/notification'
 import { useRouter } from 'next/router'
 import { NotificationByCurrentUserQuery } from 'queries/notification'

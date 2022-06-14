@@ -94,7 +94,6 @@ export default function index() {
 
 	/* This is for displaying our self-view. */
 	const localParticipant = useLocalParticipant()
-	console.log(localParticipant)
 	const localParticipantVideoTrack = useVideoTrack(localParticipant?.session_id || ' ')
 	const localVideoElement = useRef<any>(null)
 
@@ -317,9 +316,8 @@ export default function index() {
 			>
 				<Tabs paddingInline={6} isFitted>
 					<TabList>
-						<Tab>One</Tab>
-						<Tab>Two</Tab>
-						<Tab>Three</Tab>
+						<Tab>Magic</Tab>
+						<Tab>Volume and video</Tab>
 					</TabList>
 
 					<TabPanels>

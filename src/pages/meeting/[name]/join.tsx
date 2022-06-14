@@ -1,32 +1,47 @@
-import { Box, HStack, Text, StackDivider, Skeleton } from '@chakra-ui/react'
+import {
+	Box,
+	HStack,
+	Text,
+	StackDivider,
+	Skeleton,
+	Button,
+	VStack,
+	useDisclosure,
+} from '@chakra-ui/react'
 import { AuthContext } from 'contexts/AuthContext'
 import { useRouter } from 'next/router'
 import { getRoomByTitleQuery } from 'queries/room'
-import React, { useContext, useEffect, useRef, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import {
+	useAppMessage,
 	useDaily,
 	useLocalParticipant,
 	useParticipantIds,
-	useVideoTrack,
 	useScreenShare,
 } from '@daily-co/daily-react-hooks'
 import Tile from 'components/room/Tile'
 import Slider from 'react-slick'
 import 'slick-carousel/slick/slick.css'
 import 'slick-carousel/slick/slick-theme.css'
-import { BiMicrophone, BiMicrophoneOff } from 'react-icons/bi'
+import { BiLinkAlt, BiMicrophone, BiMicrophoneOff } from 'react-icons/bi'
 import { BsCameraVideo, BsCameraVideoOff } from 'react-icons/bs'
 import { MdOutlineScreenShare, MdOutlineStopScreenShare } from 'react-icons/md'
 import { RiFullscreenExitLine, RiFullscreenFill } from 'react-icons/ri'
 import { IoExitOutline } from 'react-icons/io5'
-import { ButtonRoom } from 'components/room'
+import { ButtonRoom, MessageBar, Participant, Setting } from 'components/room'
+import { DailyEventObjectAppMessage } from '@daily-co/daily-js'
+import { ImessageRoom } from 'type/basicTypes'
+import copy from 'copy-to-clipboard'
+import { AiOutlineSetting, AiTwotoneSetting } from 'react-icons/ai'
 
 export default function join() {
-	const { isAuthenticated, handleLoading, currentUser } = useContext(AuthContext)
+	const { isAuthenticated, handleLoading, currentUser, setToast } = useContext(AuthContext)
 	const router = useRouter()
 	const { name } = router.query
-	const [isFullScreen, setIsFullScreen] = useState(false)
+	const { isOpen, onOpen, onClose } = useDisclosure()
 
+	// query
+	const { data: dataRoom } = getRoomByTitleQuery(isAuthenticated, name)
 	// state
 	const [tiles, setTiles] = useState<
 		{
@@ -35,30 +50,165 @@ export default function join() {
 		}[]
 	>([])
 	const [skeletons] = useState([1, 2, 3, 4, 5])
+	const [msgs, setMsgs] = useState<ImessageRoom[]>([])
+	const [isFullScreen, setIsFullScreen] = useState(false)
+	const [isShowMsgBar, setIsShowMsgBar] = useState(true)
 
-	// query
-	const { data: dataRoom } = getRoomByTitleQuery(isAuthenticated, name)
+	// admin can config your volume and video
+	const [config, setConfig] = useState<{
+		peerId?: string
+		field: string
+		isField: boolean
+	}>()
+
+	// set is for screen, audio or screen of people in room
+	const [isScreen, setIsScreen] = useState(true)
+	const [isAudio, setIsAudio] = useState(true)
+	const [isVideo, setIsVideo] = useState(true)
+	const [isSendMsg, setIsSendMsg] = useState(true)
+
+	// this is for current user
+	const [isYourScreen, setIsYourScreen] = useState(true)
+	const [isYourAudio, setIsYourAudio] = useState(true)
+	const [isYourVideo, setIsYourVideo] = useState(true)
+	const [isYourMsg, setIsYourMsg] = useState(true)
+
+	// share screen
+	const [idScreen, setIdScreen] = useState<string>()
+	const [idScreens, setIdScreens] = useState<string[]>([])
+
+	// pin participant
+	const [pinId, setPinId] = useState<string>()
 
 	const co = useDaily()
 
 	const { screens, isSharingScreen, startScreenShare, stopScreenShare } = useScreenShare()
+
 	// get all id of participant
 	const remoteParticipantIds = useParticipantIds({ filter: 'remote' })
 
 	/* This is for displaying our self-view. */
 	const localParticipant = useLocalParticipant()
-	const localParticipantVideoTrack = useVideoTrack(localParticipant?.session_id || ' ')
-	const localVideoElement = useRef<any>(null)
-	//get MediaStream of current user
-	useEffect(() => {
-		if(localParticipantVideoTrack) {
-			if (!localParticipantVideoTrack.persistentTrack) return
-			localVideoElement?.current &&
-				(localVideoElement.current.srcObject =
-					localParticipantVideoTrack.persistentTrack &&
-					new MediaStream([localParticipantVideoTrack?.persistentTrack]))
+
+	// send message
+	const sendAppMessage = useAppMessage({
+		onAppMessage: useCallback((ev: DailyEventObjectAppMessage<ImessageRoom>) => {
+			if (ev.data.field) {
+				if (ev.data.isField != undefined) {
+					if (ev.data.peerId == '*') {
+						if (ev.data.field.includes('screen'))
+							return setIsYourScreen(ev.data.isField)
+						if (ev.data.field.includes('audio')) return setIsYourAudio(ev.data.isField)
+						if (ev.data.field.includes('video')) return setIsYourVideo(ev.data.isField)
+						if (ev.data.field.includes('msg')) return setIsYourMsg(ev.data.isField)
+					} else {
+						setConfig({
+							field: ev.data.field,
+							isField: ev.data.isField,
+							peerId: ev.data.peerId,
+						})
+					}
+				}
+			} else {
+				setMsgs((m) => [...m, ev.data])
+			}
+		}, []),
+	})
+
+	const handleSendMsg = async ({
+		text,
+		field,
+		isField,
+		peerId,
+	}: {
+		text?: string
+		field?: string
+		isField?: boolean
+		peerId?: string
+	}) => {
+		const date = new Date()
+		if (currentUser) {
+			const data = {
+				name: currentUser?.name,
+				time: `${date.getHours()}:${date.getMinutes()}`,
+				id: currentUser.id,
+				text,
+				field,
+				isField,
+				peerId,
+			}
+			sendAppMessage(data, '*')
+			if (!field) {
+				setMsgs((state) => [...state, data])
+			}
 		}
-	}, [localParticipantVideoTrack])
+	}
+
+	useEffect(() => {
+		if (!isYourScreen) {
+			stopScreenShare()
+		}
+	}, [isYourScreen])
+	useEffect(() => {
+		if (!isYourAudio) {
+			co?.setLocalAudio(isYourAudio)
+		}
+	}, [isYourAudio])
+	useEffect(() => {
+		if (!isYourVideo) {
+			co?.setLocalVideo(isYourVideo)
+		}
+	}, [isYourVideo])
+
+	useEffect(() => {
+		if (co?.meetingState() == 'joined-meeting') {
+			handleSendMsg({
+				field: 'screen',
+				isField: isScreen,
+				peerId: '*',
+			})
+		}
+	}, [isScreen])
+	useEffect(() => {
+		if (co?.meetingState() == 'joined-meeting') {
+			handleSendMsg({
+				field: 'audio',
+				isField: isAudio,
+				peerId: '*',
+			})
+		}
+	}, [isAudio])
+	useEffect(() => {
+		if (co?.meetingState() == 'joined-meeting') {
+			handleSendMsg({
+				field: 'video',
+				isField: isVideo,
+				peerId: '*',
+			})
+		}
+	}, [isVideo])
+	useEffect(() => {
+		if (co?.meetingState() == 'joined-meeting') {
+			handleSendMsg({
+				field: 'msg',
+				isField: isSendMsg,
+				peerId: '*',
+			})
+		}
+	}, [isSendMsg])
+
+	useEffect(() => {
+		if (config && localParticipant && co) {
+			if (config.peerId?.includes(localParticipant.session_id)) {
+				if (config.field.includes('video')) {
+					co.setLocalVideo(false)
+				}
+				if (config.field.includes('audio')) {
+					co.setLocalAudio(false)
+				}
+			}
+		}
+	}, [config])
 
 	// set all id of participants
 	useEffect(() => {
@@ -114,12 +264,12 @@ export default function join() {
 	}
 
 	const toggleFullScreen = () => {
-		if(document.fullscreenElement ) {
+		if (document.fullscreenElement) {
 			document.exitFullscreen()
 			setIsFullScreen(false)
 		} else {
 			setIsFullScreen(true)
-			document.documentElement.requestFullscreen().catch(()=> {
+			document.documentElement.requestFullscreen().catch(() => {
 				alert('loi roi nha')
 			})
 		}
@@ -158,13 +308,16 @@ export default function join() {
 			>
 				<Box height={'100%'} paddingBlock={5} w={'300px'} pos={'relative'}>
 					<Slider {...settings}>
-						{tiles.map((tile, key) => (
-							<Tile
-								id={tile.id}
-								key={key}
-								isCurrentUser={tile.isCurrentUser}
-							/>
-						))}
+						{tiles.map((tile, key) => {
+							return (
+								<Tile
+									isTalking={co?.getActiveSpeaker().peerId == tile.id}
+									id={tile.id}
+									key={key}
+									isCurrentUser={tile.isCurrentUser}
+								/>
+							)
+						})}
 						{tiles &&
 							skeletons.length > tiles.length &&
 							skeletons.map((_, key) => {
@@ -175,6 +328,7 @@ export default function join() {
 											paddingBlock={'10px'}
 											h={'full'}
 											height={'170px'}
+											key={key}
 										>
 											<Skeleton
 												fadeDuration={0.5}
@@ -193,7 +347,7 @@ export default function join() {
 					</Slider>
 				</Box>
 				<Box pt={8} minW={'300px'} flex={1} pos={'relative'} height={'calc( 100% - 50px )'}>
-					<Box paddingInline={'10px'} w={'full'} h={'calc( 100% - 100px )'}>
+					<Box paddingInline={'10px'} w={'full'} h={'calc( 100% - 110px )'}>
 						<Box
 							background={localParticipant ? '#000000' : '#222222'}
 							w={'full'}
@@ -203,33 +357,49 @@ export default function join() {
 							borderColor={'hu-Green.normal'}
 							overflow={'hidden'}
 						>
-							{screens.length > 0 ? (
+							{screens.length != 0 && !pinId && (
 								<Tile
 									id={screens[screens.length - 1].session_id}
 									screenShare={true}
 									isCurrentUser={true}
 									isCenter={true}
 								/>
-							) : (
-								localParticipant && (
-									<Tile
-										id={localParticipant.session_id}
-										isCurrentUser={true}
-										isCenter={true}
-									/>
-								)
 							)}
+
+							{co?.getActiveSpeaker().peerId && screens.length == 0 && !pinId && (
+								<Tile
+									id={co.getActiveSpeaker().peerId as string}
+									isCurrentUser={true}
+									isCenter={true}
+								/>
+							)}
+
+							{pinId && <Tile id={pinId} isCurrentUser={true} isCenter={true} />}
 						</Box>
 					</Box>
 					<Box paddingInline={3} w={'full'} height={'120px'} mt={'30px'}>
 						<HStack
 							w={'full'}
+							pt={'25px'}
 							h={'100%'}
 							borderTop={'2px solid'}
 							borderColor={'gray'}
 							justifyContent={'space-between'}
+							alignItems={'start'}
 						>
-							<Box>1</Box>
+							<ButtonRoom
+								title="Link"
+								handle={() => {
+									copy(`${process.env.NEXT_PUBLIC_UI_URL}/meeting/${name}`)
+									setToast({
+										type: 'success',
+										msg: 'Copy link successfully',
+									})
+								}}
+								isClose={false}
+								iconClose={<BiLinkAlt />}
+								iconOpen={<BiLinkAlt />}
+							/>
 							<HStack spacing={5}>
 								<ButtonRoom
 									title="Mic"
@@ -239,7 +409,8 @@ export default function join() {
 											co.setLocalAudio(!isUseAudio)
 										}
 									}}
-									isDisabled={co?.localAudio()}
+									isDisabled={!isYourAudio}
+									isClose={co?.localAudio()}
 									iconClose={<BiMicrophoneOff />}
 									iconOpen={<BiMicrophone />}
 								/>
@@ -252,7 +423,8 @@ export default function join() {
 											co.setLocalVideo(!isUseVideo)
 										}
 									}}
-									isDisabled={co?.localVideo()}
+									isDisabled={!isYourVideo}
+									isClose={co?.localVideo()}
 									iconClose={<BsCameraVideoOff />}
 									iconOpen={<BsCameraVideo />}
 								/>
@@ -266,7 +438,8 @@ export default function join() {
 											startScreenShare()
 										}
 									}}
-									isDisabled={isSharingScreen}
+									isDisabled={!isYourScreen}
+									isClose={isSharingScreen}
 									iconClose={<MdOutlineStopScreenShare />}
 									iconOpen={<MdOutlineScreenShare />}
 								/>
@@ -276,33 +449,131 @@ export default function join() {
 									handle={() => {
 										toggleFullScreen()
 									}}
-									isDisabled={isFullScreen ? true: false}
+									isClose={isFullScreen ? true : false}
 									iconClose={<RiFullscreenExitLine />}
 									iconOpen={<RiFullscreenFill />}
 								/>
+								{dataRoom?.room?.empl_create.email == currentUser?.email && (
+									<ButtonRoom
+										title="Set"
+										handle={() => {
+											onOpen()
+										}}
+										isClose={isOpen ? true : false}
+										iconClose={<AiOutlineSetting />}
+										iconOpen={<AiTwotoneSetting />}
+									/>
+								)}
 							</HStack>
-							// leave
-
+							{/* leave */}
 							<ButtonRoom
-									title="Leave"
-									handle={() => {
-										if (co) {
-											co.leave()
-											router.push('/')
-										}
-									}}
-									isDisabled={false}
-									iconClose={<IoExitOutline />}
-									iconOpen={<IoExitOutline />}
-								/>
-							
+								title="Leave"
+								handle={() => {
+									if (co) {
+										co.leave()
+										handleLoading(true)
+										router.push('/')
+									}
+								}}
+								isClose={false}
+								iconClose={<IoExitOutline />}
+								iconOpen={<IoExitOutline />}
+							/>
 						</HStack>
 					</Box>
 				</Box>
-				<Box pt={8} pb={9} w={'300px'} h={'100%'} minW={'300px'}>
-					<Box w={'full'} h={'100%'} bg={'#2b2d2e'} borderRadius={15}></Box>
+				<Box pt={8} pb={9} w={'350px'} h={'100%'} minW={'300px'}>
+					<VStack
+						alignItems={'start'}
+						justifyContent={'start'}
+						spacing={5}
+						paddingBlock={4}
+						w={'full'}
+						h={'100%'}
+						bg={'#2b2d2e'}
+						borderRadius={15}
+					>
+						<Box paddingInline={4} w={'full'}>
+							<HStack
+								borderRadius={'10px'}
+								p={2}
+								spacing={4}
+								h={'50px'}
+								w={'full'}
+								bg={'rgba(225,225,225,0.1)'}
+							>
+								<Button
+									onClick={() => setIsShowMsgBar(true)}
+									_hover={{
+										color: 'black',
+										bg: 'hu-Green.normal',
+									}}
+									w={'full'}
+									bg={isShowMsgBar ? 'hu-Green.lightA' : ''}
+									variant={isShowMsgBar ? 'solid' : 'ghost'}
+									color={isShowMsgBar ? 'black' : 'white'}
+									fontWeight={!isShowMsgBar ? 'normal' : 'semibold'}
+								>
+									Messages ({msgs.length})
+								</Button>
+								<Button
+									onClick={() => setIsShowMsgBar(false)}
+									_hover={{
+										color: 'black',
+										bg: 'hu-Green.normal',
+									}}
+									w={'full'}
+									fontWeight={isShowMsgBar ? 'normal' : 'semibold'}
+									bg={!isShowMsgBar ? 'hu-Green.lightA' : ''}
+									variant={!isShowMsgBar ? 'solid' : 'ghost'}
+									color={!isShowMsgBar ? 'black' : 'white'}
+								>
+									Participant ({co?.participantCounts().present})
+								</Button>
+							</HStack>
+						</Box>
+						{isShowMsgBar ? (
+							<MessageBar
+								isDisabled={!isYourMsg}
+								msgs={msgs}
+								handleSendMsg={handleSendMsg}
+							/>
+						) : (
+							<VStack
+								alignItems={'start'}
+								w={'full'}
+								overflow={'auto'}
+								h={'100%'}
+								spacing={5}
+								paddingInline={4}
+							>
+								{tiles.map((tile, key) => (
+									<Participant
+										id={tile.id}
+										key={key}
+										localId={localParticipant?.user_id}
+										handleSendMsg={handleSendMsg}
+										setPinId={setPinId}
+										pinId={pinId}
+									/>
+								))}
+							</VStack>
+						)}
+					</VStack>
 				</Box>
 			</HStack>
+			<Setting
+				isAudio={isAudio}
+				setIsAudio={setIsAudio}
+				isSendMsg={isSendMsg}
+				isScreen={isScreen}
+				isVideo={isVideo}
+				isOpen={isOpen}
+				onClose={onClose}
+				setIsScreen={setIsScreen}
+				setIsSendMsg={setIsSendMsg}
+				setIsVideo={setIsVideo}
+			/>
 		</Box>
 	)
 }

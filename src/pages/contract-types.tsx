@@ -38,6 +38,7 @@ export default function ContractTypes({}: IDepartmentProps) {
 
 	//State -------------------------------------------------------------
 	const [name, setName] = useState('')
+	
 
 	//Mutation ----------------------------------------------------------
 	const [mutateCreContractType, { status: statusCreContractType, data: dataCreContractType }] =

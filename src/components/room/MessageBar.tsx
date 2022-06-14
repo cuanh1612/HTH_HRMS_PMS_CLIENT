@@ -96,10 +96,6 @@ export const MessageBar = ({
 		setDataEmojis(result)
 	}, [category])
 
-	useEffect(() => {
-		console.log(dataEmojis)
-	}, [dataEmojis])
-
 	const encodeBase64 = (file: File) => {
 		alert(file.size)
 		if (file.size > 3200) {

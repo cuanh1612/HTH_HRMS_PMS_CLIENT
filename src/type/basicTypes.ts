@@ -516,3 +516,8 @@ export interface IEmoji {
 	group: string
 	subGroup: string
 }
+
+export interface ITile {
+	id: string
+	isCurrentUser: boolean
+}

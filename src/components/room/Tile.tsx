@@ -58,7 +58,7 @@ const Tile = ({
 	}
 
 	return (
-		<Box as="div"  paddingBlock={'10px'} h={'full'} height={'170px'}>
+		<Box as="div" paddingBlock={['10px', null, '0px', '10px']}  paddingInline={['10px', null, null, '0px']} height={'170px'}>
 			<Box
 				w={'full'}
 				h={'100%'}

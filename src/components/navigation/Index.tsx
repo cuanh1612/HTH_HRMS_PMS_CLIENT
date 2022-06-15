@@ -23,9 +23,14 @@ import { IoAirplaneOutline, IoExitOutline } from 'react-icons/io5'
 import { MdOutlineEditNote, MdOutlineEvent } from 'react-icons/md'
 import LinkGroup from './LinkGroup'
 import LinkItem from './LinkItem'
+import { companyInfoQuery } from 'queries/companyInfo'
 
 const LinkItems = () => {
-	const { currentUser } = useContext(AuthContext)
+	const { currentUser, isAuthenticated } = useContext(AuthContext)
+
+	//Get info company
+	const { data: dataCompanyInfo } = companyInfoQuery(isAuthenticated)
+
 	return (
 		<>
 			{currentUser?.role != ('Client' && 'Employee') && (

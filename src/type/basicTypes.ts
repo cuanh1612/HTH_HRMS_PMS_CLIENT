@@ -516,3 +516,11 @@ export interface IEmoji {
 	group: string
 	subGroup: string
 }
+
+export interface companyInfoType {
+	id: number
+	name: string
+	phone: string
+	email: string
+	website: string
+}

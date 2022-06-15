@@ -26,10 +26,7 @@ import LinkItem from './LinkItem'
 import { companyInfoQuery } from 'queries/companyInfo'
 
 const LinkItems = () => {
-	const { currentUser, isAuthenticated } = useContext(AuthContext)
-
-	//Get info company
-	const { data: dataCompanyInfo } = companyInfoQuery(isAuthenticated)
+	const { currentUser } = useContext(AuthContext)
 
 	return (
 		<>
@@ -109,6 +106,11 @@ const LinkItems = () => {
 }
 
 const SideLeft = () => {
+	const { isAuthenticated } = useContext(AuthContext)
+
+	//Get info company
+	const { data: dataCompanyInfo } = companyInfoQuery(isAuthenticated)
+
 	return (
 		<Box
 			minW={300}
@@ -124,7 +126,7 @@ const SideLeft = () => {
 			<HStack spacing={5} w={'full'} h={'73px'}>
 				<Box w={'50px'} h={'50px'} borderRadius={4} border={'1px solid red'}></Box>
 				<Text fontWeight={'bold'} fontSize={'xl'}>
-					HUPROM
+					{dataCompanyInfo?.companyInfo.name}
 				</Text>
 			</HStack>
 
@@ -135,49 +137,56 @@ const SideLeft = () => {
 	)
 }
 
-const SideLeftInDrawer = ({ onClose, isOpen }: { isOpen: boolean; onClose: any }) => (
-	<Drawer isOpen={isOpen} placement="left" onClose={onClose}>
-		<DrawerOverlay />
-		<DrawerContent>
-			<DrawerBody padding={4}>
-				<HStack
-					bg={'white'}
-					zIndex={10}
-					style={{
-						top: '0px',
-						position: 'sticky',
-					}}
-					spacing={5}
-					w={'full'}
-					h={'73px'}
-				>
-					<Box w={'50px'} h={'50px'} borderRadius={4} border={'1px solid red'}></Box>
-					<HStack w={'full'} justifyContent={'space-between'}>
-						<Text fontWeight={'bold'} fontSize={'xl'}>
-							HUPROM
-						</Text>
-						<CloseButton onClick={onClose} />
+const SideLeftInDrawer = ({ onClose, isOpen }: { isOpen: boolean; onClose: any }) => {
+	const { isAuthenticated } = useContext(AuthContext)
+
+	//Get info company
+	const { data: dataCompanyInfo } = companyInfoQuery(isAuthenticated)
+
+	return (
+		<Drawer isOpen={isOpen} placement="left" onClose={onClose}>
+			<DrawerOverlay />
+			<DrawerContent>
+				<DrawerBody padding={4}>
+					<HStack
+						bg={'white'}
+						zIndex={10}
+						style={{
+							top: '0px',
+							position: 'sticky',
+						}}
+						spacing={5}
+						w={'full'}
+						h={'73px'}
+					>
+						<Box w={'50px'} h={'50px'} borderRadius={4} border={'1px solid red'}></Box>
+						<HStack w={'full'} justifyContent={'space-between'}>
+							<Text fontWeight={'bold'} fontSize={'xl'}>
+								{dataCompanyInfo?.companyInfo.name}
+							</Text>
+							<CloseButton onClick={onClose} />
+						</HStack>
 					</HStack>
-				</HStack>
 
-				<VStack
-					paddingTop={4}
-					height={'calc( 100vh - 180px )'}
-					overflow={'auto'}
-					spacing={4}
-				>
-					<LinkItems />
-				</VStack>
-			</DrawerBody>
+					<VStack
+						paddingTop={4}
+						height={'calc( 100vh - 180px )'}
+						overflow={'auto'}
+						spacing={4}
+					>
+						<LinkItems />
+					</VStack>
+				</DrawerBody>
 
-			<DrawerFooter>
-				<Button variant="outline" mr={3}>
-					Cancel
-				</Button>
-			</DrawerFooter>
-		</DrawerContent>
-	</Drawer>
-)
+				<DrawerFooter>
+					<Button variant="outline" mr={3}>
+						Cancel
+					</Button>
+				</DrawerFooter>
+			</DrawerContent>
+		</Drawer>
+	)
+}
 
 export default function Navigation() {
 	const [isLarge, setIsLarge] = useState(true)

@@ -36,12 +36,10 @@ export async function loginGoogleRequest(inputLoginGoogle: loginGoogleForm) {
 }
 
 //Function handle fetch logout
-export async function logoutRequest(inputLogout: logoutForm) {
+export async function logoutRequest() {
 	const resultFetch = await postData<authMutaionResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/auth/logout`,
-		body: inputLogout,
 	})
-
 	return resultFetch
 }
 

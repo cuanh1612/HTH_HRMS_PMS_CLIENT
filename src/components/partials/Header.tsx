@@ -1,28 +1,86 @@
-import { Avatar, Button, HStack, Menu, MenuButton, MenuItem, MenuList, useBreakpoint, useColorMode } from '@chakra-ui/react'
+import {
+	Avatar,
+	Box,
+	HStack,
+	IconButton,
+	Menu,
+	MenuButton,
+	MenuItem,
+	MenuList,
+	Text,
+	useBreakpoint,
+	useColorMode,
+	useDisclosure,
+	VStack,
+} from '@chakra-ui/react'
 import { ButtonIcon, ButtonMenu } from 'components/common'
+import { Drawer } from 'components/Drawer'
+import NotificationItem from 'components/NotificationItem'
 import { AuthContext } from 'contexts/AuthContext'
+import { logoutServerMutation } from 'mutations'
+import { useRouter } from 'next/router'
+import { NotificationByCurrentUserQuery } from 'queries/notification'
 import { useContext, useEffect, useState } from 'react'
-import { BsMoon, BsPerson, BsSun } from 'react-icons/bs'
+import { AiOutlineBell } from 'react-icons/ai'
+import { BsFillBellSlashFill, BsMoon, BsPerson, BsSun } from 'react-icons/bs'
 import { IoExitOutline } from 'react-icons/io5'
+import UpdateClient from 'src/pages/clients/update-clients'
+import UpdateEmployees from 'src/pages/employees/update-employees'
+import { notificationType } from 'type/basicTypes'
 
 export const Header = () => {
 	// set darkMode
 	const { colorMode, toggleColorMode } = useColorMode()
 
+	const {push} = useRouter()
+
 	// get user
-	const { currentUser, onOpenMenu } = useContext(AuthContext)
+	const { currentUser, onOpenMenu, isAuthenticated, socket, setToast, setIsAuthenticated } = useContext(AuthContext)
 
 	const [isLarge, setIsLarge] = useState(true)
 
 	const breakpoint = useBreakpoint()
+
+	// set isOpen of dialog to UpdateProfiles
+	const {
+		isOpen: isOpenUpdateProfile,
+		onOpen: onOpenUpdateProfile,
+		onClose: onCloseUpdateProfile,
+	} = useDisclosure()
+
+	//Query -------------------------------------------------
+	const { data: dataNotification, mutate: refetchNotifications } =
+		NotificationByCurrentUserQuery(isAuthenticated)
+
+		const [logout, {status: statusLogout}] = logoutServerMutation(setToast)	
+
 	useEffect(() => {
 		if (breakpoint == 'md' || breakpoint == 'sm' || breakpoint == 'base') {
 			setIsLarge(false)
 		} else {
 			setIsLarge(true)
 		}
-		console.log(breakpoint)
 	}, [breakpoint])
+
+	//Handle socket
+	useEffect(() => {
+		if (socket) {
+			socket.on('getNewNotifications', () => {
+				refetchNotifications()
+			})
+		}
+	}, [socket])
+
+	useEffect(()=> {
+		if(statusLogout == 'success') {
+			setToast({
+				msg: 'Logout Successfully',
+				type: 'success'
+			})
+			setIsAuthenticated(false)
+			push('/login')
+		}
+	}, [statusLogout])
 
 	return (
 		<HStack
@@ -51,6 +109,71 @@ export const Header = () => {
 					ariaLabel="darkMode"
 					handle={() => toggleColorMode()}
 				/>
+
+				<Box mt={'100px'}>
+					<Menu placement="bottom-end">
+						<MenuButton as={IconButton} position={'relative'}>
+							<HStack
+								alignItems={'center'}
+								justifyContent={'center'}
+								w={'full'}
+								h={'100%'}
+							>
+								<AiOutlineBell fontSize={20} />
+								<Box
+									bgColor={'red'}
+									color={'white'}
+									minH={5}
+									minW={5}
+									lineHeight={'18px'}
+									borderRadius={'50%'}
+									fontSize={12}
+									position={'absolute'}
+									right={'-4px'}
+									top={'-5px'}
+								>
+									{dataNotification?.notifications?.length
+										? dataNotification?.notifications?.length >= 99
+											? '+99'
+											: dataNotification?.notifications?.length
+										: '0'}
+								</Box>
+							</HStack>
+						</MenuButton>
+						<MenuList padding={0} borderRadius={0}>
+							<Box
+								width={'400px'}
+								bgColor={'#f2f4f7'}
+								minH={'150px'}
+								maxH={'290px'}
+								overflow={'auto'}
+							>
+								{dataNotification?.notifications &&
+								dataNotification.notifications.length > 0 ? (
+									dataNotification.notifications.map(
+										(notification: notificationType) => (
+											<NotificationItem
+												key={notification.id}
+												notification={notification}
+											/>
+										)
+									)
+								) : (
+									<VStack
+										spacing={2}
+										w={'full'}
+										minH={'150px'}
+										justify={'center'}
+									>
+										<BsFillBellSlashFill color="#a3aebc" />
+										<Text color={'#a3aebc'}>No new notification</Text>
+									</VStack>
+								)}
+							</Box>
+						</MenuList>
+					</Menu>
+				</Box>
+
 				<Menu>
 					<MenuButton>
 						<Avatar
@@ -62,12 +185,35 @@ export const Header = () => {
 						/>
 					</MenuButton>
 					<MenuList>
-						<MenuItem icon={<BsPerson fontSize={'15px'}/>}>Profile</MenuItem>
-						<MenuItem color={'red.500'} icon={<IoExitOutline fontSize={'15px'}/>}>Logout</MenuItem>
-						
+						<MenuItem onClick={onOpenUpdateProfile} icon={<BsPerson fontSize={'15px'} />}>Profile</MenuItem>
+						<MenuItem onClick={logout} color={'red.500'} icon={<IoExitOutline fontSize={'15px'} />}>
+							Logout
+						</MenuItem>
 					</MenuList>
 				</Menu>
 			</HStack>
+
+			{/* drawer to update client */}
+			{currentUser && (
+				<Drawer
+					size="xl"
+					title="Update client"
+					onClose={onCloseUpdateProfile}
+					isOpen={isOpenUpdateProfile}
+				>
+					{currentUser.role === 'Client' ? (
+						<UpdateClient
+							onCloseDrawer={onCloseUpdateProfile}
+							clientUpdateId={currentUser.id}
+						/>
+					) : (
+						<UpdateEmployees
+							onCloseDrawer={onCloseUpdateProfile}
+							employeeId={currentUser.id}
+						/>
+					)}
+				</Drawer>
+			)}
 		</HStack>
 	)
 }

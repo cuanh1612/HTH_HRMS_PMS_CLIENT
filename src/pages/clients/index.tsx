@@ -271,7 +271,6 @@ const Clients: NextLayout = () => {
 
 	// set loading == false when get all clients successfully
 	useEffect(() => {
-		console.log(allClients)
 		if (allClients?.clients) {
 			const users = allClients.clients?.map((item): IPeople => {
 				return {
@@ -506,7 +505,7 @@ const Clients: NextLayout = () => {
 	]
 
 	return (
-		<Box>
+		<Box w={'full'}>
 			<HStack
 				_hover={{
 					textDecoration: 'none',
@@ -520,7 +519,7 @@ const Clients: NextLayout = () => {
 				{isOpen ? <AiOutlineCaretDown /> : <AiOutlineCaretUp />}
 			</HStack>
 			<Collapse in={isOpen} animateOpacity>
-				<HStack marginTop={'2'} paddingBlock={'5'} spacing={'5'}>
+				<VStack marginTop={'2'} paddingBlock={'5'} spacing={'5'}>
 					<Button
 						onClick={onOpenAdd}
 						transform={'auto'}
@@ -664,9 +663,9 @@ const Clients: NextLayout = () => {
 					>
 						reset filter
 					</Button>
-				</HStack>
+				</VStack>
 			</Collapse>
-
+			
 			{currentUser && (
 				<Table
 					data={allClients?.clients || []}

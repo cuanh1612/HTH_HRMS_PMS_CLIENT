@@ -10,11 +10,13 @@ export const ClientLayout = ({ children }: { children: JSX.Element }) => {
 			alignItems={'start'}
 			pos={'relative'}
 			spacing={'0px'}
+			w={'100%'}
+		border={'1px solid red'}
 		>
 			<Navigation/>
 			<Box w={'full'}>
 				<Header />
-				<Box paddingInline={10}>{children}</Box>
+				<Box w={'full'} paddingInline={10}>{children}</Box>
 			</Box>
 		</HStack>
 	)

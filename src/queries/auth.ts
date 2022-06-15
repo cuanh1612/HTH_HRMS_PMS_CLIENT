@@ -1,5 +1,5 @@
 import { AxiosError } from 'axios'
-import { currentUserRequest } from 'requests/auth'
+import { currentUserRequest, logoutRequest } from 'requests/auth'
 import useSWR from 'swr'
 import { authMutaionResponse } from 'type/mutationResponses'
 

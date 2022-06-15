@@ -42,6 +42,7 @@ interface IAuthContext {
 	isOpenMenu: boolean
 	onOpenMenu: ()=> void
 	onCloseMenu: ()=> void
+
 }
 
 const defaultIsAuthenticated = null

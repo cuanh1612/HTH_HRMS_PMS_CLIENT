@@ -10,6 +10,7 @@ import {
 	VStack,
 } from '@chakra-ui/react'
 import { Drawer } from 'components/Drawer'
+import { ClientLayout } from 'components/layouts'
 import NotificationItem from 'components/NotificationItem'
 import { AuthContext } from 'contexts/AuthContext'
 import { useRouter } from 'next/router'
@@ -18,10 +19,11 @@ import { useContext, useEffect } from 'react'
 import { AiOutlineBell } from 'react-icons/ai'
 import { BsFillBellSlashFill } from 'react-icons/bs'
 import { notificationType } from 'type/basicTypes'
+import { NextLayout } from 'type/element/layout'
 import UpdateClient from './clients/update-clients'
 import UpdateEmployees from './employees/update-employees'
 
-export default function index() {
+const index:NextLayout = ()=> {
 	const { isAuthenticated, handleLoading, socket, currentUser } = useContext(AuthContext)
 	const { push } = useRouter()
 
@@ -135,3 +137,6 @@ export default function index() {
 		</Box>
 	)
 }
+index.getLayout = ClientLayout
+
+export default index

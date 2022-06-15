@@ -1,6 +1,6 @@
 import { memo, useEffect, useRef, useState } from 'react'
 import { useMediaTrack, useParticipant } from '@daily-co/daily-react-hooks'
-import { Avatar, Box, Center } from '@chakra-ui/react'
+import { Avatar, Box, Center, useBreakpoint } from '@chakra-ui/react'
 import { BiMicrophone, BiMicrophoneOff } from 'react-icons/bi'
 
 const Tile = ({
@@ -16,6 +16,7 @@ const Tile = ({
 	screenShare?: boolean
 	isTalking?: boolean
 })=> {
+	const layoutSize = useBreakpoint()
 	const [muted, setMuted] = useState(false)
 	const videoTrack = useMediaTrack(id, screenShare ? 'screenVideo' : 'video')
 	const audioTrack = useMediaTrack(id, screenShare ? 'screenVideo' : 'audio')
@@ -58,7 +59,7 @@ const Tile = ({
 	}
 
 	return (
-		<Box as="div" paddingBlock={['10px', null, '0px', '10px']}  paddingInline={['10px', null, null, '0px']} height={'170px'}>
+		<Box as="div" paddingBlock={['10px', null, '0px', '10px']}  paddingInline={['10px', null, null, '0px']} height={['120px', null,'170px']}>
 			<Box
 				w={'full'}
 				h={'100%'}
@@ -81,7 +82,7 @@ const Tile = ({
 					/>
 				): (
 					<Center h={'100%'}>
-						<Avatar size={'lg'} name={participant?.user_name} src={''}/>
+						<Avatar size={layoutSize?.includes('xl')? 'lg': 'md'} name={participant?.user_name} src={''}/>
 					</Center>
 				)}
 				{!isCurrentUser && audioTrack && !screenShare && (

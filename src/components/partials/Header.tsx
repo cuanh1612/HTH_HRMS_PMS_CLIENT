@@ -1,8 +1,9 @@
-import { Avatar, HStack, useBreakpoint, useColorMode } from '@chakra-ui/react'
+import { Avatar, Button, HStack, Menu, MenuButton, MenuItem, MenuList, useBreakpoint, useColorMode } from '@chakra-ui/react'
 import { ButtonIcon, ButtonMenu } from 'components/common'
 import { AuthContext } from 'contexts/AuthContext'
 import { useContext, useEffect, useState } from 'react'
-import { BsMoon, BsSun } from 'react-icons/bs'
+import { BsMoon, BsPerson, BsSun } from 'react-icons/bs'
+import { IoExitOutline } from 'react-icons/io5'
 
 export const Header = () => {
 	// set darkMode
@@ -36,9 +37,7 @@ export const Header = () => {
 			justify={'space-between'}
 			paddingBlock={4}
 		>
-			{!isLarge && (
-				<ButtonMenu dir={'start'} onOpenMenu={onOpenMenu}/>
-			)}
+			{!isLarge ? <ButtonMenu dir={'start'} onOpenMenu={onOpenMenu} /> : <div></div>}
 
 			<HStack spacing={5}>
 				<ButtonIcon
@@ -52,13 +51,22 @@ export const Header = () => {
 					ariaLabel="darkMode"
 					handle={() => toggleColorMode()}
 				/>
-				<Avatar
-					w={'40px'}
-					height={'40px'}
-					borderRadius={'full'}
-					name={currentUser?.name}
-					src="/"
-				/>
+				<Menu>
+					<MenuButton>
+						<Avatar
+							w={'40px'}
+							height={'40px'}
+							borderRadius={'full'}
+							name={currentUser?.name}
+							src="/"
+						/>
+					</MenuButton>
+					<MenuList>
+						<MenuItem icon={<BsPerson fontSize={'15px'}/>}>Profile</MenuItem>
+						<MenuItem color={'red.500'} icon={<IoExitOutline fontSize={'15px'}/>}>Logout</MenuItem>
+						
+					</MenuList>
+				</Menu>
 			</HStack>
 		</HStack>
 	)

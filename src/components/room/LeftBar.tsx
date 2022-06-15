@@ -1,8 +1,8 @@
-import { Box, Drawer, DrawerBody, DrawerCloseButton, DrawerContent, DrawerHeader, DrawerOverlay, useBreakpoint } from '@chakra-ui/react'
+import { Box, useBreakpoint } from '@chakra-ui/react'
 import React, { ReactNode } from 'react'
 import Slider from 'react-slick'
 
-export const LeftBar = ({ children, isOpen, onClose }: { children: ReactNode; isOpen: boolean; onClose: any }) => {
+export const LeftBar = ({ children }: { children: ReactNode }) => {
     const layoutSize = useBreakpoint()
     const setting = {
 		dots: false,
@@ -26,25 +26,18 @@ export const LeftBar = ({ children, isOpen, onClose }: { children: ReactNode; is
 					slidesToShow: 2,
 					slidesToScroll: 2,
 				},
+			},
+			{
+				breakpoint: 550,
+				settings: {
+					slidesToShow: 1,
+					slidesToScroll: 1,
+				},
 			}
 		],
 	}
 
-    if(layoutSize?.includes('sm') || layoutSize?.includes('base')) {
-        return (
-            <Drawer isOpen={isOpen} placement="right" onClose={onClose}>
-			<DrawerOverlay />
-			<DrawerContent>
-				<DrawerCloseButton color={'white'} />
-				<DrawerHeader bg={'#2b2d2e'} color={'white'}>Another</DrawerHeader>
 
-				<DrawerBody pb={6} paddingInline={'10px'} bg={'#2b2d2e'}>
-						{children}
-				</DrawerBody>
-			</DrawerContent>
-		</Drawer>
-        )
-    }
 
 	return (
 		<Box

@@ -8,10 +8,6 @@ import {
 	useBreakpoint,
 	useColorMode,
 	Stack,
-	MenuButton,
-	MenuList,
-	MenuItem,
-	Menu,
 } from '@chakra-ui/react'
 import { AuthContext } from 'contexts/AuthContext'
 import { useRouter } from 'next/router'
@@ -27,8 +23,8 @@ import {
 import Tile from 'components/room/Tile'
 import 'slick-carousel/slick/slick.css'
 import 'slick-carousel/slick/slick-theme.css'
-import { BiLinkAlt, BiMessageDetail, BiMicrophone, BiMicrophoneOff } from 'react-icons/bi'
-import { BsCameraVideo, BsCameraVideoOff, BsPeople } from 'react-icons/bs'
+import { BiLinkAlt, BiMicrophone, BiMicrophoneOff } from 'react-icons/bi'
+import { BsCameraVideo, BsCameraVideoOff } from 'react-icons/bs'
 import { MdOutlineScreenShare, MdOutlineStopScreenShare } from 'react-icons/md'
 import { RiFullscreenExitLine, RiFullscreenFill } from 'react-icons/ri'
 import { IoExitOutline } from 'react-icons/io5'
@@ -56,12 +52,6 @@ export default function join() {
 		isOpen: isOpenRightBar,
 		onOpen: onOpenRightBar,
 		onClose: onCloseRightBar,
-	} = useDisclosure()
-
-	const {
-		isOpen: isOpenLeftBar,
-		onOpen: onOpenLeftBar,
-		onClose: onCloseLeftBar,
 	} = useDisclosure()
 
 	// query
@@ -314,37 +304,9 @@ export default function join() {
 						<Text isTruncated fontSize={'xl'} color={'white'}>
 							{dataRoom?.room?.title.replace(/-/g, ' ')}
 						</Text>
-						{!layoutSize?.includes('xl') && (
-							<Menu>
-								<MenuButton>
-									<ButtonMenu dir={'end'} onOpenMenu={() => {}} />
-								</MenuButton>
-								<MenuList>
-									<MenuItem
-										onClick={onOpenRightBar}
-										icon={<BiMessageDetail fontSize={'15px'} />}
-									>
-										Message & participant
-									</MenuItem>
-									{layoutSize == 'sm' && (
-										<MenuItem
-											onClick={onOpenLeftBar}
-											icon={<BsPeople fontSize={'15px'} />}
-										>
-											Another
-										</MenuItem>
-									)}
-									{layoutSize == 'base' && (
-										<MenuItem
-											onClick={onOpenLeftBar}
-											icon={<BsPeople fontSize={'15px'} />}
-										>
-											Another
-										</MenuItem>
-									)}
-								</MenuList>
-							</Menu>
-						)}
+						
+						<ButtonMenu dir={'end'} onOpenMenu={onOpenRightBar} />
+								
 					</HStack>
 				</HStack>
 			</HStack>
@@ -361,7 +323,7 @@ export default function join() {
 				pos={'relative'}
 				height={'calc( 100% - 100px )'}
 			>
-				<LeftBar isOpen={isOpenLeftBar} onClose={onCloseLeftBar}>
+				<LeftBar>
 					{tiles.map((tile, key) => {
 						return (
 							<Tile
@@ -381,8 +343,7 @@ export default function join() {
 										as="div"
 										paddingBlock={['10px', null, '0px', '10px']}
 										paddingInline={['10px', null, null, '0px']}
-										h={'full'}
-										height={'170px'}
+										height={['120px', null,'170px']}
 										key={key}
 									>
 										<Skeleton
@@ -406,14 +367,14 @@ export default function join() {
 				  justifyContent={'start'}
 				  spacing={6}
 				  direction={['row-reverse','row-reverse', 'column']}
-					pt={[8, 8, '0px', 8]}
+					pt={['0px',null, null, 8]}
 					pr={'10px'}
 					pl={['0px', null, '10px', '0px']}
 					minW={'300px'}
 					w={'100%'}
 					flex={1}
 					pos={'relative'}
-					height={'calc( 100% - 18px )'}
+					height={['calc( 100% - 250px )', null, 'calc( 100% - 18px )']}
 				>
 					<Box
 						paddingInline={['0px', null, null, '10px']}

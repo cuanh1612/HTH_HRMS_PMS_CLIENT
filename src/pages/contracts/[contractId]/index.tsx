@@ -30,6 +30,7 @@ import jsPDF from 'jspdf'
 import { GetStaticPaths, GetStaticProps } from 'next'
 import { useRouter } from 'next/router'
 import { detailContractQuery } from 'queries'
+import { companyInfoQuery } from 'queries/companyInfo'
 import { useContext, useEffect } from 'react'
 import { AiOutlineDownload } from 'react-icons/ai'
 import { SWRConfig } from 'swr'
@@ -43,6 +44,7 @@ const DetailContract: NextLayout = () => {
 
 	//Query ------------------------------------------------------------
 	const { data: dataDetailContract } = detailContractQuery(isAuthenticated, Number(contractId))
+	const {	data: dataCompanyInfo } = companyInfoQuery(isAuthenticated)
 
 	//Useeffect --------------------------------------------------------
 	//Handle loading page
@@ -69,27 +71,28 @@ const DetailContract: NextLayout = () => {
 
 			doc.text(`Contract #${contractId}`, 20, 20)
 			doc.setFontSize(12)
-			doc.text('HUPROM', 20, 60)
-			doc.text('xx Nguyen Xi Street - Gia Lai - Viet Nam', 20, 80)
-			doc.text('+84 833876372', 20, 100)
+			doc.text(dataCompanyInfo?.companyInfo.name ? dataCompanyInfo.companyInfo.name : 'HUPROM', 20, 60)
+			doc.text(dataCompanyInfo?.companyInfo.website  ? dataCompanyInfo.companyInfo.website : 'huprom.com', 20, 80)
+			doc.text(dataCompanyInfo?.companyInfo.phone ? dataCompanyInfo.companyInfo.phone : '+84 833876372', 20, 100)
+			doc.text(dataCompanyInfo?.companyInfo.email ? dataCompanyInfo.companyInfo.email : 'huynqdev1612@gmail.com', 20, 120)
 			doc.setFontSize(14)
-			doc.text('Main Contract', 20, 140)
+			doc.text('Main Contract', 20, 160)
 			doc.setFontSize(12)
-			doc.text(`Contract Number: #${contractId}`, 20, 170)
-			doc.text(`Start Date: ${dataDetailContract?.contract?.start_date}`, 20, 190)
-			doc.text(`End Date: ${dataDetailContract?.contract?.end_date}`, 20, 210)
+			doc.text(`Contract Number: #${contractId}`, 20, 190)
+			doc.text(`Start Date: ${dataDetailContract?.contract?.start_date}`, 20, 210)
+			doc.text(`End Date: ${dataDetailContract?.contract?.end_date}`, 20, 230)
 			doc.setFontSize(14)
-			doc.text('Client', 20, 250)
+			doc.text('Client', 20, 270)
 			doc.setFontSize(12)
-			doc.text(`${dataDetailContract?.contract?.client.name}`, 20, 280)
-			doc.text(`${dataDetailContract?.contract?.client.company_name}`, 20, 300)
-			doc.text(`${dataDetailContract?.contract?.client.company_address}`, 20, 320)
+			doc.text(`${dataDetailContract?.contract?.client.name}`, 20, 300)
+			doc.text(`${dataDetailContract?.contract?.client.company_name}`, 20, 320)
+			doc.text(`${dataDetailContract?.contract?.client.company_address}`, 20, 340)
 			doc.setFontSize(14)
-			doc.text('Subject', 20, 360)
+			doc.text('Subject', 20, 380)
 			doc.setFontSize(12)
-			doc.text(`${dataDetailContract?.contract?.subject}`, 20, 390)
+			doc.text(`${dataDetailContract?.contract?.subject}`, 20, 410)
 			doc.setFontSize(14)
-			doc.text('Description', 20, 430)
+			doc.text('Description', 20, 450)
 			doc.setFontSize(12)
 			doc.text(
 				convert(
@@ -101,22 +104,22 @@ const DetailContract: NextLayout = () => {
 					}
 				),
 				20,
-				450
+				470
 			)
 			doc.setFontSize(14)
 			doc.text(
 				`Contract Value: ${dataDetailContract?.contract?.contract_value} ${dataDetailContract?.contract?.currency}`,
 				20,
-				490
+				510
 			)
-			doc.text('Signature', 20, 530)
+			doc.text('Signature', 20, 550)
 			dataDetailContract?.contract?.sign?.url &&
-				doc.addImage((await parser64IMGSign()) as string, 'png', 0, 550, 300, 150)
+				doc.addImage((await parser64IMGSign()) as string, 'png', 0, 570, 300, 150)
 			doc.setFontSize(12)
 			doc.text(
 				`(${dataDetailContract?.contract?.sign?.first_name} ${dataDetailContract?.contract?.sign?.last_name})`,
 				20,
-				720
+				740
 			)
 
 			doc.save('demo.pdf')
@@ -152,9 +155,10 @@ const DetailContract: NextLayout = () => {
 						</HStack>
 						<Grid templateColumns="repeat(2, 1fr)" gap={6} w={'full'}>
 							<GridItem w="100%" colSpan={[2, 1]}>
-								<Text>HUPROM</Text>
-								<Text>xx Nguyen Xi Street - Gia Lai - Viet Nam</Text>
-								<Text>+84 833876372</Text>
+								<Text>{dataCompanyInfo?.companyInfo.name ? dataCompanyInfo.companyInfo.name : "HUPROM"}</Text>
+								<Text>{dataCompanyInfo?.companyInfo.website ? dataCompanyInfo.companyInfo.website : "huprom.com"}</Text>
+								<Text>{dataCompanyInfo?.companyInfo.phone ? dataCompanyInfo.companyInfo.phone : "+84 833876372"}</Text>
+								<Text>{dataCompanyInfo?.companyInfo.email ? dataCompanyInfo.companyInfo.email : "huynqdev1612@gmail.com"}</Text>
 							</GridItem>
 
 							<GridItem w="100%" colSpan={[2, 1]}>

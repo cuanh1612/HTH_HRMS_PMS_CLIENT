@@ -15,6 +15,7 @@ import {
 	TabPanels,
 	Tabs,
 	Text,
+	useColorMode,
 	useDisclosure,
 	VStack,
 } from '@chakra-ui/react'
@@ -37,6 +38,8 @@ import { FiXCircle } from 'react-icons/fi'
 import { createClient, PhotosWithTotalResults } from 'pexels'
 
 export default function index() {
+	const {colorMode, toggleColorMode} = useColorMode()
+	
 	const { isOpen, onOpen, onClose } = useDisclosure()
 	const { isAuthenticated, handleLoading, currentUser, setToast } = useContext(AuthContext)
 	const router = useRouter()
@@ -48,6 +51,12 @@ export default function index() {
 	const pexel = createClient('563492ad6f91700001000001b7637a3e86ad4b63a805ed7d7d7be975')
 	const [isLoadding, setIsLoadding] = useState(true)
 	const { search } = pexel.photos
+
+	useEffect(() => {
+		if(colorMode == 'dark') {
+			toggleColorMode()
+		}
+	}, [colorMode])
 	useEffect(() => {
 		search({
 			page: 1,

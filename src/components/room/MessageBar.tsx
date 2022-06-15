@@ -89,16 +89,10 @@ export const MessageBar = ({
 
 	useEffect(() => {
 		const result = listEmojis.filter((emoji) => {
-			if (emoji.group == category) {
-				return emoji
-			}
+			emoji.group == category && emoji
 		})
 		setDataEmojis(result)
 	}, [category])
-
-	useEffect(() => {
-		console.log(dataEmojis)
-	}, [dataEmojis])
 
 	const encodeBase64 = (file: File) => {
 		alert(file.size)

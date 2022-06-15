@@ -4,9 +4,14 @@ import {
 	Text,
 	StackDivider,
 	Skeleton,
-	Button,
-	VStack,
 	useDisclosure,
+	useBreakpoint,
+	useColorMode,
+	Stack,
+	MenuButton,
+	MenuList,
+	MenuItem,
+	Menu,
 } from '@chakra-ui/react'
 import { AuthContext } from 'contexts/AuthContext'
 import { useRouter } from 'next/router'
@@ -20,35 +25,49 @@ import {
 	useScreenShare,
 } from '@daily-co/daily-react-hooks'
 import Tile from 'components/room/Tile'
-import Slider from 'react-slick'
 import 'slick-carousel/slick/slick.css'
 import 'slick-carousel/slick/slick-theme.css'
-import { BiLinkAlt, BiMicrophone, BiMicrophoneOff } from 'react-icons/bi'
-import { BsCameraVideo, BsCameraVideoOff } from 'react-icons/bs'
+import { BiLinkAlt, BiMessageDetail, BiMicrophone, BiMicrophoneOff } from 'react-icons/bi'
+import { BsCameraVideo, BsCameraVideoOff, BsPeople } from 'react-icons/bs'
 import { MdOutlineScreenShare, MdOutlineStopScreenShare } from 'react-icons/md'
 import { RiFullscreenExitLine, RiFullscreenFill } from 'react-icons/ri'
 import { IoExitOutline } from 'react-icons/io5'
-import { ButtonRoom, MessageBar, Participant, Setting } from 'components/room'
+import { ButtonRoom, LeftBar, Setting } from 'components/room'
 import { DailyEventObjectAppMessage } from '@daily-co/daily-js'
-import { ImessageRoom } from 'type/basicTypes'
+import { ImessageRoom, ITile } from 'type/basicTypes'
 import copy from 'copy-to-clipboard'
 import { AiOutlineSetting, AiTwotoneSetting } from 'react-icons/ai'
+import RightSide from 'components/room/RightSide'
+import { ButtonMenu } from 'components/common'
 
 export default function join() {
+	const layoutSize = useBreakpoint()
+	console.log(layoutSize)
 	const { isAuthenticated, handleLoading, currentUser, setToast } = useContext(AuthContext)
 	const router = useRouter()
 	const { name } = router.query
+
+	const { toggleColorMode, colorMode } = useColorMode()
+
+	// open to setting, only admin setting
 	const { isOpen, onOpen, onClose } = useDisclosure()
+
+	const {
+		isOpen: isOpenRightBar,
+		onOpen: onOpenRightBar,
+		onClose: onCloseRightBar,
+	} = useDisclosure()
+
+	const {
+		isOpen: isOpenLeftBar,
+		onOpen: onOpenLeftBar,
+		onClose: onCloseLeftBar,
+	} = useDisclosure()
 
 	// query
 	const { data: dataRoom } = getRoomByTitleQuery(isAuthenticated, name)
 	// state
-	const [tiles, setTiles] = useState<
-		{
-			id: string
-			isCurrentUser: boolean
-		}[]
-	>([])
+	const [tiles, setTiles] = useState<ITile[]>([])
 	const [skeletons] = useState([1, 2, 3, 4, 5])
 	const [msgs, setMsgs] = useState<ImessageRoom[]>([])
 	const [isFullScreen, setIsFullScreen] = useState(false)
@@ -74,8 +93,8 @@ export default function join() {
 	const [isYourMsg, setIsYourMsg] = useState(true)
 
 	// share screen
-	const [idScreen, setIdScreen] = useState<string>()
-	const [idScreens, setIdScreens] = useState<string[]>([])
+	// const [idScreen, setIdScreen] = useState<string>()
+	// const [idScreens, setIdScreens] = useState<string[]>([])
 
 	// pin participant
 	const [pinId, setPinId] = useState<string>()
@@ -251,17 +270,11 @@ export default function join() {
 		}
 	}, [name, currentUser, co])
 
-	const settings = {
-		dots: false,
-		infinite: false,
-		speed: 500,
-		slidesToShow: 5,
-		slidesToScroll: 5,
-		initialSlide: 0,
-		arrows: false,
-		vertical: true,
-		verticalSwiping: true,
-	}
+	useEffect(() => {
+		if (colorMode == 'dark') {
+			toggleColorMode()
+		}
+	}, [colorMode])
 
 	const toggleFullScreen = () => {
 		if (document.fullscreenElement) {
@@ -283,21 +296,63 @@ export default function join() {
 				padding={6}
 				alignItems={'center'}
 				justifyContent={'space-between'}
+				w={'full'}
 			>
-				<HStack spacing={5} divider={<StackDivider borderColor="gray" />}>
+				<HStack w={'full'} spacing={5} divider={<StackDivider borderColor="gray" />}>
 					<HStack spacing={5}>
 						<Box border={'1px solid red'} w={'50px'} h={'50px'}></Box>
 						<Text fontWeight={'semibold'} fontSize={'xl'} color={'white'}>
 							HUPROM
 						</Text>
 					</HStack>
-					<Text fontSize={'xl'} color={'white'}>
-						{dataRoom?.room?.title.replace(/-/g, ' ')}
-					</Text>
+					<HStack
+						overflow={'hidden'}
+						paddingRight={3}
+						flex={1}
+						justifyContent={'space-between'}
+					>
+						<Text isTruncated fontSize={'xl'} color={'white'}>
+							{dataRoom?.room?.title.replace(/-/g, ' ')}
+						</Text>
+						{!layoutSize?.includes('xl') && (
+							<Menu>
+								<MenuButton>
+									<ButtonMenu dir={'end'} onOpenMenu={() => {}} />
+								</MenuButton>
+								<MenuList>
+									<MenuItem
+										onClick={onOpenRightBar}
+										icon={<BiMessageDetail fontSize={'15px'} />}
+									>
+										Message & participant
+									</MenuItem>
+									{layoutSize == 'sm' && (
+										<MenuItem
+											onClick={onOpenLeftBar}
+											icon={<BsPeople fontSize={'15px'} />}
+										>
+											Another
+										</MenuItem>
+									)}
+									{layoutSize == 'base' && (
+										<MenuItem
+											onClick={onOpenLeftBar}
+											icon={<BsPeople fontSize={'15px'} />}
+										>
+											Another
+										</MenuItem>
+									)}
+								</MenuList>
+							</Menu>
+						)}
+					</HStack>
 				</HStack>
 			</HStack>
 
-			<HStack
+			<Stack
+				direction={
+					!layoutSize?.includes('xl') && !layoutSize?.includes('lg') ? 'column' : 'row'
+				}
 				id={'meeting'}
 				paddingInline={6}
 				alignItems={'start'}
@@ -306,48 +361,66 @@ export default function join() {
 				pos={'relative'}
 				height={'calc( 100% - 100px )'}
 			>
-				<Box height={'100%'} paddingBlock={5} w={'300px'} pos={'relative'}>
-					<Slider {...settings}>
-						{tiles.map((tile, key) => {
-							return (
-								<Tile
-									isTalking={co?.getActiveSpeaker().peerId == tile.id}
-									id={tile.id}
-									key={key}
-									isCurrentUser={tile.isCurrentUser}
-								/>
-							)
+				<LeftBar isOpen={isOpenLeftBar} onClose={onCloseLeftBar}>
+					{tiles.map((tile, key) => {
+						return (
+							<Tile
+								isTalking={co?.getActiveSpeaker().peerId == tile.id}
+								id={tile.id}
+								key={key}
+								isCurrentUser={tile.isCurrentUser}
+							/>
+						)
+					})}
+					{tiles &&
+						skeletons.length > tiles.length &&
+						skeletons.map((_, key) => {
+							if (skeletons.length - tiles.length >= key + 1) {
+								return (
+									<Box
+										as="div"
+										paddingBlock={['10px', null, '0px', '10px']}
+										paddingInline={['10px', null, null, '0px']}
+										h={'full'}
+										height={'170px'}
+										key={key}
+									>
+										<Skeleton
+											fadeDuration={0.5}
+											startColor="#222222"
+											endColor="#22222240"
+											w={'full'}
+											h={'100%'}
+											borderRadius={'15px'}
+											overflow={'hidden'}
+										></Skeleton>
+									</Box>
+								)
+							}
+							return
 						})}
-						{tiles &&
-							skeletons.length > tiles.length &&
-							skeletons.map((_, key) => {
-								if (skeletons.length - tiles.length >= key + 1) {
-									return (
-										<Box
-											as="div"
-											paddingBlock={'10px'}
-											h={'full'}
-											height={'170px'}
-											key={key}
-										>
-											<Skeleton
-												fadeDuration={0.5}
-												startColor="#222222"
-												endColor="#22222240"
-												w={'full'}
-												h={'100%'}
-												borderRadius={'15px'}
-												overflow={'hidden'}
-											></Skeleton>
-										</Box>
-									)
-								}
-								return
-							})}
-					</Slider>
-				</Box>
-				<Box pt={8} minW={'300px'} flex={1} pos={'relative'} height={'calc( 100% - 50px )'}>
-					<Box paddingInline={'10px'} w={'full'} h={'calc( 100% - 110px )'}>
+				</LeftBar>
+
+				<Stack
+				  alignItems={'start'}
+				  justifyContent={'start'}
+				  spacing={6}
+				  direction={['row-reverse','row-reverse', 'column']}
+					pt={[8, 8, '0px', 8]}
+					pr={'10px'}
+					pl={['0px', null, '10px', '0px']}
+					minW={'300px'}
+					w={'100%'}
+					flex={1}
+					pos={'relative'}
+					height={'calc( 100% - 18px )'}
+				>
+					<Box
+						paddingInline={['0px', null, null, '10px']}
+						w={'full'}
+						h={['calc( 100% - 30px )', 'calc( 100% - 30px )', 'calc( 100% - 150px )', 'calc( 100% - 110px )']}
+						
+					>
 						<Box
 							background={localParticipant ? '#000000' : '#222222'}
 							w={'full'}
@@ -377,14 +450,16 @@ export default function join() {
 							{pinId && <Tile id={pinId} isCurrentUser={true} isCenter={true} />}
 						</Box>
 					</Box>
-					<Box paddingInline={3} w={'full'} height={'120px'} mt={'30px'}>
-						<HStack
+					<Box overflow={'auto'} paddingInline={[0, null, null, 3]} minW={'50px'}  w={['50px', '50px','full']} height={['calc( 100% - 30px )', null, '120px']} mt={'30px'}>
+						<Stack
+							direction={['column', 'column', 'row']}
 							w={'full'}
-							pt={'25px'}
+							spacing={[5, null, 0]}
+							pt={[null, null,'25px']}
 							h={'100%'}
-							borderTop={'2px solid'}
+							borderTop={[null, null, '2px solid']}
 							borderColor={'gray'}
-							justifyContent={'space-between'}
+							justifyContent={['start', null,'space-between']}
 							alignItems={'start'}
 						>
 							<ButtonRoom
@@ -400,7 +475,7 @@ export default function join() {
 								iconClose={<BiLinkAlt />}
 								iconOpen={<BiLinkAlt />}
 							/>
-							<HStack spacing={5}>
+							<Stack direction={['column', 'column', 'row']} justifyContent={'start'} p={[0, null, 'auto']} alignItems={'start'} spacing={5}>
 								<ButtonRoom
 									title="Mic"
 									handle={() => {
@@ -445,7 +520,7 @@ export default function join() {
 								/>
 
 								<ButtonRoom
-									title="Screen"
+									title="Full"
 									handle={() => {
 										toggleFullScreen()
 									}}
@@ -464,7 +539,7 @@ export default function join() {
 										iconOpen={<AiTwotoneSetting />}
 									/>
 								)}
-							</HStack>
+							</Stack>
 							{/* leave */}
 							<ButtonRoom
 								title="Leave"
@@ -479,89 +554,24 @@ export default function join() {
 								iconClose={<IoExitOutline />}
 								iconOpen={<IoExitOutline />}
 							/>
-						</HStack>
+						</Stack>
 					</Box>
-				</Box>
-				<Box pt={8} pb={9} w={'350px'} h={'100%'} minW={'300px'}>
-					<VStack
-						alignItems={'start'}
-						justifyContent={'start'}
-						spacing={5}
-						paddingBlock={4}
-						w={'full'}
-						h={'100%'}
-						bg={'#2b2d2e'}
-						borderRadius={15}
-					>
-						<Box paddingInline={4} w={'full'}>
-							<HStack
-								borderRadius={'10px'}
-								p={2}
-								spacing={4}
-								h={'50px'}
-								w={'full'}
-								bg={'rgba(225,225,225,0.1)'}
-							>
-								<Button
-									onClick={() => setIsShowMsgBar(true)}
-									_hover={{
-										color: 'black',
-										bg: 'hu-Green.normal',
-									}}
-									w={'full'}
-									bg={isShowMsgBar ? 'hu-Green.lightA' : ''}
-									variant={isShowMsgBar ? 'solid' : 'ghost'}
-									color={isShowMsgBar ? 'black' : 'white'}
-									fontWeight={!isShowMsgBar ? 'normal' : 'semibold'}
-								>
-									Messages ({msgs.length})
-								</Button>
-								<Button
-									onClick={() => setIsShowMsgBar(false)}
-									_hover={{
-										color: 'black',
-										bg: 'hu-Green.normal',
-									}}
-									w={'full'}
-									fontWeight={isShowMsgBar ? 'normal' : 'semibold'}
-									bg={!isShowMsgBar ? 'hu-Green.lightA' : ''}
-									variant={!isShowMsgBar ? 'solid' : 'ghost'}
-									color={!isShowMsgBar ? 'black' : 'white'}
-								>
-									Participant ({co?.participantCounts().present})
-								</Button>
-							</HStack>
-						</Box>
-						{isShowMsgBar ? (
-							<MessageBar
-								isDisabled={!isYourMsg}
-								msgs={msgs}
-								handleSendMsg={handleSendMsg}
-							/>
-						) : (
-							<VStack
-								alignItems={'start'}
-								w={'full'}
-								overflow={'auto'}
-								h={'100%'}
-								spacing={5}
-								paddingInline={4}
-							>
-								{tiles.map((tile, key) => (
-									<Participant
-										id={tile.id}
-										key={key}
-										localId={localParticipant?.user_id}
-										handleSendMsg={handleSendMsg}
-										setPinId={setPinId}
-										pinId={pinId}
-									/>
-								))}
-							</VStack>
-						)}
-					</VStack>
-				</Box>
-			</HStack>
+				</Stack>
+				<RightSide
+					handleSendMsg={handleSendMsg}
+					co={co}
+					isShowMsgBar={isShowMsgBar}
+					isYourMsg={isYourMsg}
+					localParticipant={localParticipant}
+					setPinId={setPinId}
+					tiles={tiles}
+					msgs={msgs}
+					setIsShowMsgBar={setIsShowMsgBar}
+					pinId={pinId}
+					isOpen={isOpenRightBar}
+					onClose={onCloseRightBar}
+				/>
+			</Stack>
 			<Setting
 				isAudio={isAudio}
 				setIsAudio={setIsAudio}

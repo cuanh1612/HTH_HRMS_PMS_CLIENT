@@ -1,4 +1,4 @@
-import { Avatar, Box, HStack, Image, Text, VStack } from '@chakra-ui/react'
+import { Avatar, Box, HStack, Text, VStack } from '@chakra-ui/react'
 import { AuthContext } from 'contexts/AuthContext'
 import React, { useContext } from 'react'
 import { ImessageRoom } from 'type/basicTypes'

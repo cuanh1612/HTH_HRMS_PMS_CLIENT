@@ -2,6 +2,7 @@ import {
 	clientCategoryType,
 	clientSubCategoryType,
 	clientType,
+	companyInfoType,
 	contractFileType,
 	contractType,
 	contractTypeType,
@@ -180,6 +181,10 @@ export interface contractFileMutaionResponse extends commonResponse {
 	contractFile?: contractFileType
 	contractFiles?: contractFileType[]
 	[index: string]: any
+}
+
+export interface companyInfoMutationResponse extends commonResponse {
+	companyInfo: companyInfoType
 }
 
 export interface eventMutaionResponse extends commonResponse {

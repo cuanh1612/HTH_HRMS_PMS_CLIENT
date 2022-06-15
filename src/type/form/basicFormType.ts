@@ -615,3 +615,10 @@ export type updateRoomForm = {
 	employees: number[];
 	clients: number[];
 }
+
+export type updateCompanyInfoForm = {
+	name: string
+	email: string
+	phone: string
+	website: string
+}

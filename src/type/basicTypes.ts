@@ -517,7 +517,17 @@ export interface IEmoji {
 	subGroup: string
 }
 
+<<<<<<< HEAD
+export interface companyInfoType {
+	id: number
+	name: string
+	phone: string
+	email: string
+	website: string
+}
+=======
 export interface ITile {
 	id: string
 	isCurrentUser: boolean
 }
+>>>>>>> b7f470abde816ef72cefcd49a4aebf701671d124

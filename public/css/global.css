@@ -21,7 +21,7 @@
     letter-spacing: 1px;
 }
 
-.rdp-button_reset.rdp-button.rdp-nav_button{
+.rdp-button_reset.rdp-button.rdp-nav_button {
     border-radius: 5px !important;
     padding: 0px !important;
     width: 30px !important;
@@ -29,7 +29,7 @@
     transition: 0.2s;
 }
 
-.rdp-button_reset.rdp-button.rdp-nav_button:hover{
+.rdp-button_reset.rdp-button.rdp-nav_button:hover {
     color: black !important;
     border-radius: 5px !important;
     padding: 0px !important;
@@ -44,7 +44,7 @@
 
 .rdp-button:not([disabled]):hover {
     transition: 0.2s;
-    
+
 }
 
 .rdp-head_cell {
@@ -101,26 +101,27 @@ body {
 
 /* set calendar */
 .dayCell {
-    border: 2px solid #D9F2EF!important
+    border: 2px solid #D9F2EF !important
 }
 
 
 .view {
-   border-radius: 10px;
-   overflow: auto;
-   border: none !important;
+    border-radius: 10px;
+    overflow: auto;
+    border: none !important;
 }
 
 .event {
     padding-block: 5px;
     padding-inline: 10px;
-    font-size: 16px!important;
+    font-size: 16px !important;
     border-radius: 6px !important;
     cursor: pointer;
 }
+
 .allDay {
-   font-weight: bold;
-   color: #009883;
+    font-weight: bold;
+    color: #009883;
 }
 
 .dayHeader {
@@ -128,8 +129,8 @@ body {
     font-family: 'Hind Madurai', sans-serif;
     font-size: 20px;
     font-weight: normal;
-    padding-block: 10px!important;
-    border: none!important;
+    padding-block: 10px !important;
+    border: none !important;
     color: #00A991;
 }
 
@@ -138,8 +139,8 @@ body {
     font-family: 'Hind Madurai', sans-serif;
     font-size: 20px;
     font-weight: normal;
-    padding-block: 10px!important;
-    border: none!important;
+    padding-block: 10px !important;
+    border: none !important;
     color: black;
 }
 
@@ -150,40 +151,44 @@ body {
 }
 
 
-.fc-theme-standard td, .fc-theme-standard th {
-    border: 1px solid #D9F2EF!important
+.fc-theme-standard td,
+.fc-theme-standard th {
+    border: 1px solid #D9F2EF !important
 }
 
 .fc-scrollgrid.fc-scrollgrid-liquid {
-    border: 2px solid #D9F2EF!important;
+    border: 2px solid #D9F2EF !important;
     overflow: hidden;
 }
 
 .moreLink {
-    background-color: red!important;
+    background-color: red !important;
 }
+
 .noEvent {
     background-color: red !important;
 }
+
 .slotLane {
-   height: 40px !important;
+    height: 40px !important;
 
 }
-.slotLabel {
-   
-}
+
+.slotLabel {}
+
 .weekNumber {
     background-color: red !important;
     color: red !important;
 
 }
+
 .nowIndicator {
     background-color: red !important;
     color: red !important;
 }
 
 td.fc-day-today {
- background-color: #d9f2ef4f !important;
+    background-color: #d9f2ef4f !important;
 }
 
 .fc-list-day-cushion {
@@ -191,8 +196,8 @@ td.fc-day-today {
     font-family: 'Hind Madurai', sans-serif;
     font-size: 20px;
     font-weight: normal;
-    padding-block: 10px!important;
-    border: none!important;
+    padding-block: 10px !important;
+    border: none !important;
     color: #00A991;
 }
 
@@ -215,25 +220,25 @@ td.fc-day-today {
 }
 
 .fc-daygrid-event {
-    white-space:nowrap;
-    overflow:hidden;
-    text-overflow:ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 /* css for select many */
-.css-1s2u09g-control{
-    border: 1px solid #E2E8F0!important;
-    min-height: 2.5rem!important;
+.css-1s2u09g-control {
+    border: 1px solid #E2E8F0 !important;
+    min-height: 2.5rem !important;
 }
 
 /* style for select */
-.select-dark > div{
+.select-dark>div {
     border-radius: 5px;
     border: 1px solid rgb(105, 105, 105) !important;
     background: #ffffff10
 }
 
-.select-light > div{
+.select-light>div {
     border-radius: 5px;
     border: 1px solid rgba(48, 48, 48, 0.161) !important;
     background: #ffffff10
@@ -244,21 +249,21 @@ td.fc-day-today {
 /* width */
 ::-webkit-scrollbar {
     width: 4px;
-  }
-  
-  /* Track */ 
-  ::-webkit-scrollbar-track {
+}
+
+/* Track */
+::-webkit-scrollbar-track {
     background: none;
-  }
-  
-  /* Handle */
-  ::-webkit-scrollbar-thumb {
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
     background: #00a991;
     border-radius: 10px;
-  }
-  
-  /* Handle on hover */
-  ::-webkit-scrollbar-thumb:hover {
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
     background: #01917b;
 
-  }
+}

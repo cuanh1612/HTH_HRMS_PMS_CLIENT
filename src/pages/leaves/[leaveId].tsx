@@ -6,15 +6,15 @@ import { detailLeaveQuery } from 'queries'
 import { useContext, useEffect } from 'react'
 import { leaveMutaionResponse } from 'type/mutationResponses'
 
-export interface IDetailLeaveProps {}
+export interface IDetailLeaveProps {leaveId: string | number | null}
 
-export default function DetailLeave({}: IDetailLeaveProps) {
+export default function DetailLeave({leaveId: leaveIdProp}: IDetailLeaveProps) {
 	const { isAuthenticated, handleLoading } = useContext(AuthContext)
 	const router = useRouter()
-	const { leaveId } = router.query
+	const { leaveId: leaveIdRouter } = router.query
 
 	//Query ---------------------------------------------------------------------
-	const { data: dataDetailLeave, error: errorDetailLeave } = detailLeaveQuery(leaveId as string)
+	const { data: dataDetailLeave, error: errorDetailLeave } = detailLeaveQuery(leaveIdRouter as string || leaveIdProp)
 
 	//User effect ---------------------------------------------------------------
 
@@ -36,11 +36,7 @@ export default function DetailLeave({}: IDetailLeaveProps) {
 
 	return (
 		<>
-			<VStack align={'start'}>
-				<Text fontSize={20} fontWeight={'semibold'}>
-					Leave Details
-				</Text>
-				<Divider />
+			<VStack p={6} align={'start'}>
 				<Grid templateColumns="repeat(6, 1fr)" gap={6} w={'full'}>
 					<GridItem w="100%" color={'gray.400'} colSpan={[6, 2]}>
 						Applicant Name

@@ -1,8 +1,3 @@
-// query and mutation
-import { deleteLeaveMutation, deleteLeavesMutation, updateStatusMutation } from 'mutations'
-import { allLeaveQuery, allLeaveTypesQuery } from 'queries'
-
-// components
 import {
 	Avatar,
 	Badge,
@@ -22,58 +17,41 @@ import {
 } from '@chakra-ui/react'
 import { AlertDialog, Func, Table } from 'components/common'
 import { Drawer } from 'components/Drawer'
-import { CSVLink } from 'react-csv'
-
-// use layout
+import { DateRange, Input, Select } from 'components/filter'
 import { ClientLayout } from 'components/layouts'
-
+import { EmployeeLayout } from 'components/layouts/Employee'
 import { AuthContext } from 'contexts/AuthContext'
+import { deleteLeaveMutation, deleteLeavesMutation, updateStatusMutation } from 'mutations'
 import { useRouter } from 'next/router'
-
+import { allLeaveQuery, allLeaveTypesQuery } from 'queries'
 import { useContext, useEffect, useState } from 'react'
-
-// icons
 import {
 	AiOutlineCaretDown,
 	AiOutlineCaretUp,
 	AiOutlineDelete,
 	AiOutlineSearch,
 } from 'react-icons/ai'
-import { BiExport } from 'react-icons/bi'
-import { IoMdClose } from 'react-icons/io'
-import { IoAdd, IoEyeOutline } from 'react-icons/io5'
-import { MdOutlineDeleteOutline, MdOutlineEvent, MdOutlineMoreVert } from 'react-icons/md'
-import { RiPencilLine } from 'react-icons/ri'
-
-import { NextLayout } from 'type/element/layout'
-
-// fucs, component to setup table
-import { IFilter, TColumn } from 'type/tableTypes'
-
-// filter of column
-import { dateFilter, selectFilter, textFilter, yearFilter } from 'utils/tableFilters'
-
-// page add and update employee
-import AddCurrentLeave from './add-current-leave'
-import AddLeave from './add-leaves'
-
-import UpdateLeave from './update-leaves'
-
-// component to filter
-import { DateRange, Input, Select, SelectUser } from 'components/filter'
-
 import { BsCheck2 } from 'react-icons/bs'
+import { IoMdClose } from 'react-icons/io'
+import { IoEyeOutline } from 'react-icons/io5'
+import { MdOutlineDeleteOutline, MdOutlineMoreVert } from 'react-icons/md'
+import { RiPencilLine } from 'react-icons/ri'
+import { VscFilter } from 'react-icons/vsc'
+import UpdateLeaves from 'src/pages/leaves/update-leaves'
+import DetailLeave from 'src/pages/leaves/[leaveId]'
 import { IOption } from 'type/basicTypes'
 import { IPeople } from 'type/element/commom'
-import { VscFilter } from 'react-icons/vsc'
-import DetailLeave from './[leaveId]'
+import { NextLayout } from 'type/element/layout'
+import { IFilter, TColumn } from 'type/tableTypes'
+import { dateFilter, selectFilter, textFilter, yearFilter } from 'utils/tableFilters'
 
 // get current year
 const year = new Date().getFullYear()
 
-const Leaves: NextLayout = () => {
-	const { isAuthenticated, handleLoading, currentUser, setToast } = useContext(AuthContext)
+const LeavesEmployee: NextLayout = () => {
+	const { isAuthenticated, handleLoading, setToast, currentUser } = useContext(AuthContext)
 	const router = useRouter()
+	const { employeeId } = router.query
 
 	// set filter
 	const [filter, setFilter] = useState<IFilter>({
@@ -81,8 +59,6 @@ const Leaves: NextLayout = () => {
 		filterValue: '',
 	})
 
-	// set isOpen drawer to add, update
-	const { isOpen: isOpenAdd, onOpen: onOpenAdd, onClose: onCloseAdd } = useDisclosure()
 	const { isOpen: isOpenUpdate, onOpen: onOpenUpdate, onClose: onCloseUpdate } = useDisclosure()
 	const { isOpen: isOpenDetail, onOpen: onOpenDetail, onClose: onCloseDetail } = useDisclosure()
 
@@ -106,9 +82,6 @@ const Leaves: NextLayout = () => {
 
 	//State ---------------------------------------------------------------------
 
-	//state csv
-	const [dataCSV, setDataCSV] = useState<any[]>([])
-
 	// set loading table
 	const [isLoading, setIsloading] = useState(true)
 
@@ -117,9 +90,6 @@ const Leaves: NextLayout = () => {
 
 	const [leaveId, setLeaveId] = useState<number | null>(30)
 
-	// data all users to select
-	const [dataUsersSl, setAllusersSl] = useState<IPeople[]>([])
-
 	// is reset table
 	const [isResetFilter, setIsReset] = useState(false)
 
@@ -127,10 +97,10 @@ const Leaves: NextLayout = () => {
 	const [leaveTypes, setLeaveTypes] = useState<IOption[]>()
 
 	// query and mutation -=------------------------------------------------------
-	// get all leaves
+	// get all leaves by id employee
 	const { data: allLeaves, mutate: refetchAllLeaves } = allLeaveQuery({
 		isAuthenticated,
-		...(currentUser?.role === 'Employee' ? { employee: currentUser?.id } : {}),
+		employee: employeeId as string,
 	})
 
 	// get all leave type
@@ -144,19 +114,6 @@ const Leaves: NextLayout = () => {
 
 	// delete all leaves
 	const [mutateDeleteLeaves, { status: statusDlMany }] = deleteLeavesMutation(setToast)
-
-	//Setup download csv --------------------------------------------------------
-	const headersCSV = [
-		{ label: 'id', key: 'id' },
-		{ label: 'date', key: 'date' },
-		{ label: 'duration', key: 'duration' },
-		{ label: 'employee', key: 'employee' },
-		{ label: 'leave_type', key: 'leave_type' },
-		{ label: 'reason', key: 'reason' },
-		{ label: 'status', key: 'status' },
-		{ label: 'createdAt', key: 'createdAt' },
-		{ label: 'updatedAt', key: 'updatedAt' },
-	]
 
 	//User effect ---------------------------------------------------------------
 	// check authenticate in
@@ -196,30 +153,7 @@ const Leaves: NextLayout = () => {
 	// set loading == false when get all leaves successfully
 	useEffect(() => {
 		if (allLeaves && allLeaves.leaves) {
-			const users = allLeaves.leaves?.map((item): IPeople => {
-				return {
-					id: item.id,
-					name: item.employee.name,
-					avatar: item.employee.avatar?.url,
-				}
-			})
-			setAllusersSl(users || [])
 			setIsloading(false)
-
-			//Set data csv
-			const dataCSV: any[] = allLeaves.leaves.map((leave) => ({
-				id: leave.id,
-				date: leave.date,
-				duration: leave.duration,
-				employee: leave.employee.id,
-				leave_type: leave.leave_type.id,
-				reason: leave.reason,
-				status: leave.status,
-				createdAt: leave.createdAt,
-				updatedAt: leave.updatedAt,
-			}))
-
-			setDataCSV(dataCSV)
 		}
 	}, [allLeaves])
 
@@ -247,6 +181,12 @@ const Leaves: NextLayout = () => {
 			setIsloading(false)
 		}
 	}, [statusUpStatus])
+
+	useEffect(()=> {
+		if(isOpenUpdate == false) {
+			refetchAllLeaves()
+		}
+	}, [isOpenUpdate])
 
 	// header ----------------------------------------
 	const columns: TColumn[] = [
@@ -382,15 +322,10 @@ const Leaves: NextLayout = () => {
 								<MdOutlineMoreVert />
 							</MenuButton>
 							<MenuList>
-								<MenuItem
-									onClick={() => {
+								<MenuItem onClick={()=> {
 										setLeaveId(row.values['id'])
 										onOpenDetail()
-									}}
-									icon={<IoEyeOutline fontSize={'15px'} />}
-								>
-									View
-								</MenuItem>
+								}} icon={<IoEyeOutline fontSize={'15px'} />}>View</MenuItem>
 								{row.values.status == 'Pending' && (
 									<>
 										<MenuItem
@@ -469,24 +404,6 @@ const Leaves: NextLayout = () => {
 					pt={3}
 				>
 					<Func
-						icon={<IoAdd />}
-						description={'Add new client by form'}
-						title={'Add new'}
-						action={onOpenAdd}
-					/>
-					{currentUser && currentUser.role === 'Admin' && (
-						<>
-							<CSVLink filename={'leaves.csv'} headers={headersCSV} data={dataCSV}>
-								<Func
-									icon={<BiExport />}
-									description={'export to csv'}
-									title={'export'}
-									action={() => {}}
-								/>
-							</CSVLink>
-						</>
-					)}
-					<Func
 						icon={<VscFilter />}
 						description={'Open draw to filter'}
 						title={'filter'}
@@ -498,15 +415,6 @@ const Leaves: NextLayout = () => {
 						description={'Delete all client you selected'}
 						action={onOpenDlMany}
 						disabled={!dataSl || dataSl.length == 0 ? true : false}
-					/>
-
-					<Func
-						icon={<MdOutlineEvent />}
-						title={'Calendar'}
-						description={'show tasks as calendar'}
-						action={() => {
-							router.push('/leaves/calendar')
-						}}
 					/>
 				</SimpleGrid>
 			</Collapse>
@@ -552,25 +460,14 @@ const Leaves: NextLayout = () => {
 				onClose={onCloseDlMany}
 			/>
 
-			{/* drawer to add leave */}
-			<Drawer size="xl" title="Add leave" onClose={onCloseAdd} isOpen={isOpenAdd}>
-				{currentUser?.role === 'Admin' ? (
-					<AddLeave onCloseDrawer={onCloseAdd} />
-				) : currentUser?.role === 'Employee' ? (
-					<AddCurrentLeave onCloseDrawer={onCloseAdd} />
-				) : (
-					<></>
-				)}
+			{/* drawer to detail leave */}
+			<Drawer size="md" title="Detail leave" onClose={onCloseDetail} isOpen={isOpenDetail}>
+				<DetailLeave leaveId={leaveId} />
 			</Drawer>
 
 			{/* drawer to update leave */}
 			<Drawer size="xl" title="Update leave" onClose={onCloseUpdate} isOpen={isOpenUpdate}>
-				<UpdateLeave onCloseDrawer={onCloseUpdate} leaveId={leaveId} />
-			</Drawer>
-
-			{/* drawer to detail leave */}
-			<Drawer size="md" title="Detail leave" onClose={onCloseDetail} isOpen={isOpenDetail}>
-				<DetailLeave leaveId={leaveId} />
+				<UpdateLeaves onCloseDrawer={onCloseUpdate} leaveId={leaveId} />
 			</Drawer>
 
 			<Drawer
@@ -675,23 +572,12 @@ const Leaves: NextLayout = () => {
 						}}
 						label="Select date"
 					/>
-					{currentUser && currentUser.role === 'Admin' && (
-						<SelectUser
-							handleSearch={(data: IFilter) => {
-								setFilter(data)
-							}}
-							columnId={'id'}
-							required={false}
-							label={'User'}
-							peoples={dataUsersSl}
-						/>
-					)}
 				</VStack>
 			</Drawer>
 		</Box>
 	)
 }
 
-Leaves.getLayout = ClientLayout
+LeavesEmployee.getLayout = EmployeeLayout
 
-export default Leaves
+export default LeavesEmployee

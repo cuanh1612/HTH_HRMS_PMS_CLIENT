@@ -6,15 +6,12 @@ import {
 	MenuList,
 	Text,
 	useDisclosure,
-	Drawer as CDrawer,
-	DrawerOverlay,
-	DrawerContent,
-	DrawerCloseButton,
-	DrawerHeader,
-	DrawerBody,
 	VStack,
+	Collapse,
+	SimpleGrid,
+	HStack,
 } from '@chakra-ui/react'
-import { AlertDialog, Table } from 'components/common'
+import { AlertDialog, Func, Table } from 'components/common'
 import { Drawer } from 'components/Drawer'
 import { DateRange, Input, Select } from 'components/filter'
 import { ClientLayout } from 'components/layouts'
@@ -23,9 +20,14 @@ import { deleteNoticeMutation, deleteNoticesMutation } from 'mutations'
 import { useRouter } from 'next/router'
 import { allNoticeBoardQuery, allNoticeBoardToQuery } from 'queries'
 import { useContext, useEffect, useState } from 'react'
-import { AiOutlineSearch } from 'react-icons/ai'
-import { IoEyeOutline } from 'react-icons/io5'
-import { MdOutlineDeleteOutline, MdOutlineMoreVert } from 'react-icons/md'
+import {
+	AiOutlineCaretDown,
+	AiOutlineCaretUp,
+	AiOutlineDelete,
+	AiOutlineSearch,
+} from 'react-icons/ai'
+import { IoAdd, IoEyeOutline } from 'react-icons/io5'
+import { MdOutlineDeleteOutline, MdOutlineEvent, MdOutlineMoreVert } from 'react-icons/md'
 import { RiPencilLine } from 'react-icons/ri'
 import { NextLayout } from 'type/element/layout'
 import { IFilter, TColumn } from 'type/tableTypes'
@@ -33,7 +35,8 @@ import { dateFilter, selectFilter, textFilter } from 'utils/tableFilters'
 import AddNoticeBoard from './add-notice-boards'
 import UpdateNoticeBoard from './[noticeBoardId]/update'
 import { CSVLink } from 'react-csv'
-import { FaFileCsv } from 'react-icons/fa'
+import { VscFilter } from 'react-icons/vsc'
+import { BiExport } from 'react-icons/bi'
 
 export interface IProjectProps {}
 
@@ -66,6 +69,11 @@ const NoticeBoard: NextLayout = ({}: IProjectProps) => {
 	const { isOpen: isOpenAdd, onOpen: onOpenAdd, onClose: onCloseAdd } = useDisclosure()
 	const { isOpen: isOpenUpdate, onOpen: onOpenUpdate, onClose: onCloseUpdate } = useDisclosure()
 
+	//set isopen of function
+	const { isOpen, onToggle } = useDisclosure({
+		defaultIsOpen: true,
+	})
+
 	// set isOpen of dialog to delete one
 	const { isOpen: isOpenDialogDl, onOpen: onOpenDl, onClose: onCloseDl } = useDisclosure()
 
@@ -96,8 +104,6 @@ const NoticeBoard: NextLayout = ({}: IProjectProps) => {
 			: currentUser?.role === 'Employee'
 			? allNoticeBoardToQuery(isAuthenticated, 'Employees')
 			: allNoticeBoardToQuery(isAuthenticated, 'Clients')
-
-	console.log(allNotices)
 
 	// mutation
 	// delete one
@@ -290,49 +296,72 @@ const NoticeBoard: NextLayout = ({}: IProjectProps) => {
 
 	return (
 		<>
-			{currentUser?.role === 'Admin' && (
-				<>
-					<Button colorScheme="blue" onClick={onOpenAdd}>
-						Add notice
-					</Button>
-
-					<Button
-						transform={'auto'}
-						bg={'hu-Green.lightA'}
-						_hover={{
-							bg: 'hu-Green.normal',
-							color: 'white',
-							scale: 1.05,
-						}}
-						color={'hu-Green.normal'}
-						leftIcon={<FaFileCsv />}
-					>
-						<CSVLink filename={'noticeBoards.csv'} headers={headersCSV} data={dataCSV}>
-							export to csv
-						</CSVLink>
-					</Button>
-
-					<Button
-						disabled={!dataSl || dataSl.length == 0 ? true : false}
-						onClick={onOpenDlMany}
-					>
-						Delete all
-					</Button>
-				</>
-			)}
-
-			<Button
-				onClick={() => {
-					setIsReset(true)
-					setTimeout(() => {
-						setIsReset(false)
-					}, 1000)
+			<HStack
+				_hover={{
+					textDecoration: 'none',
 				}}
+				onClick={onToggle}
+				color={'gray.500'}
+				cursor={'pointer'}
+				userSelect={'none'}
 			>
-				reset filter
-			</Button>
-
-			<Button onClick={onOpenFilter}>open filter</Button>
+				<Text fontWeight={'semibold'}>Function</Text>
+				{isOpen ? <AiOutlineCaretDown /> : <AiOutlineCaretUp />}
+			</HStack>
+			<Collapse in={isOpen} animateOpacity>
+				<SimpleGrid
+					w={'full'}
+					cursor={'pointer'}
+					columns={[1, 2, 2, 3, null, 4]}
+					spacing={10}
+					pt={3}
+				>
+					{currentUser && currentUser.role === 'Admin' && (
+						<>
+							<Func
+								icon={<IoAdd />}
+								description={'Add new client by form'}
+								title={'Add new'}
+								action={onOpenAdd}
+							/>
+							<CSVLink
+								filename={'noticeBoards.csv'}
+								headers={headersCSV}
+								data={dataCSV}
+							>
+								<Func
+									icon={<BiExport />}
+									description={'export to csv'}
+									title={'export'}
+									action={() => {}}
+								/>
+							</CSVLink>
+						</>
+					)}
+					<Func
+						icon={<VscFilter />}
+						description={'Open draw to filter'}
+						title={'filter'}
+						action={onOpenFilter}
+					/>
+					<Func
+						icon={<AiOutlineDelete />}
+						title={'Delete all'}
+						description={'Delete all client you selected'}
+						action={onOpenDlMany}
+						disabled={!dataSl || dataSl.length == 0 ? true : false}
+					/>
+					<Func
+						icon={<MdOutlineEvent />}
+						title={'Calendar'}
+						description={'show tasks as calendar'}
+						action={() => {
+							router.push('/time-logs/calendar')
+						}}
+					/>
+				</SimpleGrid>
+			</Collapse>
+			<br />
 
 			<Table
 				data={allNotices?.noticeBoards || []}
@@ -384,60 +413,67 @@ const NoticeBoard: NextLayout = ({}: IProjectProps) => {
 				<UpdateNoticeBoard onCloseDrawer={onCloseUpdate} noticeBoardIdProp={noticeId} />
 			</Drawer>
 
-			<CDrawer isOpen={isOpenFilter} placement="right" onClose={onCloseFilter}>
-				<DrawerOverlay />
-				<DrawerContent>
-					<DrawerCloseButton />
-					<DrawerHeader>Filters</DrawerHeader>
+			<Drawer
+				isOpen={isOpenFilter}
+				size={'xs'}
+				onClose={onCloseFilter}
+				title={'Filter'}
+				footer={
+					<Button
+						onClick={() => {
+							setIsReset(true)
+							setTimeout(() => {
+								setIsReset(false)
+							}, 1000)
+						}}
+					>
+						reset
+					</Button>
+				}
+			>
+				<VStack p={6} spacing={5}>
+					<Input
+						handleSearch={(data: IFilter) => {
+							setFilter(data)
+						}}
+						columnId={'heading'}
+						label="Notice"
+						placeholder="Enter notice"
+						icon={<AiOutlineSearch fontSize={'20px'} color="gray" opacity={0.6} />}
+						type={'text'}
+					/>
+					<DateRange
+						handleSelect={(date: { from: Date; to: Date }) => {
+							setFilter({
+								columnId: 'updatedAt',
+								filterValue: date,
+							})
+						}}
+						label="Select date"
+					/>
 
-					<DrawerBody>
-						<VStack spacing={5}>
-							<Input
-								handleSearch={(data: IFilter) => {
-									setFilter(data)
-								}}
-								columnId={'heading'}
-								label="Notice"
-								placeholder="Enter notice"
-								icon={
-									<AiOutlineSearch fontSize={'20px'} color="gray" opacity={0.6} />
-								}
-								type={'text'}
-							/>
-							<DateRange
-								handleSelect={(date: { from: Date; to: Date }) => {
-									setFilter({
-										columnId: 'updatedAt',
-										filterValue: date,
-									})
-								}}
-								label="Select date"
-							/>
-
-							{currentUser?.role === 'Admin' && (
-								<Select
-									options={[
-										{
-											label: 'Employees',
-											value: 'Employees',
-										},
-										{
-											label: 'Clients',
-											value: 'Clients',
-										},
-									]}
-									handleSearch={(data: IFilter) => {
-										setFilter(data)
-									}}
-									columnId={'notice_to'}
-									label="To"
-									placeholder="Select role"
-								/>
-							)}
-						</VStack>
-					</DrawerBody>
-				</DrawerContent>
-			</CDrawer>
+					{currentUser?.role === 'Admin' && (
+						<Select
+							options={[
+								{
+									label: 'Employees',
+									value: 'Employees',
+								},
+								{
+									label: 'Clients',
+									value: 'Clients',
+								},
+							]}
+							handleSearch={(data: IFilter) => {
+								setFilter(data)
+							}}
+							columnId={'notice_to'}
+							label="To"
+							placeholder="Select role"
+						/>
+					)}
+				</VStack>
+			</Drawer>
 		</>
 	)
 }

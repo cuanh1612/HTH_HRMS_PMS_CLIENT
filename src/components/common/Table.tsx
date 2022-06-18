@@ -60,7 +60,7 @@ const IndeterminateCheckbox = forwardRef(
 					clearTimeout(selectTimeOut)
 					selectTimeOut = setTimeout(() => {
 						handleIsSelected()
-					}, 500)
+					}, 0)
 				}}
 			>
 				<Checkbox

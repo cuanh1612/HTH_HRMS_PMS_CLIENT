@@ -83,16 +83,17 @@ export const ProjectLayout = ({ children }: { children: JSX.Element }) => {
 	return (
 		<HStack
 			minHeight={'100vh'}
-			overflow={'auto'}
 			height={'100px'}
 			alignItems={'start'}
 			pos={'relative'}
 			spacing={'0px'}
+			w={'100%'}
+			overflow={'auto'}
 		>
 			<Navigation />
-			<Box flex={1}>
+			<Box  w={'full'}>
 				<Header />
-				<Box paddingInline={10}>
+				<Box  w={'full'} h={'auto'} paddingInline={10}>
 					<TabsMenu tabs={tabs} />
 					{children}
 				</Box>

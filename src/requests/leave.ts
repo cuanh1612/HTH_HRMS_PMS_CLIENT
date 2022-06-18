@@ -5,7 +5,7 @@ import { deleteData, getData, postData, putData } from 'utils/fetchData'
 //Function handle create leave
 export async function createLeaveRequest(inputCreate: createLeaveForm) {
 	const resultFetch = await postData<leaveMutaionResponse>({
-		url: '${process.env.NEXT_PUBLIC_API_URL}/api/leaves',
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/leaves`,
 		body: inputCreate,
 	})
 

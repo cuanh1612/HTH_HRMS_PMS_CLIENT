@@ -5,18 +5,19 @@ export const ClientLayout = ({ children }: { children: JSX.Element }) => {
 	return (
 		<HStack
 			minHeight={'100vh'}
-			overflow={'auto'}
 			height={'100px'}
 			alignItems={'start'}
 			pos={'relative'}
 			spacing={'0px'}
 			w={'100%'}
-		border={'1px solid red'}
+			overflow={'auto'}
 		>
-			<Navigation/>
-			<Box w={'full'}>
+			<Navigation />
+			<Box w={'full'} >
 				<Header />
-				<Box w={'full'} paddingInline={10}>{children}</Box>
+				<Box  w={'full'} h={'auto'} paddingInline={10}>
+					{children}
+				</Box>
 			</Box>
 		</HStack>
 	)

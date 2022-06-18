@@ -23,22 +23,26 @@ import { useContext, useEffect } from 'react'
 import { NextLayout } from 'type/element/layout'
 import { ProjectLayout } from 'components/layouts'
 import { StatisticPrj } from 'components/common'
+import dynamic from 'next/dynamic'
+import { Bar, Donut } from 'components/charts'
 
-import {
-	Chart as ChartJS,
-	CategoryScale,
-	LinearScale,
-	BarElement,
-	Title,
-	Tooltip,
-	Legend,
-	ArcElement,
-} from 'chart.js'
-import { Bar, Pie } from 'react-chartjs-2'
-
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement)
+const Chart = dynamic(() => import('react-apexcharts'), { ssr: false })
 
 const Overview: NextLayout = () => {
+	var data = {
+		options: {
+			xaxis: {
+				categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999],
+			},
+		},
+		series: [
+			{
+				name: 'series-1',
+				data: [30, 40, 35, 50, 49, 60, 70, 91, 125],
+			},
+		],
+	}
+
 	const { isAuthenticated, handleLoading } = useContext(AuthContext)
 	const router = useRouter()
 	const { projectId } = router.query
@@ -90,56 +94,40 @@ const Overview: NextLayout = () => {
 					</SimpleGrid>
 				</VStack>
 				<Grid w={'full'} templateColumns="repeat(2, 1fr)" gap={5}>
-					<GridItem w="100%" minW={'100%'} maxW={'100%'}>
+					<GridItem pos={'relative'} overflow={'hidden'} colSpan={1}>
 						<VStack spacing={'4'} alignItems={'start'} w={'full'}>
 							<Text fontWeight={'semibold'} fontSize={'xl'}>
 								Tasks
 							</Text>
 							<Box
+								id={'hoang'}
 								w={'full'}
 								padding={'20px'}
 								border={'2px solid'}
-								borderColor={'hu-Green.lightA'}
+								borderColor={'hu-Green.normal'}
 								borderRadius={'10px'}
 								h={'300px'}
-								bg={'hu-Green.light'}
-								boxShadow={'5px 5px 10px 0px #00000025'}
 							>
-								<Pie
-									options={{
-										maintainAspectRatio: false,
-										plugins: {
-											legend: {
-												position: 'right',
-											},
-										},
-									}}
-									data={{
-										labels: dataCountStatus?.countstatusTasks.map(
+								{dataCountStatus?.countstatusTasks && (
+									<Donut
+										labels={dataCountStatus.countstatusTasks.map(
 											(e) => e.title
-										),
-										datasets: [
-											{
-												label: '# of Votes',
-												data: dataCountStatus?.countstatusTasks.map(
-													(e) => e.count
-												),
-												backgroundColor:
-													dataCountStatus?.countstatusTasks.map(
-														(e) => `${e.color}50`
-													),
-												borderColor: dataCountStatus?.countstatusTasks.map(
-													(e) => `${e.color}60`
-												),
-												borderWidth: 2,
-											},
-										],
-									}}
-								/>
+										)}
+										colors={dataCountStatus.countstatusTasks.map(
+											(e) => `${e.color}`
+										)}
+										data={
+											dataCountStatus.countstatusTasks.map(
+												(e) => e.count
+											) as number[]
+										}
+										height={280}
+									/>
+								)}
 							</Box>
 						</VStack>
 					</GridItem>
-					<GridItem w="100%">
+					<GridItem pos={'relative'} overflow={'hidden'} colSpan={1}>
 						<VStack spacing={'4'} alignItems={'start'} w={'full'}>
 							<Text fontWeight={'semibold'} fontSize={'xl'}>
 								Info project
@@ -148,13 +136,11 @@ const Overview: NextLayout = () => {
 								w={'full'}
 								padding={'20px'}
 								border={'2px solid'}
-								borderColor={'hu-Green.lightA'}
+								borderColor={'hu-Green.normal'}
 								borderRadius={'10px'}
 								h={'300px'}
 								alignItems={'start'}
 								spacing={5}
-								bg={'hu-Green.light'}
-								boxShadow={'5px 5px 10px 0px #00000025'}
 							>
 								<VStack spacing={'4'} w={'full'} alignItems={'start'}>
 									<Text fontSize={'md'} color={'hu-Green.normal'}>
@@ -262,130 +248,69 @@ const Overview: NextLayout = () => {
 							</VStack>
 						</VStack>
 					</GridItem>
+					<GridItem overflow={'hidden'} colSpan={1}>
+						<VStack spacing={'4'} alignItems={'start'} w={'full'}>
+							<Text fontWeight={'semibold'} fontSize={'xl'}>
+								Hours Logged
+							</Text>
+							<Box
+								id={'hoang'}
+								w={'full'}
+								padding={'20px'}
+								border={'2px solid'}
+								borderColor={'hu-Green.normal'}
+								borderRadius={'10px'}
+								h={'300px'}
+								pos={'relative'}
+							>
+								{dataDetailProject && dataHoursLogged && (
+									<Bar
+										colors={['#00A991', '#FFAAA7']}
+										labels={['Planned', 'Actual']}
+										data={
+											[
+												dataDetailProject?.project?.hours_estimate || 0,
+												dataHoursLogged.projectHoursLogged,
+											] as number[]
+										}
+										height={260}
+									/>
+								)}
+							</Box>
+						</VStack>
+					</GridItem>
+					<GridItem overflow={'hidden'} colSpan={1}>
+						<VStack spacing={'4'} alignItems={'start'} w={'full'}>
+							<Text fontWeight={'semibold'} fontSize={'xl'}>
+								Project Budget
+							</Text>
+							<Box
+								id={'hoang'}
+								w={'full'}
+								padding={'20px'}
+								border={'2px solid'}
+								borderColor={'hu-Green.normal'}
+								borderRadius={'10px'}
+								h={'300px'}
+								pos={'relative'}
+							>
+								{dataDetailProject && dataEarning && (
+									<Bar
+										colors={['#00A991', '#FFAAA7']}
+										labels={['Planned', 'Actual']}
+										data={
+											[
+												dataDetailProject?.project?.project_budget || 0,
+												dataEarning.projectEarnings,
+											] as number[]
+										}
+										height={260}
+									/>
+								)}
+							</Box>
+						</VStack>
+					</GridItem>
 				</Grid>
-
-				<HStack w={'full'} spacing={5}>
-					<VStack spacing={'4'} alignItems={'start'} w={'50%'}>
-						<Text fontWeight={'semibold'} fontSize={'xl'}>
-							Hours Logged
-						</Text>
-						<Box
-							pos="relative"
-							padding={'20px'}
-							border={'2px solid'}
-							borderColor={'hu-Green.lightA'}
-							borderRadius={'10px'}
-							h={'250px'}
-							w={'full'}
-							bg={'hu-Green.light'}
-							boxShadow={'5px 5px 10px 0px #00000025'}
-						>
-							{dataDetailProject && dataHoursLogged && (
-								<Bar
-									options={{
-										responsive: true,
-										plugins: {
-											legend: {
-												position: 'top' as const,
-												display: false,
-											},
-										},
-										scales: {
-											y: {
-												grid: {
-													display: false,
-												},
-											},
-											x: {
-												grid: {
-													display: false,
-												},
-											},
-										},
-										maintainAspectRatio: false,
-										animation: true as any,
-									}}
-									data={{
-										labels: ['Planned', 'Actual'],
-										datasets: [
-											{
-												label: 'salary',
-												data: [
-													dataDetailProject?.project?.hours_estimate || 0,
-													dataHoursLogged.projectHoursLogged,
-												] as any,
-												backgroundColor: ['#D5ECC2', '#FFE5E4'],
-												borderColor: ['#C0D4AF', '#E69996'],
-												borderWidth: 2,
-												borderRadius: 10,
-											},
-										],
-									}}
-								/>
-							)}
-						</Box>
-					</VStack>
-					<VStack spacing={'4'} alignItems={'start'} w={'50%'}>
-						<Text fontWeight={'semibold'} fontSize={'xl'}>
-							Project Budget
-						</Text>
-						<Box
-							padding={'20px'}
-							border={'2px solid'}
-							borderColor={'hu-Green.lightA'}
-							borderRadius={'10px'}
-							h={'250px'}
-							pos="relative"
-							w={'full'}
-							bg={'hu-Green.light'}
-							boxShadow={'5px 5px 10px 0px #00000025'}
-						>
-							{dataDetailProject && dataEarning && (
-								<Bar
-									options={{
-										responsive: true,
-										plugins: {
-											legend: {
-												position: 'top' as const,
-												display: false,
-											},
-										},
-										maintainAspectRatio: false,
-										animation: true as any,
-										scales: {
-											y: {
-												grid: {
-													display: false,
-												},
-											},
-											x: {
-												grid: {
-													display: false,
-												},
-											},
-										},
-									}}
-									data={{
-										labels: ['Planned', 'Actual'],
-										datasets: [
-											{
-												label: 'salary',
-												data: [
-													dataDetailProject?.project?.project_budget || 0,
-													dataEarning.projectEarnings,
-												] as any,
-												backgroundColor: ['#D5ECC2', '#FFE5E4'],
-												borderColor: ['#C0D4AF', '#E69996'],
-												borderWidth: 2,
-												borderRadius: 10,
-											},
-										],
-									}}
-								/>
-							)}
-						</Box>
-					</VStack>
-				</HStack>
 			</VStack>
 			<VStack spacing={5} w={'300px'}>
 				<VStack spacing={'4'} alignItems={'start'} w={'full'}>
@@ -404,7 +329,6 @@ const Overview: NextLayout = () => {
 					<Text fontWeight={'semibold'} fontSize={'xl'}>
 						Active
 					</Text>
-					
 				</VStack>
 			</VStack>
 		</Stack>

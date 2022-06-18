@@ -1,19 +1,19 @@
 import {
 	Avatar,
 	Badge,
-	Button, Drawer as CDrawer, DrawerBody,
-	DrawerCloseButton,
-	DrawerContent, DrawerHeader, DrawerOverlay,
+	Button,
+	Collapse,
 	HStack,
 	Menu,
 	MenuButton,
 	MenuItem,
 	MenuList,
+	SimpleGrid,
 	Text,
 	useDisclosure,
-	VStack
+	VStack,
 } from '@chakra-ui/react'
-import { AlertDialog, Table } from 'components/common'
+import { AlertDialog, Func, Table } from 'components/common'
 import { Drawer } from 'components/Drawer'
 import { DateRange, Input, Select } from 'components/filter'
 import { ProjectLayout } from 'components/layouts'
@@ -23,8 +23,13 @@ import { GetServerSideProps } from 'next'
 import { useRouter } from 'next/router'
 import { allStatusQuery, timeLogsByProjectQuery } from 'queries'
 import { useContext, useEffect, useState } from 'react'
-import { AiOutlineSearch } from 'react-icons/ai'
-import { IoEyeOutline } from 'react-icons/io5'
+import {
+	AiOutlineCaretDown,
+	AiOutlineCaretUp,
+	AiOutlineDelete,
+	AiOutlineSearch,
+} from 'react-icons/ai'
+import { IoAdd, IoEyeOutline } from 'react-icons/io5'
 import { MdOutlineDeleteOutline, MdOutlineMoreVert } from 'react-icons/md'
 import { RiPencilLine } from 'react-icons/ri'
 import { NextLayout } from 'type/element/layout'
@@ -35,10 +40,12 @@ import AddTimeLog from './add-time-logs'
 import DetailTimeLog from './[timeLogId]'
 import UpdateTimeLog from './[timeLogId]/update-time-logs'
 import { CSVLink } from 'react-csv'
-import { FaFileCsv } from 'react-icons/fa'
+import { VscFilter } from 'react-icons/vsc'
+import { BiExport } from 'react-icons/bi'
 
 const TimeLogs: NextLayout = () => {
-	const { isAuthenticated, handleLoading, currentUser, setToast, socket } = useContext(AuthContext)
+	const { isAuthenticated, handleLoading, currentUser, setToast, socket } =
+		useContext(AuthContext)
 	const router = useRouter()
 
 	const { projectId } = router.query
@@ -81,7 +88,6 @@ const TimeLogs: NextLayout = () => {
 		{ label: 'updatedAt', key: 'updatedAt' },
 	]
 
-
 	//Modal -------------------------------------------------------------
 	// set open add time log
 	const {
@@ -109,6 +115,11 @@ const TimeLogs: NextLayout = () => {
 
 	// set isOpen of dialog to delete one
 	const { isOpen: isOpenDialogDl, onOpen: onOpenDl, onClose: onCloseDl } = useDisclosure()
+
+	//set isopen of function
+	const { isOpen, onToggle } = useDisclosure({
+		defaultIsOpen: true,
+	})
 
 	// mutation
 
@@ -412,43 +423,61 @@ const TimeLogs: NextLayout = () => {
 
 	return (
 		<>
-			{currentUser?.role === 'Admin' && (
-				<>
-					<Button onClick={onOpenAddTimeLog}>Add new</Button>
-					<Button
-						transform={'auto'}
-						bg={'hu-Green.lightA'}
-						_hover={{
-							bg: 'hu-Green.normal',
-							color: 'white',
-							scale: 1.05,
-						}}
-						color={'hu-Green.normal'}
-						leftIcon={<FaFileCsv />}
-					>
-						<CSVLink filename={'timelogs.csv'} headers={headersCSV} data={dataCSV}>
-							export to csv
-						</CSVLink>
-					</Button>
-					<Button
-						disabled={!dataSl || dataSl.length == 0 ? true : false}
-						onClick={onOpenDlMany}
-					>
-						Delete all
-					</Button>
-				</>
-			)}
-			<Button onClick={onOpenFilter}>filter</Button>
-			<Button
-				onClick={() => {
-					setIsReset(true)
-					setTimeout(() => {
-						setIsReset(false)
-					}, 1000)
+			<HStack
+				_hover={{
+					textDecoration: 'none',
 				}}
+				onClick={onToggle}
+				color={'gray.500'}
+				cursor={'pointer'}
+				userSelect={'none'}
 			>
-				reset filter
-			</Button>
+				<Text fontWeight={'semibold'}>Function</Text>
+				{isOpen ? <AiOutlineCaretDown /> : <AiOutlineCaretUp />}
+			</HStack>
+			<Collapse in={isOpen} animateOpacity>
+				<SimpleGrid
+					w={'full'}
+					cursor={'pointer'}
+					columns={[1, 2, 2, 3, null, 4]}
+					spacing={10}
+					pt={3}
+				>
+					{currentUser && currentUser.role === 'Admin' && (
+						<>
+							<Func
+								icon={<IoAdd />}
+								description={'Add new client by form'}
+								title={'Add new'}
+								action={onOpenAddTimeLog}
+							/>
+							<CSVLink filename={'timelogs.csv'} headers={headersCSV} data={dataCSV}>
+								<Func
+									icon={<BiExport />}
+									description={'export to csv'}
+									title={'export'}
+									action={() => {}}
+								/>
+							</CSVLink>
+						</>
+					)}
+					<Func
+						icon={<VscFilter />}
+						description={'Open draw to filter'}
+						title={'filter'}
+						action={onOpenFilter}
+					/>
+					<Func
+						icon={<AiOutlineDelete />}
+						title={'Delete all'}
+						description={'Delete all client you selected'}
+						action={onOpenDlMany}
+						disabled={!dataSl || dataSl.length == 0 ? true : false}
+					/>
+				</SimpleGrid>
+			</Collapse>
+			<br />
+
 			<Table
 				data={allTimeLogs?.timeLogs || []}
 				columns={columns}
@@ -516,63 +545,67 @@ const TimeLogs: NextLayout = () => {
 				isOpen={isOpenDialogDlMany}
 				onClose={onCloseDlMany}
 			/>
-			<CDrawer isOpen={isOpenFilter} placement="right" onClose={onCloseFilter}>
-				<DrawerOverlay />
-				<DrawerContent>
-					<DrawerCloseButton />
-					<DrawerHeader>Filters</DrawerHeader>
-
-					<DrawerBody>
-						<VStack spacing={5}>
-							<Input
-								handleSearch={(data: IFilter) => {
-									setFilter(data)
-								}}
-								columnId={'task'}
-								label="Task"
-								placeholder="Enter task title"
-								icon={
-									<AiOutlineSearch fontSize={'20px'} color="gray" opacity={0.6} />
-								}
-								type={'text'}
-							/>
-
-							<DateRange
-								handleSelect={(date: { from: Date; to: Date }) => {
-									setFilter({
-										columnId: 'starts_on_date',
-										filterValue: date,
-									})
-								}}
-								label="Starts on date"
-							/>
-
-							<DateRange
-								handleSelect={(date: { from: Date; to: Date }) => {
-									setFilter({
-										columnId: 'ends_on_date',
-										filterValue: date,
-									})
-								}}
-								label="Ends on date"
-							/>
-
-							<Select
-								options={allStatuses?.statuses?.map((item) => ({
-									label: item.title,
-									value: item.id,
-								}))}
-								handleSearch={(data: IFilter) => {
-									setFilter(data)
-								}}
-								columnId={'status'}
-								label="Status"
-								placeholder="Select status"
-							/>
-						</VStack>
-					</DrawerBody>
-				</DrawerContent>
-			</CDrawer>
+			<Drawer
+				title={'Filter'}
+				size={'xs'}
+				isOpen={isOpenFilter}
+				onClose={onCloseFilter}
+				footer={
+					<Button
+						onClick={() => {
+							setIsReset(true)
+							setTimeout(() => {
+								setIsReset(false)
+							}, 1000)
+						}}
+					>
+						reset
+					</Button>
+				}
+			>
+				<VStack p={6} spacing={5}>
+					<Input
+						handleSearch={(data: IFilter) => {
+							setFilter(data)
+						}}
+						columnId={'task'}
+						label="Task"
+						placeholder="Enter task title"
+						icon={<AiOutlineSearch fontSize={'20px'} color="gray" opacity={0.6} />}
+						type={'text'}
+					/>
+					<DateRange
+						handleSelect={(date: { from: Date; to: Date }) => {
+							setFilter({
+								columnId: 'starts_on_date',
+								filterValue: date,
+							})
+						}}
+						label="Starts on date"
+					/>
+					<DateRange
+						handleSelect={(date: { from: Date; to: Date }) => {
+							setFilter({
+								columnId: 'ends_on_date',
+								filterValue: date,
+							})
+						}}
+						label="Ends on date"
+					/>
+					<Select
+						options={allStatuses?.statuses?.map((item) => ({
+							label: item.title,
+							value: item.id,
+						}))}
+						handleSearch={(data: IFilter) => {
+							setFilter(data)
+						}}
+						columnId={'status'}
+						label="Status"
+						placeholder="Select status"
+					/>
+				</VStack>
+			</Drawer>
 		</>
 	)
 }

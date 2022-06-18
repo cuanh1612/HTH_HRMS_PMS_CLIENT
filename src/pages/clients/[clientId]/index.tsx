@@ -1,33 +1,72 @@
-import { Avatar, Box, Container, Grid, GridItem, HStack, Text, VStack } from '@chakra-ui/react'
+import {
+	Avatar,
+	AvatarGroup,
+	Box,
+	Button,
+	Grid,
+	GridItem,
+	HStack,
+	Tooltip as CTooltip,
+	Menu,
+	MenuButton,
+	MenuItem,
+	MenuList,
+	Progress,
+	Stack,
+	Text,
+	VStack,
+	useDisclosure,
+} from '@chakra-ui/react'
 import { AuthContext } from 'contexts/AuthContext'
 import { GetServerSideProps } from 'next'
 import { useRouter } from 'next/router'
 import {
 	clientCountProjectStatusQuery,
-	// allProjectsByCurrentUserQuery,
+	allProjectsByCurrentUserQuery,
 	clientTotalEarningQuery,
 	clientTotalProejctsQuery,
 	detailClientQuery,
 } from 'queries'
-import { useContext, useEffect } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { AiOutlineProject } from 'react-icons/ai'
-import { FaRegMoneyBillAlt } from 'react-icons/fa'
 import { SWRConfig } from 'swr'
 import { authMutaionResponse, clientMutaionResponse } from 'type/mutationResponses'
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js'
-import { Doughnut } from 'react-chartjs-2'
+import { NextLayout } from 'type/element/layout'
+import { ClientLayout } from 'components/layouts'
+import { Donut } from 'components/charts'
+import { IFilter, TColumn } from 'type/tableTypes'
+import Link from 'next/link'
+import { arrayFilter, selectFilter, textFilter } from 'utils/tableFilters'
+import { clientType, employeeType, projectCategoryType } from 'type/basicTypes'
+import { MdOutlineDeleteOutline, MdOutlineMoreVert } from 'react-icons/md'
+import { IoEyeOutline } from 'react-icons/io5'
+import { RiPencilLine } from 'react-icons/ri'
+import { AlertDialog, Table } from 'components/common'
+import { deleteProjectMutation } from 'mutations'
+import { Drawer } from 'components/Drawer'
+import UpdateProject from 'src/pages/projects/update-projects'
 ChartJS.register(ArcElement, Tooltip, Legend)
 
-export default function DetailClient({
+const DetailClient: NextLayout | any = ({
 	dataDetailClientServer,
 }: {
-	dataDetailClientServer: clientMutaionResponse
-}) {
-	const { isAuthenticated, handleLoading } = useContext(AuthContext)
+	dataDetailClientServer?: clientMutaionResponse
+}) => {
+	const { isAuthenticated, handleLoading, currentUser, setToast } = useContext(AuthContext)
 	const router = useRouter()
 	const { clientId } = router.query
 
 	//State -------------------------------------------------------------------
+	const [projectStatic, setProjectStatic] = useState<{
+		data: number[]
+		colors: string[]
+		titles: string[]
+	}>()
+	// get id to delete project
+	const [projectId, setProjectId] = useState<number>()
+	// set loading table
+	const [isLoading, setIsloading] = useState(true)
 
 	//Query -------------------------------------------------------------------
 	const { data: dataDetailClient } = detailClientQuery(isAuthenticated, clientId as string)
@@ -40,12 +79,20 @@ export default function DetailClient({
 		isAuthenticated,
 		clientId as string
 	)
-	// const { data: dataAllProjects } = allProjectsByCurrentUserQuery(isAuthenticated)
+	const { data: allProjects, mutate: refetchAllProjects } =
+		allProjectsByCurrentUserQuery(isAuthenticated)
+
+	// mutation ----------------------------
+	// delete project
+	const [mutateDeletePj, { status: statusDl }] = deleteProjectMutation(setToast)
+
+	// set isOpen of dialog or drawer
+	const { isOpen: isOpenDialogDl, onOpen: onOpenDl, onClose: onCloseDl } = useDisclosure()
+	const { isOpen: isOpenUpdate, onOpen: onOpenUpdate, onClose: onCloseUpdate } = useDisclosure()
 
 	//Funcion -----------------------------------------------------------------
 
-	//User effect --------------------------------------------------------------
-
+	//effect --------------------------------------------------------------
 	//Handle check loged in
 	useEffect(() => {
 		if (isAuthenticated) {
@@ -57,49 +104,275 @@ export default function DetailClient({
 		}
 	}, [isAuthenticated])
 
+	useEffect(() => {
+		if (allProjects) {
+			console.log(allProjects.projects)
+			setIsloading(false)
+		}
+	}, [allProjects])
+
+	useEffect(() => {
+		if (dataCountProjectStatus?.countProjectStatus) {
+			const titles = dataCountProjectStatus?.countProjectStatus?.map(
+				(projectStatus) => projectStatus.project_status
+			)
+			const data = dataCountProjectStatus?.countProjectStatus?.map((projectStatus) =>
+				Number(projectStatus.count)
+			)
+			const colors = dataCountProjectStatus?.countProjectStatus?.map((projectStatus) => {
+				if (projectStatus.project_status === 'Not Started') return '#FFCE56'
+				if (projectStatus.project_status === 'In Progress') return '#36A2EB'
+				if (projectStatus.project_status === 'On Hold') return '#9966FF'
+				if (projectStatus.project_status === 'Canceled') return '#FF6384'
+				if (projectStatus.project_status === 'Finished') return '#FF6384'
+				return '#9966FF33'
+			})
+			setProjectStatic({
+				titles,
+				data,
+				colors,
+			})
+		}
+	}, [dataCountProjectStatus])
+
+	// check is successfully delete one
+	useEffect(() => {
+		if (statusDl == 'success') {
+			setToast({
+				msg: 'Delete project successfully',
+				type: 'success',
+			})
+			refetchAllProjects()
+		}
+	}, [statusDl])
+
+	// header ----------------------------------------
+	const columns: TColumn[] = [
+		{
+			Header: 'Projects',
+			columns: [
+				{
+					Header: 'Id',
+					accessor: 'id',
+					width: 80,
+					minWidth: 80,
+					disableResizing: true,
+				},
+				{
+					Header: 'Project name',
+					accessor: 'name',
+					minWidth: 200,
+					width: 200,
+					Cell: ({ value, row }) => (
+						<Link href={`/projects/${row.values['id']}/overview`} passHref>
+							<Text
+								_hover={{
+									textDecoration: 'underline',
+									cursor: 'pointer',
+								}}
+								isTruncated={true}
+							>
+								{value}
+							</Text>
+						</Link>
+					),
+					filter: textFilter(['name']),
+				},
+				{
+					Header: 'project_category',
+					accessor: 'project_category',
+					minWidth: 200,
+					width: 200,
+					Cell: ({ value }: { value: projectCategoryType }) => (
+						<Text isTruncated={true}>{value.name}</Text>
+					),
+					filter: selectFilter(['project_category', 'id']),
+				},
+				{
+					Header: 'Members',
+					accessor: 'employees',
+					minWidth: 150,
+					width: 150,
+					filter: arrayFilter(['employees'], 'id'),
+					Cell: ({ value }: { value: employeeType[] }) => {
+						return (
+							<AvatarGroup size="sm" max={4}>
+								{value.map((employee) => (
+									<Avatar
+										key={employee.id}
+										name={employee.name}
+										src={employee.avatar?.url}
+									/>
+								))}
+							</AvatarGroup>
+						)
+					},
+				},
+				{
+					Header: 'Deadline',
+					accessor: 'deadline',
+					minWidth: 150,
+					width: 150,
+					Cell: ({ value }) => {
+						const date = new Date(value)
+						return (
+							<Text>{`${date.getDate()}-${
+								date.getMonth() + 1
+							}-${date.getFullYear()}`}</Text>
+						)
+					},
+				},
+				{
+					Header: 'Client',
+					accessor: 'client',
+					minWidth: 250,
+					filter: selectFilter(['client', 'id']),
+					Cell: ({ value }: { value: clientType }) => (
+						<>
+							{value ? (
+								<HStack w={'full'} spacing={5}>
+									<Avatar
+										flex={'none'}
+										size={'sm'}
+										name={value.name}
+										src={value.avatar?.url}
+									/>
+									<VStack w={'70%'} alignItems={'start'}>
+										<Text isTruncated w={'full'}>
+											{value.salutation
+												? `${value.salutation}. ${value.name}`
+												: value.name}
+										</Text>
+										{value.company_name && (
+											<Text
+												isTruncated
+												w={'full'}
+												fontSize={'sm'}
+												color={'gray.400'}
+											>
+												{value.company_name}
+											</Text>
+										)}
+									</VStack>
+								</HStack>
+							) : (
+								''
+							)}
+						</>
+					),
+				},
+				{
+					Header: 'Progress',
+					accessor: 'Progress',
+					minWidth: 150,
+					width: 150,
+					Cell: ({ value }: { value: employeeType[] }) => {
+						return (
+							<CTooltip hasArrow label={`${value}%`} shouldWrapChildren mt="3">
+								<Progress
+									hasStripe
+									borderRadius={5}
+									colorScheme={
+										Number(value) < 50
+											? 'red'
+											: Number(value) < 70
+											? 'yellow'
+											: 'green'
+									}
+									size="lg"
+									value={Number(value)}
+								/>
+							</CTooltip>
+						)
+					},
+				},
+				{
+					Header: 'Status',
+					accessor: 'project_status',
+					minWidth: 150,
+					width: 150,
+					Cell: ({ value }: { value: string }) => {
+						var color = ''
+						switch (value) {
+							case 'Not Started':
+								color = 'gray.500'
+								break
+							case 'In Progress':
+								color = 'blue.500'
+								break
+							case 'On Hold':
+								color = 'yellow.500'
+								break
+							case 'Canceled':
+								color = 'red.500'
+								break
+							case 'Finished':
+								color = 'green.500'
+								break
+						}
+						return (
+							<HStack alignItems={'center'}>
+								<Box background={color} w={'3'} borderRadius={'full'} h={'3'} />
+								<Text>{value}</Text>
+							</HStack>
+						)
+					},
+				},
+
+				{
+					Header: 'Action',
+					accessor: 'action',
+					disableResizing: true,
+					width: 120,
+					minWidth: 120,
+					disableSortBy: true,
+					Cell: ({ row }) => (
+						<Menu>
+							<MenuButton as={Button} paddingInline={3}>
+								<MdOutlineMoreVert />
+							</MenuButton>
+							<MenuList>
+								<MenuItem
+									onClick={() => {
+										router.push(`/projects/${row.values['id']}/overview`)
+									}}
+									icon={<IoEyeOutline fontSize={'15px'} />}
+								>
+									View
+								</MenuItem>
+
+								{currentUser && currentUser.role === 'Admin' && (
+									<>
+										<MenuItem
+											onClick={() => {
+												setProjectId(row.values['id'])
+												onOpenUpdate()
+											}}
+											icon={<RiPencilLine fontSize={'15px'} />}
+										>
+											Edit
+										</MenuItem>
+										<MenuItem
+											onClick={() => {
+												setProjectId(row.values['id'])
+												onOpenDl()
+											}}
+											icon={<MdOutlineDeleteOutline fontSize={'15px'} />}
+										>
+											Delete
+										</MenuItem>
+									</>
+								)}
+							</MenuList>
+						</Menu>
+					),
+				},
+			],
+		},
+	]
+
 	//Url initial query detail client
 	const urlDetailClient = `clients/${clientId}`
-
-	//data chart count project status
-	const dataChart = {
-		labels: dataCountProjectStatus?.countProjectStatus?.map(
-			(projectStatus) => projectStatus.project_status
-		),
-		datasets: [
-			{
-				label: '# of Votes',
-				data: dataCountProjectStatus?.countProjectStatus?.map(
-					(projectStatus) => projectStatus.count
-				),
-				backgroundColor: dataCountProjectStatus?.countProjectStatus?.map(
-					(projectStatus) => {
-						if (projectStatus.project_status === 'Not Started')
-							return 'rgba(255, 206, 86, 0.2)'
-						if (projectStatus.project_status === 'In Progress')
-							return 'rgba(54, 162, 235, 0.2)'
-						if (projectStatus.project_status === 'On Hold')
-							return 'rgba(153, 102, 255, 0.2)'
-						if (projectStatus.project_status === 'Canceled')
-							return 'rgba(255, 99, 132, 0.2)'
-						if (projectStatus.project_status === 'Finished')
-							return 'rgba(75, 192, 192, 0.2)'
-						return 'rgba(153, 102, 255, 0.2)'
-					}
-				),
-				borderColor: dataCountProjectStatus?.countProjectStatus?.map((projectStatus) => {
-					if (projectStatus.project_status === 'Not Started')
-						return 'rgba(255, 206, 86, 1)'
-					if (projectStatus.project_status === 'In Progress')
-						return 'rgba(54, 162, 235, 1)'
-					if (projectStatus.project_status === 'On Hold') return 'rgba(153, 102, 255, 1)'
-					if (projectStatus.project_status === 'Canceled') return 'rgba(255, 99, 132, 1)'
-					if (projectStatus.project_status === 'Finished') return 'rgba(75, 192, 192, 1)'
-					return 'rgba(153, 102, 255, 1)'
-				}),
-				borderWidth: 1,
-			},
-		],
-	}
 
 	return (
 		<>
@@ -108,84 +381,34 @@ export default function DetailClient({
 					fallback: { [urlDetailClient]: dataDetailClientServer },
 				}}
 			>
-				<Container maxW="full" bg="#f2f4f7" h={'full'} minH={'100vh'}>
-					<VStack spacing={6} py={6} px={4}>
-						<Grid templateColumns="repeat(3, 1fr)" gap={6} w={'full'}>
-							<GridItem
-								colSpan={[3, 3, 1]}
-								bg="white"
-								p={'20px'}
-								boxShadow={'0 0 4px 0 #e8eef3'}
-								borderRadius={5}
-							>
-								<HStack h={'full'} w={'full'}>
-									<Avatar
-										borderRadius={5}
-										name={dataDetailClient?.client?.name}
-										src={dataDetailClient?.client?.avatar?.url}
-									/>
-									<VStack align={'start'} height={'full'}>
-										<Text fontWeight={'semibold'}>
-											{dataDetailClient?.client?.name}
-										</Text>
-										<Text color={'gray.400'}>
-											{dataDetailClient?.client?.company_name}
-										</Text>
-									</VStack>
-								</HStack>
-							</GridItem>
+				<Box w="full">
+					<VStack spacing={5} alignItems={'start'} w={'full'}>
+						<HStack spacing={5} h={'full'} w={'full'}>
+							<Avatar
+								name={dataDetailClient?.client?.name}
+								src={dataDetailClient?.client?.avatar?.url}
+								size={'xl'}
+							/>
+							<VStack spacing={'1px'} align={'start'} height={'full'}>
+								<Text fontSize={'20px'} fontWeight={'semibold'}>
+									{dataDetailClient?.client?.name}
+								</Text>
+								<Text color={'gray.400'}>
+									{dataDetailClient?.client?.company_name}
+								</Text>
+							</VStack>
+						</HStack>
 
-							<GridItem
-								colSpan={[3, 3, 1]}
-								bg="white"
-								p={'20px'}
-								boxShadow={'0 0 4px 0 #e8eef3'}
-								borderRadius={5}
-							>
-								<HStack h={'full'} w={'full'} justifyContent={'space-between'}>
-									<VStack h={'full'} align={'start'}>
-										<Text fontWeight={'semibold'}>Total Projects</Text>
-										<Text fontWeight={'semibold'} color={'#1d82f5'}>
-											{dataTotalProjects?.totalProjects || '0'}
-										</Text>
-									</VStack>
-
-									<VStack h={'full'} justify={'center'} color={'gray.400'}>
-										<AiOutlineProject fontSize={24} />
-									</VStack>
-								</HStack>
-							</GridItem>
-
-							<GridItem
-								colSpan={[3, 3, 1]}
-								bg="white"
-								p={'20px'}
-								boxShadow={'0 0 4px 0 #e8eef3'}
-								borderRadius={5}
-							>
-								<HStack h={'full'} w={'full'} justifyContent={'space-between'}>
-									<VStack h={'full'} align={'start'}>
-										<Text fontWeight={'semibold'}>Total Earnings</Text>
-										<Text fontWeight={'semibold'} color={'#1d82f5'}>
-											{dataTotalEarnings?.totalEarnings || '0'}
-										</Text>
-									</VStack>
-
-									<VStack h={'full'} justify={'center'} color={'gray.400'}>
-										<FaRegMoneyBillAlt fontSize={24} />
-									</VStack>
-								</HStack>
-							</GridItem>
-						</Grid>
-
-						<Grid templateColumns="repeat(2, 1fr)" gap={6} w={'full'}>
-							<GridItem
-								colSpan={[2, 2, 1]}
-								bg="white"
-								p={'20px'}
-								boxShadow={'0 0 4px 0 #e8eef3'}
-								borderRadius={5}
-							>
+						<Stack
+							direction={['column', null, null, null, 'row']}
+							alignItems={'start'}
+							spacing={5}
+							w={'full'}
+						>
+							<VStack w={'400px'} minW={'400px'} alignItems={'start'} spacing={4}>
+								<Text fontWeight={'semibold'} fontSize={'20px'}>
+									Profile Info
+								</Text>
 								<Grid templateColumns="repeat(3, 1fr)" gap={6} w={'full'}>
 									<GridItem colSpan={[3, 1]}>
 										<Text color={'gray.400'}>Full Name</Text>
@@ -270,22 +493,148 @@ export default function DetailClient({
 										<Text>{dataDetailClient?.client?.note || '--'}</Text>
 									</GridItem>
 								</Grid>
-							</GridItem>
+							</VStack>
 
-							<GridItem
-								colSpan={[2, 2, 1]}
-								bg="white"
-								p={'20px'}
-								boxShadow={'0 0 4px 0 #e8eef3'}
-								borderRadius={5}
-							>
-								<Box w={"500px"}>
-									<Doughnut data={dataChart} height={20} />
-								</Box>
-							</GridItem>
-						</Grid>
+							<VStack alignItems={'start'} spacing={10} w={'full'}>
+								<VStack alignItems={'start'} spacing={4} w={'full'}>
+									<Text fontWeight={'semibold'} fontSize={'20px'}>
+										Static
+									</Text>
+									<Grid templateColumns="repeat(2, 1fr)" gap={6} w={'full'}>
+										<GridItem
+											colSpan={[2, null, null, null, null, 1]}
+											p={'20px'}
+											borderBottom={'3px solid'}
+											borderColor={'hu-Green.normal'}
+										>
+											<HStack
+												w="full"
+												justifyContent={'space-between'}
+												spacing={5}
+											>
+												<HStack spacing={5}>
+													<HStack
+														justifyContent={'center'}
+														borderRadius={5}
+														bg={'hu-Green.lightA'}
+														color={'hu-Green.normal'}
+														w={'40px'}
+														h={'40px'}
+													>
+														<AiOutlineProject fontSize={20} />
+													</HStack>
+													<Text>Projects</Text>
+												</HStack>
+												<Text fontWeight={'semibold'} fontSize={'30px'}>
+													{dataTotalProjects?.totalProjects || '0'}
+												</Text>
+											</HStack>
+										</GridItem>
+
+										<GridItem
+											colSpan={[2, null, null, null, null, 1]}
+											p={'20px'}
+											borderBottom={'3px solid'}
+											borderColor={'hu-Pink.normal'}
+										>
+											<HStack
+												justifyContent={'space-between'}
+												spacing={5}
+												h={'full'}
+											>
+												<HStack spacing={5}>
+													<HStack
+														justifyContent={'center'}
+														borderRadius={5}
+														bg={'hu-Pink.lightA'}
+														color={'hu-Pink.normal'}
+														w={'40px'}
+														h={'40px'}
+													>
+														<AiOutlineProject fontSize={20} />
+													</HStack>
+													<Text>Earnings</Text>
+												</HStack>
+												<Text fontWeight={'semibold'} fontSize={'30px'}>
+													{Intl.NumberFormat('en-US', {
+														style: 'currency',
+														currency: 'USD',
+														useGrouping: false,
+													}).format(
+														Number(dataTotalEarnings?.totalEarnings)
+													) || '0'}
+												</Text>
+											</HStack>
+										</GridItem>
+									</Grid>
+								</VStack>
+								<Grid templateColumns="repeat(2, 1fr)" gap={6} w={'full'}>
+									<GridItem
+										colSpan={[2, null, null, null, null, 1]}
+										borderRadius={5}
+									>
+										<VStack spacing={'4'} alignItems={'start'} w={'full'}>
+											<Text fontWeight={'semibold'} fontSize={'xl'}>
+												Tasks
+											</Text>
+											<Box
+												id={'hoang'}
+												w={'full'}
+												padding={'20px'}
+												border={'2px solid'}
+												borderColor={'hu-Green.normal'}
+												borderRadius={'10px'}
+												h={'300px'}
+											>
+												{projectStatic && (
+													<Donut
+														labels={projectStatic.titles}
+														colors={projectStatic.colors}
+														data={projectStatic.data}
+														height={280}
+													/>
+												)}
+											</Box>
+										</VStack>
+									</GridItem>
+								</Grid>
+							</VStack>
+						</Stack>
+						<Box w={'full'}>
+							<Text mb={4} fontWeight={'semibold'} fontSize={'xl'}>
+								all projects
+							</Text>
+
+							<Table
+								data={allProjects?.projects || []}
+								columns={columns}
+								isLoading={isLoading}
+								disableColumns={['project_category']}
+							/>
+						</Box>
 					</VStack>
-				</Container>
+					{/* open drawer to show from to update */}
+					<Drawer
+						size="xl"
+						title="Update Project"
+						onClose={onCloseUpdate}
+						isOpen={isOpenUpdate}
+					>
+						<UpdateProject onCloseDrawer={onCloseUpdate} projectIdUpdate={projectId} />
+					</Drawer>
+
+					{/* alert dialog when delete one */}
+					<AlertDialog
+						handleDelete={() => {
+							setIsloading(true)
+							mutateDeletePj(String(projectId))
+						}}
+						title="Are you sure?"
+						content="You will not be able to recover the deleted record!"
+						isOpen={isOpenDialogDl}
+						onClose={onCloseDl}
+					/>
+				</Box>
 			</SWRConfig>
 		</>
 	)
@@ -317,3 +666,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 		props: { dataDetailClientServer: queryClient }, // will be passed to the page component as props
 	}
 }
+
+DetailClient.getLayout = ClientLayout
+
+export default DetailClient

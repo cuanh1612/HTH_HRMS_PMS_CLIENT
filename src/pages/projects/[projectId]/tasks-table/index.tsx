@@ -3,23 +3,18 @@ import {
 	AvatarGroup,
 	Box,
 	Button,
-	Drawer as CDrawer,
-	DrawerBody,
-	DrawerCloseButton,
-	DrawerContent,
-	DrawerHeader,
-	DrawerOverlay,
+	Collapse,
 	HStack,
 	Menu,
 	MenuButton,
 	MenuItem,
 	MenuList,
+	SimpleGrid,
 	Text,
 	useDisclosure,
 	VStack,
 } from '@chakra-ui/react'
-import { AlertDialog, Table } from 'components/common'
-import { Drawer } from 'components/Drawer'
+import { AlertDialog, Func, Table } from 'components/common'
 import { DateRange, Input, Select as SelectF } from 'components/filter'
 import { ProjectLayout } from 'components/layouts'
 import { AuthContext } from 'contexts/AuthContext'
@@ -32,8 +27,13 @@ import {
 	milestonesByProjectNormalQuery,
 } from 'queries'
 import { useContext, useEffect, useState } from 'react'
-import { AiOutlineSearch } from 'react-icons/ai'
-import { IoEyeOutline } from 'react-icons/io5'
+import {
+	AiOutlineCaretDown,
+	AiOutlineCaretUp,
+	AiOutlineDelete,
+	AiOutlineSearch,
+} from 'react-icons/ai'
+import { IoAdd, IoEyeOutline } from 'react-icons/io5'
 import { MdOutlineDeleteOutline, MdOutlineMoreVert } from 'react-icons/md'
 import { RiPencilLine } from 'react-icons/ri'
 import { employeeType, timeLogType } from 'type/basicTypes'
@@ -44,7 +44,9 @@ import AddTask from './add-tasks'
 import DetailTask from './[taskId]'
 import UpdateTask from './[taskId]/update-task'
 import { CSVLink } from 'react-csv'
-import { FaFileCsv } from 'react-icons/fa'
+import { BiExport } from 'react-icons/bi'
+import { VscFilter } from 'react-icons/vsc'
+import { Drawer } from 'components/Drawer'
 
 const tasks: NextLayout = () => {
 	const { isAuthenticated, handleLoading, currentUser, setToast, socket } =
@@ -55,6 +57,9 @@ const tasks: NextLayout = () => {
 	const [taskId, setTaskId] = useState<number>()
 	const [statusIdShow] = useState<number>(1)
 
+	// is reset table
+	const [isResetFilter, setIsReset] = useState(false)
+
 	//state csv
 	const [dataCSV, setDataCSV] = useState<any[]>([])
 
@@ -63,9 +68,6 @@ const tasks: NextLayout = () => {
 
 	// set loading table
 	const [isLoading, setIsloading] = useState(true)
-
-	// is reset table
-	const [isResetFilter] = useState(false)
 
 	// set filter
 	const [filter, setFilter] = useState<IFilter>({
@@ -108,8 +110,12 @@ const tasks: NextLayout = () => {
 	// set isOpen of drawer to filters
 	const { isOpen: isOpenFilter, onOpen: onOpenFilter, onClose: onCloseFilter } = useDisclosure()
 
-	// query
+	//set isopen of function
+	const { isOpen, onToggle } = useDisclosure({
+		defaultIsOpen: true,
+	})
 
+	// query
 	// get all task by project
 	const { data: allTasks, mutate: refetchTasks } =
 		currentUser && (currentUser.role === 'Admin' || currentUser.role === 'Client')
@@ -394,28 +400,62 @@ const tasks: NextLayout = () => {
 
 	return (
 		<Box>
-			<Button onClick={onOpenAddTask}>Add task Incomplete</Button>
-			{currentUser && currentUser.role === 'Admin' && (
-				<Button
-					transform={'auto'}
-					bg={'hu-Green.lightA'}
-					_hover={{
-						bg: 'hu-Green.normal',
-						color: 'white',
-						scale: 1.05,
-					}}
-					color={'hu-Green.normal'}
-					leftIcon={<FaFileCsv />}
+			<HStack
+				_hover={{
+					textDecoration: 'none',
+				}}
+				onClick={onToggle}
+				color={'gray.500'}
+				cursor={'pointer'}
+				userSelect={'none'}
+			>
+				<Text fontWeight={'semibold'}>Function</Text>
+				{isOpen ? <AiOutlineCaretDown /> : <AiOutlineCaretUp />}
+			</HStack>
+			<Collapse in={isOpen} animateOpacity>
+				<SimpleGrid
+					w={'full'}
+					cursor={'pointer'}
+					columns={[1, 2, 2, 3, null, 4]}
+					spacing={10}
+					pt={3}
 				>
-					<CSVLink filename={'tasks.csv'} headers={headersCSV} data={dataCSV}>
-						export to csv
-					</CSVLink>
-				</Button>
-			)}
-			<Button disabled={!dataSl || dataSl.length == 0 ? true : false} onClick={onOpenDlMany}>
-				Delete all
-			</Button>
-			<Button onClick={onOpenFilter}>filter</Button>
+					{currentUser && currentUser.role === 'Admin' && (
+						<>
+							<Func
+								icon={<IoAdd />}
+								description={'Add new client by form'}
+								title={'Add new'}
+								action={onOpenAddTask}
+							/>
+
+							<CSVLink filename={'tasks.csv'} headers={headersCSV} data={dataCSV}>
+								<Func
+									icon={<BiExport />}
+									description={'export to csv'}
+									title={'export'}
+									action={() => {}}
+								/>
+							</CSVLink>
+						</>
+					)}
+					<Func
+						icon={<VscFilter />}
+						description={'Open draw to filter'}
+						title={'filter'}
+						action={onOpenFilter}
+					/>
+					<Func
+						icon={<AiOutlineDelete />}
+						title={'Delete all'}
+						description={'Delete all client you selected'}
+						action={onOpenDlMany}
+						disabled={!dataSl || dataSl.length == 0 ? true : false}
+					/>
+				</SimpleGrid>
+			</Collapse>
+			<br />
+
 			<Table
 				data={allTasks?.tasks || []}
 				columns={columns}
@@ -476,63 +516,70 @@ const tasks: NextLayout = () => {
 				onClose={onCloseDlMany}
 			/>
 
-			<CDrawer isOpen={isOpenFilter} placement="right" onClose={onCloseFilter}>
-				<DrawerOverlay />
-				<DrawerContent>
-					<DrawerCloseButton />
-					<DrawerHeader>Filters</DrawerHeader>
-
-					<DrawerBody>
-						<VStack spacing={5}>
-							<Input
-								handleSearch={(data: IFilter) => {
-									setFilter(data)
-								}}
-								columnId={'name'}
-								label="Task"
-								placeholder="Enter task title"
-								icon={
-									<AiOutlineSearch fontSize={'20px'} color="gray" opacity={0.6} />
-								}
-								type={'text'}
-							/>
-							<DateRange
-								handleSelect={(date: { from: Date; to: Date }) => {
-									setFilter({
-										columnId: 'deadline',
-										filterValue: date,
-									})
-								}}
-								label="Select date"
-							/>
-							<SelectF
-								options={allStatuses?.statuses?.map((item) => ({
-									label: item.title,
-									value: item.id,
-								}))}
-								handleSearch={(data: IFilter) => {
-									setFilter(data)
-								}}
-								columnId={'status'}
-								label="Status"
-								placeholder="Select status"
-							/>
-							<SelectF
-								options={allMilestones?.milestones?.map((item) => ({
-									label: item.title,
-									value: item.id,
-								}))}
-								handleSearch={(data: IFilter) => {
-									setFilter(data)
-								}}
-								columnId={'milestone'}
-								label="Milestone"
-								placeholder="Select milestone"
-							/>
-						</VStack>
-					</DrawerBody>
-				</DrawerContent>
-			</CDrawer>
+			<Drawer
+				size="xs"
+				isOpen={isOpenFilter}
+				onClose={onCloseFilter}
+				title={'Filter'}
+				footer={
+					<Button
+						onClick={() => {
+							setIsReset(true)
+							setTimeout(() => {
+								setIsReset(false)
+							}, 1000)
+						}}
+					>
+						reset
+					</Button>
+				}
+			>
+				<VStack spacing={5} p={6}>
+					<Input
+						handleSearch={(data: IFilter) => {
+							setFilter(data)
+						}}
+						columnId={'name'}
+						label="Task"
+						placeholder="Enter task title"
+						icon={<AiOutlineSearch fontSize={'20px'} color="gray" opacity={0.6} />}
+						type={'text'}
+					/>
+					<DateRange
+						handleSelect={(date: { from: Date; to: Date }) => {
+							setFilter({
+								columnId: 'deadline',
+								filterValue: date,
+							})
+						}}
+						label="Select date"
+					/>
+					<SelectF
+						options={allStatuses?.statuses?.map((item) => ({
+							label: item.title,
+							value: item.id,
+						}))}
+						handleSearch={(data: IFilter) => {
+							setFilter(data)
+						}}
+						columnId={'status'}
+						label="Status"
+						placeholder="Select status"
+					/>
+					<SelectF
+						options={allMilestones?.milestones?.map((item) => ({
+							label: item.title,
+							value: item.id,
+						}))}
+						handleSearch={(data: IFilter) => {
+							setFilter(data)
+						}}
+						columnId={'milestone'}
+						label="Milestone"
+						placeholder="Select milestone"
+					/>
+				</VStack>
+			</Drawer>
 		</Box>
 	)
 }

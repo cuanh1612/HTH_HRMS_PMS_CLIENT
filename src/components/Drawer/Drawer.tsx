@@ -5,6 +5,7 @@ import {
 	DrawerCloseButton,
 	DrawerHeader,
 	DrawerBody,
+	DrawerFooter
 } from '@chakra-ui/modal'
 import { ReactNode } from 'react'
 
@@ -13,10 +14,11 @@ export interface IDrawerProps {
 	title: string
 	children: ReactNode
 	onClose: () => void
-    size: "sm" | "md" | "lg" | "xl" | "full" | "xs" | undefined
+	size: 'sm' | 'md' | 'lg' | 'xl' | 'full' | 'xs' | undefined
+	footer?: ReactNode
 }
 
-export const Drawer = ({ isOpen, children, title, onClose, size }: IDrawerProps)=> {
+export const Drawer = ({ isOpen, children, title, onClose, size, footer }: IDrawerProps) => {
 	return (
 		<>
 			<DrawerChakra size={size} placement={'right'} onClose={onClose} isOpen={isOpen}>
@@ -25,6 +27,7 @@ export const Drawer = ({ isOpen, children, title, onClose, size }: IDrawerProps)
 					<DrawerCloseButton />
 					<DrawerHeader borderBottomWidth="1px">{title}</DrawerHeader>
 					<DrawerBody p={0}>{children}</DrawerBody>
+					{footer && <DrawerFooter>{footer}</DrawerFooter>}
 				</DrawerContent>
 			</DrawerChakra>
 		</>

@@ -5,23 +5,18 @@ import {
 	Box,
 	Button,
 	Collapse,
-	Drawer as CDrawer,
-	DrawerBody,
-	DrawerCloseButton,
-	DrawerContent,
-	DrawerHeader,
-	DrawerOverlay,
 	HStack,
 	Menu,
 	MenuButton,
 	MenuItem,
 	MenuList,
 	Select as CSelect,
+	SimpleGrid,
 	Text,
 	useDisclosure,
-	VStack
+	VStack,
 } from '@chakra-ui/react'
-import { AlertDialog, Table } from 'components/common'
+import { AlertDialog, Func, Table } from 'components/common'
 import { Drawer } from 'components/Drawer'
 import { CSVLink } from 'react-csv'
 
@@ -32,9 +27,10 @@ import { AuthContext } from 'contexts/AuthContext'
 
 // mutation
 import {
-	changeRoleMutation, deleteEmployeeMutation,
+	changeRoleMutation,
+	deleteEmployeeMutation,
 	deleteEmployeesMutation,
-	importCSVEmployeesMutation
+	importCSVEmployeesMutation,
 } from 'mutations'
 import { useRouter } from 'next/router'
 
@@ -44,8 +40,13 @@ import { allDepartmentsQuery, allDesignationsQuery, allEmployeesQuery } from 'qu
 import { useContext, useEffect, useState } from 'react'
 
 // icons
-import { AiOutlineCaretDown, AiOutlineCaretUp, AiOutlineSearch } from 'react-icons/ai'
-import { BiExport, BiImport } from 'react-icons/bi'
+import {
+	AiOutlineCaretDown,
+	AiOutlineCaretUp,
+	AiOutlineDelete,
+	AiOutlineSearch,
+} from 'react-icons/ai'
+import { BiExport } from 'react-icons/bi'
 import { IoAdd, IoEyeOutline } from 'react-icons/io5'
 import { MdOutlineDeleteOutline, MdOutlineMoreVert } from 'react-icons/md'
 import { RiPencilLine } from 'react-icons/ri'
@@ -68,6 +69,7 @@ import ImportCSV from 'components/importCSV'
 import { FaFileCsv } from 'react-icons/fa'
 import { IOption } from 'type/basicTypes'
 import { IPeople } from 'type/element/commom'
+import { VscFilter } from 'react-icons/vsc'
 
 const Employees: NextLayout = () => {
 	///setting for import csv--------------------------------------------------
@@ -544,63 +546,42 @@ const Employees: NextLayout = () => {
 				{isOpen ? <AiOutlineCaretDown /> : <AiOutlineCaretUp />}
 			</HStack>
 			<Collapse in={isOpen} animateOpacity>
-				<HStack marginTop={'2'} paddingBlock={'5'} spacing={'5'}>
-					<Button
-						onClick={onOpenAdd}
-						transform={'auto'}
-						bg={'hu-Green.lightA'}
-						_hover={{
-							bg: 'hu-Green.normal',
-							color: 'white',
-							scale: 1.05,
-						}}
-						color={'hu-Green.normal'}
-						leftIcon={<IoAdd />}
-					>
-						Add employees
-					</Button>
-
+				<SimpleGrid
+					w={'full'}
+					cursor={'pointer'}
+					columns={[1, 2, 2, 3, null, 4]}
+					spacing={10}
+					pt={3}
+				>
 					{currentUser && currentUser.role === 'Admin' && (
 						<>
-							<Button
-								transform={'auto'}
-								bg={'hu-Green.lightA'}
-								_hover={{
-									bg: 'hu-Green.normal',
-									color: 'white',
-									scale: 1.05,
-								}}
-								color={'hu-Green.normal'}
-								leftIcon={<FaFileCsv />}
-							>
-								<CSVLink
-									filename={'employees.csv'}
-									headers={headersCSV}
-									data={dataCSV}
-								>
-									export to csv
-								</CSVLink>
-							</Button>
+							<Func
+								icon={<IoAdd />}
+								description={'Add new client by form'}
+								title={'Add new'}
+								action={onOpenAdd}
+							/>
+							<CSVLink filename={'employees.csv'} headers={headersCSV} data={dataCSV}>
+								<Func
+									icon={<BiExport />}
+									description={'export to csv'}
+									title={'export'}
+									action={() => {}}
+								/>
+							</CSVLink>
 
-							<Button
-								transform={'auto'}
-								bg={'hu-Green.lightA'}
-								_hover={{
-									bg: 'hu-Green.normal',
-									color: 'white',
-									scale: 1.05,
-								}}
-								color={'hu-Green.normal'}
-								leftIcon={<FaFileCsv />}
+							<CSVLink
+								filename={'employeesTemplate.csv'}
+								headers={headersCSVTemplate}
+								data={dataCSVTemplate}
 							>
-								<CSVLink
-									filename={'employeesTemplate.csv'}
-									headers={headersCSVTemplate}
-									data={dataCSVTemplate}
-								>
-									export csv template
-								</CSVLink>
-							</Button>
+								<Func
+									icon={<FaFileCsv />}
+									description={'export csv template'}
+									title={'export csv template'}
+									action={() => {}}
+								/>
+							</CSVLink>
 
 							<ImportCSV
 								fieldsValid={[
@@ -625,68 +606,23 @@ const Employees: NextLayout = () => {
 							/>
 						</>
 					)}
-
-					<Button
-						transform={'auto'}
-						_hover={{
-							bg: 'hu-Pink.normal',
-							color: 'white',
-							scale: 1.05,
-						}}
-						leftIcon={<IoAdd />}
-						borderColor={'hu-Pink.normal'}
-						color={'hu-Pink.dark'}
-						variant={'outline'}
-					>
-						Invite Employee
-					</Button>
-					<Button
-						transform={'auto'}
-						_hover={{
-							bg: 'hu-Pink.normal',
-							color: 'white',
-							scale: 1.05,
-						}}
-						leftIcon={<BiImport />}
-						borderColor={'hu-Pink.normal'}
-						color={'hu-Pink.dark'}
-						variant={'outline'}
-					>
-						Import
-					</Button>
-					<Button
-						transform={'auto'}
-						_hover={{
-							bg: 'hu-Pink.normal',
-							color: 'white',
-							scale: 1.05,
-						}}
-						leftIcon={<BiExport />}
-						borderColor={'hu-Pink.normal'}
-						color={'hu-Pink.dark'}
-						variant={'outline'}
-					>
-						Export
-					</Button>
-					<Button
+					<Func
+						icon={<VscFilter />}
+						description={'Open draw to filter'}
+						title={'filter'}
+						action={onOpenFilter}
+					/>
+					<Func
+						icon={<AiOutlineDelete />}
+						title={'Delete all'}
+						description={'Delete all client you selected'}
+						action={onOpenDlMany}
 						disabled={!dataSl || dataSl.length == 0 ? true : false}
-						onClick={onOpenDlMany}
-					>
-						Delete all
-					</Button>
-					<Button onClick={onOpenFilter}>open filter</Button>
-					<Button
-						onClick={() => {
-							setIsReset(true)
-							setTimeout(() => {
-								setIsReset(false)
-							}, 1000)
-						}}
-					>
-						reset filter
-					</Button>
-				</HStack>
+					/>
+				</SimpleGrid>
 			</Collapse>
+			<br />
+
 			{currentUser && (
 				<Table
 					data={allEmployees?.employees || []}
@@ -741,69 +677,76 @@ const Employees: NextLayout = () => {
 				<UpdateEmployees onCloseDrawer={onCloseUpdate} employeeId={employeeIdUpdate} />
 			</Drawer>
 
-			<CDrawer isOpen={isOpenFilter} placement="right" onClose={onCloseFilter}>
-				<DrawerOverlay />
-				<DrawerContent>
-					<DrawerCloseButton />
-					<DrawerHeader>Filters</DrawerHeader>
+			<Drawer
+				size="xs"
+				title="Filter"
+				onClose={onCloseFilter}
+				isOpen={isOpenFilter}
+				footer={
+					<Button
+						onClick={() => {
+							setIsReset(true)
+							setTimeout(() => {
+								setIsReset(false)
+							}, 1000)
+						}}
+					>
+						reset
+					</Button>
+				}
+			>
+				<VStack p={6} spacing={5}>
+					<Input
+						handleSearch={(data: IFilter) => {
+							setFilter(data)
+						}}
+						columnId={'email'}
+						label="Email"
+						placeholder="Enter email"
+						icon={<AiOutlineSearch fontSize={'20px'} color="gray" opacity={0.6} />}
+						type={'text'}
+					/>
 
-					<DrawerBody>
-						<VStack spacing={5}>
-							<Input
-								handleSearch={(data: IFilter) => {
-									setFilter(data)
-								}}
-								columnId={'email'}
-								label="Email"
-								placeholder="Enter email"
-								icon={
-									<AiOutlineSearch fontSize={'20px'} color="gray" opacity={0.6} />
-								}
-								type={'text'}
-							/>
+					<Select
+						options={departments}
+						handleSearch={(data: IFilter) => {
+							setFilter(data)
+						}}
+						columnId={'department'}
+						label="Department"
+						placeholder="Select department"
+					/>
 
-							<Select
-								options={departments}
-								handleSearch={(data: IFilter) => {
-									setFilter(data)
-								}}
-								columnId={'department'}
-								label="Department"
-								placeholder="Select department"
-							/>
+					<Select
+						options={designations}
+						handleSearch={(data: IFilter) => {
+							setFilter(data)
+						}}
+						columnId={'designation'}
+						label="Designation"
+						placeholder="Select designation"
+					/>
 
-							<Select
-								options={designations}
-								handleSearch={(data: IFilter) => {
-									setFilter(data)
-								}}
-								columnId={'designation'}
-								label="Designation"
-								placeholder="Select designation"
-							/>
-
-							<Select
-								options={dataRoleEmployee}
-								handleSearch={(data: IFilter) => {
-									setFilter(data)
-								}}
-								columnId={'role'}
-								label="Role"
-								placeholder="Select role"
-							/>
-							<SelectUser
-								handleSearch={(data: IFilter) => {
-									setFilter(data)
-								}}
-								columnId={'id'}
-								required={false}
-								label={'Employee'}
-								peoples={dataUsersSl}
-							/>
-						</VStack>
-					</DrawerBody>
-				</DrawerContent>
-			</CDrawer>
+					<Select
+						options={dataRoleEmployee}
+						handleSearch={(data: IFilter) => {
+							setFilter(data)
+						}}
+						columnId={'role'}
+						label="Role"
+						placeholder="Select role"
+					/>
+					<SelectUser
+						handleSearch={(data: IFilter) => {
+							setFilter(data)
+						}}
+						columnId={'id'}
+						required={false}
+						label={'Employee'}
+						peoples={dataUsersSl}
+					/>
+				</VStack>
+			</Drawer>
 		</Box>
 	)
 }

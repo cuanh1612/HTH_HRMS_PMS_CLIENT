@@ -20,10 +20,12 @@ import {
 	Td,
 	Avatar,
 	AvatarGroup,
+	Collapse,
+	SimpleGrid,
 } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
-import {AlertDialog, Table, Loading} from 'components/common'
-import { Input, InputNumber, Select, Textarea} from 'components/form'
+import { AlertDialog, Table, Loading, Func } from 'components/common'
+import { Input, InputNumber, Select, Textarea } from 'components/form'
 import { ProjectLayout } from 'components/layouts'
 import Modal from 'components/modal/Modal'
 import { AuthContext } from 'contexts/AuthContext'
@@ -43,9 +45,11 @@ import { milestoneForm } from 'type/form/basicFormType'
 import { TColumn } from 'type/tableTypes'
 import { milestoneValidate } from 'utils/validate'
 import { milestoneType } from 'type/basicTypes'
+import { AiOutlineCaretDown, AiOutlineCaretUp } from 'react-icons/ai'
+import { IoAdd } from 'react-icons/io5'
 
 const milestones: NextLayout = () => {
-	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
+	const { isAuthenticated, handleLoading, setToast, currentUser } = useContext(AuthContext)
 	const router = useRouter()
 	const { projectId } = router.query
 
@@ -60,6 +64,11 @@ const milestones: NextLayout = () => {
 
 	// open modal to update, create milestone
 	const { isOpen: isOpenModal, onClose: onCloseModal, onOpen: onOpenModal } = useDisclosure()
+
+	//set isopen of function
+	const { isOpen, onToggle } = useDisclosure({
+		defaultIsOpen: true,
+	})
 
 	// open modal to show detail milestone
 	const { isOpen: isOpenDetail, onClose: onCloseDetail, onOpen: onOpenDetail } = useDisclosure()
@@ -76,10 +85,7 @@ const milestones: NextLayout = () => {
 	console.log(dataDetail)
 
 	// get detail milestone
-	const { data: detailMilestone } = detailMilestoneQuery(
-		isAuthenticated,
-		idDetail
-	)
+	const { data: detailMilestone } = detailMilestoneQuery(isAuthenticated, idDetail)
 
 	const [createMilestone, { status: statusCreate, data: dataCreate }] =
 		createMilestoneTypeMutation(setToast)
@@ -295,21 +301,50 @@ const milestones: NextLayout = () => {
 
 	return (
 		<div>
-			<Button
-				onClick={() => {
-					formSetting.reset({
-						addtobudget: 1,
-						cost: 1,
-						status: 1,
-						title: '',
-						summary: '',
-					})
-					setIsUpdate(false)
-					onOpenModal()
+			<HStack
+				_hover={{
+					textDecoration: 'none',
 				}}
+				onClick={onToggle}
+				color={'gray.500'}
+				cursor={'pointer'}
+				userSelect={'none'}
 			>
-				Add new
-			</Button>
+				<Text fontWeight={'semibold'}>Function</Text>
+				{isOpen ? <AiOutlineCaretDown /> : <AiOutlineCaretUp />}
+			</HStack>
+			<Collapse in={isOpen} animateOpacity>
+				<SimpleGrid
+					w={'full'}
+					cursor={'pointer'}
+					columns={[1, 2, 2, 3, null, 4]}
+					spacing={10}
+					pt={3}
+				>
+					{currentUser && currentUser.role === 'Admin' && (
+						<>
+							<Func
+								icon={<IoAdd />}
+								description={'Add new client by form'}
+								title={'Add new'}
+								action={()=> {
+									formSetting.reset({
+										addtobudget: 1,
+										cost: 1,
+										status: 1,
+										title: '',
+										summary: '',
+									})
+									setIsUpdate(false)
+									onOpenModal()
+								}}
+							/>
+						</>
+					)}
+				</SimpleGrid>
+			</Collapse>
+
+			
 			<Table
 				data={allMilestone?.milestones || []}
 				columns={columns}
@@ -508,9 +543,7 @@ const milestones: NextLayout = () => {
 																borderRadius={'full'}
 																h={'2'}
 															/>
-															<Text>
-																{task.status.title}
-															</Text>
+															<Text>{task.status.title}</Text>
 														</HStack>
 													</Td>
 												</Tr>

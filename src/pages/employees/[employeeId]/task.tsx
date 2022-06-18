@@ -1,60 +1,33 @@
-import { Drawer } from 'components/Drawer'
-import {
-	Avatar,
-	AvatarGroup,
-	Box,
-	Button,
-	HStack,
-	Menu,
-	MenuButton,
-	MenuItem,
-	MenuList,
-	Text,
-	useDisclosure,
-	VStack,
-	useColorMode,
-	SimpleGrid,
-	Collapse,
-} from '@chakra-ui/react'
-import { ClientLayout } from 'components/layouts'
-import { useContext, useEffect, useState } from 'react'
-import { NextLayout } from 'type/element/layout'
-import AddTask from './add-tasks'
-import DetailTask from './[taskId]'
-import UpdateTask from './[taskId]/update-task'
-import { useRouter } from 'next/router'
-import { AuthContext } from 'contexts/AuthContext'
-import {
-	allEmployeesNormalQuery,
-	allMilestonesQuery,
-	allProjectsNormalQuery,
-	allTaskCategoriesQuery,
-	allTasksByEmployeeQuery,
-	allTasksQuery,
-} from 'queries'
-import { IFilter, TColumn } from 'type/tableTypes'
-import { AlertDialog, Func, Table } from 'components/common'
-import { arrayFilter, dateFilter, selectFilter, textFilter } from 'utils/tableFilters'
-import { MdOutlineDeleteOutline, MdOutlineEvent, MdOutlineMoreVert } from 'react-icons/md'
-import { employeeType, IOption, timeLogType } from 'type/basicTypes'
-import { RiPencilLine } from 'react-icons/ri'
-import { IoAdd, IoEyeOutline } from 'react-icons/io5'
-import { deleteTaskMutation, deleteTasksMutation } from 'mutations'
-import { DateRange, Input, Select as SelectF, SelectCustom } from 'components/filter'
-import {
-	AiOutlineCaretDown,
-	AiOutlineCaretUp,
-	AiOutlineDelete,
-	AiOutlineSearch,
-} from 'react-icons/ai'
-import { CSVLink } from 'react-csv'
-import { VscFilter } from 'react-icons/vsc'
-import { BiExport } from 'react-icons/bi'
+import { Avatar, AvatarGroup, Box, Button, Collapse, HStack, Menu, MenuButton, MenuItem, MenuList, SimpleGrid, Text, useColorMode, useDisclosure, VStack } from "@chakra-ui/react"
+import { AlertDialog, Func, Table } from "components/common"
+import { Drawer } from "components/Drawer"
+import { DateRange, Input, Select, SelectCustom } from "components/filter"
+import { ClientLayout } from "components/layouts"
+import { EmployeeLayout } from "components/layouts/Employee"
+import { AuthContext } from "contexts/AuthContext"
+import { deleteTaskMutation, deleteTasksMutation } from "mutations"
+import { useRouter } from "next/router"
+import { allEmployeesNormalQuery, allMilestonesQuery, allProjectsNormalQuery, allTaskCategoriesQuery, allTasksByEmployeeQuery } from "queries"
+import { useContext, useEffect, useState } from "react"
+import { AiOutlineCaretDown, AiOutlineCaretUp, AiOutlineDelete, AiOutlineSearch } from "react-icons/ai"
+import { IoEyeOutline } from "react-icons/io5"
+import { MdOutlineDeleteOutline, MdOutlineEvent, MdOutlineMoreVert } from "react-icons/md"
+import { RiPencilLine } from "react-icons/ri"
+import { VscFilter } from "react-icons/vsc"
+import DetailTask from "src/pages/tasks/[taskId]"
+import UpdateTask from "src/pages/tasks/[taskId]/update-task"
+import { employeeType, IOption, timeLogType } from "type/basicTypes"
+import { NextLayout } from "type/element/layout"
+import { IFilter, TColumn } from "type/tableTypes"
+import { arrayFilter, dateFilter, selectFilter, textFilter } from "utils/tableFilters"
 
-const tasks: NextLayout = () => {
+
+const TasksEmployee: NextLayout = () => {
 	const { isAuthenticated, handleLoading, setToast, currentUser, socket } =
 		useContext(AuthContext)
 	const router = useRouter()
+	const { employeeId } = router.query
+
 	const { colorMode } = useColorMode()
 
 	const [taskId, setTaskId] = useState<string | number>()
@@ -82,10 +55,7 @@ const tasks: NextLayout = () => {
 
 	// query
 	// get all tasks
-	const { data: allTasks, mutate: refetchTasks } =
-		currentUser && (currentUser.role === 'Admin' || currentUser.role === 'Client')
-			? allTasksQuery(isAuthenticated)
-			: allTasksByEmployeeQuery(isAuthenticated, currentUser?.id)
+	const { data: allTasks, mutate: refetchTasks } =   allTasksByEmployeeQuery(isAuthenticated, employeeId as string)
 
 	// get all projects to filter
 	const { data: dataAllProjects } = allProjectsNormalQuery(isAuthenticated)
@@ -99,22 +69,6 @@ const tasks: NextLayout = () => {
 	// get all milestones to filter
 	const { data: allMilestones } = allMilestonesQuery(isAuthenticated)
 
-	//Setup download csv --------------------------------------------------------
-	const headersCSV = [
-		{ label: 'id', key: 'id' },
-		{ label: 'name', key: 'name' },
-		{ label: 'assignBy', key: 'assignBy' },
-		{ label: 'start_date', key: 'start_date' },
-		{ label: 'deadline', key: 'deadline' },
-		{ label: 'description', key: 'description' },
-		{ label: 'milestone', key: 'milestone' },
-		{ label: 'priority', key: 'priority' },
-		{ label: 'project', key: 'project' },
-		{ label: 'status', key: 'status' },
-		{ label: 'task_category', key: 'task_category' },
-		{ label: 'createdAt', key: 'createdAt' },
-		{ label: 'updatedAt', key: 'updatedAt' },
-	]
 
 	// mutation----------------------------------------------------------
 	// delete one
@@ -123,12 +77,6 @@ const tasks: NextLayout = () => {
 	const [deleteMany, { data: dataDlMany, status: statusDlMany }] = deleteTasksMutation(setToast)
 
 	//Modal -------------------------------------------------------------
-	// set open add task
-	const {
-		isOpen: isOpenAddTask,
-		onOpen: onOpenAddTask,
-		onClose: onCloseAddTask,
-	} = useDisclosure()
 
 	// set open update task
 	const {
@@ -176,29 +124,7 @@ const tasks: NextLayout = () => {
 
 	useEffect(() => {
 		if (allTasks) {
-			console.log(allTasks)
 			setIsloading(false)
-
-			if (allTasks.tasks) {
-				//Set data csv
-				const dataCSV: any[] = allTasks.tasks.map((task) => ({
-					id: task.id,
-					name: task.name,
-					assignBy: task.assignBy?.id,
-					start_date: task.start_date,
-					deadline: task.deadline,
-					description: task.description,
-					milestone: task.milestone?.id,
-					priority: task.priority,
-					project: task.project.id,
-					status: task.status.id,
-					task_category: task.task_category?.id,
-					createdAt: task.createdAt,
-					updatedAt: task.updatedAt,
-				}))
-
-				setDataCSV(dataCSV)
-			}
 		}
 	}, [allTasks])
 
@@ -279,6 +205,12 @@ const tasks: NextLayout = () => {
 
 		return leaveRoom
 	}, [socket])
+
+	useEffect(()=> {
+		if(isOpenUpdateTask == false){ 
+			refetchTasks()
+		}
+	}, [isOpenUpdateTask])
 
 	// header ----------------------------------------
 	const columns: TColumn[] = [
@@ -475,24 +407,6 @@ const tasks: NextLayout = () => {
 					spacing={10}
 					pt={3}
 				>
-					{currentUser && currentUser.role === 'Admin' && (
-						<>
-							<Func
-								icon={<IoAdd />}
-								description={'Add new client by form'}
-								title={'Add new'}
-								action={onOpenAddTask}
-							/>
-							<CSVLink filename={'tasks.csv'} headers={headersCSV} data={dataCSV}>
-								<Func
-									icon={<BiExport />}
-									description={'export to csv'}
-									title={'export'}
-									action={() => {}}
-								/>
-							</CSVLink>
-						</>
-					)}
 					<Func
 						icon={<VscFilter />}
 						description={'Open draw to filter'}
@@ -505,14 +419,6 @@ const tasks: NextLayout = () => {
 						description={'Delete all client you selected'}
 						action={onOpenDlMany}
 						disabled={!dataSl || dataSl.length == 0 ? true : false}
-					/>
-					<Func
-						icon={<MdOutlineEvent />}
-						title={'Calendar'}
-						description={'show tasks as calendar'}
-						action={()=> {
-							router.push('/tasks/calendar')
-						}}
 					/>
 				</SimpleGrid>
 			</Collapse>
@@ -529,10 +435,6 @@ const tasks: NextLayout = () => {
 				disableColumns={['milestone', 'assignBy', 'task_category']}
 				isResetFilter={isResetFilter}
 			/>
-
-			<Drawer size="xl" title="Add New Task" onClose={onCloseAddTask} isOpen={isOpenAddTask}>
-				<AddTask onCloseDrawer={onCloseAddTask} />
-			</Drawer>
 
 			<Drawer
 				size="xl"
@@ -611,7 +513,7 @@ const tasks: NextLayout = () => {
 								}}
 								label="Select date"
 							/>
-							<SelectF
+							<Select
 								options={dataAllProjects?.projects?.map((project) => ({
 									label: project.name,
 									value: project.id,
@@ -624,7 +526,7 @@ const tasks: NextLayout = () => {
 								placeholder="Select project"
 							/>
 
-							<SelectF
+							<Select
 								options={allCategories?.taskCategories?.map((category) => ({
 									label: category.name,
 									value: category.id,
@@ -636,7 +538,7 @@ const tasks: NextLayout = () => {
 								label="Category"
 								placeholder="Select category"
 							/>
-							<SelectF
+							<Select
 								options={allMilestones?.milestones?.map((milestone) => ({
 									label: milestone.title,
 									value: milestone.id,
@@ -703,6 +605,7 @@ const tasks: NextLayout = () => {
 	)
 }
 
-tasks.getLayout = ClientLayout
+TasksEmployee.getLayout = EmployeeLayout
 
-export default tasks
+export default TasksEmployee
+

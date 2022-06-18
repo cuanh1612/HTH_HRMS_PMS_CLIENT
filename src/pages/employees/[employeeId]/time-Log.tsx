@@ -1,3 +1,4 @@
+
 import {
 	Avatar,
 	Badge,
@@ -17,10 +18,11 @@ import { AlertDialog, Func, Table } from 'components/common'
 import { Drawer } from 'components/Drawer'
 import { DateRange, Input, Select } from 'components/filter'
 import { ClientLayout } from 'components/layouts'
+import { EmployeeLayout } from 'components/layouts/Employee'
 import { AuthContext } from 'contexts/AuthContext'
 import { deleteTimeLogMutation, deleteTimeLogsMutation } from 'mutations'
 import { useRouter } from 'next/router'
-import { allProjectsNormalQuery, timeLogsCurrentUserQuery, timeLogsQuery } from 'queries'
+import { allProjectsNormalQuery, timeLogsCurrentUserQuery } from 'queries'
 import { useContext, useEffect, useState } from 'react'
 import {
 	AiOutlineCaretDown,
@@ -28,29 +30,23 @@ import {
 	AiOutlineDelete,
 	AiOutlineSearch,
 } from 'react-icons/ai'
-import { IoAdd, IoEyeOutline } from 'react-icons/io5'
-import { MdOutlineDeleteOutline, MdOutlineEvent, MdOutlineMoreVert } from 'react-icons/md'
+import { IoEyeOutline } from 'react-icons/io5'
+import { MdOutlineDeleteOutline, MdOutlineMoreVert } from 'react-icons/md'
 import { RiPencilLine } from 'react-icons/ri'
+import { VscFilter } from 'react-icons/vsc'
+import DetailTimeLog from 'src/pages/time-logs/[timeLogId]'
+import UpdateTimeLog from 'src/pages/time-logs/[timeLogId]/update-time-logs'
 import { NextLayout } from 'type/element/layout'
 import { IFilter, TColumn } from 'type/tableTypes'
 import { dateFilter, selectFilter, textFilter } from 'utils/tableFilters'
-import AddTimeLog from './add-time-logs'
-import DetailTimeLog from './[timeLogId]'
-import UpdateTimeLog from './[timeLogId]/update-time-logs'
-import { CSVLink } from 'react-csv'
-import { BiExport } from 'react-icons/bi'
-import { VscFilter } from 'react-icons/vsc'
 
-const TimeLogs: NextLayout = () => {
+const TimeLog: NextLayout = () => {
 	const { isAuthenticated, handleLoading, setToast, currentUser, socket } =
 		useContext(AuthContext)
 	const router = useRouter()
 
 	// data select to delete all
 	const [dataSl, setDataSl] = useState<Array<number> | null>()
-
-	//state csv
-	const [dataCSV, setDataCSV] = useState<any[]>([])
 
 	// set id time log to delete or update
 	const [idTimeLog, setIdTimeLog] = useState<number>()
@@ -91,13 +87,6 @@ const TimeLogs: NextLayout = () => {
 		defaultIsOpen: true,
 	})
 
-	// set open add time log
-	const {
-		isOpen: isOpenAddTimeLog,
-		onOpen: onOpenAddTimeLog,
-		onClose: onCloseAddTimeLog,
-	} = useDisclosure()
-
 	// set isOpen of drawer to filters
 	const { isOpen: isOpenFilter, onOpen: onOpenFilter, onClose: onCloseFilter } = useDisclosure()
 
@@ -135,10 +124,7 @@ const TimeLogs: NextLayout = () => {
 
 	// query
 	// get all time log by project
-	const { data: allTimeLogs, mutate: refetchTimeLogs } =
-		currentUser?.role === 'Admin'
-			? timeLogsQuery(isAuthenticated)
-			: timeLogsCurrentUserQuery(isAuthenticated)
+	const { data: allTimeLogs, mutate: refetchTimeLogs } = timeLogsCurrentUserQuery(isAuthenticated)
 
 	// get all project to filter
 	const { data: dataAllProjects } = allProjectsNormalQuery(isAuthenticated)
@@ -160,27 +146,6 @@ const TimeLogs: NextLayout = () => {
 		if (allTimeLogs) {
 			console.log(allTimeLogs)
 			setIsloading(false)
-
-			if (allTimeLogs.timeLogs) {
-				//Set data csv
-				const dataCSV: any[] = allTimeLogs.timeLogs.map((timeLog) => ({
-					id: timeLog.id,
-					earnings: timeLog.earnings,
-					employee: timeLog.employee,
-					ends_on_date: timeLog.ends_on_date,
-					ends_on_time: timeLog.ends_on_time,
-					memo: timeLog.memo,
-					project: timeLog.project.id,
-					starts_on_date: timeLog.starts_on_date,
-					starts_on_time: timeLog.starts_on_time,
-					task: timeLog.task?.id,
-					total_hours: timeLog.total_hours,
-					createdAt: timeLog.createdAt,
-					updatedAt: timeLog.updatedAt,
-				}))
-
-				setDataCSV(dataCSV)
-			}
 		}
 	}, [allTimeLogs])
 
@@ -237,6 +202,13 @@ const TimeLogs: NextLayout = () => {
 
 		return leaveRoom
 	}, [socket])
+
+	useEffect(() => {
+		if(isOpenUpdateTimelog == false) {
+			refetchTimeLogs()
+		}
+	}, [isOpenUpdateTimelog])
+
 
 	// header ----------------------------------------
 	const columns: TColumn[] = [
@@ -441,24 +413,6 @@ const TimeLogs: NextLayout = () => {
 					spacing={10}
 					pt={3}
 				>
-					{currentUser && currentUser.role === 'Admin' && (
-						<>
-							<Func
-								icon={<IoAdd />}
-								description={'Add new client by form'}
-								title={'Add new'}
-								action={onOpenAddTimeLog}
-							/>
-							<CSVLink filename={'timelogs.csv'} headers={headersCSV} data={dataCSV}>
-								<Func
-									icon={<BiExport />}
-									description={'export to csv'}
-									title={'export'}
-									action={() => {}}
-								/>
-							</CSVLink>
-						</>
-					)}
 					<Func
 						icon={<VscFilter />}
 						description={'Open draw to filter'}
@@ -472,14 +426,7 @@ const TimeLogs: NextLayout = () => {
 						action={onOpenDlMany}
 						disabled={!dataSl || dataSl.length == 0 ? true : false}
 					/>
-					<Func
-						icon={<MdOutlineEvent />}
-						title={'Calendar'}
-						description={'show tasks as calendar'}
-						action={() => {
-							router.push('/time-logs/calendar')
-						}}
-					/>
+					
 				</SimpleGrid>
 			</Collapse>
 			<br />
@@ -495,16 +442,6 @@ const TimeLogs: NextLayout = () => {
 				disableColumns={['project']}
 				isResetFilter={isResetFilter}
 			/>
-
-			{/* drawer to add project time log */}
-			<Drawer
-				size="xl"
-				title="Add Time Log"
-				onClose={onCloseAddTimeLog}
-				isOpen={isOpenAddTimeLog}
-			>
-				<AddTimeLog onCloseDrawer={onCloseAddTimeLog} />
-			</Drawer>
 
 			{/* drawer to update project time log */}
 			<Drawer
@@ -618,6 +555,7 @@ const TimeLogs: NextLayout = () => {
 	)
 }
 
-TimeLogs.getLayout = ClientLayout
+TimeLog.getLayout = EmployeeLayout
 
-export default TimeLogs
+export default TimeLog
+

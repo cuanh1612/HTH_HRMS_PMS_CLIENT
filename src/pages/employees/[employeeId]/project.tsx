@@ -45,11 +45,9 @@ import { clientType, employeeType, IOption, projectCategoryType } from 'type/bas
 import { NextLayout } from 'type/element/layout'
 import { IFilter, TColumn } from 'type/tableTypes'
 import { arrayFilter, selectFilter, textFilter } from 'utils/tableFilters'
-import AddProject from './add-projects'
-import UpdateProject from './update-projects'
-import { CSVLink } from 'react-csv'
-import { BiExport } from 'react-icons/bi'
 import { VscFilter } from 'react-icons/vsc'
+import UpdateProject from 'src/pages/projects/update-projects'
+import { EmployeeLayout } from 'components/layouts/Employee'
 
 const Projects: NextLayout = () => {
 	const { isAuthenticated, handleLoading, setToast, currentUser } = useContext(AuthContext)
@@ -58,9 +56,6 @@ const Projects: NextLayout = () => {
 
 	//State ---------------------------------------------------------------------
 	const [projectIdUpdate, setProjectId] = useState<number | undefined>(12)
-
-	//state csv
-	const [dataCSV, setDataCSV] = useState<any[]>([])
 
 	// data select to delete all
 	const [dataSl, setDataSl] = useState<Array<number> | null>()
@@ -86,26 +81,7 @@ const Projects: NextLayout = () => {
 	// get employee to select to filter
 	const [employeesFilter, setEmployeesFilter] = useState<IOption[]>([])
 
-	//Setup download csv --------------------------------------------------------
-	const headersCSV = [
-		{ label: 'id', key: 'id' },
-		{ label: 'name', key: 'name' },
-		{ label: 'Progress', key: 'Progress' },
-		{ label: 'client', key: 'client' },
-		{ label: 'createdAt', key: 'createdAt' },
-		{ label: 'currency', key: 'currency' },
-		{ label: 'deadline', key: 'deadline' },
-		{ label: 'hours_estimate', key: 'hours_estimate' },
-		{ label: 'notes', key: 'notes' },
-		{ label: 'project_budget', key: 'project_budget' },
-		{ label: 'project_summary', key: 'project_summary' },
-		{ label: 'send_task_noti', key: 'send_task_noti' },
-		{ label: 'start_date', key: 'start_date' },
-		{ label: 'updatedAt', key: 'updatedAt' },
-	]
-
 	//Setup drawer --------------------------------------------------------------
-	const { isOpen: isOpenAdd, onOpen: onOpenAdd, onClose: onCloseAdd } = useDisclosure()
 	const { isOpen: isOpenUpdate, onOpen: onOpenUpdate, onClose: onCloseUpdate } = useDisclosure()
 
 	// set isOpen of dialog to filters
@@ -383,28 +359,6 @@ const Projects: NextLayout = () => {
 	useEffect(() => {
 		if (allProjects) {
 			setIsloading(false)
-
-			if (allProjects.projects) {
-				//Set data csv
-				const dataCSV: any[] = allProjects.projects.map((contract) => ({
-					id: contract.id,
-					name: contract.name,
-					Progress: contract.Progress,
-					client: contract.client?.id,
-					currency: contract.currency,
-					start_date: contract.start_date,
-					deadline: contract.deadline,
-					hours_estimate: contract.hours_estimate,
-					notes: contract.notes,
-					project_budget: contract.project_budget,
-					project_summary: contract.project_summary,
-					send_task_noti: contract.send_task_noti ? 'true' : 'false',
-					createdAt: contract.createdAt,
-					updatedAt: contract.updatedAt,
-				}))
-
-				setDataCSV(dataCSV)
-			}
 		}
 	}, [allProjects])
 
@@ -479,6 +433,12 @@ const Projects: NextLayout = () => {
 		}
 	}, [allEmployees, colorMode])
 
+	useEffect(() => {
+		if (isOpenUpdate == false) {
+			refetchAllProjects()
+		}
+	}, [isOpenUpdate])
+
 	return (
 		<>
 			<HStack
@@ -501,25 +461,6 @@ const Projects: NextLayout = () => {
 					spacing={10}
 					pt={3}
 				>
-					{currentUser && currentUser.role === 'Admin' && (
-						<>
-							<Func
-								icon={<IoAdd />}
-								description={'Add new client by form'}
-								title={'Add new'}
-								action={onOpenAdd}
-							/>
-
-							<CSVLink filename={'projects.csv'} headers={headersCSV} data={dataCSV}>
-								<Func
-									icon={<BiExport />}
-									description={'export to csv'}
-									title={'export'}
-									action={() => {}}
-								/>
-							</CSVLink>
-						</>
-					)}
 					<Func
 						icon={<VscFilter />}
 						description={'Open draw to filter'}
@@ -537,7 +478,6 @@ const Projects: NextLayout = () => {
 			</Collapse>
 			<br />
 
-
 			<Table
 				data={allProjects?.projects || []}
 				columns={columns}
@@ -549,9 +489,6 @@ const Projects: NextLayout = () => {
 				isResetFilter={isResetFilter}
 				disableColumns={['project_category']}
 			/>
-			<Drawer size="xl" title="Add Project" onClose={onCloseAdd} isOpen={isOpenAdd}>
-				<AddProject onCloseDrawer={onCloseAdd} />
-			</Drawer>
 			<Drawer size="xl" title="Update Project" onClose={onCloseUpdate} isOpen={isOpenUpdate}>
 				<UpdateProject onCloseDrawer={onCloseUpdate} projectIdUpdate={projectIdUpdate} />
 			</Drawer>
@@ -714,6 +651,6 @@ const Projects: NextLayout = () => {
 	)
 }
 
-Projects.getLayout = ClientLayout
+Projects.getLayout = EmployeeLayout
 
 export default Projects

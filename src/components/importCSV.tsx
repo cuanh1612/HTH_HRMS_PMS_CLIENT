@@ -3,9 +3,10 @@ import Modal from 'components/modal/Modal'
 import { AuthContext } from 'contexts/AuthContext'
 import { CSSProperties, useContext, useState } from 'react'
 import { AiOutlineCheck } from 'react-icons/ai'
-import { FaFileCsv } from 'react-icons/fa'
+import { BiImport } from 'react-icons/bi'
 import { MdOutlineRemove } from 'react-icons/md'
 import { formatFileSize, useCSVReader } from 'react-papaparse'
+import { Func } from './common'
 
 //Style Import CSV
 const styles = {
@@ -65,20 +66,7 @@ export default function ImportCSV({
 
 	return (
 		<>
-			<Button
-				transform={'auto'}
-				bg={'hu-Green.lightA'}
-				_hover={{
-					bg: 'hu-Green.normal',
-					color: 'white',
-					scale: 1.05,
-				}}
-				color={'hu-Green.normal'}
-				leftIcon={<FaFileCsv />}
-				onClick={onOpenImportCSV}
-			>
-				Import csv
-			</Button>
+			<Func icon={<BiImport />} action={onOpenImportCSV} title={'Import'} description={'Import data by excel'} />
 
 			<Modal
 				size="3xl"

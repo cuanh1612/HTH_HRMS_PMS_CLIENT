@@ -23,7 +23,7 @@ import { useRouter } from 'next/router'
 import {
 	allClientsQuery,
 	allDepartmentsQuery,
-	allEmployeesNormalQuery, allProjectCategoriesQuery, allProjectsQuery
+	allEmployeesNormalQuery, allProjectCategoriesQuery, allProjectsByCurrentUserQuery, allProjectsQuery
 } from 'queries'
 import { useCallback, useContext, useEffect, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
@@ -98,7 +98,7 @@ export default function AddProject({ onCloseDrawer }: IAddProjectProps) {
 	const { data: allDepartments } = allDepartmentsQuery(isAuthenticated)
 
 	// refetch all Project
-	const { mutate: refetchAllProjects } = allProjectsQuery(isAuthenticated)
+	const { mutate: refetchAllProjects } = allProjectsByCurrentUserQuery(isAuthenticated)
 
 	//mutation -------------------------------------------------------------------
 	const [mutateCreProject, { status: statusCreProject, data: dataCreProject }] =

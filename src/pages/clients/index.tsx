@@ -3,33 +3,27 @@ import { CSVLink } from 'react-csv'
 import countryList from 'react-select-country-list'
 
 // query and mutation
-import {
-	deleteClientMutation,
-	deleteClientsMutation,
-	importCSVClientMutation
-} from 'mutations'
+import { deleteClientMutation, deleteClientsMutation, importCSVClientMutation } from 'mutations'
 import { allClientCategoriesQuery, allClientsQuery, allClientSubCategoriesQuery } from 'queries'
 
 // components
 import {
 	Avatar,
 	Badge,
-	Box, Button, Collapse,
-	Drawer as CDrawer,
-	DrawerBody,
-	DrawerCloseButton,
-	DrawerContent,
-	DrawerHeader,
-	DrawerOverlay,
+	Box,
+	Button,
+	Collapse,
 	HStack,
 	Menu,
 	MenuButton,
 	MenuItem,
 	MenuList,
-	Text, useDisclosure,
-	VStack
+	SimpleGrid,
+	Text,
+	useDisclosure,
+	VStack,
 } from '@chakra-ui/react'
-import { AlertDialog, Table } from 'components/common'
+import { AlertDialog, Func, Table } from 'components/common'
 import { Drawer } from 'components/Drawer'
 
 // use layout
@@ -42,8 +36,13 @@ import { useRouter } from 'next/router'
 import { useContext, useEffect, useMemo, useState } from 'react'
 
 // icons
-import { AiOutlineCaretDown, AiOutlineCaretUp, AiOutlineSearch } from 'react-icons/ai'
-import { BiExport, BiImport } from 'react-icons/bi'
+import {
+	AiOutlineCaretDown,
+	AiOutlineCaretUp,
+	AiOutlineDelete,
+	AiOutlineSearch,
+} from 'react-icons/ai'
+import { BiExport } from 'react-icons/bi'
 import { FaFileCsv } from 'react-icons/fa'
 import { IoAdd, IoEyeOutline } from 'react-icons/io5'
 import { MdOutlineDeleteOutline, MdOutlineMoreVert } from 'react-icons/md'
@@ -68,6 +67,8 @@ import { DateRange, Input, Select, SelectUser } from 'components/filter'
 import ImportCSV from 'components/importCSV'
 import { IOption } from 'type/basicTypes'
 import { IPeople } from 'type/element/commom'
+import { VscFilter } from 'react-icons/vsc'
+import Link from 'next/link'
 
 const Clients: NextLayout = () => {
 	const { isAuthenticated, handleLoading, currentUser, setToast } = useContext(AuthContext)
@@ -380,20 +381,29 @@ const Clients: NextLayout = () => {
 									src={row.original.avatar?.url}
 								/>
 								<VStack w={'70%'} alignItems={'start'}>
-									<Text isTruncated w={'full'}>
-										{row.original.salutation
-											? `${row.original.salutation}. ${value}`
-											: value}
-										{currentUser?.email == row.values['email'] && (
-											<Badge
-												marginLeft={'5'}
-												color={'white'}
-												background={'gray.500'}
-											>
-												It's you
-											</Badge>
-										)}
-									</Text>
+									<Link href={`/clients/${row.values['id']}`} passHref>
+										<Text
+											_hover={{
+												textDecoration: 'underline',
+												cursor: 'pointer',
+											}}
+											isTruncated
+											w={'full'}
+										>
+											{row.original.salutation
+												? `${row.original.salutation}. ${value}`
+												: value}
+											{currentUser?.email == row.values['email'] && (
+												<Badge
+													marginLeft={'5'}
+													color={'white'}
+													background={'gray.500'}
+												>
+													It's you
+												</Badge>
+											)}
+										</Text>
+									</Link>
 									{row.original.company_name && (
 										<Text
 											isTruncated
@@ -519,63 +529,42 @@ const Clients: NextLayout = () => {
 				{isOpen ? <AiOutlineCaretDown /> : <AiOutlineCaretUp />}
 			</HStack>
 			<Collapse in={isOpen} animateOpacity>
-				<VStack marginTop={'2'} paddingBlock={'5'} spacing={'5'}>
-					<Button
-						onClick={onOpenAdd}
-						transform={'auto'}
-						bg={'hu-Green.lightA'}
-						_hover={{
-							bg: 'hu-Green.normal',
-							color: 'white',
-							scale: 1.05,
-						}}
-						color={'hu-Green.normal'}
-						leftIcon={<IoAdd />}
-					>
-						Add clients
-					</Button>
-
+				<SimpleGrid
+					w={'full'}
+					cursor={'pointer'}
+					columns={[1, 2, 2, 3, null, 4]}
+					spacing={10}
+					pt={3}
+				>
 					{currentUser && currentUser.role === 'Admin' && (
 						<>
-							<Button
-								transform={'auto'}
-								bg={'hu-Green.lightA'}
-								_hover={{
-									bg: 'hu-Green.normal',
-									color: 'white',
-									scale: 1.05,
-								}}
-								color={'hu-Green.normal'}
-								leftIcon={<FaFileCsv />}
-							>
-								<CSVLink
-									filename={'clients.csv'}
-									headers={headersCSV}
-									data={dataCSV}
-								>
-									export to csv
-								</CSVLink>
-							</Button>
+							<Func
+								icon={<IoAdd />}
+								description={'Add new client by form'}
+								title={'Add new'}
+								action={onOpenAdd}
+							/>
+							<CSVLink filename={'clients.csv'} headers={headersCSV} data={dataCSV}>
+								<Func
+									icon={<BiExport />}
+									description={'export to csv'}
+									title={'export'}
+									action={() => {}}
+								/>
+							</CSVLink>
 
-							<Button
-								transform={'auto'}
-								bg={'hu-Green.lightA'}
-								_hover={{
-									bg: 'hu-Green.normal',
-									color: 'white',
-									scale: 1.05,
-								}}
-								color={'hu-Green.normal'}
-								leftIcon={<FaFileCsv />}
+							<CSVLink
+								filename={'clientsTemplate.csv'}
+								headers={headersCSVTemplate}
+								data={dataCSVTemplate}
 							>
-								<CSVLink
-									filename={'clientsTemplate.csv'}
-									headers={headersCSVTemplate}
-									data={dataCSVTemplate}
-								>
-									export csv template
-								</CSVLink>
-							</Button>
+								<Func
+									icon={<FaFileCsv />}
+									description={'export csv template'}
+									title={'export csv template'}
+									action={() => {}}
+								/>
+							</CSVLink>
 
 							<ImportCSV
 								fieldsValid={[
@@ -596,76 +585,30 @@ const Clients: NextLayout = () => {
 									'state',
 								]}
 								handleImportCSV={handleImportCSV}
-								statusImport={statusImportCSV === "running"}
+								statusImport={statusImportCSV === 'running'}
 								isOpenImportCSV={isOpenImportCSV}
 								onCloseImportCSV={onCloseImportCSV}
 								onOpenImportCSV={onOpenImportCSV}
 							/>
 						</>
 					)}
-
-					<Button
-						transform={'auto'}
-						_hover={{
-							bg: 'hu-Pink.normal',
-							color: 'white',
-							scale: 1.05,
-						}}
-						leftIcon={<IoAdd />}
-						borderColor={'hu-Pink.normal'}
-						color={'hu-Pink.dark'}
-						variant={'outline'}
-					>
-						Invite Client
-					</Button>
-					<Button
-						transform={'auto'}
-						_hover={{
-							bg: 'hu-Pink.normal',
-							color: 'white',
-							scale: 1.05,
-						}}
-						leftIcon={<BiImport />}
-						borderColor={'hu-Pink.normal'}
-						color={'hu-Pink.dark'}
-						variant={'outline'}
-					>
-						Import
-					</Button>
-					<Button
-						transform={'auto'}
-						_hover={{
-							bg: 'hu-Pink.normal',
-							color: 'white',
-							scale: 1.05,
-						}}
-						leftIcon={<BiExport />}
-						borderColor={'hu-Pink.normal'}
-						color={'hu-Pink.dark'}
-						variant={'outline'}
-					>
-						Export
-					</Button>
-					<Button
+					<Func
+						icon={<VscFilter />}
+						description={'Open draw to filter'}
+						title={'filter'}
+						action={onOpenFilter}
+					/>
+					<Func
+						icon={<AiOutlineDelete />}
+						title={'Delete all'}
+						description={'Delete all client you selected'}
+						action={onOpenDlMany}
 						disabled={!dataSl || dataSl.length == 0 ? true : false}
-						onClick={onOpenDlMany}
-					>
-						Delete all
-					</Button>
-					<Button onClick={onOpenFilter}>open filter</Button>
-					<Button
-						onClick={() => {
-							setIsReset(true)
-							setTimeout(() => {
-								setIsReset(false)
-							}, 1000)
-						}}
-					>
-						reset filter
-					</Button>
-				</VStack>
+					/>
+				</SimpleGrid>
 			</Collapse>
-			
+			<br />
+
 			{currentUser && (
 				<Table
 					data={allClients?.clients || []}
@@ -720,84 +663,91 @@ const Clients: NextLayout = () => {
 				<UpdateClient onCloseDrawer={onCloseUpdate} clientUpdateId={clientIdUpdate} />
 			</Drawer>
 
-			<CDrawer isOpen={isOpenFilter} placement="right" onClose={onCloseFilter}>
-				<DrawerOverlay />
-				<DrawerContent>
-					<DrawerCloseButton />
-					<DrawerHeader>Filters</DrawerHeader>
+			<Drawer
+				size="xs"
+				title="Filters"
+				onClose={onCloseFilter}
+				isOpen={isOpenFilter}
+				footer={
+					<Button
+						onClick={() => {
+							setIsReset(true)
+							setTimeout(() => {
+								setIsReset(false)
+							}, 1000)
+						}}
+					>
+						reset
+					</Button>
+				}
+			>
+				<VStack p={6} spacing={5}>
+					<Input
+						handleSearch={(data: IFilter) => {
+							setFilter(data)
+						}}
+						columnId={'email'}
+						label="Email"
+						placeholder="Enter email"
+						required={false}
+						icon={<AiOutlineSearch fontSize={'20px'} color="gray" opacity={0.6} />}
+						type={'text'}
+					/>
 
-					<DrawerBody>
-						<VStack spacing={5}>
-							<Input
-								handleSearch={(data: IFilter) => {
-									setFilter(data)
-								}}
-								columnId={'email'}
-								label="Email"
-								placeholder="Enter email"
-								required={false}
-								icon={
-									<AiOutlineSearch fontSize={'20px'} color="gray" opacity={0.6} />
-								}
-								type={'text'}
-							/>
+					<Select
+						options={categories}
+						handleSearch={(data: IFilter) => {
+							setFilter(data)
+						}}
+						columnId={'category'}
+						label="Category"
+						placeholder="Select category"
+						required={false}
+					/>
 
-							<Select
-								options={categories}
-								handleSearch={(data: IFilter) => {
-									setFilter(data)
-								}}
-								columnId={'category'}
-								label="Category"
-								placeholder="Select category"
-								required={false}
-							/>
+					<Select
+						options={subCategories}
+						handleSearch={(data: IFilter) => {
+							setFilter(data)
+						}}
+						columnId={'subcategory'}
+						label="Sub category"
+						placeholder="Select sub category"
+						required={false}
+					/>
 
-							<Select
-								options={subCategories}
-								handleSearch={(data: IFilter) => {
-									setFilter(data)
-								}}
-								columnId={'subcategory'}
-								label="Sub category"
-								placeholder="Select sub category"
-								required={false}
-							/>
+					<Select
+						options={options}
+						handleSearch={(data: IFilter) => {
+							setFilter(data)
+						}}
+						columnId={'country'}
+						label="Country"
+						placeholder="Select country"
+						required={false}
+					/>
 
-							<Select
-								options={options}
-								handleSearch={(data: IFilter) => {
-									setFilter(data)
-								}}
-								columnId={'country'}
-								label="Country"
-								placeholder="Select country"
-								required={false}
-							/>
+					<DateRange
+						handleSelect={(date: { from: Date; to: Date }) => {
+							setFilter({
+								columnId: 'createdAt',
+								filterValue: date,
+							})
+						}}
+						label="Select date"
+					/>
 
-							<DateRange
-								handleSelect={(date: { from: Date; to: Date }) => {
-									setFilter({
-										columnId: 'createdAt',
-										filterValue: date,
-									})
-								}}
-								label="Select date"
-							/>
-
-							<SelectUser
-								handleSearch={(data: IFilter) => {
-									setFilter(data)
-								}}
-								columnId={'id'}
-								required={false}
-								label={'Client'}
-								peoples={dataUsersSl}
-							/>
-						</VStack>
-					</DrawerBody>
-				</DrawerContent>
-			</CDrawer>
+					<SelectUser
+						handleSearch={(data: IFilter) => {
+							setFilter(data)
+						}}
+						columnId={'id'}
+						required={false}
+						label={'Client'}
+						peoples={dataUsersSl}
+					/>
+				</VStack>
+			</Drawer>
 		</Box>
 	)
 }

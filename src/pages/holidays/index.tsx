@@ -1,18 +1,17 @@
 import {
-	Button, Drawer as CDrawer, DrawerBody,
-	DrawerCloseButton,
-	DrawerContent,
-	DrawerHeader,
-	DrawerOverlay,
+	Button,
+	Collapse,
+	HStack,
 	Menu,
 	MenuButton,
 	MenuItem,
 	MenuList,
+	SimpleGrid,
 	Text,
 	useDisclosure,
-	VStack
+	VStack,
 } from '@chakra-ui/react'
-import { AlertDialog, Table } from 'components/common'
+import { AlertDialog, Func, Table } from 'components/common'
 import { Drawer } from 'components/Drawer'
 import { Input, Select } from 'components/filter'
 import ImportCSV from 'components/importCSV'
@@ -23,11 +22,18 @@ import { useRouter } from 'next/router'
 import { allHolidaysQuery } from 'queries'
 import { useContext, useEffect, useState } from 'react'
 import { CSVLink } from 'react-csv'
-import { AiOutlineSearch } from 'react-icons/ai'
+import {
+	AiOutlineCaretDown,
+	AiOutlineCaretUp,
+	AiOutlineDelete,
+	AiOutlineSearch,
+} from 'react-icons/ai'
+import { BiExport } from 'react-icons/bi'
 import { FaFileCsv } from 'react-icons/fa'
-import { IoEyeOutline } from 'react-icons/io5'
+import { IoAdd, IoEyeOutline } from 'react-icons/io5'
 import { MdOutlineDeleteOutline, MdOutlineMoreVert } from 'react-icons/md'
 import { RiPencilLine } from 'react-icons/ri'
+import { VscFilter } from 'react-icons/vsc'
 import { NextLayout } from 'type/element/layout'
 import { IFilter, TColumn } from 'type/tableTypes'
 import { monthFilter, textFilter, yearFilter } from 'utils/tableFilters'
@@ -40,6 +46,11 @@ const Holiday: NextLayout = () => {
 	const router = useRouter()
 
 	//Setup drawer --------------------------------------------------------------
+	//set isopen of function
+	const { isOpen, onToggle } = useDisclosure({
+		defaultIsOpen: true,
+	})
+
 	const { isOpen: isOpenAdd, onOpen: onOpenAdd, onClose: onCloseAdd } = useDisclosure()
 	const { isOpen: isOpenUpdate, onOpen: onOpenUpdate, onClose: onCloseUpdate } = useDisclosure()
 	const { isOpen: isOpenDetail, onOpen: onOpenDetail, onClose: onCloseDetail } = useDisclosure()
@@ -316,52 +327,55 @@ const Holiday: NextLayout = () => {
 
 	return (
 		<>
-			{currentUser && currentUser.role === 'Admin' && (
-				<>
-					<Button colorScheme="blue" onClick={onOpenAdd}>
-						add new
-					</Button>
+			<HStack
+				_hover={{
+					textDecoration: 'none',
+				}}
+				onClick={onToggle}
+				color={'gray.500'}
+				cursor={'pointer'}
+				userSelect={'none'}
+			>
+				<Text fontWeight={'semibold'}>Function</Text>
+				{isOpen ? <AiOutlineCaretDown /> : <AiOutlineCaretUp />}
+			</HStack>
+			<Collapse in={isOpen} animateOpacity>
+				<SimpleGrid
+					w={'full'}
+					cursor={'pointer'}
+					columns={[1, 2, 2, 3, null, 4]}
+					spacing={10}
+					pt={3}
+				>
 					{currentUser && currentUser.role === 'Admin' && (
 						<>
-							<Button
-								transform={'auto'}
-								bg={'hu-Green.lightA'}
-								_hover={{
-									bg: 'hu-Green.normal',
-									color: 'white',
-									scale: 1.05,
-								}}
-								color={'hu-Green.normal'}
-								leftIcon={<FaFileCsv />}
-							>
-								<CSVLink
-									filename={'holidays.csv'}
-									headers={headersCSV}
-									data={dataCSV}
-								>
-									export to csv
-								</CSVLink>
-							</Button>
+							<Func
+								icon={<IoAdd />}
+								description={'Add new client by form'}
+								title={'Add new'}
+								action={onOpenAdd}
+							/>
+							<CSVLink filename={'holidays.csv'} headers={headersCSV} data={dataCSV}>
+								<Func
+									icon={<BiExport />}
+									description={'export to csv'}
+									title={'export'}
+									action={() => {}}
+								/>
+							</CSVLink>
 
-							<Button
-								transform={'auto'}
-								bg={'hu-Green.lightA'}
-								_hover={{
-									bg: 'hu-Green.normal',
-									color: 'white',
-									scale: 1.05,
-								}}
-								color={'hu-Green.normal'}
-								leftIcon={<FaFileCsv />}
+							<CSVLink
+								filename={'holidaysTemplate.csv'}
+								headers={headersCSVTemplate}
+								data={dataCSVTemplate}
 							>
-								<CSVLink
-									filename={'holidaysTemplate.csv'}
-									headers={headersCSVTemplate}
-									data={dataCSVTemplate}
-								>
-									Download csv template
-								</CSVLink>
-							</Button>
+								<Func
+									icon={<FaFileCsv />}
+									description={'export csv template'}
+									title={'export csv template'}
+									action={() => {}}
+								/>
+							</CSVLink>
 
 							<ImportCSV
 								fieldsValid={['holiday_date', 'occasion']}
@@ -373,31 +387,23 @@ const Holiday: NextLayout = () => {
 							/>
 						</>
 					)}
-					<Button
+					<Func
+						icon={<VscFilter />}
+						description={'Open draw to filter'}
+						title={'filter'}
+						action={onOpenFilter}
+					/>
+					<Func
+						icon={<AiOutlineDelete />}
+						title={'Delete all'}
+						description={'Delete all holiday you selected'}
+						action={onOpenDlMany}
 						disabled={!dataSl || dataSl.length == 0 ? true : false}
-						onClick={onOpenDlMany}
-					>
-						Delete all
-					</Button>
-				</>
-			)}
-			<Button
-				onClick={() => {
-					onOpenFilter()
-				}}
-			>
-				Filter
-			</Button>
-			<Button
-				onClick={() => {
-					setIsReset(true)
-					setTimeout(() => {
-						setIsReset(false)
-					}, 1000)
-				}}
-			>
-				reset filter
-			</Button>
+					/>
+				</SimpleGrid>
+			</Collapse>
+			<br />
+
 			<Table
 				data={allHolidays?.holidays || []}
 				columns={columns}
@@ -435,119 +441,127 @@ const Holiday: NextLayout = () => {
 				onClose={onCloseDl}
 			/>
 
-			<CDrawer isOpen={isOpenFilter} placement="right" onClose={onCloseFilter}>
-				<DrawerOverlay />
-				<DrawerContent>
-					<DrawerCloseButton />
-					<DrawerHeader>Filters</DrawerHeader>
-					<DrawerBody>
-						<VStack spacing={5}>
-							<Input
-								handleSearch={(data: IFilter) => {
-									setFilter(data)
-								}}
-								columnId={'occasion'}
-								label="Occasion"
-								placeholder="Enter occasion"
-								icon={
-									<AiOutlineSearch fontSize={'20px'} color="gray" opacity={0.6} />
-								}
-								type={'text'}
-							/>
+			<Drawer
+				title="Filter"
+				size="xs"
+				footer={
+					<Button
+						onClick={() => {
+							setIsReset(true)
+							setTimeout(() => {
+								setIsReset(false)
+							}, 1000)
+						}}
+					>
+						reset
+					</Button>
+				}
+				isOpen={isOpenFilter}
+				onClose={onCloseFilter}
+			>
+				<VStack spacing={5} p={6}>
+					<Input
+						handleSearch={(data: IFilter) => {
+							setFilter(data)
+						}}
+						columnId={'occasion'}
+						label="Occasion"
+						placeholder="Enter occasion"
+						icon={<AiOutlineSearch fontSize={'20px'} color="gray" opacity={0.6} />}
+						type={'text'}
+					/>
 
-							<Select
-								options={[
-									{
-										label: 'January',
-										value: 1,
-									},
-									{
-										label: 'February',
-										value: 2,
-									},
-									{
-										label: 'March',
-										value: 3,
-									},
-									{
-										label: 'April',
-										value: 4,
-									},
-									{
-										label: 'May',
-										value: 5,
-									},
-									{
-										label: 'June',
-										value: 6,
-									},
-									{
-										label: 'July',
-										value: 7,
-									},
-									{
-										label: 'August',
-										value: 8,
-									},
-									{
-										label: 'September',
-										value: 9,
-									},
-									{
-										label: 'October',
-										value: 10,
-									},
-									{
-										label: 'November',
-										value: 11,
-									},
-									{
-										label: 'December',
-										value: 12,
-									},
-								]}
-								handleSearch={(data: IFilter) => {
-									setFilter(data)
-								}}
-								columnId={'day'}
-								label="Month"
-								placeholder="Select month"
-							/>
+					<Select
+						options={[
+							{
+								label: 'January',
+								value: 1,
+							},
+							{
+								label: 'February',
+								value: 2,
+							},
+							{
+								label: 'March',
+								value: 3,
+							},
+							{
+								label: 'April',
+								value: 4,
+							},
+							{
+								label: 'May',
+								value: 5,
+							},
+							{
+								label: 'June',
+								value: 6,
+							},
+							{
+								label: 'July',
+								value: 7,
+							},
+							{
+								label: 'August',
+								value: 8,
+							},
+							{
+								label: 'September',
+								value: 9,
+							},
+							{
+								label: 'October',
+								value: 10,
+							},
+							{
+								label: 'November',
+								value: 11,
+							},
+							{
+								label: 'December',
+								value: 12,
+							},
+						]}
+						handleSearch={(data: IFilter) => {
+							setFilter(data)
+						}}
+						columnId={'day'}
+						label="Month"
+						placeholder="Select month"
+					/>
 
-							<Select
-								options={[
-									{
-										label: `${new Date().getFullYear()}`,
-										value: `${new Date().getFullYear()}`,
-									},
-									{
-										label: `${new Date().getFullYear() - 1}`,
-										value: `${new Date().getFullYear() - 1}`,
-									},
-									{
-										label: `${new Date().getFullYear() - 2}`,
-										value: `${new Date().getFullYear() - 2}`,
-									},
-									{
-										label: `${new Date().getFullYear() - 3}`,
-										value: `${new Date().getFullYear() - 3}`,
-									},
-									{
-										label: `${new Date().getFullYear() - 4}`,
-										value: `${new Date().getFullYear() - 4}`,
-									},
-								]}
-								handleSearch={(data: IFilter) => {
-									setFilter(data)
-								}}
-								columnId={'holiday_date'}
-								label="Year"
-								placeholder="Select year"
-							/>
-						</VStack>
-					</DrawerBody>
-				</DrawerContent>
-			</CDrawer>
+					<Select
+						options={[
+							{
+								label: `${new Date().getFullYear()}`,
+								value: `${new Date().getFullYear()}`,
+							},
+							{
+								label: `${new Date().getFullYear() - 1}`,
+								value: `${new Date().getFullYear() - 1}`,
+							},
+							{
+								label: `${new Date().getFullYear() - 2}`,
+								value: `${new Date().getFullYear() - 2}`,
+							},
+							{
+								label: `${new Date().getFullYear() - 3}`,
+								value: `${new Date().getFullYear() - 3}`,
+							},
+							{
+								label: `${new Date().getFullYear() - 4}`,
+								value: `${new Date().getFullYear() - 4}`,
+							},
+						]}
+						handleSearch={(data: IFilter) => {
+							setFilter(data)
+						}}
+						columnId={'holiday_date'}
+						label="Year"
+						placeholder="Select year"
+					/>
+				</VStack>
+			</Drawer>
 
 			<Drawer size="xl" title="Add Holiday" onClose={onCloseAdd} isOpen={isOpenAdd}>
 				<AddHoliday onCloseDrawer={onCloseAdd} />

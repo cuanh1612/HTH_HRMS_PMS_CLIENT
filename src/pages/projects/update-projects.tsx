@@ -17,7 +17,7 @@ import {
 } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Input, InputNumber, Select, SelectCustom } from 'components/form'
-import {Loading }from 'components/common'
+import { Loading } from 'components/common'
 import Modal from 'components/modal/Modal'
 import { AuthContext } from 'contexts/AuthContext'
 import { updateProjectMutation } from 'mutations'
@@ -29,6 +29,7 @@ import {
 	allClientsQuery,
 	allDepartmentsQuery,
 	allProjectCategoriesQuery,
+	allProjectsByCurrentUserQuery,
 } from 'queries'
 import { useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -91,6 +92,9 @@ export default function UpdateProject({ onCloseDrawer, projectIdUpdate }: IUpdat
 
 	// refetch all Project
 	const { mutate: refetchAllProjects } = allProjectsQuery(isAuthenticated)
+
+	//  refetch all Project by user
+	const { mutate: refetchAllProjectsByUser } = allProjectsByCurrentUserQuery(isAuthenticated)
 
 	//mutation -------------------------------------------------------------------
 	const [mutateUpProject, { status: statusUpProject, data: dataUpProject }] =
@@ -174,6 +178,7 @@ export default function UpdateProject({ onCloseDrawer, projectIdUpdate }: IUpdat
 			})
 
 			refetchAllProjects()
+			refetchAllProjectsByUser()
 		}
 	}, [statusUpProject])
 

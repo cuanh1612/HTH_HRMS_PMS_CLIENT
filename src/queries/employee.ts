@@ -1,9 +1,9 @@
 import { AxiosError } from 'axios'
 import { allEmployeesRequest, detailEmployeeRequest } from 'requests/employee'
 import useSWR from 'swr'
-import { countLeavesTakenEmployeeMutaionResponse, countProjectsEmployeeMutaionResponse, employeeMutaionResponse, hoursLoggedEmployeeMutaionResponse, lateAttendanceEmployeeMutaionResponse, openTasksEmployeeMutaionResponse } from 'type/mutationResponses'
+import { countLeavesTakenEmployeeMutaionResponse, countPCompleteTasksMutationResponse, countPendingTasksMutationResponse, countProjectsEmployeeMutaionResponse, countStatusProjectsMutationResponse, employeeMutaionResponse, hoursLoggedEmployeeMutaionResponse, lateAttendanceEmployeeMutaionResponse, openTasksEmployeeMutaionResponse } from 'type/mutationResponses'
 
-export const detailEmployeeQuery = (isAuthenticated: boolean | null, employeeId: string | number | null) => {
+export const detailEmployeeQuery = (isAuthenticated: boolean | null, employeeId?: string | number) => {
 	return useSWR<employeeMutaionResponse, AxiosError>(
 		isAuthenticated && employeeId ? `employees/${employeeId}` : null,
 		detailEmployeeRequest,
@@ -14,7 +14,7 @@ export const detailEmployeeQuery = (isAuthenticated: boolean | null, employeeId:
 	)
 }
 
-export const openTasksEmployeeQuery = (isAuthenticated: boolean | null, employeeId: string | number | null) => {
+export const openTasksEmployeeQuery = (isAuthenticated: boolean | null, employeeId?: string | number) => {
 	return useSWR<openTasksEmployeeMutaionResponse, AxiosError>(
 		isAuthenticated && employeeId ? `employees/${employeeId}/open-tasks` : null,
 		detailEmployeeRequest,
@@ -25,7 +25,7 @@ export const openTasksEmployeeQuery = (isAuthenticated: boolean | null, employee
 	)
 }
 
-export const hoursLoggedEmployeeQuery = (isAuthenticated: boolean | null, employeeId: string | number | null) => {
+export const hoursLoggedEmployeeQuery = (isAuthenticated: boolean | null, employeeId?: string | number) => {
 	return useSWR<hoursLoggedEmployeeMutaionResponse, AxiosError>(
 		isAuthenticated && employeeId ? `employees/${employeeId}/hours-logged` : null,
 		detailEmployeeRequest,
@@ -36,7 +36,7 @@ export const hoursLoggedEmployeeQuery = (isAuthenticated: boolean | null, employ
 	)
 }
 
-export const countProjectsEmployeeQuery = (isAuthenticated: boolean | null, employeeId: string | number | null) => {
+export const countProjectsEmployeeQuery = (isAuthenticated: boolean | null, employeeId?: string | number) => {
 	return useSWR<countProjectsEmployeeMutaionResponse, AxiosError>(
 		isAuthenticated && employeeId ? `employees/${employeeId}/count-projects` : null,
 		detailEmployeeRequest,
@@ -102,3 +102,35 @@ export const allEmployeesQuery = (isAuthenticated: boolean | null) => {
 	)
 }
 
+export const countPendingTasksQuery = (isAuthenticated: boolean | null, employeeId?: string | number) => {
+	return useSWR<countPendingTasksMutationResponse, AxiosError>(
+		isAuthenticated && employeeId ? `employees/${employeeId}/count-pending-tasks` : null,
+		detailEmployeeRequest,
+		{
+			errorRetryCount: 2,
+			revalidateOnFocus: false,
+		}
+	)
+}
+
+export const countCompleteTasksQuery = (isAuthenticated: boolean | null, employeeId?: string | number) => {
+	return useSWR<countPCompleteTasksMutationResponse, AxiosError>(
+		isAuthenticated && employeeId ? `employees/${employeeId}/count-complete-tasks` : null,
+		detailEmployeeRequest,
+		{
+			errorRetryCount: 2,
+			revalidateOnFocus: false,
+		}
+	)
+}
+
+export const countStatusProjectsQuery = (isAuthenticated: boolean | null, employeeId?: string | number) => {
+	return useSWR<countStatusProjectsMutationResponse, AxiosError>(
+		isAuthenticated && employeeId ? `employees/${employeeId}/count-status-projects` : null,
+		detailEmployeeRequest,
+		{
+			errorRetryCount: 2,
+			revalidateOnFocus: false,
+		}
+	)
+}

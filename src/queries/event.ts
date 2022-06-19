@@ -5,10 +5,10 @@ import { eventMutaionResponse } from 'type/mutationResponses'
 
 export const detailEventQuery = (
 	isAuthenticated: boolean | null,
-	contractId: string | number | null | undefined
+	eventId: string | number | null | undefined
 ) => {
 	return useSWR<eventMutaionResponse, AxiosError>(
-		isAuthenticated && contractId ? `events/${contractId}` : null,
+		isAuthenticated && eventId ? `events/${eventId}` : null,
 		detailEventRequest,
 		{
 			errorRetryCount: 2,
@@ -35,6 +35,20 @@ export const allEventsQuery = (isAuthenticated: boolean | null, employee?: strin
 
 	return useSWR<eventMutaionResponse, AxiosError>(
 		isAuthenticated ? (url ? `events${url}` : 'events') : null,
+		allEventsRequest,
+		{
+			errorRetryCount: 2,
+			revalidateOnFocus: false,
+		}
+	)
+}
+
+export const eventsByEmployeeQuery = (
+	isAuthenticated: boolean | null,
+	employeeId?: string | number 
+) => {
+	return useSWR<eventMutaionResponse, AxiosError>(
+		isAuthenticated && employeeId ? `events/employee/${employeeId}` : null,
 		allEventsRequest,
 		{
 			errorRetryCount: 2,

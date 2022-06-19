@@ -83,7 +83,19 @@ export interface countTasksStatusEmployeeMutaionResponse extends commonResponse 
 }
 
 export interface countProjectsEmployeeMutaionResponse extends commonResponse {
-	countProjects?: {title: string, count: string | number, color: string }[]
+	countProjects?: { title: string; count: string | number; color: string }[]
+}
+
+export interface countPendingTasksMutationResponse extends commonResponse {
+	countPendingTasks?: number
+}
+
+export interface countPCompleteTasksMutationResponse extends commonResponse {
+	countCompleteTasks?: number
+}
+
+export interface countStatusProjectsMutationResponse extends commonResponse {
+	countStatusProjects?: { project_status: string; count: string }[]
 }
 
 export interface leaveTypeMutaionResponse extends commonResponse {

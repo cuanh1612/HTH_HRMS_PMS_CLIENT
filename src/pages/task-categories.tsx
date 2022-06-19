@@ -178,7 +178,7 @@ export default function TaskCategory({}: ITaskCategoryProps) {
 													<EditablePreview />
 													<EditableInput
 														paddingLeft={2}
-														onBlur={(e) => {
+														onBlur={(e: any) => {
 															onUpdate(
 																taskCategory.id,
 																taskCategory.name,

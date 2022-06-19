@@ -1,4 +1,15 @@
-import { Avatar, Badge, Box, Divider, Grid, GridItem, HStack, Text, VStack } from '@chakra-ui/react'
+import {
+	Avatar,
+	Badge,
+	Box,
+	Button,
+	Divider,
+	Grid,
+	GridItem,
+	HStack,
+	Text,
+	VStack,
+} from '@chakra-ui/react'
 import { AuthContext } from 'contexts/AuthContext'
 import { GetStaticPaths, GetStaticProps } from 'next'
 import { useRouter } from 'next/router'
@@ -6,15 +17,21 @@ import { detailLeaveQuery } from 'queries'
 import { useContext, useEffect } from 'react'
 import { leaveMutaionResponse } from 'type/mutationResponses'
 
-export interface IDetailLeaveProps {leaveId: string | number | null}
+export interface IDetailLeaveProps {
+	leaveId: string | number | null
+	onOpenUpdate?: any
+	onOpenDl?: any
+}
 
-export default function DetailLeave({leaveId: leaveIdProp}: IDetailLeaveProps) {
+export default function DetailLeave({ leaveId: leaveIdProp, onOpenUpdate, onOpenDl}: IDetailLeaveProps) {
 	const { isAuthenticated, handleLoading } = useContext(AuthContext)
 	const router = useRouter()
 	const { leaveId: leaveIdRouter } = router.query
 
 	//Query ---------------------------------------------------------------------
-	const { data: dataDetailLeave, error: errorDetailLeave } = detailLeaveQuery(leaveIdRouter as string || leaveIdProp)
+	const { data: dataDetailLeave, error: errorDetailLeave } = detailLeaveQuery(
+		(leaveIdRouter as string) || leaveIdProp
+	)
 
 	//User effect ---------------------------------------------------------------
 
@@ -109,6 +126,8 @@ export default function DetailLeave({leaveId: leaveIdProp}: IDetailLeaveProps) {
 						</HStack>
 					</GridItem>
 				</Grid>
+				{onOpenUpdate && <Button onClick={onOpenUpdate}>Update</Button>}{' '}
+				{onOpenDl && <Button onClick={onOpenDl}>Delete</Button>}
 			</VStack>
 		</>
 	)
@@ -133,9 +152,11 @@ export const getStaticPaths: GetStaticPaths = async () => {
 	console.log(process.env.NEXT_PUBLIC_API_URL)
 	console.log(process.env.NEXT_PUBLIC_API_URL)
 	console.log(process.env.NEXT_PUBLIC_API_URL)
-	const res: leaveMutaionResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/leaves`).then((result) => result.json())
-	
-	if(!res || !res.leaves){
+	const res: leaveMutaionResponse = await fetch(
+		`${process.env.NEXT_PUBLIC_API_URL}/api/leaves`
+	).then((result) => result.json())
+
+	if (!res || !res.leaves) {
 		return { paths: [], fallback: false }
 	}
 

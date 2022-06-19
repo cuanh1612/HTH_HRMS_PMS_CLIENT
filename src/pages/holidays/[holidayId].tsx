@@ -1,22 +1,19 @@
-import { Box, Button, Divider, Grid, GridItem, HStack, Text, useDisclosure } from '@chakra-ui/react'
-import { Drawer } from 'components/Drawer'
-import { Loading } from 'components/common'
+import { Box, Button, Grid, GridItem } from '@chakra-ui/react'
 import { AuthContext } from 'contexts/AuthContext'
-import { deleteHolidayMutation } from 'mutations'
 import { GetStaticPaths, GetStaticProps } from 'next'
 import { useRouter } from 'next/router'
 import { detailHolidayQuery } from 'queries'
 import { useContext, useEffect } from 'react'
 import { holidayMutaionResponse } from 'type/mutationResponses'
-import UpdateHoliday from './update-holidays'
 
 export interface IDetailHolidayProps {
-	onCloseDrawer?: () => void
 	holidayIdProp: number | null
+	onOpenUpdate?: any
+	onOpenDl?: any
 }
 var isUseLayout = false
-export default function DetailHoliday({ onCloseDrawer, holidayIdProp }: IDetailHolidayProps) {
-	const { isAuthenticated, handleLoading, setToast, currentUser } = useContext(AuthContext)
+export default function DetailHoliday({ holidayIdProp, onOpenUpdate, onOpenDl}: IDetailHolidayProps) {
+	const { isAuthenticated, handleLoading } = useContext(AuthContext)
 	const router = useRouter()
 	const { holidayId: holidayIdRouter } = router.query
 
@@ -24,38 +21,10 @@ export default function DetailHoliday({ onCloseDrawer, holidayIdProp }: IDetailH
 		isUseLayout = true
 	}, [holidayIdRouter])
 
-	//Setup drawer --------------------------------------------------------------
-	const { isOpen: isOpenUpdate, onOpen: onOpenUpdate } = useDisclosure()
-
 	//Query ---------------------------------------------------------------------
 	const { data: dataDetailHoliday } = detailHolidayQuery(
 		holidayIdProp || (holidayIdRouter as string)
 	)
-
-	//mutation ------------------------------------------------------------------
-	const [mutateDelHolidays, { status: statusDelHolidays, data: dataDelHolidays }] =
-		deleteHolidayMutation(setToast)
-
-	//Function ------------------------------------------------------------------
-	//handle open update drawer
-	const handleOpenUpdate = () => {
-		if (onCloseDrawer) {
-			onCloseDrawer()
-		}
-
-		onOpenUpdate()
-	}
-
-	//handle delete holiday
-	const onDeleteHoliday = () => {
-		if (!holidayIdProp && !holidayIdRouter) {
-			setToast({
-				msg: 'Not found holiday to delete',
-				type: 'warning',
-			})
-		}
-		mutateDelHolidays(holidayIdProp || (holidayIdRouter as string))
-	}
 
 	//User effect ---------------------------------------------------------------
 	//Handle check loged in
@@ -69,58 +38,10 @@ export default function DetailHoliday({ onCloseDrawer, holidayIdProp }: IDetailH
 		}
 	}, [isAuthenticated])
 
-	//Note when request success
-	useEffect(() => {
-		if (statusDelHolidays === 'success') {
-			//Close drawer when using drawer
-			if (onCloseDrawer) {
-				onCloseDrawer()
-			} else {
-				//If not use drawer will redirect to /holidays route
-				router.push('/holidays')
-			}
-
-			setToast({
-				type: 'success',
-				msg: dataDelHolidays?.message as string,
-			})
-		}
-	}, [statusDelHolidays])
-
 	return (
 		<>
 			<Box pos="relative" p={6} as={'form'} h="auto">
 				<Grid templateColumns="repeat(2, 1fr)" gap={6}>
-					{currentUser && currentUser.role === 'Admin' && (
-						<>
-							<GridItem w="100%" colSpan={2}>
-								<HStack w={'full'} justify={'space-between'}>
-									<Text fontSize={16} fontWeight={'semibold'}>
-										Holiday Details
-									</Text>
-									<HStack>
-										<Button
-											colorScheme="teal"
-											variant="ghost"
-											onClick={onOpenUpdate}
-										>
-											Edit
-										</Button>
-										<Button
-											colorScheme="teal"
-											variant="ghost"
-											onClick={onDeleteHoliday}
-										>
-											Delete
-										</Button>
-									</HStack>
-								</HStack>
-							</GridItem>
-							<GridItem w="100%" colSpan={2}>
-								<Divider />
-							</GridItem>
-						</>
-					)}
 					<GridItem w="100%" colSpan={[2, 1]} color={'gray.400'} fontWeight={'normal'}>
 						Date:
 					</GridItem>
@@ -134,21 +55,13 @@ export default function DetailHoliday({ onCloseDrawer, holidayIdProp }: IDetailH
 						{dataDetailHoliday?.holiday?.occasion}
 					</GridItem>
 				</Grid>
-
-				{statusDelHolidays === 'running' && <Loading />}
+				{
+					onOpenUpdate && <Button onClick={onOpenUpdate}>Update</Button>
+				}
+								{
+					onOpenDl && <Button onClick={onOpenDl}>delete</Button>
+				}
 			</Box>
-
-			<Drawer
-				size="xl"
-				title="Update Holiday"
-				onClose={handleOpenUpdate}
-				isOpen={isOpenUpdate}
-			>
-				<UpdateHoliday
-					onCloseDrawer={onOpenUpdate}
-					holidayId={holidayIdProp || (holidayIdRouter as string)}
-				/>
-			</Drawer>
 		</>
 	)
 }

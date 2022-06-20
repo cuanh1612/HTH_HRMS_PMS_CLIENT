@@ -181,7 +181,7 @@ export const Header = () => {
 							height={'40px'}
 							borderRadius={'full'}
 							name={currentUser?.name}
-							src="/"
+							src={currentUser?.avatar?.url}
 						/>
 					</MenuButton>
 					<MenuList>

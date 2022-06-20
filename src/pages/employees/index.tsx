@@ -402,7 +402,7 @@ const Employees: NextLayout = () => {
 										)}
 									</Text>
 									<Text isTruncated w={'full'} fontSize={'sm'} color={'gray.400'}>
-										Junior
+										{row.values['role']}
 									</Text>
 								</VStack>
 							</HStack>

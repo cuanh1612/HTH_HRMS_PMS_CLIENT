@@ -1,6 +1,7 @@
 import { AxiosError } from "axios"
 import { getDataDashBoardRequest } from "requests/dashboard"
 import useSWR from "swr"
+import { IpendingTasks } from "type/mutationResponses"
 
 export const pendingTasksQuery = (
 	isAuthenticated: boolean | null
@@ -80,7 +81,7 @@ export const todayAttendanceQuery = (
 export const pendingTasksRawQuery = (
 	isAuthenticated: boolean | null
 ) => {
-	return useSWR<any, AxiosError>(
+	return useSWR<IpendingTasks, AxiosError>(
 		isAuthenticated 
 			? `/pending-tasks-raw`
 			: null,
@@ -257,5 +258,34 @@ export const projectsHoursLoggedQuery = (
 	)
 }
 
+export const countByDateAttendanceQuery = (
+	isAuthenticated: boolean | null
+) => {
+	return useSWR<any, AxiosError>(
+		isAuthenticated 
+			? `/count-by-date-attendance`
+			: null,
+		getDataDashBoardRequest,
+		{
+			errorRetryCount: 2,
+			revalidateOnFocus: false,
+		}
+	)
+}
+
+export const countByDateLeaveQuery = (
+	isAuthenticated: boolean | null
+) => {
+	return useSWR<any, AxiosError>(
+		isAuthenticated 
+			? `/count-by-date-leave`
+			: null,
+		getDataDashBoardRequest,
+		{
+			errorRetryCount: 2,
+			revalidateOnFocus: false,
+		}
+	)
+}
 
 

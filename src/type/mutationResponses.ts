@@ -300,3 +300,7 @@ export interface NotificationMutaionResponse extends commonResponse {
 	notification?: notificationType
 	notifications?: notificationType[]
 }
+
+export interface IpendingTasks  extends commonResponse {
+	pendingTasksRaw: taskType[]
+}

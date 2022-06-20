@@ -1,4 +1,14 @@
-import { Box, Collapse, Grid, GridItem, HStack, Text, useDisclosure } from '@chakra-ui/react'
+import {
+	Box,
+	Collapse,
+	Grid,
+	GridItem,
+	HStack,
+	Text,
+	useDisclosure,
+	VStack,
+} from '@chakra-ui/react'
+import { Bar } from 'components/charts'
 import { Card } from 'components/common'
 import { ClientLayout } from 'components/layouts'
 import { AuthContext } from 'contexts/AuthContext'
@@ -14,6 +24,8 @@ import {
 	pendingMilestoneQuery,
 	pendingTasksQuery,
 	pendingTasksRawQuery,
+	projectsEarningQuery,
+	projectsHoursLoggedQuery,
 	statusWiseProjects,
 	todayAttendanceQuery,
 	totalClientsQuery,
@@ -21,7 +33,12 @@ import {
 	totalProjectsQuery,
 } from 'queries/dashboard'
 import { useContext, useEffect } from 'react'
-import { AiOutlineCaretDown, AiOutlineCaretUp, AiOutlineCheck, AiOutlineProject } from 'react-icons/ai'
+import {
+	AiOutlineCaretDown,
+	AiOutlineCaretUp,
+	AiOutlineCheck,
+	AiOutlineProject,
+} from 'react-icons/ai'
 import { BiTimeFive } from 'react-icons/bi'
 import { BsPerson } from 'react-icons/bs'
 import { VscTasklist } from 'react-icons/vsc'
@@ -32,8 +49,8 @@ const dashboard: NextLayout = () => {
 	const router = useRouter()
 
 	//
-	const {onToggle: onToggleCards, isOpen: isOpenCards} = useDisclosure({
-		defaultIsOpen: true
+	const { onToggle: onToggleCards, isOpen: isOpenCards } = useDisclosure({
+		defaultIsOpen: true,
 	})
 
 	//Query -------------------------------------------------------------
@@ -52,8 +69,10 @@ const dashboard: NextLayout = () => {
 	const { data: dataClientWiseEarnings } = clientWiseEarningsQuery(isAuthenticated)
 	const { data: dataClientWiseTimeLogs } = clientWiseTimeLogsQuery(isAuthenticated)
 	const { data: dataLastestClients } = lastestClientsQuery(isAuthenticated)
+	const { data: dataProjectsEarning } = projectsEarningQuery(isAuthenticated)
+	const { data: dataProjectsHoursLogged } = projectsHoursLoggedQuery(isAuthenticated)
 
-	console.log(dataTotalClients)
+	console.log(dataPendingTasksRaw)
 
 	//Useeffect ---------------------------------------------------------
 	//Handle check loged in
@@ -137,6 +156,81 @@ const dashboard: NextLayout = () => {
 					/>
 				</Grid>
 			</Collapse>
+			<Grid w={'full'} templateColumns={['repeat(1, 1fr)', null, null, 'repeat(2, 1fr)']} gap={6}>
+				<GridItem border={'1px solid red'} pos={'relative'}>
+					<VStack spacing={'4'} alignItems={'start'} w={'full'}>
+						<Text fontWeight={'semibold'} fontSize={'xl'}>
+							Earnings
+						</Text>
+						<Box
+							id={'hoang'}
+							w={'full'}
+							padding={'20px'}
+							border={'2px solid'}
+							borderColor={'hu-Green.normal'}
+							borderRadius={'10px'}
+							h={'300px'}
+						>
+							{
+								dataProjectsEarning && (
+									<Bar
+										isMoney={true}
+										isShowLabel
+										colors={['#00A991']}
+										labels={dataProjectsEarning.sumEarningLoggedProjects.map((e: any)=> {
+											return e.name
+										})}
+										data={
+											dataProjectsEarning.sumEarningLoggedProjects.map((e: any)=> {
+												return e.sum
+											}) as number[]
+										}
+										height={260}
+									/>
+								)
+							}
+						</Box>
+					</VStack>
+				</GridItem>
+
+
+
+				<GridItem border={'1px solid red'} pos={'relative'}>
+					<VStack spacing={'4'} alignItems={'start'} w={'full'}>
+						<Text fontWeight={'semibold'} fontSize={'xl'}>
+							Earnings
+						</Text>
+						<Box
+							id={'hoang'}
+							w={'full'}
+							padding={'20px'}
+							border={'2px solid'}
+							borderColor={'hu-Green.normal'}
+							borderRadius={'10px'}
+							h={'300px'}
+						>
+							{
+								dataProjectsEarning && (
+									<Bar
+										isMoney={true}
+										isShowLabel
+										colors={['#00A991']}
+										labels={dataProjectsEarning.sumEarningLoggedProjects.map((e: any)=> {
+											return e.name
+										})}
+										data={
+											dataProjectsEarning.sumEarningLoggedProjects.map((e: any)=> {
+												return e.sum
+											}) as number[]
+										}
+										height={260}
+									/>
+								)
+							}
+						</Box>
+					</VStack>
+				</GridItem>
+			</Grid>
 		</Box>
 	)
 }

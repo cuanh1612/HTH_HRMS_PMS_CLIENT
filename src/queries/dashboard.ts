@@ -227,4 +227,35 @@ export const lastestClientsQuery = (
 	)
 }
 
+export const projectsEarningQuery = (
+	isAuthenticated: boolean | null
+) => {
+	return useSWR<any, AxiosError>(
+		isAuthenticated 
+			? `/projects-earning`
+			: null,
+		getDataDashBoardRequest,
+		{
+			errorRetryCount: 2,
+			revalidateOnFocus: false,
+		}
+	)
+}
+
+export const projectsHoursLoggedQuery = (
+	isAuthenticated: boolean | null
+) => {
+	return useSWR<any, AxiosError>(
+		isAuthenticated 
+			? `/projects-hours-logged`
+			: null,
+		getDataDashBoardRequest,
+		{
+			errorRetryCount: 2,
+			revalidateOnFocus: false,
+		}
+	)
+}
+
+
 

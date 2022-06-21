@@ -528,3 +528,8 @@ export interface ITile {
 	id: string
 	isCurrentUser: boolean
 }
+
+export interface skillType {
+	id: number
+	name: string
+}

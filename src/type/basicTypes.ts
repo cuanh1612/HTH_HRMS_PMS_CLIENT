@@ -527,12 +527,9 @@ export interface companyInfoType {
 export interface ITile {
 	id: string
 	isCurrentUser: boolean
-<<<<<<< HEAD
 }
 
 export interface skillType {
 	id: number
 	name: string
-=======
->>>>>>> b3b6d4015556a10c687439a69c698f632aa2588e
 }

@@ -18,6 +18,7 @@ export function middleware(req: NextRequest) {
 	switch (paths[1]) {
 		case 'dashboard':
 		case 'clients':
+		case 'employees':
 			if (roleCurrentUser != 'Admin') {
 				return redirect403()
 			}
@@ -31,8 +32,8 @@ export function middleware(req: NextRequest) {
 				return redirect403()
 			}
 			break
-		case 'employees':
-			if (roleCurrentUser != 'Admin') {
+		case 'private-dashboard-client':
+			if (roleCurrentUser != 'Client') {
 				return redirect403()
 			}
 			break

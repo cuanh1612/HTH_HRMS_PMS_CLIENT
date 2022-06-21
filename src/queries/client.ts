@@ -93,7 +93,7 @@ export const countContractSignedQuery = (
 	clientId?: string | number | null
 ) => {
 	return useSWR<countContractSignedClientMutaionResponse, AxiosError>(
-		isAuthenticated && clientId ? `/contracts/client/${clientId}/count-contracts-signed` : null,
+		isAuthenticated && clientId ? `contracts/client/${clientId}/count-contracts-signed` : null,
 		detailClientRequest,
 		{
 			errorRetryCount: 2,
@@ -107,7 +107,7 @@ export const pendingMilestoneClientQuery = (
 	clientId?: string | number | null
 ) => {
 	return useSWR<pendingMilestoneClientMutaionResponse, AxiosError>(
-		isAuthenticated ? `clients/${clientId}/pending-milestone` : null,
+		isAuthenticated && clientId ? `clients/${clientId}/pending-milestone` : null,
 		detailClientRequest,
 		{
 			errorRetryCount: 2,

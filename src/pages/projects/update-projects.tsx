@@ -405,7 +405,7 @@ export default function UpdateProject({ onCloseDrawer, projectIdUpdate }: IUpdat
 						</VStack>
 					</GridItem>
 
-					<GridItem w="100%" colSpan={[2, 1]}>
+					<GridItem zIndex={20} w="100%" colSpan={[2, 1]}>
 						<SelectCustom
 							name="project_status"
 							label="Project Status"

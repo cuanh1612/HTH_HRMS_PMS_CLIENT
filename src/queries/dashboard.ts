@@ -288,4 +288,34 @@ export const countByDateLeaveQuery = (
 	)
 }
 
+export const countProjectsOverdueQuery = (
+	isAuthenticated: boolean | null
+) => {
+	return useSWR<any, AxiosError>(
+		isAuthenticated 
+			? `/count-project-overdue`
+			: null,
+		getDataDashBoardRequest,
+		{
+			errorRetryCount: 2,
+			revalidateOnFocus: false,
+		}
+	)
+}
+
+export const lateAttendanceQuery = (
+	isAuthenticated: boolean | null
+) => {
+	return useSWR<any, AxiosError>(
+		isAuthenticated 
+			? `/count-by-date-leave`
+			: null,
+		getDataDashBoardRequest,
+		{
+			errorRetryCount: 2,
+			revalidateOnFocus: false,
+		}
+	)
+}
+
 

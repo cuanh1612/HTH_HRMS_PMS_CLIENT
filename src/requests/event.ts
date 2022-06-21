@@ -1,6 +1,6 @@
 import { createEventForm, updateEventForm } from 'type/form/basicFormType'
 import { eventMutaionResponse } from 'type/mutationResponses'
-import { getData, postData, putData } from 'utils/fetchData'
+import { deleteData, getData, postData, putData } from 'utils/fetchData'
 
 //Function handle create
 export async function createEventRequest(inputCreate: createEventForm) {
@@ -39,5 +39,13 @@ export async function updateEventRequest({
 export const allEventsRequest = async (url: string) => {
 	return await getData<eventMutaionResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/${url}`,
+	})
+}
+
+
+//Handle to delete event
+export const deleteEventRequest = async (id: string) => {
+	return await deleteData<eventMutaionResponse>({
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/events/${id}`,
 	})
 }

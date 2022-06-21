@@ -118,7 +118,7 @@ const Overview: NextLayout = () => {
 										)}
 										data={
 											dataCountStatus.countstatusTasks.map(
-												(e) => e.count
+												(e) => Number(e.count)
 											) as number[]
 										}
 										height={280}

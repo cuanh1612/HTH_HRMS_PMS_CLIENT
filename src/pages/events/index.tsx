@@ -33,7 +33,7 @@ import { useContext, useEffect, useState } from 'react'
 import { NextLayout } from 'type/element/layout'
 import AddEvent from './add-events'
 import UpdateEvent from './update-events'
-import { ButtonIcon } from 'components/common'
+import { AlertDialog, ButtonIcon } from 'components/common'
 import { MdOutlineNavigateBefore, MdOutlineNavigateNext } from 'react-icons/md'
 import { IOption } from 'type/basicTypes'
 import { Input, SelectCustom } from 'components/filter'
@@ -41,11 +41,14 @@ import { AiOutlineSearch } from 'react-icons/ai'
 import { IFilter } from 'type/tableTypes'
 import { CSVLink } from 'react-csv'
 import { FaFileCsv } from 'react-icons/fa'
+import DetailEvent from './[eventId]'
+import { deleteEventMutation } from 'mutations'
 
 var timeoutName: NodeJS.Timeout
 
 const Event: NextLayout = () => {
-	const { isAuthenticated, handleLoading, socket, currentUser } = useContext(AuthContext)
+	const { isAuthenticated, handleLoading, socket, currentUser, setToast } =
+		useContext(AuthContext)
 	const router = useRouter()
 
 	const { colorMode } = useColorMode()
@@ -53,7 +56,7 @@ const Event: NextLayout = () => {
 	const dayHeader = useColorModeValue('dayHeader', 'dayHeader--dark')
 
 	//State ---------------------------------------------------------------------
-	const [eventIdUpdate, setEventIdUpdate] = useState<number | null>(null)
+	const [eventId, setEventId] = useState<number | null>(null)
 
 	//state csv
 	const [dataCSV, setDataCSV] = useState<any[]>([])
@@ -88,6 +91,9 @@ const Event: NextLayout = () => {
 	//Setup drawer --------------------------------------------------------------
 	const { isOpen: isOpenAdd, onOpen: onOpenAdd, onClose: onCloseAdd } = useDisclosure()
 	const { isOpen: isOpenUpdate, onOpen: onOpenUpdate, onClose: onCloseUpdate } = useDisclosure()
+	const { isOpen: isOpenDetail, onOpen: onOpenDetail, onClose: onCloseDetail } = useDisclosure()
+	// set isOpen of dialog to delete one
+	const { isOpen: isOpenDialogDl, onOpen: onOpenDl, onClose: onCloseDl } = useDisclosure()
 
 	// set isOpen of dialog to filters
 	const { isOpen: isOpenFilter, onClose: onCloseFilter, onOpen: onOpenFilter } = useDisclosure()
@@ -100,10 +106,25 @@ const Event: NextLayout = () => {
 		name
 	)
 
+	// delete
+	const [mutateDlEvent, { status: statusDl }] = deleteEventMutation(setToast)
+
 	const { data: allEmployees } = allEmployeesNormalQuery(isAuthenticated)
 	const { data: allClients } = allClientsQuery(isAuthenticated)
 
 	//User effect ---------------------------------------------------------------
+	// check is successfully delete one
+	useEffect(() => {
+		if (statusDl == 'success') {
+			setToast({
+				msg: 'Delete employee successfully',
+				type: 'success',
+			})
+			refetchEvents()
+			onCloseDetail()
+		}
+	}, [statusDl])
+
 	useEffect(() => {
 		if (allEvents) {
 			const newData = allEvents.Events?.map((item): EventInput => {
@@ -143,7 +164,6 @@ const Event: NextLayout = () => {
 
 	// set calendar
 	useEffect(() => {
-		console.log(data)
 		setCalendar(
 			new Calendar(document.getElementById('calendar') as HTMLElement, {
 				plugins: [interactionPlugin, dayGridPlugin, listPlugin, timeGridPlugin],
@@ -182,8 +202,8 @@ const Event: NextLayout = () => {
 			})
 
 			calendar.on('eventClick', (info) => {
-				setEventIdUpdate(Number(info.event.id))
-				onOpenUpdate()
+				setEventId(Number(info.event.id))
+				onOpenDetail()
 			})
 
 			calendar.on('eventDragStop', (info) => {
@@ -372,8 +392,31 @@ const Event: NextLayout = () => {
 				<AddEvent onCloseDrawer={onCloseAdd} />
 			</Drawer>
 			<Drawer size="xl" title="Update Event" onClose={onCloseUpdate} isOpen={isOpenUpdate}>
-				<UpdateEvent onCloseDrawer={onCloseUpdate} eventIdUpdate={eventIdUpdate} />
+				<UpdateEvent onCloseDrawer={onCloseUpdate} eventIdUpdate={eventId} />
 			</Drawer>
+			<Drawer size="md" title="Detail Event" onClose={onCloseDetail} isOpen={isOpenDetail}>
+				<DetailEvent
+					onOpenUpdate={() => {
+						onOpenUpdate()
+						onCloseDetail()
+					}}
+					onOpenDl={() => {
+						onOpenDl()
+					}}
+					EventIdProp={eventId}
+				/>
+			</Drawer>
+
+			{/* alert dialog when delete one */}
+			<AlertDialog
+				handleDelete={() => {
+					mutateDlEvent(String(eventId))
+				}}
+				title="Are you sure?"
+				content="You will not be able to recover the deleted record!"
+				isOpen={isOpenDialogDl}
+				onClose={onCloseDl}
+			/>
 
 			<CDrawer isOpen={isOpenFilter} placement="right" onClose={onCloseFilter}>
 				<DrawerOverlay />

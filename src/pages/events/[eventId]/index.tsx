@@ -19,7 +19,7 @@ import 'react-quill/dist/quill.bubble.css'
 import 'react-quill/dist/quill.snow.css'
 
 export interface IDetailEventProps {
-	EventIdProp?: string | number
+	EventIdProp: string | number | null
 	onOpenDl?: any
 	onOpenUpdate?: any
 }
@@ -50,12 +50,6 @@ export default function DetailEvent({ EventIdProp, onOpenDl, onOpenUpdate }: IDe
 	return (
 		<>
 			<Box pos="relative" p={6}>
-				<VStack align={"start"}>
-					<Text fontSize={20} fontWeight={'semibold'}>
-						{detailEvent?.event?.name}
-					</Text>
-					<Divider />
-				</VStack>
 				<Grid templateColumns="repeat(2, 1fr)" gap={6} mt={2}>
 					<GridItem w="100%" colSpan={[2, 1]} color={'gray.400'}>
 						Event Name:

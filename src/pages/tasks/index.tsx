@@ -317,7 +317,7 @@ const tasks: NextLayout = () => {
 					Cell: ({ value }) => {
 						const date = new Date(value)
 						return (
-							<Text color={'red'} isTruncated>{`${date.getDate()}-${
+							<Text color={date.getTime() <= new Date().getTime() ?'red': 'black'} isTruncated>{`${date.getDate()}-${
 								date.getMonth() + 1
 							}-${date.getFullYear()}`}</Text>
 						)

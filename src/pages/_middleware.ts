@@ -14,23 +14,33 @@ export function middleware(req: NextRequest) {
 	const roleCurrentUser = token
 		? jwtDecode<JwtPayload & { userId: number; role: string; email: string }>(token).role
 		: null
+	console.log(paths[1])
 	switch (paths[1]) {
+		case 'dashboard':
 		case 'clients':
-			if (roleCurrentUser == 'Client' || roleCurrentUser == 'Employee') {
+			if (roleCurrentUser != 'Admin') {
 				return redirect403()
 			}
+			break
 		case 'leaves':
-		case 'employees':
 		case 'attendance':
 		case 'holidays':
 		case 'messages':
+		case 'private-dashboard':
 			if (roleCurrentUser == 'Client') {
 				return redirect403()
 			}
+			break
+		case 'employees':
+			if (roleCurrentUser != 'Admin') {
+				return redirect403()
+			}
+			break
 		case 'contracts':
 			if (roleCurrentUser == 'Employee') {
 				return redirect403()
 			}
+			break
 	}
 	if (paths.includes('projects')) {
 		if (paths.includes('milestones')) {

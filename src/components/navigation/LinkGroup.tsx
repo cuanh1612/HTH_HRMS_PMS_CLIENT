@@ -16,16 +16,32 @@ interface ILinkGroup {
 export default function LinkGroup({ title, icon, data }: ILinkGroup) {
 	const { isOpen, onToggle, onOpen } = useDisclosure()
 	const { pathname } = useRouter()
+	const [currentData, setCurrentData] = useState<ILinkItem[]>([])
 	const [links, setLinks] = useState<string[]>([])
 	const [paths, setPaths] = useState<string[]>([])
 	const { currentUser } = useContext(AuthContext)
 
 	useEffect(() => {
-		if (data) {
-			const result = data.map((item) => item.link)
+		if (currentData) {
+			const result = currentData.map((item) => item.link)
 			setLinks(result)
 		}
+	}, [currentData])
+
+	useEffect(() => {
+		setCurrentData(data)
 	}, [data])
+
+	useEffect(() => {
+		if (currentUser) {
+			if (currentUser.role == 'Employee') {
+				const newData = currentData.filter(e=> {
+					return e.title != 'Employees'
+				})
+				setCurrentData(newData)
+			}
+		}
+	}, [ currentData, currentUser])
 
 	useEffect(() => {
 		if (pathname) {
@@ -85,7 +101,7 @@ export default function LinkGroup({ title, icon, data }: ILinkGroup) {
 						borderLeft={'1px solid'}
 						borderColor={'gray.300'}
 					>
-						{data.map((item, key) => {
+						{currentData.map((item, key) => {
 							if (item.title == 'Contracts') {
 								if (currentUser?.role == 'Employee') {
 									return

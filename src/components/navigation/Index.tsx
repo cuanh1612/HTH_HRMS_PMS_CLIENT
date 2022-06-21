@@ -14,13 +14,13 @@ import {
 } from '@chakra-ui/react'
 import { AuthContext } from 'contexts/AuthContext'
 import React, { useState, useEffect, useContext } from 'react'
-import { AiOutlineFile, AiOutlineProject, AiOutlineUsergroupAdd } from 'react-icons/ai'
+import { AiOutlineFile, AiOutlineHome, AiOutlineProject, AiOutlineUsergroupAdd } from 'react-icons/ai'
 import { BiMessageDots, BiTime } from 'react-icons/bi'
 import { BsCheck2, BsPerson } from 'react-icons/bs'
 import { VscTasklist } from 'react-icons/vsc'
 import { IoIosGitNetwork } from 'react-icons/io'
 import { IoAirplaneOutline, IoExitOutline } from 'react-icons/io5'
-import { MdOutlineEditNote, MdOutlineEvent } from 'react-icons/md'
+import { MdOutlineDashboard, MdOutlineDashboardCustomize, MdOutlineEditNote, MdOutlineEvent } from 'react-icons/md'
 import LinkGroup from './LinkGroup'
 import LinkItem from './LinkItem'
 import { companyInfoQuery } from 'queries/companyInfo'
@@ -30,7 +30,29 @@ const LinkItems = () => {
 
 	return (
 		<>
-			{currentUser?.role != ('Client' && 'Employee') && (
+			{currentUser?.role == 'Admin' && (
+				<LinkGroup
+					data={[
+						{
+							icon: <MdOutlineDashboardCustomize fontSize={20} />,
+							link: '/dashboard',
+							title: 'Admin dashboard',
+						},
+						{
+							icon: <MdOutlineDashboard fontSize={20} />,
+							link: '/private-dashboard',
+							title: 'Private dashboard',
+						},
+					]}
+					title="Dashboard"
+					icon={<AiOutlineHome fontSize={20} />}
+				/>
+			)}
+			{currentUser?.role == 'Employee' && (
+				<LinkItem link="/private-dashboard" title="Dashboard" icon={<AiOutlineHome fontSize={20} />} />
+			)}
+			
+			{currentUser?.role == 'Admin' && (
 				<LinkItem link="/clients" title="Clients" icon={<BsPerson fontSize={20} />} />
 			)}
 			{currentUser?.role != 'Client' && (

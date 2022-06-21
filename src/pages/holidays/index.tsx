@@ -31,7 +31,7 @@ import {
 import { BiExport } from 'react-icons/bi'
 import { FaFileCsv } from 'react-icons/fa'
 import { IoAdd, IoEyeOutline } from 'react-icons/io5'
-import { MdOutlineDeleteOutline, MdOutlineMoreVert } from 'react-icons/md'
+import { MdOutlineDeleteOutline, MdOutlineEvent, MdOutlineMoreVert } from 'react-icons/md'
 import { RiPencilLine } from 'react-icons/ri'
 import { VscFilter } from 'react-icons/vsc'
 import { NextLayout } from 'type/element/layout'
@@ -90,8 +90,7 @@ const Holiday: NextLayout = () => {
 	const [idDlHoliday, setIdDlHoliday] = useState<number>()
 
 	// get all holidays
-	const { data: allHolidays, mutate: refetchAllHolidays } = allHolidaysQuery()
-	console.log(allHolidays)
+	const { data: allHolidays, mutate: refetchAllHolidays } = allHolidaysQuery({})
 
 	// set filter
 	const [filter, setFilter] = useState<IFilter>({
@@ -157,7 +156,7 @@ const Holiday: NextLayout = () => {
 	useEffect(() => {
 		if (statusDlHolidays == 'success') {
 			setToast({
-				msg: 'Delete employees successfully',
+				msg: 'Delete holidays successfully',
 				type: 'success',
 			})
 			setDataSl(null)
@@ -169,7 +168,7 @@ const Holiday: NextLayout = () => {
 	useEffect(() => {
 		if (statusDl == 'success') {
 			setToast({
-				msg: 'Delete employee successfully',
+				msg: 'Delete holiday successfully',
 				type: 'success',
 			})
 			refetchAllHolidays()
@@ -394,6 +393,14 @@ const Holiday: NextLayout = () => {
 						action={onOpenFilter}
 					/>
 					<Func
+						icon={<MdOutlineEvent />}
+						title={'Calendar'}
+						description={'show tasks as calendar'}
+						action={() => {
+							router.push('/holidays/calendar')
+						}}
+					/>
+					<Func
 						icon={<AiOutlineDelete />}
 						title={'Delete all'}
 						description={'Delete all holiday you selected'}
@@ -570,14 +577,13 @@ const Holiday: NextLayout = () => {
 				<UpdateHoliday onCloseDrawer={onCloseUpdate} holidayId={holidayIdUpdate} />
 			</Drawer>
 			<Drawer
-				size="xl"
+				size="sm"
 				title="Detail Holiday"
 				onClose={handleCloseDetailHoliday}
 				isOpen={isOpenDetail}
 			>
 				<DetailHoliday
 					holidayIdProp={holidayIdDetail}
-					onCloseDrawer={handleCloseDetailHoliday}
 				/>
 			</Drawer>
 		</>

@@ -23,9 +23,7 @@ export default function NotificationItem({ notification }: INotificationItemProp
 	//Handle click notfications
 	const onClickNotification = () => {
 		mutateDeleteNotification(notification.id)
-
 		refetchNotifications()
-
 		router.push(notification.url)
 	}
 

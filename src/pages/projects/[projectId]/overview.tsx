@@ -296,6 +296,7 @@ const Overview: NextLayout = () => {
 							>
 								{dataDetailProject && dataEarning && (
 									<Bar
+										isMoney={true}
 										colors={['#00A991', '#FFAAA7']}
 										labels={['Planned', 'Actual']}
 										data={

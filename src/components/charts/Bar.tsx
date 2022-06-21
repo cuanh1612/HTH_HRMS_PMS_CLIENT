@@ -3,23 +3,26 @@ const Chart = dynamic(() => import('react-apexcharts'), { ssr: false })
 
 interface IChart {
     labels: string[],
-    colors: string[],
+    colors?: string[],
     data: number[]
     height: number
+	distributed?: boolean
+	isMoney?: boolean
+	isShowLabel?: boolean
 }
 
-export const Bar = ({labels, colors, data, height}: IChart) => {
+export const Bar = ({labels, colors, data, height, distributed = true, isMoney = false, isShowLabel= false}: IChart) => {
 	return (
 		<Chart
 			options={{
 				dataLabels: {
 					enabled: true,
-					formatter: function (val) {
-						return Intl.NumberFormat('en-US', {
-							style: 'currency',
-							currency: 'USD',
-							useGrouping: false,
-						}).format(Number(val))
+					formatter:  (val): any=> {
+						return isMoney ? Intl.NumberFormat('en-US', {
+								style: 'currency',
+								currency: 'USD',
+								useGrouping: false,
+							}).format(Number(val)) : val
 					},
 					offsetY: -20,
 					style: {
@@ -27,7 +30,7 @@ export const Bar = ({labels, colors, data, height}: IChart) => {
 						colors: colors,
 					},
 				},
-				colors: ['#00A991', '#FFAAA7'],
+				colors,
 				stroke: {
 					show: true,
 					curve: 'smooth',
@@ -35,10 +38,13 @@ export const Bar = ({labels, colors, data, height}: IChart) => {
 					width: 0,
 					dashArray: 0,
 				},
+				legend: {
+					show: !isShowLabel,
+				},
 				xaxis: {
 					categories: labels,
 					labels: {
-						show: false,
+						show: isShowLabel,
 					},
 				},
                 grid: {
@@ -74,12 +80,13 @@ export const Bar = ({labels, colors, data, height}: IChart) => {
 						dataLabels: {
 							position: 'top', // top, center, bottom,
 						},
-						distributed: true,
+						distributed,
 					},
 				},
 			}}
 			series={[
 				{
+					name: '',
 					data
 				},
 			]}

@@ -28,16 +28,18 @@ import {
 import { NextLayout } from 'type/element/layout'
 // use layout
 import { ClientLayout } from 'components/layouts'
-import{ ButtonIcon }from 'components/common'
+import { AlertDialog, ButtonIcon } from 'components/common'
 import { MdOutlineNavigateBefore, MdOutlineNavigateNext } from 'react-icons/md'
-import {Drawer} from 'components/Drawer'
+import { Drawer } from 'components/Drawer'
 import UpdateLeaves from './update-leaves'
 import AddLeaves from './add-leaves'
 import { useRouter } from 'next/router'
-import { allEmployeesQuery, allLeaveQuery, allLeaveTypesQuery} from 'queries'
-import { Select, SelectCustom} from 'components/filter'
+import { allEmployeesQuery, allLeaveQuery, allLeaveTypesQuery } from 'queries'
+import { Select, SelectCustom } from 'components/filter'
 import { IFilter } from 'type/tableTypes'
 import { IOption } from 'type/basicTypes'
+import DetailLeave from './[leaveId]'
+import { deleteLeaveMutation } from 'mutations'
 
 const calendar: NextLayout = () => {
 	const { colorMode } = useColorMode()
@@ -46,31 +48,43 @@ const calendar: NextLayout = () => {
 	// style
 	const dayHeader = useColorModeValue('dayHeader', 'dayHeader--dark')
 
-	// set filter
-	// const [filter, setFilter] = useState<IFilter>({
-	// 	columnId: '',
-	// 	filterValue: '',
-	// })
-
-	const { isAuthenticated, handleLoading } = useContext(AuthContext)
+	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
 	const [calendar, setCalendar] = useState<Calendar>()
 	const [data, setData] = useState<EventInput[]>([])
 	const [employeesFilter, setEmployeesFilter] = useState<IOption[]>([])
 	const [employee, setEmployee] = useState<string>()
 	const [type, setType] = useState<string>()
 	const [status, setStatus] = useState<string>()
+	const [leaveId, setLeaveId] = useState<number | null>(30)
 
 	const { isOpen: isOpenUpdate, onOpen: onOpenUpdate, onClose: onCloseUpdate } = useDisclosure()
 	const { isOpen: isOpenAdd, onOpen: onOpenAdd, onClose: onCloseAdd } = useDisclosure()
+	const { isOpen: isOpenDetail, onOpen: onOpenDetail, onClose: onCloseDetail } = useDisclosure()
+
 	// set isOpen of dialog to filters
 	const { isOpen: isOpenFilter, onClose: onCloseFilter, onOpen: onOpenFilter } = useDisclosure()
-	const [leaveIdUpdate, setLeaveIdUpdate] = useState<number | null>(30)
+
+		// set isOpen of dialog to delete one
+		const {
+			isOpen: isOpenDialogDl,
+			onOpen: onOpenDl,
+			onClose: onCloseDl,
+		} = useDisclosure()
 
 	// query
-	const { data: allLeaves } = allLeaveQuery({isAuthenticated, employee, status, leaveType: type})
+	const { data: allLeaves, mutate: refetchAllLeaves } = allLeaveQuery({
+		isAuthenticated,
+		employee,
+		status,
+		leaveType: type,
+	})
 
 	const { data: allEmployees } = allEmployeesQuery(isAuthenticated)
 	const { data: allLeaveTypes } = allLeaveTypesQuery()
+
+	// mutate
+	// delete leave
+	const [mutateDeleteLeave, { status: statusDl }] = deleteLeaveMutation(setToast)
 
 	useEffect(() => {
 		if (isAuthenticated) {
@@ -81,6 +95,18 @@ const calendar: NextLayout = () => {
 			}
 		}
 	}, [isAuthenticated])
+
+	// check is successfully delete one
+	useEffect(() => {
+		if (statusDl == 'success') {
+			setToast({
+				msg: 'Delete leave successfully',
+				type: 'success',
+			})
+			refetchAllLeaves()
+			onCloseDetail()
+		}
+	}, [statusDl])
 
 	useEffect(() => {
 		if (allLeaves) {
@@ -139,8 +165,8 @@ const calendar: NextLayout = () => {
 			})
 
 			calendar.on('eventClick', (info) => {
-				setLeaveIdUpdate(Number(info.event.id))
-				onOpenUpdate()
+				setLeaveId(Number(info.event.id))
+				onOpenDetail()
 			})
 
 			calendar.on('eventDragStop', (info) => {
@@ -220,15 +246,6 @@ const calendar: NextLayout = () => {
 					>
 						filter
 					</Button>
-					<Button
-						onClick={() => {
-							setEmployee(undefined)
-							setStatus(undefined)
-							setType(undefined)
-						}}
-					>
-						reset filter
-					</Button>
 				</ButtonGroup>
 
 				<ButtonGroup spacing={4}>
@@ -252,89 +269,120 @@ const calendar: NextLayout = () => {
 				</ButtonGroup>
 			</HStack>
 			<Box id={'calendar'} />
+			{/* drawer to detail leave */}
+			<Drawer size="md" title="Detail leave" onClose={onCloseDetail} isOpen={isOpenDetail}>
+				<DetailLeave
+					onOpenUpdate={() => {
+						onOpenUpdate()
+					}}
+					onOpenDl={() => {
+						onOpenDl()
+					}}
+					leaveId={leaveId}
+				/>
+			</Drawer>
+
 			{/* drawer to update leave */}
 			<Drawer size="xl" title="Update leave" onClose={onCloseUpdate} isOpen={isOpenUpdate}>
-				<UpdateLeaves onCloseDrawer={onCloseUpdate} leaveId={leaveIdUpdate} />
+				<UpdateLeaves onCloseDrawer={onCloseUpdate} leaveId={leaveId} />
 			</Drawer>
 
 			{/* drawer to add leave */}
 			<Drawer size="xl" title="Add leave" onClose={onCloseAdd} isOpen={isOpenAdd}>
 				<AddLeaves onCloseDrawer={onCloseAdd} />
 			</Drawer>
-			<CDrawer isOpen={isOpenFilter} placement="right" onClose={onCloseFilter}>
-				<DrawerOverlay />
-				<DrawerContent>
-					<DrawerCloseButton />
-					<DrawerHeader>Filters</DrawerHeader>
 
-					<DrawerBody>
-						<VStack spacing={5}>
-							{employeesFilter && (
-								<SelectCustom
-									handleSearch={(field: any) => {
-										setEmployee(String(field.value))
-									}}
-									label={'Employee'}
-									name={'employee'}
-									options={[
-										{
-											label: (
-												<Text
-													color={colorMode == 'light' ? 'black' : 'white'}
-												>
-													all
-												</Text>
-											),
-											value: '',
-										},
+			{/* alert dialog when delete one */}
+			<AlertDialog
+				handleDelete={() => {
+					mutateDeleteLeave(String(leaveId))
+				}}
+				title="Are you sure?"
+				content="You will not be able to recover the deleted record!"
+				isOpen={isOpenDialogDl}
+				onClose={onCloseDl}
+			/>
 
-										...employeesFilter,
-									]}
-									required={false}
-								/>
-							)}
+			<Drawer
+				footer={
+					<Button
+						onClick={() => {
+							setEmployee(undefined)
+							setStatus(undefined)
+							setType(undefined)
+						}}
+					>
+						Reset
+					</Button>
+				}
+				isOpen={isOpenFilter}
+				size={'xs'}
+				title={'Leave detail'}
+				onClose={onCloseFilter}
+			>
+				<VStack p={6} spacing={5}>
+					{employeesFilter && (
+						<SelectCustom
+							handleSearch={(field: any) => {
+								setEmployee(String(field.value))
+							}}
+							label={'Employee'}
+							name={'employee'}
+							options={[
+								{
+									label: (
+										<Text color={colorMode == 'light' ? 'black' : 'white'}>
+											all
+										</Text>
+									),
+									value: '',
+								},
 
-							<Select
-								options={[
-									{
-										label: 'Pending',
-										value: 'Pending',
-									},
-									{
-										label: 'Rejected',
-										value: 'Rejected',
-									},
-									{
-										label: 'Approved',
-										value: 'Approved',
-									},
-								]}
-								handleSearch={(data: IFilter) => {
-									setStatus(data.filterValue)
-								}}
-								columnId={'status'}
-								label="Leave status"
-								placeholder="Select status"
-								required={false}
-							/>
+								...employeesFilter,
+							]}
+							required={false}
+						/>
+					)}
 
-							<Select
-								options={allLeaveTypes?.leaveTypes?.map((leaveType) => ({
-									label: leaveType.name,
-									value: leaveType.id,
-								}))}
-								handleSearch={(data: IFilter) => {
-									setType(data.filterValue)
-								}}
-								columnId={'leave_type'}
-								label="Leave type"
-								placeholder="Select type"
-								required={false}
-							/>
-						</VStack>
-					</DrawerBody>
-				</DrawerContent>
-			</CDrawer>
+					<Select
+						options={[
+							{
+								label: 'Pending',
+								value: 'Pending',
+							},
+							{
+								label: 'Rejected',
+								value: 'Rejected',
+							},
+							{
+								label: 'Approved',
+								value: 'Approved',
+							},
+						]}
+						handleSearch={(data: IFilter) => {
+							setStatus(data.filterValue)
+						}}
+						columnId={'status'}
+						label="Leave status"
+						placeholder="Select status"
+						required={false}
+					/>
+
+					<Select
+						options={allLeaveTypes?.leaveTypes?.map((leaveType) => ({
+							label: leaveType.name,
+							value: leaveType.id,
+						}))}
+						handleSearch={(data: IFilter) => {
+							setType(data.filterValue)
+						}}
+						columnId={'leave_type'}
+						label="Leave type"
+						placeholder="Select type"
+						required={false}
+					/>
+				</VStack>
+			</Drawer>
 		</Box>
 	)
 }

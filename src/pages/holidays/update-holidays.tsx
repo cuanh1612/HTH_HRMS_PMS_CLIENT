@@ -25,7 +25,7 @@ export default function UpdateHoliday({ onCloseDrawer, holidayId }: IUpdateHolid
 	const { data: dataDetailHoliday } = detailHolidayQuery(holidayId)
 
 	// get all holidays
-	const { mutate: refetchAllHolidays} = allHolidaysQuery()
+	const { mutate: refetchAllHolidays} = allHolidaysQuery({})
 
 	//mutation ------------------------------------------------------------------
 	const [mutateUpHoliday, { status: statusUpHoliday, data: dataUpHoliday }] =

@@ -38,7 +38,7 @@ export default function AddHoliday({ onCloseDrawer }: IAddHolidayProps) {
 	])
 
 	// get all holidays
-	const { mutate: refetchAllHolidays } = allHolidaysQuery()
+	const { mutate: refetchAllHolidays } = allHolidaysQuery({})
 
 	//mutation ------------------------------------------------------------------
 	const [mutateCreHolidays, { status: statusCreHolidays, data: dataCreHolidays }] =

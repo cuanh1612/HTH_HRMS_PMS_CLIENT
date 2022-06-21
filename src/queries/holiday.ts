@@ -14,9 +14,22 @@ export const detailHolidayQuery = (holidayId: string | number | null) => {
 	)
 }
 
-export const allHolidaysQuery = () => {
+export const allHolidaysQuery = (input: { month?: number| string, year?: number| string}) => {
+	var url = 'holidays'
+	const fieldUrl: string[] = []
+	input?.month && fieldUrl.push(`month=${input.month}`)
+	input?.year && fieldUrl.push(`year=${input.year}`)
+
+	for (let index = 0; index < fieldUrl.length; index++) {
+		if (index == 0) {
+			url += `?${fieldUrl[index]}`
+		} else {
+			url += `&${fieldUrl[index]}`
+		}
+	}
+
 	return useSWR<holidayMutaionResponse, AxiosError>(
-		'holidays',
+		url,
 		detailHolidayRequest,
 		{
 			errorRetryCount: 2,

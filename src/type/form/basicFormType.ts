@@ -622,3 +622,16 @@ export type updateCompanyInfoForm = {
 	phone: string
 	website: string
 }
+
+export interface createSkillsForm {
+	skills: string []
+}
+
+export interface updateSkillsForm {
+	name: string
+	skillId: string | number
+}
+
+export interface deleteSkillsForm {
+	skills: number []
+}

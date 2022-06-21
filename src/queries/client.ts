@@ -5,7 +5,9 @@ import {
 	clientMutaionResponse,
 	clientProjectStatusMutaionResponse,
 	clientTotalEarningMutaionResponse,
-	clientTotalProjectsMutaionResponse
+	clientTotalProjectsMutaionResponse,
+	countContractSignedClientMutaionResponse,
+	pendingMilestoneClientMutaionResponse,
 } from 'type/mutationResponses'
 
 export const detailClientQuery = (
@@ -24,7 +26,7 @@ export const detailClientQuery = (
 
 export const clientTotalProejctsQuery = (
 	isAuthenticated: boolean | null,
-	clientId: string | number | null
+	clientId?: string | number | null
 ) => {
 	return useSWR<clientTotalProjectsMutaionResponse, AxiosError>(
 		isAuthenticated && clientId ? `clients/${clientId}/total-projects` : null,
@@ -52,7 +54,7 @@ export const clientTotalEarningQuery = (
 
 export const clientCountProjectStatusQuery = (
 	isAuthenticated: boolean | null,
-	clientId: string | number | null
+	clientId?: string | number | null
 ) => {
 	return useSWR<clientProjectStatusMutaionResponse, AxiosError>(
 		isAuthenticated && clientId ? `projects/client/${clientId}/project-status` : null,
@@ -79,6 +81,34 @@ export const allClientsNormalQuery = (isAuthenticated: boolean | null) => {
 	return useSWR<clientMutaionResponse, AxiosError>(
 		isAuthenticated ? `clients/normal` : null,
 		allClientsRequest,
+		{
+			errorRetryCount: 2,
+			revalidateOnFocus: false,
+		}
+	)
+}
+
+export const countContractSignedQuery = (
+	isAuthenticated: boolean | null,
+	clientId?: string | number | null
+) => {
+	return useSWR<countContractSignedClientMutaionResponse, AxiosError>(
+		isAuthenticated && clientId ? `/contracts/client/${clientId}/count-contracts-signed` : null,
+		detailClientRequest,
+		{
+			errorRetryCount: 2,
+			revalidateOnFocus: false,
+		}
+	)
+}
+
+export const pendingMilestoneClientQuery = (
+	isAuthenticated: boolean | null,
+	clientId?: string | number | null
+) => {
+	return useSWR<pendingMilestoneClientMutaionResponse, AxiosError>(
+		isAuthenticated ? `clients/${clientId}/pending-milestone` : null,
+		detailClientRequest,
 		{
 			errorRetryCount: 2,
 			revalidateOnFocus: false,

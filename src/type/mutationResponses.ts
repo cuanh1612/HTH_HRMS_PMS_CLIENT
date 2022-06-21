@@ -30,6 +30,7 @@ import {
 	roomType,
 	salaryType,
 	signType,
+	skillType,
 	statusType,
 	stickyNoteType,
 	taskCategoryType,
@@ -301,6 +302,20 @@ export interface NotificationMutaionResponse extends commonResponse {
 	notifications?: notificationType[]
 }
 
+<<<<<<< HEAD
+export interface skillMutationResponse extends commonResponse {
+	skill?: skillType
+	skills?: skillType[]
+}
+
+export interface countContractSignedClientMutaionResponse extends commonResponse {
+	countStatusProjects?: number
+}
+
+export interface pendingMilestoneClientMutaionResponse extends commonResponse {
+	pendingMilestone?: milestoneType[]
+=======
 export interface IpendingTasks  extends commonResponse {
 	pendingTasksRaw: taskType[]
+>>>>>>> b3b6d4015556a10c687439a69c698f632aa2588e
 }

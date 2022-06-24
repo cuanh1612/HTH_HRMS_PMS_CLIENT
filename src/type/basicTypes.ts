@@ -455,6 +455,7 @@ export interface taskType {
 	status: statusType
 	createdAt: Date
 	updatedAt: Date
+	[index: string]: any
 }
 
 export interface taskCommentType {

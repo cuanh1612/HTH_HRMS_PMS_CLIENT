@@ -24,12 +24,14 @@ import { BiMessageDots, BiTime } from 'react-icons/bi'
 import { BsCheck2, BsPerson } from 'react-icons/bs'
 import { VscTasklist } from 'react-icons/vsc'
 import { IoIosGitNetwork } from 'react-icons/io'
-import { IoAirplaneOutline, IoExitOutline } from 'react-icons/io5'
+import { IoAirplaneOutline, IoExitOutline, IoVideocamOutline } from 'react-icons/io5'
 import {
+	MdOutlineAttachMoney,
 	MdOutlineDashboard,
 	MdOutlineDashboardCustomize,
 	MdOutlineEditNote,
 	MdOutlineEvent,
+	MdOutlineMoreVert,
 } from 'react-icons/md'
 import LinkGroup from './LinkGroup'
 import LinkItem from './LinkItem'
@@ -144,6 +146,21 @@ const LinkItems = () => {
 					icon={<BiMessageDots fontSize={20} />}
 				/>
 			)}
+			{currentUser?.role == 'Admin' && (
+					<LinkItem
+					link="/salaries"
+					title="Salaries"
+	
+					icon={<MdOutlineAttachMoney fontSize={20} />}
+				/>
+			)}
+		
+			<LinkItem
+				link="/rooms"
+				title="Rooms"
+
+				icon={<IoVideocamOutline fontSize={20} />}
+			/>
 		</>
 	)
 }
@@ -213,19 +230,13 @@ const SideLeftInDrawer = ({ onClose, isOpen }: { isOpen: boolean; onClose: any }
 
 					<VStack
 						paddingTop={4}
-						height={'calc( 100vh - 180px )'}
+						height={'calc( 100vh - 110px )'}
 						overflow={'auto'}
 						spacing={4}
 					>
 						<LinkItems />
 					</VStack>
 				</DrawerBody>
-
-				<DrawerFooter>
-					<Button variant="outline" mr={3}>
-						Cancel
-					</Button>
-				</DrawerFooter>
 			</DrawerContent>
 		</Drawer>
 	)

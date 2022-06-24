@@ -287,7 +287,7 @@ export interface TimeLogMutaionResponse extends commonResponse {
 }
 
 export interface stickyNoteMutaionResponse extends commonResponse {
-	stickyNote?: stickyNoteType
+	stickynote?: stickyNoteType
 	stickyNotes?: stickyNoteType[]
 }
 

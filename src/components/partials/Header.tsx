@@ -24,18 +24,21 @@ import { useContext, useEffect, useState } from 'react'
 import { AiOutlineBell } from 'react-icons/ai'
 import { BsFillBellSlashFill, BsMoon, BsPerson, BsSun } from 'react-icons/bs'
 import { IoExitOutline } from 'react-icons/io5'
+import { MdOutlineEditNote } from 'react-icons/md'
 import UpdateClient from 'src/pages/clients/update-clients'
 import UpdateEmployees from 'src/pages/employees/update-employees'
+import StickysNote from 'src/pages/sticky-notes'
 import { notificationType } from 'type/basicTypes'
 
 export const Header = () => {
 	// set darkMode
 	const { colorMode, toggleColorMode } = useColorMode()
 
-	const {push} = useRouter()
+	const { push } = useRouter()
 
 	// get user
-	const { currentUser, onOpenMenu, isAuthenticated, socket, setToast, setIsAuthenticated } = useContext(AuthContext)
+	const { currentUser, onOpenMenu, isAuthenticated, socket, setToast, setIsAuthenticated } =
+		useContext(AuthContext)
 
 	const [isLarge, setIsLarge] = useState(true)
 
@@ -48,11 +51,17 @@ export const Header = () => {
 		onClose: onCloseUpdateProfile,
 	} = useDisclosure()
 
+	const {
+		isOpen: isOpenNote,
+		onOpen: onOpenNote,
+		onClose: onCloseNote,
+	} = useDisclosure()
+
 	//Query -------------------------------------------------
 	const { data: dataNotification, mutate: refetchNotifications } =
 		NotificationByCurrentUserQuery(isAuthenticated)
 
-		const [logout, {status: statusLogout}] = logoutServerMutation(setToast)	
+	const [logout, { status: statusLogout }] = logoutServerMutation(setToast)
 
 	useEffect(() => {
 		if (breakpoint == 'md' || breakpoint == 'sm' || breakpoint == 'base') {
@@ -71,11 +80,11 @@ export const Header = () => {
 		}
 	}, [socket])
 
-	useEffect(()=> {
-		if(statusLogout == 'success') {
+	useEffect(() => {
+		if (statusLogout == 'success') {
 			setToast({
 				msg: 'Logout Successfully',
-				type: 'success'
+				type: 'success',
 			})
 			setIsAuthenticated(false)
 			push('/login')
@@ -184,9 +193,20 @@ export const Header = () => {
 							src={currentUser?.avatar?.url}
 						/>
 					</MenuButton>
+					{/* sticky-notes */}
 					<MenuList>
-						<MenuItem onClick={onOpenUpdateProfile} icon={<BsPerson fontSize={'15px'} />}>Profile</MenuItem>
-						<MenuItem onClick={logout} color={'red.500'} icon={<IoExitOutline fontSize={'15px'} />}>
+						<MenuItem
+							onClick={onOpenUpdateProfile}
+							icon={<BsPerson fontSize={'15px'} />}
+						>
+							Profile
+						</MenuItem>
+						<MenuItem onClick={onOpenNote} icon={<MdOutlineEditNote fontSize={'15px'} />}>Notice</MenuItem>
+						<MenuItem
+							onClick={logout}
+							color={'red.500'}
+							icon={<IoExitOutline fontSize={'15px'} />}
+						>
 							Logout
 						</MenuItem>
 					</MenuList>
@@ -214,6 +234,15 @@ export const Header = () => {
 					)}
 				</Drawer>
 			)}
+
+			<Drawer
+				size="full"
+				title="Notes"
+				onClose={onCloseNote}
+				isOpen={isOpenNote}
+			>
+				<StickysNote />
+			</Drawer>
 		</HStack>
 	)
 }

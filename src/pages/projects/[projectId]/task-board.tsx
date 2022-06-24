@@ -47,9 +47,8 @@ const taskBoard: NextLayout = () => {
 		useContext(AuthContext)
 	const [columns, setColumns] = useState<statusType[]>([])
 	const [isUpdate, setIsUpdate] = useState(false)
-	const [columnId, setColumnId] = useState<string>()
 	const [taskId, setTaskId] = useState<string | number>(1)
-	const [statusIdShow] = useState<number>(1)
+	const [statusId, setStatusId] = useState<number>(1)
 
 	const { colorMode } = useColorMode()
 	const { query } = useRouter()
@@ -142,7 +141,7 @@ const taskBoard: NextLayout = () => {
 		if (isUpdate) {
 			updateColumn({
 				inputUpdate: values,
-				columnId: String(columnId),
+				columnId: String(statusId)
 			})
 		} else {
 			createColumn({
@@ -152,9 +151,58 @@ const taskBoard: NextLayout = () => {
 		}
 	}
 
+	const setEditForm = ({ title, color, id }: { title: string; color: string; id: number }) => {
+		setStatusId(id)
+		formSetting.reset({
+			color,
+			title,
+		})
+		setIsUpdate(true)
+		onOpen()
+	}
+
+	const setIdColumnToDl = (id: number) => {
+		setStatusId(id)
+		onOpenDlColumn()
+	}
+
+	const setIdTaskToDl = (id: number) => {
+		setTaskId(id)
+		onOpenDlTask()
+	}
+
+	const addTaskByStatus = (id: number)=> {
+		setStatusId(id)
+		onOpenAddTask()
+	}
+
+	const updateTask = (id: number)=> {
+		setTaskId(id)
+		onOpenUpdateTask()
+	}
+
+	const detailTask = (id: number)=> {
+		setTaskId(id)
+		onOpenDetailTask()
+	}
+
 	useEffect(() => {
 		if (allStatusTasks?.statuses) {
-			setColumns(allStatusTasks.statuses)
+			const newColumns = allStatusTasks.statuses.map(column=> {
+				const newTasks = column.tasks?.map(task=> {
+					return ({
+						...task,
+						onOpenUpdate: updateTask,
+						onOpenDelete: setIdTaskToDl,
+						onOpenDetail: detailTask
+					})
+				})
+				return ({
+					...column,
+					tasks: newTasks
+				})
+			})
+			setColumns(newColumns)
 		}
 	}, [allStatusTasks])
 
@@ -261,9 +309,9 @@ const taskBoard: NextLayout = () => {
 				socket.emit('leaveRoomProjectTaskBoard', projectId)
 			}
 		}
-
 		return leaveRoom
 	}, [socket, projectId])
+
 
 	const onDragEnd = (result: DropResult) => {
 		if (result.destination) {
@@ -361,31 +409,10 @@ const taskBoard: NextLayout = () => {
 		return
 	}
 
-	const setEditForm = ({ title, color, id }: { title: string; color: string; id: string }) => {
-		setColumnId(id)
-		formSetting.reset({
-			color,
-			title,
-		})
-		setIsUpdate(true)
-		onOpen()
-	}
-
-	const setIdColumnToDl = (id: string) => {
-		setColumnId(id)
-		onOpenDlColumn()
-	}
-
-	const setIdTaskToDl = (id: string) => {
-		setTaskId(id)
-		onOpenDlTask()
-	}
+	
 
 	return (
 		<Box>
-			<Button onClick={onOpenAddTask}>Add task Incomplete</Button>
-			<Button onClick={onOpenUpdateTask}>Update Task</Button>
-			<Button onClick={onOpenDetailTask}>Detail Task</Button>
 			<HStack
 				divider={
 					<StackDivider borderColor={colorMode == 'light' ? 'gray.200' : 'gray.700'} />
@@ -437,7 +464,7 @@ const taskBoard: NextLayout = () => {
 									column={column}
 									index={key}
 									setIdColumnToDl={setIdColumnToDl}
-									setIdTaskToDl={setIdTaskToDl}
+									addTaskByStatus={addTaskByStatus}
 								/>
 							))}
 							{provided.placeholder}
@@ -514,7 +541,7 @@ const taskBoard: NextLayout = () => {
 			{/* alert dialog when delete column */}
 			<AlertDialog
 				handleDelete={() => {
-					deleteColumn(String(columnId))
+					deleteColumn(String(statusId))
 				}}
 				title="Are you sure?"
 				content="You will not be able to recover the deleted record!"
@@ -534,7 +561,7 @@ const taskBoard: NextLayout = () => {
 			/>
 
 			<Drawer size="xl" title="Add New Task" onClose={onCloseAddTask} isOpen={isOpenAddTask}>
-				<AddTask statusId={statusIdShow} onCloseDrawer={onCloseAddTask} />
+				<AddTask statusId={statusId} onCloseDrawer={onCloseAddTask} />
 			</Drawer>
 
 			<Drawer

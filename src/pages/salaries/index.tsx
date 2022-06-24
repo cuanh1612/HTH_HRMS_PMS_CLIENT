@@ -1,20 +1,63 @@
-import { Button, useDisclosure } from '@chakra-ui/react'
+import {
+	Avatar,
+	Badge,
+	Button,
+	Collapse,
+	HStack,
+	Menu,
+	MenuButton,
+	MenuItem,
+	MenuList,
+	SimpleGrid,
+	Text,
+	useColorMode,
+	useDisclosure,
+	VStack,
+} from '@chakra-ui/react'
+import { Func, Table } from 'components/common'
+import { Drawer } from 'components/Drawer'
+import { Input, Select, SelectCustom } from 'components/filter'
+import { ClientLayout } from 'components/layouts'
 import Modal from 'components/modal/Modal'
 import { AuthContext } from 'contexts/AuthContext'
 import { useRouter } from 'next/router'
-import { allSalariesQuery } from 'queries'
+import { allEmployeesNormalQuery, allSalariesQuery } from 'queries'
 import { useContext, useEffect, useState } from 'react'
+import { AiOutlineCaretDown, AiOutlineCaretUp, AiOutlineSearch } from 'react-icons/ai'
+import { IoEyeOutline } from 'react-icons/io5'
+import { MdOutlineMoreVert } from 'react-icons/md'
+import { RiPencilLine } from 'react-icons/ri'
+import { NextLayout } from 'type/element/layout'
+import { IFilter, TColumn } from 'type/tableTypes'
+import { selectFilter, textFilter } from 'utils/tableFilters'
 import HistorySalary from './history'
 import UpdateSalary from './update'
+import { CSVLink } from 'react-csv'
+import { BiExport } from 'react-icons/bi'
+import { FaFileCsv } from 'react-icons/fa'
+import { VscFilter } from 'react-icons/vsc'
+import { IOption } from 'type/basicTypes'
 
-
-
-export default function Salaries() {
-	const { isAuthenticated, handleLoading } = useContext(AuthContext)
+const Salaries: NextLayout = () => {
+	const { isAuthenticated, handleLoading, currentUser } = useContext(AuthContext)
 	const router = useRouter()
+	const { colorMode } = useColorMode()
 
 	//State -------------------------------------------------------------
-	const [employeeIdShow] = useState<string | number | null>(6)
+	const [employeeId, setEmployeeId] = useState<string | number | null>(14)
+	// set loading table
+	const [isLoading, setIsloading] = useState(true)
+	// is reset table
+	const [isResetFilter, setIsReset] = useState(false)
+	// set filter
+	const [filter, setFilter] = useState<IFilter>({
+		columnId: '',
+		filterValue: '',
+	})
+	//State download csv
+	const [dataCSV, setDataCSV] = useState<any[]>([])
+	// get employee to select to filter
+	const [employeesFilter, setEmployeesFilter] = useState<IOption[]>([])
 
 	//Modal -------------------------------------------------------------
 	// set open modal to show salary history
@@ -24,6 +67,11 @@ export default function Salaries() {
 		onClose: onCloseHistory,
 	} = useDisclosure()
 
+	//set isopen of function
+	const { isOpen, onToggle } = useDisclosure({
+		defaultIsOpen: true,
+	})
+
 	// set open modal to show update salary
 	const {
 		isOpen: isOpenUpdateSalary,
@@ -31,9 +79,12 @@ export default function Salaries() {
 		onClose: onCloseUpdateSalary,
 	} = useDisclosure()
 
+	// set isOpen of drawer to filters
+	const { isOpen: isOpenFilter, onOpen: onOpenFilter, onClose: onCloseFilter } = useDisclosure()
+
 	//Query -------------------------------------------------------------
 	const { data: dataSalaries } = allSalariesQuery(isAuthenticated)
-	console.log(dataSalaries)
+	const { data: allEmployees } = allEmployeesNormalQuery(isAuthenticated)
 
 	//Useeffect ---------------------------------------------------------
 	//Handle check loged in
@@ -47,9 +98,227 @@ export default function Salaries() {
 		}
 	}, [isAuthenticated])
 
+	useEffect(() => {
+		if (dataSalaries) {
+			setIsloading(false)
+
+			console.log(dataSalaries)
+
+			if (dataSalaries.salaries) {
+				//Set data csv
+				const dataCSV: any[] = dataSalaries.salaries.map((salary) => ({
+					employeeId: salary.employeeId,
+					name: salary.name,
+					gender: salary.gender,
+					email: salary.email,
+					hourly_rate: salary.hourly_rate,
+					joining_date: salary.joining_date,
+					mobile: salary.mobile,
+					role: salary.mobile,
+					sumSalaries: salary.sumSalaries,
+				}))
+
+				setDataCSV(dataCSV)
+			}
+		}
+	}, [dataSalaries])
+
+	// set employee to filter
+	useEffect(() => {
+		if (allEmployees?.employees) {
+			const valuesFilter = allEmployees.employees.map(
+				(employee): IOption => ({
+					label: (
+						<>
+							<HStack>
+								<Avatar
+									size={'xs'}
+									name={employee.name}
+									src={employee.avatar?.url}
+								/>
+								<Text color={colorMode == 'dark' ? 'white' : 'black'}>
+									{employee.name}
+								</Text>
+							</HStack>
+						</>
+					),
+					value: String(employee.id),
+				})
+			)
+			setEmployeesFilter(valuesFilter)
+		}
+	}, [allEmployees, colorMode])
+
+	//Setup download csv --------------------------------------------------------
+	const headersCSV = [
+		{ label: 'employeeId', key: 'employeeId' },
+		{ label: 'name', key: 'name' },
+		{ label: 'gender', key: 'gender' },
+		{ label: 'email', key: 'email' },
+		{ label: 'hourly_rate', key: 'hourly_rate' },
+		{ label: 'joining_date', key: 'joining_date' },
+		{ label: 'mobile', key: 'mobile' },
+		{ label: 'role', key: 'role' },
+		{ label: 'sumSalaries', key: 'sumSalaries' },
+	]
+
+	// header ----------------------------------------
+	const columns: TColumn[] = [
+		{
+			Header: 'Salaries',
+
+			columns: [
+				{
+					Header: 'Id',
+					accessor: 'id',
+					filter: selectFilter(['id']),
+					width: 80,
+					minWidth: 80,
+					disableResizing: true,
+					Cell: ({ value }) => {
+						return value
+					},
+				},
+				{
+					Header: 'Name',
+					accessor: 'name',
+					minWidth: 250,
+					Cell: ({ value, row }) => {
+						return (
+							<HStack w={'full'} spacing={5}>
+								<Avatar
+									flex={'none'}
+									size={'sm'}
+									name={row.values['name']}
+									src={row.original.avatar?.url}
+								/>
+								<VStack w={'70%'} alignItems={'start'}>
+									<Text isTruncated w={'full'}>
+										{value}
+										{currentUser?.email == row.original['email'] && (
+											<Badge
+												marginLeft={'5'}
+												color={'white'}
+												background={'gray.500'}
+											>
+												It's you
+											</Badge>
+										)}
+									</Text>
+									<Text isTruncated w={'full'} fontSize={'sm'} color={'gray.400'}>
+										{row.original['role']}
+									</Text>
+								</VStack>
+							</HStack>
+						)
+					},
+				},
+				{
+					Header: 'Email',
+					accessor: 'email',
+					minWidth: 150,
+					filter: textFilter(['email']),
+					Cell: ({ value }) => {
+						return <Text isTruncated>{value}</Text>
+					},
+				},
+				{
+					Header: 'Salary',
+					accessor: 'sumSalaries',
+					minWidth: 150,
+					filter: textFilter(['email']),
+					Cell: ({ value }) => {
+						return (
+							<Text isTruncated color={'red'} fontWeight={'semibold'}>
+								${value}
+							</Text>
+						)
+					},
+				},
+				{
+					Header: 'Action',
+					accessor: 'action',
+					disableResizing: true,
+					width: 120,
+					minWidth: 120,
+					disableSortBy: true,
+					Cell: ({ row }) => (
+						<Menu>
+							<MenuButton as={Button} paddingInline={3}>
+								<MdOutlineMoreVert />
+							</MenuButton>
+							<MenuList>
+								<MenuItem
+									onClick={() => {
+										setEmployeeId(row.values['id'])
+										onOpenHistory()
+									}}
+									icon={<IoEyeOutline fontSize={'15px'} />}
+								>
+									Show history
+								</MenuItem>
+
+								<MenuItem
+									onClick={() => {
+										setEmployeeId(row.values['id'])
+										onOpenUpdateSalary()
+									}}
+									icon={<RiPencilLine fontSize={'15px'} />}
+								>
+									Update history
+								</MenuItem>
+							</MenuList>
+						</Menu>
+					),
+				},
+			],
+		},
+	]
+
 	return (
 		<>
-			<Button onClick={onOpenHistory}>Show history</Button>
+			<HStack
+				_hover={{
+					textDecoration: 'none',
+				}}
+				onClick={onToggle}
+				color={'gray.500'}
+				cursor={'pointer'}
+				userSelect={'none'}
+			>
+				<Text fontWeight={'semibold'}>Function</Text>
+				{isOpen ? <AiOutlineCaretDown /> : <AiOutlineCaretUp />}
+			</HStack>
+			<Collapse in={isOpen} animateOpacity>
+				<SimpleGrid
+					w={'full'}
+					cursor={'pointer'}
+					columns={[1, 2, 2, 3, null, 4]}
+					spacing={10}
+					pt={3}
+				>
+					{currentUser && currentUser.role === 'Admin' && (
+						<>
+							<CSVLink filename={'salaries.csv'} headers={headersCSV} data={dataCSV}>
+								<Func
+									icon={<BiExport />}
+									description={'export to csv'}
+									title={'export'}
+									action={() => {}}
+								/>
+							</CSVLink>
+						</>
+					)}
+					<Func
+						icon={<VscFilter />}
+						description={'Open draw to filter'}
+						title={'filter'}
+						action={onOpenFilter}
+					/>
+				</SimpleGrid>
+			</Collapse>
+			<br />
+
 			{/* Modal project category and designation */}
 			<Modal
 				size="3xl"
@@ -58,9 +327,8 @@ export default function Salaries() {
 				onClose={onCloseHistory}
 				title="History Salary"
 			>
-				<HistorySalary employeeId={employeeIdShow} />
+				<HistorySalary employeeId={employeeId} />
 			</Modal>
-			<Button onClick={onOpenUpdateSalary}>update history</Button>
 			{/* Modal project category and designation */}
 			<Modal
 				size="3xl"
@@ -69,8 +337,78 @@ export default function Salaries() {
 				onClose={onCloseUpdateSalary}
 				title="Update Salary"
 			>
-				<UpdateSalary employeeId={employeeIdShow} />
+				<UpdateSalary employeeId={employeeId} />
 			</Modal>
+
+			<Table
+				data={dataSalaries?.salaries || []}
+				columns={columns}
+				isLoading={isLoading}
+				filter={filter}
+				isResetFilter={isResetFilter}
+			/>
+
+			<Drawer
+				size="xs"
+				title="Filter"
+				onClose={onCloseFilter}
+				isOpen={isOpenFilter}
+				footer={
+					<Button
+						onClick={() => {
+							setIsReset(true)
+							setTimeout(() => {
+								setIsReset(false)
+							}, 1000)
+						}}
+					>
+						reset
+					</Button>
+				}
+			>
+				<VStack p={6} spacing={5}>
+					<Input
+						handleSearch={(data: IFilter) => {
+							setFilter(data)
+						}}
+						columnId={'email'}
+						label="Email"
+						placeholder="Enter email"
+						icon={<AiOutlineSearch fontSize={'20px'} color="gray" opacity={0.6} />}
+						type={'text'}
+					/>
+
+					{employeesFilter && (
+						<SelectCustom
+							handleSearch={(field: any) => {
+								setFilter({
+									columnId: 'id',
+									filterValue: field.value,
+								})
+							}}
+							label={'Employee'}
+							name={'employee'}
+							options={[
+								{
+									label: (
+										<Text color={colorMode == 'light' ? 'black' : 'white'}>
+											all
+										</Text>
+									),
+									value: '',
+								},
+
+								...employeesFilter,
+							]}
+							required={false}
+						/>
+					)}
+				</VStack>
+			</Drawer>
 		</>
 	)
 }
+
+Salaries.getLayout = ClientLayout
+
+export default Salaries

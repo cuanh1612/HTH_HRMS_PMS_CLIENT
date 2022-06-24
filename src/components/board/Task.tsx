@@ -25,14 +25,13 @@ import { taskType } from 'type/basicTypes'
 export const Task = ({
 	data,
 	index,
-	setIdTaskToDl,
 	isDragDisabled = false,
 }: {
 	data: taskType
 	index: number
-	setIdTaskToDl: (id: string) => void
 	isDragDisabled?: boolean
 }) => {
+	console.log(data)
 	const { colorMode } = useColorMode()
 	const { currentUser } = useContext(AuthContext)
 
@@ -81,7 +80,12 @@ export const Task = ({
 									<MdOutlineMoreVert />
 								</MenuButton>
 								<MenuList>
-									<MenuItem icon={<IoEyeOutline fontSize={'15px'} />}>
+									<MenuItem
+										onClick={() => {
+											data.onOpenDetail(data.id)
+										}}
+										icon={<IoEyeOutline fontSize={'15px'} />}
+									>
 										View
 									</MenuItem>
 									{(currentUser?.role === 'Admin' ||
@@ -89,7 +93,9 @@ export const Task = ({
 											data?.assignBy?.id === currentUser?.id)) && (
 										<>
 											<MenuItem
-												onClick={() => {}}
+												onClick={() => {
+													data.onOpenUpdate(data.id)
+												}}
 												icon={<RiPencilLine fontSize={'15px'} />}
 											>
 												Edit
@@ -97,7 +103,7 @@ export const Task = ({
 
 											<MenuItem
 												onClick={() => {
-													setIdTaskToDl(String(data.id))
+													data.onOpenDelete(data.id)
 												}}
 												icon={<MdOutlineDeleteOutline fontSize={'15px'} />}
 											>
@@ -124,7 +130,11 @@ export const Task = ({
 							opacity={0.5}
 							isTruncated
 						>
-							{data.description}
+							<div
+								dangerouslySetInnerHTML={{
+									__html: data.description,
+								}}
+							/>
 						</Text>
 						<HStack w={'full'} justifyContent={'space-between'}>
 							<HStack spacing={4}>

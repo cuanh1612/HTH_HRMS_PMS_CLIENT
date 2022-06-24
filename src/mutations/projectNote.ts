@@ -1,4 +1,4 @@
-import { createProjectNoteRequest, updateProjectNoteRequest } from 'requests/projectNote'
+import { createProjectNoteRequest, deleteProjectNoteRequest, deleteProjectsNoteRequest, updateProjectNoteRequest } from 'requests/projectNote'
 import { TToast } from 'type/basicTypes'
 import useMutation from 'use-mutation'
 
@@ -25,3 +25,30 @@ export const updateProjectNoteMutation = (setToast: TToast) => {
 		},
 	})
 }
+
+// delete one
+export const deleteProjectNoteMutation = (setToast: TToast) => {
+	return useMutation(deleteProjectNoteRequest, {
+		onFailure({ error }) {
+			setToast({
+				msg: error.message,
+				type: 'error',
+			})
+		},
+	})
+}
+
+// delete many
+export const deleteProjectNotesMutation = (setToast: TToast) => {
+	return useMutation(deleteProjectsNoteRequest, {
+		onFailure({ error }) {
+			setToast({
+				msg: error.message,
+				type: 'error',
+			})
+		},
+	})
+}
+
+
+

@@ -41,7 +41,7 @@ export default function LinkGroup({ title, icon, data }: ILinkGroup) {
 				setCurrentData(newData)
 			}
 		}
-	}, [ currentData, currentUser])
+	}, [ currentUser])
 
 	useEffect(() => {
 		if (pathname) {

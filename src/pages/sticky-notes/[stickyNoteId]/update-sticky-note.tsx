@@ -106,12 +106,12 @@ export default function UpdateStickyNote({
 	}, [statusUpdateStickyNote])
 
     useEffect(() => {
-        if(dataDetailStickyNote?.stickyNote){
+        if(dataDetailStickyNote?.stickynote){
             formSetting.reset({
-                color: dataDetailStickyNote.stickyNote.color
+                color: dataDetailStickyNote.stickynote.color
             })
 
-            setNote(dataDetailStickyNote.stickyNote.note)
+            setNote(dataDetailStickyNote.stickynote.note)
         }
     }, [dataDetailStickyNote])
 

@@ -21,6 +21,9 @@ export default function DetailStickyNote({
 		isAuthenticated,
 		stickyNoteIdProp || (stickyNoteRouter as string)
 	)
+
+	console.log(dataDetailStickyNote);
+	
     
 	//mutation -----------------------------------------------------------
 
@@ -44,7 +47,7 @@ export default function DetailStickyNote({
 				</GridItem>
 				<GridItem w="100%" colSpan={[2, 1]}>
 					<Box
-						bgColor={dataDetailStickyNote?.stickyNote?.color}
+						bgColor={dataDetailStickyNote?.stickynote?.color}
 						height={5}
 						w={5}
 						borderRadius={5}
@@ -56,8 +59,8 @@ export default function DetailStickyNote({
 				<GridItem w="100%" colSpan={[2, 1]}>
 					<div
 						dangerouslySetInnerHTML={{
-							__html: dataDetailStickyNote?.stickyNote?.note
-								? dataDetailStickyNote?.stickyNote?.note
+							__html: dataDetailStickyNote?.stickynote?.note
+								? dataDetailStickyNote?.stickynote?.note
 								: '',
 						}}
 					/>

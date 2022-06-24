@@ -126,7 +126,7 @@ export const allProjectsNormalRequest = async (url: string) => {
 	})
 }
 
-// Handle to delete many holidays
+// Handle to delete many 
 export const deleteProjectsRequest = async (ids: number[]) => {
 	return await postData<projectMutaionResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/projects/delete-many`,
@@ -136,7 +136,7 @@ export const deleteProjectsRequest = async (ids: number[]) => {
 	})
 }
 
-//Handle to delete holiday
+//Handle to delete 
 export const deleteProjectRequest = async (id: string | number) => {
 	return await deleteData<projectMutaionResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/projects/${id}`,

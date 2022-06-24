@@ -1,19 +1,10 @@
-import {
-	Avatar,
-	Box,
-	Button,
-	Grid,
-	GridItem,
-	HStack,
-	Text,
-	VStack,
-} from '@chakra-ui/react'
+import { Avatar, Box, Button, Grid, GridItem, HStack, Text, VStack } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { Input, InputNumber, SelectCustom} from 'components/form'
+import { Input, InputNumber, SelectCustom } from 'components/form'
 import { AuthContext } from 'contexts/AuthContext'
 import { updateSalaryMutation } from 'mutations'
 import { useRouter } from 'next/router'
-import { historySalaryQuery } from 'queries'
+import { allSalariesQuery, historySalaryQuery } from 'queries'
 import { useContext, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { AiOutlineCheck } from 'react-icons/ai'
@@ -39,7 +30,7 @@ export default function UpdateSalary({ employeeId = 6 }: IUpdateSalaryProps) {
 		isAuthenticated,
 		employeeId
 	)
-	console.log(dataHistorySalary)
+	const { mutate: refetchSSalaries } = allSalariesQuery(isAuthenticated)
 
 	// setForm and submit update salary ---------------------------------
 	const formSetting = useForm<updateSalaryForm>({
@@ -95,6 +86,7 @@ export default function UpdateSalary({ employeeId = 6 }: IUpdateSalaryProps) {
 				}
 
 				refetchHistorySalary()
+				refetchSSalaries()
 
 				break
 

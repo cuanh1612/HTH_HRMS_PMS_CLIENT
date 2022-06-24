@@ -23,15 +23,15 @@ export const Column = ({
 	index,
 	setEditForm,
 	setIdColumnToDl,
-	setIdTaskToDl,
 	isDragDisabled = false,
+	addTaskByStatus,
 }: {
 	column: statusType
 	index: number
-	setEditForm: ({ title, color, id }: { title: string; color: string; id: string }) => void
-	setIdTaskToDl: (id: string) => void
-	setIdColumnToDl: (id: string) => void
+	setEditForm: ({ title, color, id }: { title: string; color: string; id: number }) => void
+	setIdColumnToDl: (id: number) => void
 	isDragDisabled?: boolean
+	addTaskByStatus: (id: number) => void
 }) => {
 	const { colorMode } = useColorMode()
 	const { currentUser } = useContext(AuthContext)
@@ -42,6 +42,8 @@ export const Column = ({
 				<Box
 					marginRight={10}
 					bg={colorMode == 'dark' ? '#3a4f781f' : 'white'}
+					border={'1px solid'}
+					borderColor={colorMode == 'dark' ? 'transparent' : 'gray.300'}
 					borderRadius={10}
 					w={350}
 					minW={350}
@@ -50,7 +52,7 @@ export const Column = ({
 				>
 					<Box padding={4}>
 						<HStack
-							borderBottom={'1px solid gray'}
+							borderBottom={'2px solid gray'}
 							justifyContent={'space-between'}
 							paddingBottom={4}
 							spacing={4}
@@ -76,7 +78,7 @@ export const Column = ({
 												setEditForm({
 													title: column.title,
 													color: column.color,
-													id: String(column.id),
+													id: column.id,
 												})
 											}}
 											icon={<RiPencilLine fontSize={'15px'} />}
@@ -86,7 +88,7 @@ export const Column = ({
 
 										<MenuItem
 											onClick={() => {
-												setIdColumnToDl(String(column.id))
+												setIdColumnToDl(column.id)
 											}}
 											icon={<MdOutlineDeleteOutline fontSize={'15px'} />}
 										>
@@ -111,6 +113,7 @@ export const Column = ({
 							>
 								{column.tasks &&
 									column.tasks.map((value, key: number) => {
+										console.log(value)
 										return (
 											<Task
 												isDragDisabled={
@@ -120,7 +123,6 @@ export const Column = ({
 														? false
 														: true
 												}
-												setIdTaskToDl={setIdTaskToDl}
 												data={value}
 												key={value.id}
 												index={key}
@@ -141,6 +143,9 @@ export const Column = ({
 						height={'min-content'}
 					>
 						<HStack
+							onClick={() => {
+								addTaskByStatus(column.id)
+							}}
 							bg={colorMode == 'light' ? 'gray.100' : '#3a4f781f'}
 							padding={4}
 							borderRadius={10}
@@ -149,7 +154,7 @@ export const Column = ({
 						>
 							<HStack spacing={4} alignItems={'center'}>
 								<IoIosAdd fontSize={'20px'} />
-								<Text>Add new status</Text>
+								<Text>Add new task</Text>
 							</HStack>
 						</HStack>
 					</Box>

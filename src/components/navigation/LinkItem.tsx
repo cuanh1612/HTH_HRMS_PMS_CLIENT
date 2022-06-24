@@ -22,6 +22,8 @@ export default function LinkItem({ title, icon, link }: ILinkItem) {
 				bg={paths?.includes(link) ? 'gray.100' : 'transparent'}
 				justifyContent={'start'}
 				leftIcon={icon}
+				height={'40px'}
+				minH={'40px'}
 				borderRight={'5px solid'}
 				borderColor={!paths?.includes(link) ? 'transparent' : 'hu-Green.normal'}
 				borderRadius={'5px 0px 0px 5px'}

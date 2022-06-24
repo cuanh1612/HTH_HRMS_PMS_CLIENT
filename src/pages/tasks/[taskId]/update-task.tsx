@@ -190,14 +190,14 @@ export default function UpdateTask({ onCloseDrawer, taskIdProp }: IUpdateTaskPro
 			}
 
 			formSetting.reset({
-				name: dataDetailTask.task.name,
-				start_date: dataDetailTask.task.start_date,
-				deadline: dataDetailTask.task.deadline,
-				task_category: dataDetailTask.task.task_category?.id,
-				employees: dataDetailTask.task.employees.map((employee) => employee.id),
-				status: dataDetailTask.task.status.id,
-				milestone: dataDetailTask.task.milestone?.id || undefined,
-				priority: dataDetailTask.task.priority || '',
+				name: dataDetailTask?.task?.name,
+				start_date: dataDetailTask?.task?.start_date,
+				deadline: dataDetailTask?.task?.deadline,
+				task_category: dataDetailTask?.task?.task_category?.id,
+				employees: dataDetailTask?.task?.employees.map((employee) => employee.id),
+				status: dataDetailTask?.task?.status?.id,
+				milestone: dataDetailTask?.task?.milestone?.id || undefined,
+				priority: dataDetailTask?.task?.priority || '',
 			})
 		}
 

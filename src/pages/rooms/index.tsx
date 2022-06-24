@@ -1,4 +1,13 @@
-import { Box, Button, Text, useDisclosure, VStack } from '@chakra-ui/react'
+import {
+	Box,
+	Button,
+	Grid,
+	GridItem,
+	Skeleton,
+	Text,
+	useDisclosure,
+	VStack,
+} from '@chakra-ui/react'
 import { AlertDialog } from 'components/common'
 import { Drawer } from 'components/Drawer'
 import { ClientLayout } from 'components/layouts'
@@ -70,10 +79,10 @@ const zoom: NextLayout = () => {
 	}, [])
 
 	// show update
-	const showUpdate = useCallback((id: number) => {
+	const showUpdate = (id: number) => {
 		setRoomId(id)
 		onOpenUpRoom()
-	}, [])
+	}
 	return (
 		<VStack alignItems={'start'} w={'full'} spacing={5}>
 			<Box>
@@ -84,18 +93,94 @@ const zoom: NextLayout = () => {
 					update room
 				</Button>
 			</Box>
-			<VStack w={'full'}>
+			<VStack w={'full'} spacing={5}>
 				<Text w={'full'} fontWeight={'bold'} fontSize={'xl'}>
 					Your rooms:
 				</Text>
-				{dataRooms?.rooms && <Cards showAlertDl={showAlertDl} showUpdate={showUpdate} data={dataRooms.rooms} />}
+				{dataRooms?.rooms && dataRooms.rooms.length > 0 ? (
+					<Grid
+						w={'full'}
+						templateColumns={[
+							'repeat(1, 1fr)',
+							'repeat(2, 1fr)',
+							null,
+							null,
+							'repeat(3, 1fr)',
+						]}
+						gap={6}
+					>
+						<Cards
+							showAlertDl={showAlertDl}
+							showUpdate={showUpdate}
+							data={dataRooms.rooms}
+						/>
+					</Grid>
+				) : (
+					<Grid
+						w={'full'}
+						templateColumns={[
+							'repeat(1, 1fr)',
+							'repeat(2, 1fr)',
+							null,
+							null,
+							'repeat(3, 1fr)',
+						]}
+						gap={6}
+					>
+						<GridItem borderRadius={10} overflow={'hidden'} height={'250px'}>
+							<Skeleton height="100%" w={'full'} />
+						</GridItem>
+						<GridItem borderRadius={10} overflow={'hidden'} height={'250px'}>
+							<Skeleton height="100%" w={'full'} />
+						</GridItem>
+						<GridItem borderRadius={10} overflow={'hidden'} height={'250px'}>
+							<Skeleton height="100%" w={'full'} />
+						</GridItem>
+					</Grid>
+				)}
 			</VStack>
 
-			<VStack w={'full'}>
+			<VStack w={'full'} spacing={5}>
 				<Text w={'full'} fontWeight={'bold'} fontSize={'xl'}>
 					another rooms:
 				</Text>
-				{dataRooms?.another_rooms && <Cards data={dataRooms.another_rooms} />}
+				{dataRooms?.another_rooms && dataRooms.another_rooms.length > 0 ? (
+					<Grid
+						w={'full'}
+						templateColumns={[
+							'repeat(1, 1fr)',
+							'repeat(2, 1fr)',
+							null,
+							null,
+							'repeat(3, 1fr)',
+						]}
+						gap={6}
+					>
+						<Cards isEdit={false} data={dataRooms.another_rooms} />
+					</Grid>
+				) : (
+					<Grid
+						w={'full'}
+						templateColumns={[
+							'repeat(1, 1fr)',
+							'repeat(2, 1fr)',
+							null,
+							null,
+							'repeat(3, 1fr)',
+						]}
+						gap={6}
+					>
+						<GridItem borderRadius={10} overflow={'hidden'} height={'250px'}>
+							<Skeleton height="100%" w={'full'} />
+						</GridItem>
+						<GridItem borderRadius={10} overflow={'hidden'} height={'250px'}>
+							<Skeleton height="100%" w={'full'} />
+						</GridItem>
+						<GridItem borderRadius={10} overflow={'hidden'} height={'250px'}>
+							<Skeleton height="100%" w={'full'} />
+						</GridItem>
+					</Grid>
+				)}
 			</VStack>
 
 			<Drawer size="xl" title="Add Room" onClose={onCloseCreRoom} isOpen={isOpenCreRoom}>

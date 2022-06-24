@@ -13,7 +13,7 @@ import {
 	Tr,
 	VStack,
 } from '@chakra-ui/react'
-import {Loading} from 'components/common'
+import { Loading } from 'components/common'
 import { AuthContext } from 'contexts/AuthContext'
 import { deleteSalaryMutation } from 'mutations'
 import { useRouter } from 'next/router'
@@ -90,7 +90,7 @@ export default function HistorySalary({ employeeId = 6 }: IHistorySalaryProps) {
 			<VStack align={'start'}>
 				<Box maxHeight={'400px'} overflow="auto" w={'full'}>
 					{dataHistorySalary?.historySalary && (
-						<HStack w={'full'} paddingInline={6} paddingBottom={2}>
+						<HStack mb={5} w={'full'} paddingInline={6} spacing={5} paddingBottom={2}>
 							<Avatar
 								src={dataHistorySalary.historySalary.avatar?.url}
 								name={dataHistorySalary.historySalary.name}
@@ -98,11 +98,8 @@ export default function HistorySalary({ employeeId = 6 }: IHistorySalaryProps) {
 							/>
 							<VStack align={'start'}>
 								<Text>{dataHistorySalary.historySalary.name}</Text>
-								{dataHistorySalary.historySalary.designation ? (
-									<Text>{dataHistorySalary.historySalary.designation}</Text>
-								) : (
-									<Text color={'red'}>None role</Text>
-								)}
+
+								<Text fontSize={'14px'} color={'gray'}>{dataHistorySalary.historySalary.role}</Text>
 							</VStack>
 						</HStack>
 					)}
@@ -146,8 +143,8 @@ export default function HistorySalary({ employeeId = 6 }: IHistorySalaryProps) {
 									))}
 
 								<Tr>
-									<Td fontWeight={"bold"}>Total:</Td>
-									<Td fontWeight={"bold"}>
+									<Td fontWeight={'bold'}>Total:</Td>
+									<Td color={'red'} fontWeight={'bold'}>
 										$
 										{dataHistorySalary?.historySalary.salaries
 											? dataHistorySalary?.historySalary.salaries.reduce(
@@ -168,7 +165,7 @@ export default function HistorySalary({ employeeId = 6 }: IHistorySalaryProps) {
 								</Tr>
 							</Tbody>
 						</Table>
-			
+
 						{statusDeleSalary === 'running' && <Loading />}
 					</TableContainer>
 				</Box>

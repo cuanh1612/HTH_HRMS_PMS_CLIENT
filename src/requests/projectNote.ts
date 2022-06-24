@@ -3,7 +3,7 @@ import {
 	updateProjectNoteForm,
 } from 'type/form/basicFormType'
 import { projectMutaionResponse, ProjectNoteMutaionResponse } from 'type/mutationResponses'
-import { getData, postData, putData } from 'utils/fetchData'
+import { deleteData, getData, postData, putData } from 'utils/fetchData'
 
 //Function handle create
 export async function createProjectNoteRequest(inputCreate: createProjectNoteForm) {
@@ -43,4 +43,21 @@ export async function updateProjectNoteRequest({
 	})
 
 	return resultFetch
+}
+
+// Handle to delete many 
+export const deleteProjectsNoteRequest = async (ids: number[]) => {
+	return await postData<projectMutaionResponse>({
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/project-notes/delete-many`,
+		body: {
+			projectNotes: ids,
+		},
+	})
+}
+
+//Handle to delete 
+export const deleteProjectNoteRequest = async (id: string | number) => {
+	return await deleteData<projectMutaionResponse>({
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/project-notes/${id}`,
+	})
 }

@@ -26,7 +26,7 @@ import {
 } from 'mutations'
 import { GetServerSideProps } from 'next'
 import { useRouter } from 'next/router'
-import { allProjectNotesQuery } from 'queries'
+import { allProjectNotesQuery, detailProjectQuery } from 'queries'
 import { FormEventHandler, useContext, useEffect, useState } from 'react'
 import {
 	AiOutlineCaretDown,
@@ -91,6 +91,8 @@ const Notes: NextLayout = ({}: INotesProps) => {
 		isAuthenticated,
 		projectId as string
 	)
+
+	const { data: dataDetailProject } = detailProjectQuery(isAuthenticated, projectId as string)
 
 	//Mutation ----------------------------------------------------------
 	const [mutateReEnterPassword, { status: statusReEnterPassword }] =
@@ -365,26 +367,34 @@ const Notes: NextLayout = ({}: INotesProps) => {
 					spacing={10}
 					pt={3}
 				>
-					<Func
-						icon={<IoAdd />}
-						description={'Add new client by form'}
-						title={'Add new'}
-						action={onOpenAddNote}
-					/>
+					{((currentUser && currentUser.role === 'Admin') ||
+						(currentUser &&
+							dataDetailProject?.project?.project_Admin &&
+							currentUser.email ===
+								dataDetailProject.project.project_Admin.email)) && (
+						<>
+							<Func
+								icon={<IoAdd />}
+								description={'Add new client by form'}
+								title={'Add new'}
+								action={onOpenAddNote}
+							/>
 
-					<Func
-						icon={<VscFilter />}
-						description={'Open draw to filter'}
-						title={'filter'}
-						action={onOpenFilter}
-					/>
-					<Func
-						icon={<AiOutlineDelete />}
-						title={'Delete all'}
-						description={'Delete all client you selected'}
-						action={onOpenDlMany}
-						disabled={!dataSl || dataSl.length == 0 ? true : false}
-					/>
+							<Func
+								icon={<VscFilter />}
+								description={'Open draw to filter'}
+								title={'filter'}
+								action={onOpenFilter}
+							/>
+							<Func
+								icon={<AiOutlineDelete />}
+								title={'Delete all'}
+								description={'Delete all client you selected'}
+								action={onOpenDlMany}
+								disabled={!dataSl || dataSl.length == 0 ? true : false}
+							/>
+						</>
+					)}
 				</SimpleGrid>
 			</Collapse>
 			<br />

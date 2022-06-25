@@ -213,7 +213,7 @@ const Files: NextLayout = () => {
 	}
 
 	return (
-		<Box p={10} bgColor={'#f2f4f7'} minHeight={'100vh'}>
+		<Box p={10} bgColor={'#f2f4f7'}>
 			<VStack align={'start'} w="full" bgColor={'white'} p={5} borderRadius={5} spacing={5}>
 				<Text fontSize={18} fontWeight={'semibold'}>
 					Files

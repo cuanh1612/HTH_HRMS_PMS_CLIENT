@@ -14,44 +14,45 @@ export function middleware(req: NextRequest) {
 	const roleCurrentUser = token
 		? jwtDecode<JwtPayload & { userId: number; role: string; email: string }>(token).role
 		: null
-	console.log(paths[1])
-	switch (paths[1]) {
-		case 'dashboard':
-		case 'clients':
-		case 'employees':
-			if (roleCurrentUser != 'Admin') {
-				return redirect403()
-			}
-			break
-		case 'leaves':
-		case 'attendance':
-		case 'holidays':
-		case 'messages':
-		case 'private-dashboard':
-			if (roleCurrentUser == 'Client') {
-				return redirect403()
-			}
-			break
-		case 'private-dashboard-client':
-			if (roleCurrentUser != 'Client') {
-				return redirect403()
-			}
-			break
-		case 'contracts':
-			if (roleCurrentUser == 'Employee') {
-				return redirect403()
-			}
-			break
-	}
-	if (paths.includes('projects')) {
-		if (paths.includes('milestones')) {
-			if (roleCurrentUser == 'Client' || roleCurrentUser == 'Employee') {
-				return redirect403()
-			}
+	if (roleCurrentUser) {
+		switch (paths[1]) {
+			case 'dashboard':
+			case 'clients':
+			case 'employees':
+				if (roleCurrentUser != 'Admin') {
+					return redirect403()
+				}
+				break
+			case 'leaves':
+			case 'attendance':
+			case 'holidays':
+			case 'messages':
+			case 'private-dashboard':
+				if (roleCurrentUser == 'Client') {
+					return redirect403()
+				}
+				break
+			case 'private-dashboard-client':
+				if (roleCurrentUser != 'Client') {
+					return redirect403()
+				}
+				break
+			case 'contracts':
+				if (roleCurrentUser == 'Employee') {
+					return redirect403()
+				}
+				break
 		}
-		if (paths.includes('discussions')) {
-			if (roleCurrentUser == 'Client') {
-				return redirect403()
+		if (paths.includes('projects')) {
+			if (paths.includes('milestones')) {
+				if (roleCurrentUser == 'Client' || roleCurrentUser == 'Employee') {
+					return redirect403()
+				}
+			}
+			if (paths.includes('discussions')) {
+				if (roleCurrentUser == 'Client') {
+					return redirect403()
+				}
 			}
 		}
 	}

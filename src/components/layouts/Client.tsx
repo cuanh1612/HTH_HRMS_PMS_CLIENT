@@ -13,9 +13,9 @@ export const ClientLayout = ({ children }: { children: JSX.Element }) => {
 			overflow={'auto'}
 		>
 			<Navigation />
-			<Box w={'full'} >
+			<Box w={['full', null, null, 'calc( 100% - 300px )']}  >
 				<Header />
-				<Box  w={'full'} h={'auto'} paddingInline={10}>
+				<Box w={'full'} h={'auto'} paddingInline={10}>
 					{children}
 				</Box>
 			</Box>

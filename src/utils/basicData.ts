@@ -39,11 +39,6 @@ export const dataRoleEmployee: IOption[] = [
 		value: 'Employee',
 		label: 'Employee',
 	},
-
-	{
-		value: 'Manager',
-		label: 'Manager',
-	},
 ]
 
 export const dataTaskPriority: IOption[] = [

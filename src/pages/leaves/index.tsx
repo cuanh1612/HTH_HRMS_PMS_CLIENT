@@ -67,6 +67,8 @@ import { IOption } from 'type/basicTypes'
 import { IPeople } from 'type/element/commom'
 import { VscFilter } from 'react-icons/vsc'
 import DetailLeave from './[leaveId]'
+import { leaveColumn } from 'utils/columns'
+import { dataStatusLeave } from 'utils/basicData'
 
 // get current year
 const year = new Date().getFullYear()
@@ -249,205 +251,39 @@ const Leaves: NextLayout = () => {
 	}, [statusUpStatus])
 
 	// header ----------------------------------------
-	const columns: TColumn[] = [
-		{
-			Header: 'Leaves',
 
-			columns: [
-				{
-					Header: 'Id',
-					accessor: 'id',
-					filter: selectFilter(['id']),
-					width: 80,
-					minWidth: 80,
-					disableResizing: true,
-					Cell: ({ value }) => {
-						return value
-					},
-				},
-				{
-					Header: 'Name',
-					accessor: 'name',
-					minWidth: 250,
-					Cell: ({ row }) => {
-						const people = row.original.employee
-						return (
-							<HStack w={'full'} spacing={5}>
-								<Avatar
-									flex={'none'}
-									size={'sm'}
-									name={people.name}
-									src={people.avatar?.url}
-								/>
-								<VStack w={'70%'} alignItems={'start'}>
-									<Text isTruncated w={'full'}>
-										{people.name}
-										{currentUser?.email == people['email'] && (
-											<Badge
-												marginLeft={'5'}
-												color={'white'}
-												background={'gray.500'}
-											>
-												It's you
-											</Badge>
-										)}
-									</Text>
-									{people.designation && (
-										<Text
-											isTruncated
-											w={'full'}
-											fontSize={'sm'}
-											color={'gray.400'}
-										>
-											{people.designation.name}
-										</Text>
-									)}
-								</VStack>
-							</HStack>
-						)
-					},
-				},
-				{
-					Header: 'Email',
-					accessor: 'email',
-					minWidth: 150,
-					filter: textFilter(['employee', 'email']),
-					Cell: ({ row }) => {
-						return <Text isTruncated>{row.original.employee.email}</Text>
-					},
-				},
-
-				{
-					Header: 'Leave date',
-					accessor: 'date',
-					filter: dateFilter(['date']),
-					minWidth: 150,
-					Cell: ({ value }) => {
-						return <Text>{new Date(value).toLocaleDateString('en-GB')}</Text>
-					},
-				},
-				{
-					Header: 'year',
-					accessor: 'year',
-					filter: yearFilter(['date']),
-				},
-				{
-					Header: 'Leave status',
-					accessor: 'status',
-					minWidth: 150,
-					filter: selectFilter(['status']),
-					Cell: ({ value }) => {
-						return (
-							<HStack alignItems={'center'}>
-								<Box
-									background={
-										value == 'Pending'
-											? 'yellow.200'
-											: value == 'Approved'
-											? 'hu-Green.normal'
-											: 'red'
-									}
-									w={'3'}
-									borderRadius={'full'}
-									h={'3'}
-								/>
-								<Text>{value}</Text>
-							</HStack>
-						)
-					},
-				},
-				{
-					Header: 'Leave type',
-					accessor: 'leave_type',
-					minWidth: 150,
-					filter: selectFilter(['leave_type', 'id']),
-					Cell: ({ value }) => {
-						return (
-							<Tag bg={`${value.color_code}30`} color={value.color_code} isTruncated>
-								{value.name}
-							</Tag>
-						)
-					},
-				},
-				{
-					Header: 'Action',
-					accessor: 'action',
-					disableResizing: true,
-					width: 120,
-					minWidth: 120,
-					disableSortBy: true,
-					Cell: ({ row }) => (
-						<Menu>
-							<MenuButton as={Button} paddingInline={3}>
-								<MdOutlineMoreVert />
-							</MenuButton>
-							<MenuList>
-								<MenuItem
-									onClick={() => {
-										setLeaveId(row.values['id'])
-										onOpenDetail()
-									}}
-									icon={<IoEyeOutline fontSize={'15px'} />}
-								>
-									View
-								</MenuItem>
-								{row.values.status == 'Pending' && (
-									<>
-										<MenuItem
-											onClick={() => {
-												setIsloading(true)
-												mutateUpdateStatus({
-													status: 'Approved',
-													leaveId: row.values['id'],
-												})
-											}}
-											icon={<BsCheck2 fontSize={'15px'} />}
-										>
-											Approve
-										</MenuItem>
-										<MenuItem
-											onClick={() => {
-												setIsloading(true)
-												mutateUpdateStatus({
-													status: 'Rejected',
-													leaveId: row.values['id'],
-												})
-											}}
-											icon={<IoMdClose fontSize={'15px'} />}
-										>
-											Reject
-										</MenuItem>
-										<MenuItem
-											onClick={() => {
-												setLeaveId(row.values['id'])
-												onOpenUpdate()
-											}}
-											icon={<RiPencilLine fontSize={'15px'} />}
-										>
-											Edit
-										</MenuItem>
-									</>
-								)}
-
-								<MenuItem
-									onClick={() => {
-										setLeaveId(row.values['id'])
-										onOpenDl()
-									}}
-									icon={<MdOutlineDeleteOutline fontSize={'15px'} />}
-								>
-									Delete
-								</MenuItem>
-							</MenuList>
-						</Menu>
-					),
-				},
-			],
+	const columns: TColumn[] = leaveColumn({
+		currentUser,
+		onRejected: (id: number) => {
+			setIsloading(true)
+			mutateUpdateStatus({
+				status: 'Rejected',
+				leaveId: id,
+			})
 		},
-	]
+		onApproved: (id: number) => {
+			setIsloading(true)
+			mutateUpdateStatus({
+				status: 'Approved',
+				leaveId: id,
+			})
+		},
+		onDelete: (id: number) => {
+			setLeaveId(id)
+			onOpenDl()
+		},
+		onDetail: (id: number) => {
+			setLeaveId(id)
+			onOpenDetail()
+		},
+		onUpdate: (id: number) => {
+			setLeaveId(id)
+			onOpenUpdate()
+		},
+	})
 
 	return (
-		<Box>
+		<Box pb={8}>
 			<HStack
 				_hover={{
 					textDecoration: 'none',
@@ -468,14 +304,14 @@ const Leaves: NextLayout = () => {
 					spacing={10}
 					pt={3}
 				>
-					<Func
-						icon={<IoAdd />}
-						description={'Add new client by form'}
-						title={'Add new'}
-						action={onOpenAdd}
-					/>
 					{currentUser && currentUser.role === 'Admin' && (
 						<>
+							<Func
+								icon={<IoAdd />}
+								description={'Add new client by form'}
+								title={'Add new'}
+								action={onOpenAdd}
+							/>
 							<CSVLink filename={'leaves.csv'} headers={headersCSV} data={dataCSV}>
 								<Func
 									icon={<BiExport />}
@@ -484,6 +320,13 @@ const Leaves: NextLayout = () => {
 									action={() => {}}
 								/>
 							</CSVLink>
+							<Func
+								icon={<AiOutlineDelete />}
+								title={'Delete all'}
+								description={'Delete all client you selected'}
+								action={onOpenDlMany}
+								disabled={!dataSl || dataSl.length == 0 ? true : false}
+							/>
 						</>
 					)}
 					<Func
@@ -491,13 +334,6 @@ const Leaves: NextLayout = () => {
 						description={'Open draw to filter'}
 						title={'filter'}
 						action={onOpenFilter}
-					/>
-					<Func
-						icon={<AiOutlineDelete />}
-						title={'Delete all'}
-						description={'Delete all client you selected'}
-						action={onOpenDlMany}
-						disabled={!dataSl || dataSl.length == 0 ? true : false}
 					/>
 
 					<Func
@@ -517,7 +353,7 @@ const Leaves: NextLayout = () => {
 					data={allLeaves?.leaves || []}
 					columns={columns}
 					isLoading={isLoading}
-					isSelect
+					isSelect={currentUser.role == 'Admin'}
 					selectByColumn="id"
 					setSelect={(data: Array<number>) => setDataSl(data)}
 					filter={filter}
@@ -605,20 +441,7 @@ const Leaves: NextLayout = () => {
 					/>
 
 					<Select
-						options={[
-							{
-								label: 'Pending',
-								value: 'Pending',
-							},
-							{
-								label: 'Rejected',
-								value: 'Rejected',
-							},
-							{
-								label: 'Approved',
-								value: 'Approved',
-							},
-						]}
+						options={dataStatusLeave}
 						handleSearch={(data: IFilter) => {
 							setFilter(data)
 						}}

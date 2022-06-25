@@ -8,8 +8,6 @@ import {
 	DrawerOverlay,
 	DrawerContent,
 	DrawerBody,
-	DrawerFooter,
-	Button,
 	CloseButton,
 } from '@chakra-ui/react'
 import { AuthContext } from 'contexts/AuthContext'
@@ -31,7 +29,6 @@ import {
 	MdOutlineDashboardCustomize,
 	MdOutlineEditNote,
 	MdOutlineEvent,
-	MdOutlineMoreVert,
 } from 'react-icons/md'
 import LinkGroup from './LinkGroup'
 import LinkItem from './LinkItem'
@@ -147,20 +144,16 @@ const LinkItems = () => {
 				/>
 			)}
 			{currentUser?.role == 'Admin' && (
-					<LinkItem
+				<LinkItem
 					link="/salaries"
 					title="Salaries"
-	
 					icon={<MdOutlineAttachMoney fontSize={20} />}
 				/>
 			)}
-		
-			<LinkItem
-				link="/rooms"
-				title="Rooms"
 
-				icon={<IoVideocamOutline fontSize={20} />}
-			/>
+			{currentUser?.role != 'Client' && (
+				<LinkItem link="/rooms" title="Rooms" icon={<IoVideocamOutline fontSize={20} />} />
+			)}
 		</>
 	)
 }

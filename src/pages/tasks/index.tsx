@@ -317,7 +317,10 @@ const tasks: NextLayout = () => {
 					Cell: ({ value }) => {
 						const date = new Date(value)
 						return (
-							<Text color={date.getTime() <= new Date().getTime() ?'red': 'black'} isTruncated>{`${date.getDate()}-${
+							<Text
+								color={date.getTime() <= new Date().getTime() ? 'red' : 'black'}
+								isTruncated
+							>{`${date.getDate()}-${
 								date.getMonth() + 1
 							}-${date.getFullYear()}`}</Text>
 						)
@@ -454,7 +457,7 @@ const tasks: NextLayout = () => {
 	]
 
 	return (
-		<Box>
+		<Box pb={8}>
 			<HStack
 				_hover={{
 					textDecoration: 'none',
@@ -491,6 +494,13 @@ const tasks: NextLayout = () => {
 									action={() => {}}
 								/>
 							</CSVLink>
+							<Func
+								icon={<AiOutlineDelete />}
+								title={'Delete all'}
+								description={'Delete all client you selected'}
+								action={onOpenDlMany}
+								disabled={!dataSl || dataSl.length == 0 ? true : false}
+							/>
 						</>
 					)}
 					<Func
@@ -500,17 +510,10 @@ const tasks: NextLayout = () => {
 						action={onOpenFilter}
 					/>
 					<Func
-						icon={<AiOutlineDelete />}
-						title={'Delete all'}
-						description={'Delete all client you selected'}
-						action={onOpenDlMany}
-						disabled={!dataSl || dataSl.length == 0 ? true : false}
-					/>
-					<Func
 						icon={<MdOutlineEvent />}
 						title={'Calendar'}
 						description={'show tasks as calendar'}
-						action={()=> {
+						action={() => {
 							router.push('/tasks/calendar')
 						}}
 					/>
@@ -577,127 +580,129 @@ const tasks: NextLayout = () => {
 				isOpen={isOpenDialogDlMany}
 				onClose={onCloseDlMany}
 			/>
-			<Drawer isOpen={isOpenFilter} size={'xs'} title={'Filter'} onClose={onCloseFilter} footer={
-							<Button
-							onClick={() => {
-								setIsReset(true)
-								setTimeout(() => {
-									setIsReset(false)
-								}, 1000)
+			<Drawer
+				isOpen={isOpenFilter}
+				size={'xs'}
+				title={'Filter'}
+				onClose={onCloseFilter}
+				footer={
+					<Button
+						onClick={() => {
+							setIsReset(true)
+							setTimeout(() => {
+								setIsReset(false)
+							}, 1000)
+						}}
+					>
+						reset filter
+					</Button>
+				}
+			>
+				<VStack spacing={5} p={6}>
+					<Input
+						handleSearch={(data: IFilter) => {
+							setFilter(data)
+						}}
+						columnId={'name'}
+						label="Task"
+						placeholder="Enter task title"
+						icon={<AiOutlineSearch fontSize={'20px'} color="gray" opacity={0.6} />}
+						type={'text'}
+					/>
+					<DateRange
+						handleSelect={(date: { from: Date; to: Date }) => {
+							setFilter({
+								columnId: 'deadline',
+								filterValue: date,
+							})
+						}}
+						label="Select date"
+					/>
+					<SelectF
+						options={dataAllProjects?.projects?.map((project) => ({
+							label: project.name,
+							value: project.id,
+						}))}
+						handleSearch={(data: IFilter) => {
+							setFilter(data)
+						}}
+						columnId={'project'}
+						label="Project"
+						placeholder="Select project"
+					/>
+
+					<SelectF
+						options={allCategories?.taskCategories?.map((category) => ({
+							label: category.name,
+							value: category.id,
+						}))}
+						handleSearch={(data: IFilter) => {
+							setFilter(data)
+						}}
+						columnId={'task_category'}
+						label="Category"
+						placeholder="Select category"
+					/>
+					<SelectF
+						options={allMilestones?.milestones?.map((milestone) => ({
+							label: milestone.title,
+							value: milestone.id,
+						}))}
+						handleSearch={(data: IFilter) => {
+							setFilter(data)
+						}}
+						columnId={'milestone'}
+						label="Milestone"
+						placeholder="Select milestone"
+					/>
+
+					<SelectCustom
+						handleSearch={(field: any) => {
+							setFilter({
+								columnId: 'employees',
+								filterValue: field.value,
+							})
+						}}
+						label={'Assign to'}
+						name={'employees'}
+						options={[
+							{
+								label: (
+									<Text color={colorMode == 'light' ? 'black' : 'white'}>
+										all
+									</Text>
+								),
+								value: '',
+							},
+							...employees,
+						]}
+						required={false}
+					/>
+					{(currentUser?.role === 'Admin' || currentUser?.role === 'Client') && (
+						<SelectCustom
+							handleSearch={(field: any) => {
+								setFilter({
+									columnId: 'assignBy',
+									filterValue: field.value,
+								})
 							}}
-						>
-							reset filter
-						</Button>
-			} >
-						<VStack spacing={5} p={6}>
-							<Input
-								handleSearch={(data: IFilter) => {
-									setFilter(data)
-								}}
-								columnId={'name'}
-								label="Task"
-								placeholder="Enter task title"
-								icon={
-									<AiOutlineSearch fontSize={'20px'} color="gray" opacity={0.6} />
-								}
-								type={'text'}
-							/>
-							<DateRange
-								handleSelect={(date: { from: Date; to: Date }) => {
-									setFilter({
-										columnId: 'deadline',
-										filterValue: date,
-									})
-								}}
-								label="Select date"
-							/>
-							<SelectF
-								options={dataAllProjects?.projects?.map((project) => ({
-									label: project.name,
-									value: project.id,
-								}))}
-								handleSearch={(data: IFilter) => {
-									setFilter(data)
-								}}
-								columnId={'project'}
-								label="Project"
-								placeholder="Select project"
-							/>
-
-							<SelectF
-								options={allCategories?.taskCategories?.map((category) => ({
-									label: category.name,
-									value: category.id,
-								}))}
-								handleSearch={(data: IFilter) => {
-									setFilter(data)
-								}}
-								columnId={'task_category'}
-								label="Category"
-								placeholder="Select category"
-							/>
-							<SelectF
-								options={allMilestones?.milestones?.map((milestone) => ({
-									label: milestone.title,
-									value: milestone.id,
-								}))}
-								handleSearch={(data: IFilter) => {
-									setFilter(data)
-								}}
-								columnId={'milestone'}
-								label="Milestone"
-								placeholder="Select milestone"
-							/>
-
-							<SelectCustom
-								handleSearch={(field: any) => {
-									setFilter({
-										columnId: 'employees',
-										filterValue: field.value,
-									})
-								}}
-								label={'Assign to'}
-								name={'employees'}
-								options={[
-									{
-										label: (
-											<Text color={colorMode == 'light' ? 'black' : 'white'}>
-												all
-											</Text>
-										),
-										value: '',
-									},
-									...employees,
-								]}
-								required={false}
-							/>
-							{(currentUser?.role === 'Admin' || currentUser?.role === 'Client') && (
-								<SelectCustom
-									handleSearch={(field: any) => {
-										setFilter({
-											columnId: 'assignBy',
-											filterValue: field.value,
-										})
-									}}
-									label={'Assign by'}
-									name={'assignBy'}
-									options={[
-										{
-											label: (
-												<Text
-													color={colorMode == 'light' ? 'black' : 'white'}
-												>
-													all
-												</Text>
-											),
-											value: '',
-										},
-										...employees,
-									]}
-									required={false}
-								/>
-							)}
-						</VStack>
+							label={'Assign by'}
+							name={'assignBy'}
+							options={[
+								{
+									label: (
+										<Text color={colorMode == 'light' ? 'black' : 'white'}>
+											all
+										</Text>
+									),
+									value: '',
+								},
+								...employees,
+							]}
+							required={false}
+						/>
+					)}
+				</VStack>
 			</Drawer>
 		</Box>
 	)

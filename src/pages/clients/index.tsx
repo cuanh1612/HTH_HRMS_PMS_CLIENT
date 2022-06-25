@@ -8,16 +8,10 @@ import { allClientCategoriesQuery, allClientsQuery, allClientSubCategoriesQuery 
 
 // components
 import {
-	Avatar,
-	Badge,
 	Box,
 	Button,
 	Collapse,
 	HStack,
-	Menu,
-	MenuButton,
-	MenuItem,
-	MenuList,
 	SimpleGrid,
 	Text,
 	useDisclosure,
@@ -44,17 +38,12 @@ import {
 } from 'react-icons/ai'
 import { BiExport } from 'react-icons/bi'
 import { FaFileCsv } from 'react-icons/fa'
-import { IoAdd, IoEyeOutline } from 'react-icons/io5'
-import { MdOutlineDeleteOutline, MdOutlineMoreVert } from 'react-icons/md'
-import { RiPencilLine } from 'react-icons/ri'
+import { IoAdd } from 'react-icons/io5'
 
 import { NextLayout } from 'type/element/layout'
 
 // fucs, component to setup table
-import { IFilter, TColumn } from 'type/tableTypes'
-
-// filter of column
-import { dateFilter, selectFilter, textFilter } from 'utils/tableFilters'
+import { IFilter } from 'type/tableTypes'
 
 // page add and update employee
 import AddClient from './add-clients'
@@ -68,7 +57,7 @@ import ImportCSV from 'components/importCSV'
 import { IOption } from 'type/basicTypes'
 import { IPeople } from 'type/element/commom'
 import { VscFilter } from 'react-icons/vsc'
-import Link from 'next/link'
+import { clientColumn } from 'utils/columns'
 
 const Clients: NextLayout = () => {
 	const { isAuthenticated, handleLoading, currentUser, setToast } = useContext(AuthContext)
@@ -181,15 +170,13 @@ const Clients: NextLayout = () => {
 
 	//State ---------------------------------------------------------------------
 	// get id to delete client
-	const [idDeleteClient, setIdDeleteClient] = useState<number>()
+	const [idClient, setIdClient] = useState<number | null>(null)
 
 	// set loading table
 	const [isLoading, setIsloading] = useState(true)
 
 	// data select to delete all
 	const [dataSl, setDataSl] = useState<Array<number> | null>()
-
-	const [clientIdUpdate, setClientIdUpdate] = useState<number | null>(30)
 
 	// data all users to select
 	const [dataUsersSl, setAllusersSl] = useState<IPeople[]>([])
@@ -351,171 +338,20 @@ const Clients: NextLayout = () => {
 	}
 
 	// header ----------------------------------------
-	const columns: TColumn[] = [
-		{
-			Header: 'Clients',
-
-			columns: [
-				{
-					Header: 'Id',
-					accessor: 'id',
-					filter: selectFilter(['id']),
-					width: 80,
-					minWidth: 80,
-					disableResizing: true,
-					Cell: ({ value }) => {
-						return value
-					},
-				},
-				{
-					Header: 'Name',
-					accessor: 'name',
-					minWidth: 250,
-					Cell: ({ value, row }) => {
-						return (
-							<HStack w={'full'} spacing={5}>
-								<Avatar
-									flex={'none'}
-									size={'sm'}
-									name={row.values['name']}
-									src={row.original.avatar?.url}
-								/>
-								<VStack w={'70%'} alignItems={'start'}>
-									<Link href={`/clients/${row.values['id']}`} passHref>
-										<Text
-											_hover={{
-												textDecoration: 'underline',
-												cursor: 'pointer',
-											}}
-											isTruncated
-											w={'full'}
-										>
-											{row.original.salutation
-												? `${row.original.salutation}. ${value}`
-												: value}
-											{currentUser?.email == row.values['email'] && (
-												<Badge
-													marginLeft={'5'}
-													color={'white'}
-													background={'gray.500'}
-												>
-													It's you
-												</Badge>
-											)}
-										</Text>
-									</Link>
-									{row.original.company_name && (
-										<Text
-											isTruncated
-											w={'full'}
-											fontSize={'sm'}
-											color={'gray.400'}
-										>
-											{row.original.company_name}
-										</Text>
-									)}
-								</VStack>
-							</HStack>
-						)
-					},
-				},
-				{
-					Header: 'Email',
-					accessor: 'email',
-					minWidth: 150,
-					filter: textFilter(['email']),
-					Cell: ({ value }) => {
-						return <Text isTruncated>{value}</Text>
-					},
-				},
-
-				{
-					Header: 'Status',
-					accessor: 'status',
-					minWidth: 150,
-					Cell: () => {
-						return (
-							<HStack alignItems={'center'}>
-								<Box
-									background={'hu-Green.normal'}
-									w={'3'}
-									borderRadius={'full'}
-									h={'3'}
-								/>
-								<Text>Active</Text>
-							</HStack>
-						)
-					},
-				},
-				{
-					Header: 'Created',
-					accessor: 'createdAt',
-					minWidth: 150,
-					filter: dateFilter(['createdAt']),
-					Cell: ({ value }) => {
-						const createdDate = new Date(value).toLocaleDateString('en-GB')
-						return <Text isTruncated>{createdDate}</Text>
-					},
-				},
-				{
-					Header: 'Category',
-					accessor: 'category',
-					filter: selectFilter(['client_category', 'id']),
-				},
-				{
-					Header: 'Subcategory',
-					accessor: 'subcategory',
-					filter: selectFilter(['client_sub_category', 'id']),
-				},
-				{
-					Header: 'Country',
-					accessor: 'country',
-					filter: selectFilter(['country']),
-				},
-				{
-					Header: 'Action',
-					accessor: 'action',
-					disableResizing: true,
-					width: 120,
-					minWidth: 120,
-					disableSortBy: true,
-					Cell: ({ row }) => (
-						<Menu>
-							<MenuButton as={Button} paddingInline={3}>
-								<MdOutlineMoreVert />
-							</MenuButton>
-							<MenuList>
-								<MenuItem icon={<IoEyeOutline fontSize={'15px'} />}>View</MenuItem>
-								<MenuItem
-									onClick={() => {
-										setClientIdUpdate(row.values['id'])
-										onOpenUpdate()
-									}}
-									icon={<RiPencilLine fontSize={'15px'} />}
-								>
-									Edit
-								</MenuItem>
-								{currentUser?.email != row.values['email'] && (
-									<MenuItem
-										onClick={() => {
-											setIdDeleteClient(row.values['id'])
-											onOpenDl()
-										}}
-										icon={<MdOutlineDeleteOutline fontSize={'15px'} />}
-									>
-										Delete
-									</MenuItem>
-								)}
-							</MenuList>
-						</Menu>
-					),
-				},
-			],
+	const columns = clientColumn({
+		currentUser,
+		onDelete: (id: number) => {
+			setIdClient(id)
+			onOpenDl()
 		},
-	]
+		onUpdate: (id: number) => {
+			setIdClient(id)
+			onOpenUpdate()
+		},
+	})
 
 	return (
-		<Box w={'full'}>
+		<Box w={'full'} pb={8}>
 			<HStack
 				_hover={{
 					textDecoration: 'none',
@@ -631,7 +467,7 @@ const Clients: NextLayout = () => {
 			<AlertDialog
 				handleDelete={() => {
 					setIsloading(true)
-					mutateDeleteClient(String(idDeleteClient))
+					mutateDeleteClient(String(idClient))
 				}}
 				title="Are you sure?"
 				content="You will not be able to recover the deleted record!"
@@ -660,7 +496,7 @@ const Clients: NextLayout = () => {
 
 			{/* drawer to update client */}
 			<Drawer size="xl" title="Update client" onClose={onCloseUpdate} isOpen={isOpenUpdate}>
-				<UpdateClient onCloseDrawer={onCloseUpdate} clientUpdateId={clientIdUpdate} />
+				<UpdateClient onCloseDrawer={onCloseUpdate} clientUpdateId={idClient} />
 			</Drawer>
 
 			<Drawer

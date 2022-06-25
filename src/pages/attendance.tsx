@@ -13,13 +13,9 @@ import {
 	Text,
 	useDisclosure,
 	VStack,
-	Drawer,
-	DrawerOverlay,
-	DrawerContent,
-	DrawerCloseButton,
-	DrawerHeader,
-	DrawerBody,
 	useColorMode,
+	Collapse,
+	SimpleGrid,
 } from '@chakra-ui/react'
 import CheckAttendance from 'components/anttendance/CheckAttendance'
 import Dates from 'components/anttendance/Dates'
@@ -69,7 +65,10 @@ import { IFilter } from 'type/tableTypes'
 import { IoAirplaneOutline } from 'react-icons/io5'
 import { BiCheck } from 'react-icons/bi'
 import { IoMdClose } from 'react-icons/io'
-import { AiTwotoneStar } from 'react-icons/ai'
+import { AiOutlineCaretDown, AiOutlineCaretUp, AiTwotoneStar } from 'react-icons/ai'
+import { Func } from 'components/common'
+import { VscFilter } from 'react-icons/vsc'
+import { Drawer } from 'components/Drawer'
 
 const attendance: NextLayout = () => {
 	const { colorMode } = useColorMode()
@@ -100,6 +99,11 @@ const attendance: NextLayout = () => {
 	// get employee id to filter
 	const [employeeSl, setEmployeeSl] = useState<string | undefined>()
 
+	//set isopen of function
+	const { isOpen, onToggle } = useDisclosure({
+		defaultIsOpen: true,
+	})
+
 	// set open modal to check attendance
 	const { isOpen: isOpenInsert, onOpen: onOpenInsert, onClose: onCloseInsert } = useDisclosure()
 
@@ -114,11 +118,10 @@ const attendance: NextLayout = () => {
 		isAuthenticated,
 		dateFilter,
 		departmentSl,
-		currentUser?.role === "Admin" ? employeeSl : currentUser?.id
+		currentUser?.role === 'Admin' ? employeeSl : currentUser?.id
 	)
 
-	console.log(allAttendances);
-	
+	console.log(allAttendances)
 
 	// get all employees
 	const { data: allEmployees } = allEmployeesNormalQuery(isAuthenticated)
@@ -133,7 +136,7 @@ const attendance: NextLayout = () => {
 	})
 
 	// get all holiday
-	const { data: allHolidays } = allHolidaysQuery()
+	const { data: allHolidays } = allHolidaysQuery({})
 
 	// function to reset form
 	const resetForm = () => ({
@@ -259,9 +262,38 @@ const attendance: NextLayout = () => {
 	}
 
 	return (
-		<>
-			<Button onClick={onOpenFilter}>Filter</Button>
-			<VStack spacing={5} justifyContent={'flex-start'} pos="relative" alignItems={'normal'}>
+		<Box w={'full'} pb={8}>
+			<HStack
+				_hover={{
+					textDecoration: 'none',
+				}}
+				onClick={onToggle}
+				color={'gray.500'}
+				cursor={'pointer'}
+				userSelect={'none'}
+			>
+				<Text fontWeight={'semibold'}>Function</Text>
+				{isOpen ? <AiOutlineCaretDown /> : <AiOutlineCaretUp />}
+			</HStack>
+			<Collapse in={isOpen} animateOpacity>
+				<SimpleGrid
+					w={'full'}
+					cursor={'pointer'}
+					columns={[1, 2, 2, 3, null, 4]}
+					spacing={10}
+					pt={3}
+				>
+					<Func
+						icon={<VscFilter />}
+						description={'Open draw to filter'}
+						title={'filter'}
+						action={onOpenFilter}
+					/>
+				</SimpleGrid>
+			</Collapse>
+			<br />
+			<br />
+			<VStack spacing={8} justifyContent={'flex-start'} pos="relative" alignItems={'normal'}>
 				<HStack spacing={5}>
 					<HStack>
 						<HStack
@@ -351,82 +383,87 @@ const attendance: NextLayout = () => {
 						</Text>
 					</HStack>
 
-					{currentUser && allAttendances?.data.map((employee) => {
-						const attendances = employee.attendances.map(
-							(attendance): IAttendance => ({
-								id: attendance.id,
-								date: attendance.date,
-								handle: (date: Date) => {
-									formSetting.reset({
-										clock_in_time: attendance.clock_in_time,
-										clock_out_time: attendance.clock_out_time,
-										half_day: attendance.half_day,
-										late: attendance.late,
-										working_from: attendance.working_from,
-									})
+					{currentUser &&
+						allAttendances?.data.map((employee) => {
+							const attendances = employee.attendances.map(
+								(attendance): IAttendance => ({
+									id: attendance.id,
+									date: attendance.date,
+									handle: (date: Date) => {
+										formSetting.reset({
+											clock_in_time: attendance.clock_in_time,
+											clock_out_time: attendance.clock_out_time,
+											half_day: attendance.half_day,
+											late: attendance.late,
+											working_from: attendance.working_from,
+										})
 
-									setUserHandle(date, employee)
-									onOpenDetail()
-								},
-								id_Employee: employee.id,
-							})
-						)
-						return (
-							<HStack
-								spacing={10}
-								key={employee.id}
-								alignItems="center"
-								justifyContent={'space-between'}
-							>
-								<HStack spacing={10}>
-									<HStack minW={'200px'} spacing={3}>
-										<Avatar
-											name={employee.name}
-											src={employee.avatar?.url}
-											size={'sm'}
-										/>
-										<Box w={'full'}>
-											<Text>{employee.name}</Text>
-											{employee.designation && (
-												<Text color={'gray'} fontSize={'14px'}>
-													{employee.designation.name}
-												</Text>
-											)}
-										</Box>
+										setUserHandle(date, employee)
+										onOpenDetail()
+									},
+									id_Employee: employee.id,
+								})
+							)
+							return (
+								<HStack
+									spacing={10}
+									key={employee.id}
+									alignItems="center"
+									justifyContent={'space-between'}
+								>
+									<HStack spacing={10}>
+										<HStack minW={'200px'} spacing={3}>
+											<Avatar
+												name={employee.name}
+												src={employee.avatar?.url}
+												size={'sm'}
+											/>
+											<Box w={'full'}>
+												<Text>{employee.name}</Text>
+												{employee.designation && (
+													<Text color={'gray'} fontSize={'14px'}>
+														{employee.designation.name}
+													</Text>
+												)}
+											</Box>
+										</HStack>
+										<HStack spacing={5}>
+											<CheckAttendance
+												createHandle={(date: Date) => {
+													formSetting.reset(resetForm())
+													setUserHandle(date, employee)
+													onOpenInsert()
+												}}
+												countDate={lastDate}
+												attendances={attendances}
+												leaveDates={allLeaves?.leaves}
+												holidays={allHolidays?.holidays}
+												dateFilter={dateFilter}
+												isChange={
+													currentUser && currentUser.role === 'Admin'
+														? true
+														: false
+												}
+											/>
+										</HStack>
 									</HStack>
-									<HStack spacing={5}>
-										<CheckAttendance
-											createHandle={(date: Date) => {
-												formSetting.reset(resetForm())
-												setUserHandle(date, employee)
-												onOpenInsert()
-											}}
-											countDate={lastDate}
-											attendances={attendances}
-											leaveDates={allLeaves?.leaves}
-											holidays={allHolidays?.holidays}
-											dateFilter={dateFilter}
-											isChange={currentUser && currentUser.role === "Admin" ? true : false}
-										/>
-									</HStack>
+									<Box minW={'100px'}>
+										<Text
+											color={'hu-Green.normal'}
+											fontWeight={'semibold'}
+											fontSize={'20px'}
+											as={'span'}
+										>
+											{attendances.length}
+										</Text>
+										<Text color={'gray.500'} as={'span'}>
+											{' '}
+											/{lastDate}
+										</Text>
+									</Box>
 								</HStack>
-								<Box minW={'100px'}>
-									<Text
-										color={'hu-Green.normal'}
-										fontWeight={'semibold'}
-										fontSize={'20px'}
-										as={'span'}
-									>
-										{attendances.length}
-									</Text>
-									<Text color={'gray.500'} as={'span'}>
-										{' '}
-										/{lastDate}
-									</Text>
-								</Box>
-							</HStack>
-						)
-					})}
+							)
+						})}
 
 					{/* open modal to add or update attendance */}
 					<Modal isOpen={isOpenInsert} onClose={onCloseInsert}>
@@ -533,175 +570,172 @@ const attendance: NextLayout = () => {
 
 				{/* filter */}
 
-				<Drawer isOpen={isOpenFilter} placement="right" onClose={onCloseFilter}>
-					<DrawerOverlay />
-					<DrawerContent>
-						<DrawerCloseButton />
-						<DrawerHeader>Filters</DrawerHeader>
+				<Drawer
+					isOpen={isOpenFilter}
+					title={'filter'}
+					size={'xs'}
+					footer={
+						<Button
+							onClick={() => {
+								setEmployeeSl(undefined)
+								setDepartmentSl(undefined)
+								setDateFilter(new Date())
+							}}
+						>
+							reset
+						</Button>
+					}
+					onClose={onCloseFilter}
+				>
+					<VStack p={6} spacing={5}>
+						<Select
+							options={[
+								{
+									label: 1,
+									value: '1',
+								},
+								{
+									label: 2,
+									value: '2',
+								},
+								{
+									label: 3,
+									value: '3',
+								},
+								{
+									label: 4,
+									value: '4',
+								},
+								{
+									label: 5,
+									value: '5',
+								},
+								{
+									label: 6,
+									value: '6',
+								},
+								{
+									label: 7,
+									value: '7',
+								},
+								{
+									label: 8,
+									value: '8',
+								},
+								{
+									label: 9,
+									value: '9',
+								},
+								{
+									label: 10,
+									value: '10',
+								},
+								{
+									label: 11,
+									value: '11',
+								},
+								{
+									label: 12,
+									value: '12',
+								},
+							]}
+							handleSearch={(data: IFilter) => {
+								if (!data.filterValue) {
+									setDateFilter(
+										(date) => new Date(date.setMonth(new Date().getMonth()))
+									)
+								} else {
+									setDateFilter(
+										(date) =>
+											new Date(date.setMonth(Number(data.filterValue) - 1))
+									)
+								}
+							}}
+							columnId={'month'}
+							label="Month"
+							placeholder="Select month"
+						/>
 
-						<DrawerBody>
-							<VStack spacing={5}>
-								<Select
-									options={[
-										{
-											label: 1,
-											value: '1',
-										},
-										{
-											label: 2,
-											value: '2',
-										},
-										{
-											label: 3,
-											value: '3',
-										},
-										{
-											label: 4,
-											value: '4',
-										},
-										{
-											label: 5,
-											value: '5',
-										},
-										{
-											label: 6,
-											value: '6',
-										},
-										{
-											label: 7,
-											value: '7',
-										},
-										{
-											label: 8,
-											value: '8',
-										},
-										{
-											label: 9,
-											value: '9',
-										},
-										{
-											label: 10,
-											value: '10',
-										},
-										{
-											label: 11,
-											value: '11',
-										},
-										{
-											label: 12,
-											value: '12',
-										},
-									]}
-									handleSearch={(data: IFilter) => {
-										if (!data.filterValue) {
-											setDateFilter(
-												(date) =>
-													new Date(date.setMonth(new Date().getMonth()))
-											)
-										} else {
-											setDateFilter(
-												(date) =>
-													new Date(
-														date.setMonth(Number(data.filterValue) - 1)
-													)
-											)
-										}
-									}}
-									columnId={'month'}
-									label="Month"
-									placeholder="Select month"
-								/>
-
-								<Select
-									options={[
-										{
-											label: String(getYearCurrent()),
-											value: String(getYearCurrent()),
-										},
-										{
-											label: String(getYearCurrent() - 1),
-											value: String(getYearCurrent() - 1),
-										},
-										{
-											label: String(getYearCurrent() - 2),
-											value: String(getYearCurrent() - 2),
-										},
-										{
-											label: String(getYearCurrent() - 3),
-											value: String(getYearCurrent() - 3),
-										},
-										{
-											label: String(getYearCurrent() - 4),
-											value: String(getYearCurrent() - 4),
-										},
-									]}
-									handleSearch={(data: IFilter) => {
-										if (!data.filterValue) {
-											setDateFilter(
-												(date) =>
-													new Date(
-														date.setFullYear(new Date().getFullYear())
-													)
-											)
-										} else {
-											setDateFilter(
-												(date) =>
-													new Date(
-														date.setFullYear(Number(data.filterValue))
-													)
-											)
-										}
-									}}
-									columnId={'year'}
-									label="Year"
-									placeholder="Select year"
-								/>
-								{currentUser?.role === "Admin" && departments && (
-									<Select
-										options={departments}
-										handleSearch={(data: IFilter) => {
-											if (!data.filterValue) {
-												setDepartmentSl(undefined)
-											} else {
-												setDepartmentSl(data.filterValue)
-											}
-										}}
-										columnId={'department'}
-										label="Department"
-										placeholder="Select department"
-									/>
-								)}
-								{currentUser?.role === "Admin" && employees && (
-									<SelectCustom
-										handleSearch={(field: any) => {
-											setEmployeeSl(field.value)
-										}}
-										label={'Employee'}
-										name={'employee'}
-										options={[
-											{
-												label: (
-													<Text
-														color={
-															colorMode == 'light' ? 'black' : 'white'
-														}
-													>
-														all
-													</Text>
-												),
-												value: '',
-											},
-											...employees,
-										]}
-										required={false}
-									/>
-								)}
-							</VStack>
-						</DrawerBody>
-					</DrawerContent>
+						<Select
+							options={[
+								{
+									label: String(getYearCurrent()),
+									value: String(getYearCurrent()),
+								},
+								{
+									label: String(getYearCurrent() - 1),
+									value: String(getYearCurrent() - 1),
+								},
+								{
+									label: String(getYearCurrent() - 2),
+									value: String(getYearCurrent() - 2),
+								},
+								{
+									label: String(getYearCurrent() - 3),
+									value: String(getYearCurrent() - 3),
+								},
+								{
+									label: String(getYearCurrent() - 4),
+									value: String(getYearCurrent() - 4),
+								},
+							]}
+							handleSearch={(data: IFilter) => {
+								if (!data.filterValue) {
+									setDateFilter(
+										(date) =>
+											new Date(date.setFullYear(new Date().getFullYear()))
+									)
+								} else {
+									setDateFilter(
+										(date) =>
+											new Date(date.setFullYear(Number(data.filterValue)))
+									)
+								}
+							}}
+							columnId={'year'}
+							label="Year"
+							placeholder="Select year"
+						/>
+						{currentUser?.role === 'Admin' && departments && (
+							<Select
+								options={departments}
+								handleSearch={(data: IFilter) => {
+									if (!data.filterValue) {
+										setDepartmentSl(undefined)
+									} else {
+										setDepartmentSl(data.filterValue)
+									}
+								}}
+								columnId={'department'}
+								label="Department"
+								placeholder="Select department"
+							/>
+						)}
+						{currentUser?.role === 'Admin' && employees && (
+							<SelectCustom
+								handleSearch={(field: any) => {
+									setEmployeeSl(field.value)
+								}}
+								label={'Employee'}
+								name={'employee'}
+								options={[
+									{
+										label: (
+											<Text color={colorMode == 'light' ? 'black' : 'white'}>
+												all
+											</Text>
+										),
+										value: '',
+									},
+									...employees,
+								]}
+								required={false}
+							/>
+						)}
+					</VStack>
 				</Drawer>
 			</VStack>
-		</>
+		</Box>
 	)
 }
 

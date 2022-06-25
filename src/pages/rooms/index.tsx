@@ -84,7 +84,7 @@ const zoom: NextLayout = () => {
 		onOpenUpRoom()
 	}
 	return (
-		<VStack alignItems={'start'} w={'full'} spacing={5}>
+		<VStack justifyContent={'start'} pb={8} alignItems={'start'} w={'full'} spacing={5}>
 			<Box>
 				<Button mb={5} onClick={onOpenCreRoom}>
 					create room

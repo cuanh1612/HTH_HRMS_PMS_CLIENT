@@ -1,6 +1,7 @@
 import {
 	Avatar,
 	Badge,
+	Box,
 	Button,
 	Collapse,
 	HStack,
@@ -276,7 +277,7 @@ const Salaries: NextLayout = () => {
 	]
 
 	return (
-		<>
+		<Box pb={8} w={'full'}>
 			<HStack
 				_hover={{
 					textDecoration: 'none',
@@ -405,7 +406,7 @@ const Salaries: NextLayout = () => {
 					)}
 				</VStack>
 			</Drawer>
-		</>
+		</Box>
 	)
 }
 

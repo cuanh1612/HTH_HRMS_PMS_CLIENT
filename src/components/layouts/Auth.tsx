@@ -26,13 +26,13 @@ export const AuthLayout = ({ children }: { children: JSX.Element }) => {
 				<Box color={'hu-Green.normal'} as={'span'} maxW="80" textAlign={'center'}>
 					Human resource management combined with project management
 				</Box>
-				<Image
+				{/* <Image
 					width={'full'}
 					fit={'cover'}
 					height={'full'}
 					src="https://bit.ly/dan-abramov"
 					alt="image"
-				/>
+				/> */}
 			</VStack>
 			<Center minW={'600px'} flex={1}>
 				{children}

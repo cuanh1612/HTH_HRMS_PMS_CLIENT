@@ -32,8 +32,10 @@ import { authMutaionResponse, employeeMutaionResponse } from 'type/mutationRespo
 
 export const DetailEmployee: NextLayout | any = ({
 	dataDetailEmployee,
+	employeeIdProp
 }: {
-	dataDetailEmployee: employeeMutaionResponse
+	dataDetailEmployee: employeeMutaionResponse,
+	employeeIdProp?: string | number
 }) => {
 	// const { isOpen, onOpen, onClose } = useDisclosure()
 	const { isAuthenticated, handleLoading } = useContext(AuthContext)
@@ -45,27 +47,27 @@ export const DetailEmployee: NextLayout | any = ({
 
 	const { data: openTasksEmployee } = openTasksEmployeeQuery(
 		isAuthenticated,
-		employeeId as string
+		employeeId as string || employeeIdProp
 	)
 
 	const { data: hoursLoggedEmployee } = hoursLoggedEmployeeQuery(
 		isAuthenticated,
-		employeeId as string
+		employeeId as string || employeeIdProp
 	)
 
 	const { data: countProjectsEmployee } = countProjectsEmployeeQuery(
 		isAuthenticated,
-		employeeId as string
+		employeeId as string || employeeIdProp
 	)
 
 	const { data: countLateAttendancesEmployee } = lateAttendanceEmployeeQuery(
 		isAuthenticated,
-		employeeId as string
+		employeeId as string || employeeIdProp
 	)
 
 	const { data: countTasksStatus } = countTasksStatusEmployeeQuery(
 		isAuthenticated,
-		employeeId as string
+		employeeId as string || employeeIdProp
 	)
 
 

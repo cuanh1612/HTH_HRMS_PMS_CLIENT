@@ -513,34 +513,37 @@ const Contracts: NextLayout = () => {
 										view
 									</MenuItem>
 								</Link>
+								{currentUser?.role == 'Admin' && (
+									<>
+										<MenuItem
+											onClick={() => {
+												mutateGetPublic(row.values['id'])
+											}}
+											icon={<BiLinkAlt fontSize={'15px'} />}
+										>
+											Public Link
+										</MenuItem>
+										<MenuItem
+											onClick={() => {
+												setContractIdUpdate(row.values['id'])
+												onOpenUpdate()
+											}}
+											icon={<RiPencilLine fontSize={'15px'} />}
+										>
+											Edit
+										</MenuItem>
 
-								<MenuItem
-									onClick={() => {
-										mutateGetPublic(row.values['id'])
-									}}
-									icon={<BiLinkAlt fontSize={'15px'} />}
-								>
-									Public Link
-								</MenuItem>
-								<MenuItem
-									onClick={() => {
-										setContractIdUpdate(row.values['id'])
-										onOpenUpdate()
-									}}
-									icon={<RiPencilLine fontSize={'15px'} />}
-								>
-									Edit
-								</MenuItem>
-
-								<MenuItem
-									onClick={() => {
-										setIdDlContract(row.values['id'])
-										onOpenDl()
-									}}
-									icon={<MdOutlineDeleteOutline fontSize={'15px'} />}
-								>
-									Delete
-								</MenuItem>
+										<MenuItem
+											onClick={() => {
+												setIdDlContract(row.values['id'])
+												onOpenDl()
+											}}
+											icon={<MdOutlineDeleteOutline fontSize={'15px'} />}
+										>
+											Delete
+										</MenuItem>
+									</>
+								)}
 							</MenuList>
 						</Menu>
 					),

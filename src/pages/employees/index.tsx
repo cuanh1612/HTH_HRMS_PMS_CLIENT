@@ -1,16 +1,9 @@
 // components
 import {
-	Avatar,
-	Badge,
 	Box,
 	Button,
 	Collapse,
 	HStack,
-	Menu,
-	MenuButton,
-	MenuItem,
-	MenuList,
-	Select as CSelect,
 	SimpleGrid,
 	Text,
 	useDisclosure,
@@ -47,18 +40,13 @@ import {
 	AiOutlineSearch,
 } from 'react-icons/ai'
 import { BiExport } from 'react-icons/bi'
-import { IoAdd, IoEyeOutline } from 'react-icons/io5'
-import { MdOutlineDeleteOutline, MdOutlineMoreVert } from 'react-icons/md'
-import { RiPencilLine } from 'react-icons/ri'
+import { IoAdd } from 'react-icons/io5'
 
 import { NextLayout } from 'type/element/layout'
 
 // fucs, component to setup table
 import { IFilter, TColumn } from 'type/tableTypes'
 import { dataRoleEmployee } from 'utils/basicData'
-
-// filter of column
-import { selectFilter, textFilter } from 'utils/tableFilters'
 
 // page add and update employee
 import AddEmployees from './add-employees'
@@ -70,6 +58,7 @@ import { FaFileCsv } from 'react-icons/fa'
 import { IOption } from 'type/basicTypes'
 import { IPeople } from 'type/element/commom'
 import { VscFilter } from 'react-icons/vsc'
+import { employeeColumn } from 'utils/columns'
 
 const Employees: NextLayout = () => {
 	///setting for import csv--------------------------------------------------
@@ -170,8 +159,6 @@ const Employees: NextLayout = () => {
 	})
 
 	//State ---------------------------------------------------------------------
-	// get id to delete employee
-	const [idDeleteEmpl, setIdDeleteEmpl] = useState<number>()
 
 	// set loading table
 	const [isLoading, setIsloading] = useState(true)
@@ -179,7 +166,7 @@ const Employees: NextLayout = () => {
 	// data select to delete all
 	const [dataSl, setDataSl] = useState<Array<number> | null>()
 
-	const [employeeIdUpdate, setEmployeeUpdate] = useState<number | null>(30)
+	const [employeeId, setEmployeeId] = useState<number | null>(30)
 
 	// all departments
 	const [departments, setDepartments] = useState<IOption[]>()
@@ -352,187 +339,28 @@ const Employees: NextLayout = () => {
 	}
 
 	// header ----------------------------------------
-	const columns: TColumn[] = [
-		{
-			Header: 'Employees',
-
-			columns: [
-				{
-					Header: 'Id',
-					accessor: 'id',
-					filter: selectFilter(['id']),
-					width: 80,
-					minWidth: 80,
-					disableResizing: true,
-					Cell: ({ value }) => {
-						return value
-					},
-				},
-				{
-					Header: 'Employee Id',
-					accessor: 'employeeId',
-					minWidth: 180,
-					width: 180,
-					disableResizing: true,
-				},
-				{
-					Header: 'Name',
-					accessor: 'name',
-					minWidth: 250,
-					Cell: ({ value, row }) => {
-						return (
-							<HStack w={'full'} spacing={5}>
-								<Avatar
-									flex={'none'}
-									size={'sm'}
-									name={row.values['name']}
-									src={row.original.avatar?.url}
-								/>
-								<VStack w={'70%'} alignItems={'start'}>
-									<Text isTruncated w={'full'}>
-										{value}
-										{currentUser?.email == row.values['email'] && (
-											<Badge
-												marginLeft={'5'}
-												color={'white'}
-												background={'gray.500'}
-											>
-												It's you
-											</Badge>
-										)}
-									</Text>
-									<Text isTruncated w={'full'} fontSize={'sm'} color={'gray.400'}>
-										{row.values['role']}
-									</Text>
-								</VStack>
-							</HStack>
-						)
-					},
-				},
-				{
-					Header: 'Email',
-					accessor: 'email',
-					minWidth: 150,
-					filter: textFilter(['email']),
-					Cell: ({ value }) => {
-						return <Text isTruncated>{value}</Text>
-					},
-				},
-				{
-					Header: 'User role',
-					accessor: 'role',
-					minWidth: 160,
-					filter: selectFilter(['role']),
-					Cell: ({ value, row }) => {
-						if (row.values['email'] == currentUser?.email)
-							return (
-								<CSelect
-									defaultValue={value}
-									onChange={(event: any) => {
-										setIsloading(true)
-										mutateChangeRole({
-											employeeId: Number(row.values['id']),
-											role: event.target.value,
-										})
-									}}
-								>
-									<option value={'Admin'}>Admin</option>
-								</CSelect>
-							)
-						return (
-							<CSelect
-								defaultValue={value}
-								onChange={(event: any) => {
-									setIsloading(true)
-									mutateChangeRole({
-										employeeId: Number(row.values['id']),
-										role: event.target.value,
-									})
-								}}
-							>
-								{dataRoleEmployee.map((item) => (
-									<option value={item.value} key={item.value}>
-										{item.label}
-									</option>
-								))}
-							</CSelect>
-						)
-					},
-				},
-				{
-					Header: 'Status',
-					accessor: 'status',
-					minWidth: 150,
-					Cell: () => {
-						return (
-							<HStack alignItems={'center'}>
-								<Box
-									background={'hu-Green.normal'}
-									w={'3'}
-									borderRadius={'full'}
-									h={'3'}
-								/>
-								<Text>Active</Text>
-							</HStack>
-						)
-					},
-				},
-				{
-					Header: 'Department',
-					accessor: 'department',
-					filter: selectFilter(['department', 'id']),
-					Cell: () => '',
-				},
-				{
-					Header: 'Designation',
-					accessor: 'designation',
-					filter: selectFilter(['designation', 'id']),
-					Cell: () => '',
-				},
-				{
-					Header: 'Action',
-					accessor: 'action',
-					disableResizing: true,
-					width: 120,
-					minWidth: 120,
-					disableSortBy: true,
-					Cell: ({ row }) => (
-						<Menu>
-							<MenuButton as={Button} paddingInline={3}>
-								<MdOutlineMoreVert />
-							</MenuButton>
-							<MenuList>
-								<MenuItem icon={<IoEyeOutline fontSize={'15px'} />}>View</MenuItem>
-								<MenuItem
-									onClick={() => {
-										setEmployeeUpdate(row.values['id'])
-										onOpenUpdate()
-									}}
-									icon={<RiPencilLine fontSize={'15px'} />}
-								>
-									Edit
-								</MenuItem>
-								{currentUser?.email != row.values['email'] && (
-									<MenuItem
-										onClick={() => {
-											setIdDeleteEmpl(row.values['id'])
-											onOpenDl()
-										}}
-										icon={<MdOutlineDeleteOutline fontSize={'15px'} />}
-									>
-										Delete
-									</MenuItem>
-								)}
-							</MenuList>
-						</Menu>
-					),
-				},
-			],
+	const columns: TColumn[] = employeeColumn({
+		currentUser,
+		onDelete: (id: number) => {
+			setEmployeeId(id)
+			onOpenDl()
 		},
-	]
-
+		onUpdate: (id: number)=> {
+			setEmployeeId(id)
+			onOpenUpdate()
+		},
+		dataRoleEmployee,
+		onChangeRole: (id: number, event: any) => {
+			setIsloading(true)
+			mutateChangeRole({
+				employeeId: id,
+				role: event.target.value,
+			})
+		}
+	})
+	
 	return (
-		<Box>
+		<Box pb={8}>
 			<HStack
 				_hover={{
 					textDecoration: 'none',
@@ -645,7 +473,7 @@ const Employees: NextLayout = () => {
 			<AlertDialog
 				handleDelete={() => {
 					setIsloading(true)
-					mutateDeleteEmpl(String(idDeleteEmpl))
+					mutateDeleteEmpl(String(employeeId))
 				}}
 				title="Are you sure?"
 				content="You will not be able to recover the deleted record!"
@@ -674,7 +502,7 @@ const Employees: NextLayout = () => {
 
 			{/* drawer to update employee */}
 			<Drawer size="xl" title="Update Employee" onClose={onCloseUpdate} isOpen={isOpenUpdate}>
-				<UpdateEmployees onCloseDrawer={onCloseUpdate} employeeId={employeeIdUpdate} />
+				<UpdateEmployees onCloseDrawer={onCloseUpdate} employeeId={employeeId} />
 			</Drawer>
 
 			<Drawer

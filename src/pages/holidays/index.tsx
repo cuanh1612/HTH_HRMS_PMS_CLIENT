@@ -384,6 +384,14 @@ const Holiday: NextLayout = () => {
 								onCloseImportCSV={onCloseImportCSV}
 								onOpenImportCSV={onOpenImportCSV}
 							/>
+							<Func
+								icon={<MdOutlineEvent />}
+								title={'Calendar'}
+								description={'show tasks as calendar'}
+								action={() => {
+									router.push('/holidays/calendar')
+								}}
+							/>
 						</>
 					)}
 					<Func
@@ -391,14 +399,6 @@ const Holiday: NextLayout = () => {
 						description={'Open draw to filter'}
 						title={'filter'}
 						action={onOpenFilter}
-					/>
-					<Func
-						icon={<MdOutlineEvent />}
-						title={'Calendar'}
-						description={'show tasks as calendar'}
-						action={() => {
-							router.push('/holidays/calendar')
-						}}
 					/>
 					<Func
 						icon={<AiOutlineDelete />}
@@ -415,7 +415,7 @@ const Holiday: NextLayout = () => {
 				data={allHolidays?.holidays || []}
 				columns={columns}
 				isLoading={isLoading}
-				isSelect
+				isSelect={currentUser?.role == 'Admin'}
 				selectByColumn="id"
 				setSelect={(data: Array<number>) => setDataSl(data)}
 				filter={filter}
@@ -582,9 +582,7 @@ const Holiday: NextLayout = () => {
 				onClose={handleCloseDetailHoliday}
 				isOpen={isOpenDetail}
 			>
-				<DetailHoliday
-					holidayIdProp={holidayIdDetail}
-				/>
+				<DetailHoliday holidayIdProp={holidayIdDetail} />
 			</Drawer>
 		</>
 	)

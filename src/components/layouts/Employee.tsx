@@ -6,16 +6,13 @@ import { AuthContext } from 'contexts/AuthContext'
 import { useRouter } from 'next/router'
 import { useContext, useEffect, useState } from 'react'
 import {
-	AiOutlineDashboard,
-	AiOutlineFileAdd,
 	AiOutlineProject,
-	AiOutlineUsergroupAdd,
 } from 'react-icons/ai'
 import { BiTimeFive } from 'react-icons/bi'
 import { BsPerson } from 'react-icons/bs'
 import { IoExitOutline } from 'react-icons/io5'
-import {  VscTasklist } from 'react-icons/vsc'
 import { ITab } from 'type/element/commom'
+
 export const EmployeeLayout = ({ children }: { children: JSX.Element }) => {
 	const { currentUser } = useContext(AuthContext)
 	const {

@@ -10,6 +10,7 @@ import {
 	Collapse,
 	SimpleGrid,
 	HStack,
+	Box,
 } from '@chakra-ui/react'
 import { AlertDialog, Func, Table } from 'components/common'
 import { Drawer } from 'components/Drawer'
@@ -295,7 +296,7 @@ const NoticeBoard: NextLayout = ({}: IProjectProps) => {
 	}, [socket])
 
 	return (
-		<>
+		<Box w={'full'} pb={8}>
 			<HStack
 				_hover={{
 					textDecoration: 'none',
@@ -336,6 +337,13 @@ const NoticeBoard: NextLayout = ({}: IProjectProps) => {
 									action={() => {}}
 								/>
 							</CSVLink>
+							<Func
+								icon={<AiOutlineDelete />}
+								title={'Delete all'}
+								description={'Delete all client you selected'}
+								action={onOpenDlMany}
+								disabled={!dataSl || dataSl.length == 0 ? true : false}
+							/>
 						</>
 					)}
 					<Func
@@ -343,13 +351,6 @@ const NoticeBoard: NextLayout = ({}: IProjectProps) => {
 						description={'Open draw to filter'}
 						title={'filter'}
 						action={onOpenFilter}
-					/>
-					<Func
-						icon={<AiOutlineDelete />}
-						title={'Delete all'}
-						description={'Delete all client you selected'}
-						action={onOpenDlMany}
-						disabled={!dataSl || dataSl.length == 0 ? true : false}
 					/>
 					<Func
 						icon={<MdOutlineEvent />}
@@ -474,7 +475,7 @@ const NoticeBoard: NextLayout = ({}: IProjectProps) => {
 					)}
 				</VStack>
 			</Drawer>
-		</>
+		</Box>
 	)
 }
 

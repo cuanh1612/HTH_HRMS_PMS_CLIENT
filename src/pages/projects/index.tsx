@@ -518,6 +518,13 @@ const Projects: NextLayout = () => {
 									action={() => {}}
 								/>
 							</CSVLink>
+							<Func
+								icon={<AiOutlineDelete />}
+								title={'Delete all'}
+								description={'Delete all client you selected'}
+								action={onOpenDlMany}
+								disabled={!dataSl || dataSl.length == 0 ? true : false}
+							/>
 						</>
 					)}
 					<Func
@@ -526,17 +533,9 @@ const Projects: NextLayout = () => {
 						title={'filter'}
 						action={onOpenFilter}
 					/>
-					<Func
-						icon={<AiOutlineDelete />}
-						title={'Delete all'}
-						description={'Delete all client you selected'}
-						action={onOpenDlMany}
-						disabled={!dataSl || dataSl.length == 0 ? true : false}
-					/>
 				</SimpleGrid>
 			</Collapse>
 			<br />
-
 
 			<Table
 				data={allProjects?.projects || []}

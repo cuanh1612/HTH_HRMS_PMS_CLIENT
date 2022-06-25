@@ -19,7 +19,11 @@ import { Input, Select } from 'components/filter'
 import { ProjectLayout } from 'components/layouts'
 import Modal from 'components/modal/Modal'
 import { AuthContext } from 'contexts/AuthContext'
-import { deleteProjectNoteMutation, deleteProjectNotesMutation, reEnterPasswordMutation } from 'mutations'
+import {
+	deleteProjectNoteMutation,
+	deleteProjectNotesMutation,
+	reEnterPasswordMutation,
+} from 'mutations'
 import { GetServerSideProps } from 'next'
 import { useRouter } from 'next/router'
 import { allProjectNotesQuery } from 'queries'
@@ -154,7 +158,7 @@ const Notes: NextLayout = ({}: INotesProps) => {
 		if (statusDeleteOne == 'success') {
 			setToast({
 				msg: 'Delete note successfully',
-				type: 'success'
+				type: 'success',
 			})
 			refetchAllNotes()
 		}
@@ -164,7 +168,7 @@ const Notes: NextLayout = ({}: INotesProps) => {
 		if (statusDeleteMany == 'success') {
 			setToast({
 				msg: 'Delete notes successfully',
-				type: 'success'
+				type: 'success',
 			})
 			refetchAllNotes()
 		}
@@ -254,11 +258,13 @@ const Notes: NextLayout = ({}: INotesProps) => {
 										View
 									</MenuItem>
 								) : (
-									row.original['employees'] &&
-									currentUser?.role === 'employee' &&
-									row.original['employees'].some(
-										(employeeItem: any) => employeeItem.id === currentUser.id
-									) && (
+									((row.original['employees'] &&
+										currentUser?.role === 'Employee' &&
+										row.original['employees'].some(
+											(employeeItem: any) =>
+												employeeItem.id === currentUser.id
+										)) ||
+										currentUser?.role == 'Admin') && (
 										<MenuItem
 											onClick={() => {
 												setProjectNoteId(row.values['id'])
@@ -272,25 +278,28 @@ const Notes: NextLayout = ({}: INotesProps) => {
 										</MenuItem>
 									)
 								)}
-
-								<MenuItem
-									onClick={() => {
-										setProjectNoteId(row.values['id'])
-										onOpenUpdateNote()
-									}}
-									icon={<RiPencilLine fontSize={'15px'} />}
-								>
-									Edit
-								</MenuItem>
-								<MenuItem
-									onClick={() => {
-										setProjectNoteId(row.values['id'])
-										onOpenDl()
-									}}
-									icon={<MdOutlineDeleteOutline fontSize={'15px'} />}
-								>
-									Delete
-								</MenuItem>
+								{currentUser?.role == 'Admin' && (
+									<>
+										<MenuItem
+											onClick={() => {
+												setProjectNoteId(row.values['id'])
+												onOpenUpdateNote()
+											}}
+											icon={<RiPencilLine fontSize={'15px'} />}
+										>
+											Edit
+										</MenuItem>
+										<MenuItem
+											onClick={() => {
+												setProjectNoteId(row.values['id'])
+												onOpenDl()
+											}}
+											icon={<MdOutlineDeleteOutline fontSize={'15px'} />}
+										>
+											Delete
+										</MenuItem>
+									</>
+								)}
 							</MenuList>
 						</Menu>
 					),

@@ -293,7 +293,7 @@ const Event: NextLayout = () => {
 	}, [socket])
 
 	return (
-		<>
+		<Box w={'full'} pb={8}>
 			<HStack paddingBlock={'5'} justifyContent={'space-between'}>
 				<ButtonGroup spacing={4}>
 					<Button color={'white'} bg={'hu-Green.normal'} onClick={() => onOpenAdd()}>
@@ -354,15 +354,6 @@ const Event: NextLayout = () => {
 					>
 						filter
 					</Button>
-					<Button
-						onClick={() => {
-							setEmployee(undefined)
-							setClient(undefined)
-							setName(undefined)
-						}}
-					>
-						reset filter
-					</Button>
 				</ButtonGroup>
 
 				<ButtonGroup spacing={4}>
@@ -418,84 +409,86 @@ const Event: NextLayout = () => {
 				onClose={onCloseDl}
 			/>
 
-			<CDrawer isOpen={isOpenFilter} placement="right" onClose={onCloseFilter}>
-				<DrawerOverlay />
-				<DrawerContent>
-					<DrawerCloseButton />
-					<DrawerHeader>Filters</DrawerHeader>
+			<Drawer
+				isOpen={isOpenFilter}
+				size={'xs'}
+				title={'Filter'}
+				footer={
+					<Button
+						onClick={() => {
+							setEmployee(undefined)
+							setClient(undefined)
+							setName(undefined)
+						}}
+					>
+						reset
+					</Button>
+				}
+				onClose={onCloseFilter}
+			>
+				<VStack p={6} spacing={5}>
+					<Input
+						handleSearch={(data: IFilter) => {
+							clearTimeout(timeoutName)
+							timeoutName = setTimeout(() => {
+								setName(data.filterValue)
+							}, 500)
+						}}
+						columnId={'name'}
+						label="Event name"
+						placeholder="Enter name"
+						icon={<AiOutlineSearch fontSize={'20px'} color="gray" opacity={0.6} />}
+						type={'text'}
+					/>
 
-					<DrawerBody>
-						<VStack spacing={5}>
-							<Input
-								handleSearch={(data: IFilter) => {
-									clearTimeout(timeoutName)
-									timeoutName = setTimeout(() => {
-										setName(data.filterValue)
-									}, 500)
-								}}
-								columnId={'name'}
-								label="Event name"
-								placeholder="Enter name"
-								icon={
-									<AiOutlineSearch fontSize={'20px'} color="gray" opacity={0.6} />
-								}
-								type={'text'}
-							/>
+					{employeesFilter && (
+						<SelectCustom
+							handleSearch={(field: any) => {
+								setEmployee(String(field.value))
+							}}
+							label={'Employee'}
+							name={'employee'}
+							options={[
+								{
+									label: (
+										<Text color={colorMode == 'light' ? 'black' : 'white'}>
+											all
+										</Text>
+									),
+									value: '',
+								},
 
-							{employeesFilter && (
-								<SelectCustom
-									handleSearch={(field: any) => {
-										setEmployee(String(field.value))
-									}}
-									label={'Employee'}
-									name={'employee'}
-									options={[
-										{
-											label: (
-												<Text
-													color={colorMode == 'light' ? 'black' : 'white'}
-												>
-													all
-												</Text>
-											),
-											value: '',
-										},
+								...employeesFilter,
+							]}
+							required={false}
+						/>
+					)}
 
-										...employeesFilter,
-									]}
-									required={false}
-								/>
-							)}
+					{clientsFilter && (
+						<SelectCustom
+							handleSearch={(field: any) => {
+								setClient(String(field.value))
+							}}
+							label={'Client'}
+							name={'client'}
+							options={[
+								{
+									label: (
+										<Text color={colorMode == 'light' ? 'black' : 'white'}>
+											all
+										</Text>
+									),
+									value: '',
+								},
 
-							{clientsFilter && (
-								<SelectCustom
-									handleSearch={(field: any) => {
-										setClient(String(field.value))
-									}}
-									label={'Client'}
-									name={'client'}
-									options={[
-										{
-											label: (
-												<Text
-													color={colorMode == 'light' ? 'black' : 'white'}
-												>
-													all
-												</Text>
-											),
-											value: '',
-										},
-
-										...clientsFilter,
-									]}
-									required={false}
-								/>
-							)}
-						</VStack>
-					</DrawerBody>
-				</DrawerContent>
-			</CDrawer>
-		</>
+								...clientsFilter,
+							]}
+							required={false}
+						/>
+					)}
+				</VStack>
+			</Drawer>
+		</Box>
 	)
 }
 

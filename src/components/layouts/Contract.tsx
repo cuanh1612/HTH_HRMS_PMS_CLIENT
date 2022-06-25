@@ -1,18 +1,64 @@
-import { Box, Tab, TabList, Tabs } from '@chakra-ui/react'
+import { Box, HStack } from '@chakra-ui/react'
+import { TabsMenu } from 'components/common'
+import Navigation from 'components/navigation/Index'
 import { Header } from 'components/partials'
-
-export const ContractLayout = ({ children }: { children: JSX.Element }) => {
-	return (
-		<Box paddingInline={'10'} maxW={'1700px'} marginInline={'auto'} as="div">
-			<Header />
-			<Tabs  variant="enclosed">
-				<TabList mb="1em">
-					<Tab>Summary</Tab>
+import { AuthContext } from 'contexts/AuthContext'
+import { useRouter } from 'next/router'
+import { useContext, useEffect, useState } from 'react'
+import {
+	AiOutlineProject,
+} from 'react-icons/ai'
+import { BsPerson } from 'react-icons/bs'
+import { ITab } from 'type/element/commom'
+{/* <Tab>Summary</Tab>
 					<Tab>Discussion</Tab>
-					<Tab isSelected={true}>Contract Files</Tab>
-				</TabList>
-			</Tabs>
-			{children}
-		</Box>
+					<Tab isSelected={true}>Contract Files</Tab> */}
+export const ContractLayout = ({ children }: { children: JSX.Element }) => {
+	const { currentUser } = useContext(AuthContext)
+	const {
+		query: { contractId },
+	} = useRouter()
+	const [tabs, setTabs] = useState<ITab[]>([])
+	useEffect(() => {
+		if (contractId) {
+			const data = [
+				{
+					icon: <BsPerson fontSize={'15'} />,
+					link: `/contracts/${contractId}/detail`,
+					title: 'Detail',
+				},
+				{
+					icon: <AiOutlineProject fontSize={'15'} />,
+					link: `/contracts/${contractId}/discussions`,
+					title: 'Discussions',
+				},
+				{
+					icon: <AiOutlineProject fontSize={'15'} />,
+					link: `/contracts/${contractId}/files`,
+					title: 'Files',
+				},
+			]
+			setTabs(data)
+		}
+	}, [contractId, currentUser])
+	return (
+		<HStack
+			minHeight={'100vh'}
+			height={'100px'}
+			alignItems={'start'}
+			pos={'relative'}
+			spacing={'0px'}
+			w={'100%'}
+			overflow={'auto'}
+		>
+			<Navigation />
+			<Box  w={'full'}>
+				<Header />
+				<Box  w={'full'} h={'auto'} paddingInline={10}>
+					<TabsMenu tabs={tabs} />
+					{children}
+				</Box>
+			</Box>
+		</HStack>
 	)
 }

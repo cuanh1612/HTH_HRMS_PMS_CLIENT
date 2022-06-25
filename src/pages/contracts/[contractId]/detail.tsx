@@ -139,7 +139,7 @@ const DetailContract: NextLayout = () => {
 				fallback: {},
 			}}
 		>
-			<Box bgColor={'#f2f4f7'} minHeight={'100vh'} p={10}>
+			<Box bgColor={'#f2f4f7'} p={10}>
 				<Container maxW="container.xl" bg="white" color="#262626" borderRadius={5} p={5}>
 					<VStack spacing={4} align="start">
 						<HStack justify="space-between" wrap={'wrap'} w={'full'}>

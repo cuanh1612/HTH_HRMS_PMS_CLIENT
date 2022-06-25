@@ -1,6 +1,7 @@
 import {
 	Avatar,
 	Badge,
+	Box,
 	Button,
 	Collapse,
 	HStack,
@@ -420,7 +421,7 @@ const TimeLogs: NextLayout = () => {
 	]
 
 	return (
-		<>
+		<Box w={'full'} pb={8}>
 			<HStack
 				_hover={{
 					textDecoration: 'none',
@@ -457,6 +458,13 @@ const TimeLogs: NextLayout = () => {
 									action={() => {}}
 								/>
 							</CSVLink>
+							<Func
+								icon={<AiOutlineDelete />}
+								title={'Delete all'}
+								description={'Delete all client you selected'}
+								action={onOpenDlMany}
+								disabled={!dataSl || dataSl.length == 0 ? true : false}
+							/>
 						</>
 					)}
 					<Func
@@ -464,13 +472,6 @@ const TimeLogs: NextLayout = () => {
 						description={'Open draw to filter'}
 						title={'filter'}
 						action={onOpenFilter}
-					/>
-					<Func
-						icon={<AiOutlineDelete />}
-						title={'Delete all'}
-						description={'Delete all client you selected'}
-						action={onOpenDlMany}
-						disabled={!dataSl || dataSl.length == 0 ? true : false}
 					/>
 					<Func
 						icon={<MdOutlineEvent />}
@@ -614,7 +615,7 @@ const TimeLogs: NextLayout = () => {
 					/>
 				</VStack>
 			</Drawer>
-		</>
+		</Box>
 	)
 }
 

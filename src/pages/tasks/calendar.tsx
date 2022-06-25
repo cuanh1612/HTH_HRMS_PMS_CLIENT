@@ -267,7 +267,7 @@ const calendar: NextLayout = () => {
 	}, [allClients, colorMode])
 
 	return (
-		<>
+		<Box w={'full'} pb={8}>
 			<HStack paddingBlock={'5'} justifyContent={'space-between'}>
 				<ButtonGroup spacing={4}>
 					{currentUser?.role === 'Admin' && (
@@ -468,7 +468,7 @@ const calendar: NextLayout = () => {
 					</DrawerBody>
 				</DrawerContent>
 			</CDrawer>
-		</>
+		</Box>
 	)
 }
 

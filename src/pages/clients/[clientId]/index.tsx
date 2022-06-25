@@ -50,8 +50,10 @@ ChartJS.register(ArcElement, Tooltip, Legend)
 
 const DetailClient: NextLayout | any = ({
 	dataDetailClientServer,
+	clientIdProp
 }: {
-	dataDetailClientServer?: clientMutaionResponse
+	dataDetailClientServer?: clientMutaionResponse,
+	clientIdProp?: string | number
 }) => {
 	const { isAuthenticated, handleLoading, currentUser, setToast } = useContext(AuthContext)
 	const router = useRouter()
@@ -72,12 +74,12 @@ const DetailClient: NextLayout | any = ({
 	const { data: dataDetailClient } = detailClientQuery(isAuthenticated, clientId as string)
 	const { data: dataTotalProjects } = clientTotalProejctsQuery(
 		isAuthenticated,
-		clientId as string
+		clientId as string || clientIdProp
 	)
 	const { data: dataTotalEarnings } = clientTotalEarningQuery(isAuthenticated, clientId as string)
 	const { data: dataCountProjectStatus } = clientCountProjectStatusQuery(
 		isAuthenticated,
-		clientId as string
+		clientId as string || clientIdProp
 	)
 	const { data: allProjects, mutate: refetchAllProjects } =
 		allProjectsByCurrentUserQuery(isAuthenticated)

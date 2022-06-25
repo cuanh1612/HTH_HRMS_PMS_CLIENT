@@ -215,7 +215,7 @@ const TaskCategory: NextLayout = () => {
 	}, [calendar])
 
 	return (
-		<Box w={'100%'} pos={'relative'}>
+		<Box w={'100%'} pb={8} pos={'relative'}>
 			<HStack
 				_hover={{
 					textDecoration: 'none',

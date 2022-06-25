@@ -7,7 +7,7 @@ import { AuthContext } from 'contexts/AuthContext'
 import { deleteProjectDiscussionRoomMutation } from 'mutations'
 import { GetServerSideProps } from 'next'
 import { useRouter } from 'next/router'
-import { allProjectDiscussionRoomsQuery } from 'queries'
+import { allProjectDiscussionRoomsQuery, detailProjectQuery } from 'queries'
 import { useContext, useEffect, useState } from 'react'
 import { AiOutlineEdit, AiOutlinePlusCircle } from 'react-icons/ai'
 import ProjectDiscussionCategory from 'src/pages/project-discussion-categories'
@@ -54,6 +54,8 @@ const Discussions: NextLayout = () => {
 	//Query ---------------------------------------------------------------------
 	const { data: dataAllProjectDisucssionRooms, mutate: refetchAllDiscussionRooms } =
 		allProjectDiscussionRoomsQuery(isAuthenticated, Number(projectId))
+
+	const { data: dataDetailProject } = detailProjectQuery(isAuthenticated, Number(projectId))
 
 	//Mutation ------------------------------------------------------------------
 	const [
@@ -144,7 +146,11 @@ const Discussions: NextLayout = () => {
 						>
 							New Discussion
 						</Button>
-						{currentUser?.role === 'Admin' && (
+						{((currentUser && currentUser.role === 'Admin') ||
+							(currentUser &&
+								dataDetailProject?.project?.project_Admin &&
+								currentUser.email ===
+									dataDetailProject.project.project_Admin.email)) && (
 							<Button
 								leftIcon={<AiOutlineEdit />}
 								onClick={onOpenAddDiscussionCategory}
@@ -165,7 +171,12 @@ const Discussions: NextLayout = () => {
 											discussionRoom={discussionRoom}
 											onClick={onChangeSelectDiscussion}
 											isOnChange={
-												currentUser?.role === 'Admin' ||
+												(currentUser && currentUser.role === 'Admin') ||
+												(currentUser &&
+													dataDetailProject?.project?.project_Admin &&
+													currentUser.email ===
+														dataDetailProject.project.project_Admin
+															.email) ||
 												discussionRoom.assigner.id === currentUser?.id
 													? true
 													: false
@@ -246,6 +257,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 			} as HeadersInit,
 		}
 	).then((e) => e.json())
+
+	console.log(checkAsignedProject)
 
 	if (!checkAsignedProject.success) {
 		return {

@@ -21,7 +21,7 @@ import { AuthContext } from 'contexts/AuthContext'
 import { deleteTimeLogMutation, deleteTimeLogsMutation } from 'mutations'
 import { GetServerSideProps } from 'next'
 import { useRouter } from 'next/router'
-import { allStatusQuery, timeLogsByProjectQuery } from 'queries'
+import { allStatusQuery, detailProjectQuery, timeLogsByProjectQuery } from 'queries'
 import { useContext, useEffect, useState } from 'react'
 import {
 	AiOutlineCaretDown,
@@ -136,6 +136,8 @@ const TimeLogs: NextLayout = () => {
 		onOpen: onOpenDlMany,
 		onClose: onCloseDlMany,
 	} = useDisclosure()
+
+	const { data: dataDetailProject } = detailProjectQuery(isAuthenticated, projectId)
 
 	// get all time log by project
 	const { data: allTimeLogs, mutate: refetchTimeLogs } = timeLogsByProjectQuery(
@@ -390,7 +392,11 @@ const TimeLogs: NextLayout = () => {
 								>
 									View
 								</MenuItem>
-								{currentUser?.role === 'Admin' && (
+								{((currentUser && currentUser.role === 'Admin') ||
+									(currentUser &&
+										dataDetailProject?.project?.project_Admin &&
+										currentUser.email ===
+											dataDetailProject.project.project_Admin.email)) && (
 									<>
 										<MenuItem
 											onClick={() => {
@@ -443,7 +449,11 @@ const TimeLogs: NextLayout = () => {
 					spacing={10}
 					pt={3}
 				>
-					{currentUser && currentUser.role === 'Admin' && (
+					{((currentUser && currentUser.role === 'Admin') ||
+						(currentUser &&
+							dataDetailProject?.project?.project_Admin &&
+							currentUser.email ===
+								dataDetailProject.project.project_Admin.email)) && (
 						<>
 							<Func
 								icon={<IoAdd />}

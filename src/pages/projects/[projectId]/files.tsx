@@ -14,9 +14,9 @@ import { ProjectLayout } from 'components/layouts'
 
 import { AuthContext } from 'contexts/AuthContext'
 import { createProjectFileMutation, deleteProjectFileMutation } from 'mutations'
-import { GetStaticPaths, GetStaticProps } from 'next'
+import { GetServerSideProps, GetStaticPaths, GetStaticProps } from 'next'
 import { useRouter } from 'next/router'
-import { allProjectFilesQuery } from 'queries'
+import { allProjectFilesQuery, detailProjectQuery } from 'queries'
 import { useCallback, useContext, useEffect, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { AiOutlinePlusCircle, AiOutlineSave } from 'react-icons/ai'
@@ -44,6 +44,8 @@ const Files: NextLayout = () => {
 		isAuthenticated,
 		Number(projectId)
 	)
+
+	const { data: dataDetailProject } = detailProjectQuery(isAuthenticated, projectId)
 
 	//mutation -------------------------------------------------------------------
 	const [mutateCreProjectFile, { status: statusCreProjectFile, data: dataCreProjectFile }] =
@@ -220,95 +222,80 @@ const Files: NextLayout = () => {
 					Files
 				</Text>
 
-				{currentUser?.role === 'Admin' ||
-					(currentUser?.role === 'Employee' && (
-						<>
-							<Box position={'relative'} p={2} w={'full'}>
-								{isOpenAdd ? (
-									<VStack w={'full'} spacing={5} position={'relative'}>
-										<VStack
-											align={'center'}
-											w={'full'}
-											border={'4px dotted #009F9D30'}
-											p={10}
-											spacing={10}
-											borderRadius={20}
-											{...getRootProps()}
-										>
-											<Img
-												width={150}
-												height={100}
-												alt="upload_file"
-												src="/assets/uploadFiles.svg"
-											/>
-											<input {...getInputProps()} />
-											{isDragActive ? (
-												<Text
-													fontSize={16}
-													fontWeight={'semibold'}
-													color={'gray'}
-												>
-													Drop the files here ...
-												</Text>
-											) : (
-												<Text
-													fontSize={16}
-													fontWeight={'semibold'}
-													color={'gray'}
-												>
-													Drag your documents, photos, or videos here to
-													start uploading
-												</Text>
-											)}
-										</VStack>
-
-										<HStack w={'full'} justify={'end'}>
-											<Button onClick={handleCancel} variant={'ghost'}>
-												Cancel
-											</Button>
-											<Button
-												colorScheme={'teal'}
-												leftIcon={<AiOutlineSave />}
-												disabled={filesUpload.length === 0}
-												onClick={onUploadFiles}
-											>
-												Save
-											</Button>
-										</HStack>
-									</VStack>
+				<Box position={'relative'} p={2} w={'full'}>
+					{isOpenAdd ? (
+						<VStack w={'full'} spacing={5} position={'relative'}>
+							<VStack
+								align={'center'}
+								w={'full'}
+								border={'4px dotted #009F9D30'}
+								p={10}
+								spacing={10}
+								borderRadius={20}
+								{...getRootProps()}
+							>
+								<Img
+									width={150}
+									height={100}
+									alt="upload_file"
+									src="/assets/uploadFiles.svg"
+								/>
+								<input {...getInputProps()} />
+								{isDragActive ? (
+									<Text fontSize={16} fontWeight={'semibold'} color={'gray'}>
+										Drop the files here ...
+									</Text>
 								) : (
-									<Button
-										leftIcon={<AiOutlinePlusCircle />}
-										variant="ghost"
-										color={'blue.400'}
-										_hover={{
-											color: 'black',
-										}}
-										onClick={onOpenAdd}
-									>
-										Add Files
-									</Button>
+									<Text fontSize={16} fontWeight={'semibold'} color={'gray'}>
+										Drag your documents, photos, or videos here to start
+										uploading
+									</Text>
 								)}
+							</VStack>
 
-								{(isLoadUpFiles || statusCreProjectFile === 'running') && (
-									<Loading />
-								)}
-							</Box>
-							{filesUpload.length > 0 && (
-								<VStack w={'full'} px={2}>
-									{filesUpload.map((file, index) => (
-										<ItemFileUpload
-											key={index}
-											src={generateImgFile(file.name)}
-											fileName={file.name}
-											index={index}
-											onRemoveFile={onRemoveFile}
-										/>
-									))}
-								</VStack>
-							)}
-						</>
-					))}
+							<HStack w={'full'} justify={'end'}>
+								<Button onClick={handleCancel} variant={'ghost'}>
+									Cancel
+								</Button>
+								<Button
+									colorScheme={'teal'}
+									leftIcon={<AiOutlineSave />}
+									disabled={filesUpload.length === 0}
+									onClick={onUploadFiles}
+								>
+									Save
+								</Button>
+							</HStack>
+						</VStack>
+					) : (
+						<Button
+							leftIcon={<AiOutlinePlusCircle />}
+							variant="ghost"
+							color={'blue.400'}
+							_hover={{
+								color: 'black',
+							}}
+							onClick={onOpenAdd}
+						>
+							Add Files
+						</Button>
+					)}
+
+					{(isLoadUpFiles || statusCreProjectFile === 'running') && <Loading />}
+				</Box>
+				{filesUpload.length > 0 && (
+					<VStack w={'full'} px={2}>
+						{filesUpload.map((file, index) => (
+							<ItemFileUpload
+								key={index}
+								src={generateImgFile(file.name)}
+								fileName={file.name}
+								index={index}
+								onRemoveFile={onRemoveFile}
+							/>
+						))}
+					</VStack>
+				)}
 
 				<Grid templateColumns="repeat(4, 1fr)" gap={4} w={'full'} p={2}>
 					{dataAllProjectFiles?.projectFiles &&
@@ -328,8 +315,13 @@ const Files: NextLayout = () => {
 									srcImg={generateImgFile(projectFile.name)}
 									urlFile={projectFile.url}
 									isChange={
+										(currentUser &&
+											dataDetailProject?.project?.project_Admin &&
+											currentUser.email ===
+												dataDetailProject.project.project_Admin.email) ||
 										currentUser?.role === 'Admin' ||
-										currentUser?.role === 'Employee' && projectFile.assignBy?.id === currentUser?.id
+										(currentUser?.role === 'Employee' &&
+											projectFile.assignBy?.id === currentUser?.id)
 									}
 								/>
 							</GridItem>
@@ -340,35 +332,48 @@ const Files: NextLayout = () => {
 	)
 }
 
-export const getStaticProps: GetStaticProps = async () => {
+export const getServerSideProps: GetServerSideProps = async (context) => {
+	//Get accesstoken
+	const getAccessToken: { accessToken: string; code: number; message: string; success: boolean } =
+		await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/refresh_token`, {
+			method: 'GET',
+			headers: {
+				cookie: context.req.headers.cookie,
+			} as HeadersInit,
+		}).then((e) => e.json())
+
+	//Redirect login page when error
+	if (getAccessToken.code !== 200) {
+		return {
+			redirect: {
+				destination: '/login',
+				permanent: false,
+			},
+		}
+	}
+
+	//Check assigned
+	const checkAsignedProject: projectMutaionResponse = await fetch(
+		`${process.env.NEXT_PUBLIC_API_URL}/api/projects/${context.query.projectId}/check-assigned`,
+		{
+			method: 'GET',
+			headers: {
+				authorization: `Bear ${getAccessToken.accessToken}`,
+			} as HeadersInit,
+		}
+	).then((e) => e.json())
+
+	console.log(checkAsignedProject)
+
+	if (!checkAsignedProject.success) {
+		return {
+			notFound: true,
+		}
+	}
+
 	return {
 		props: {},
-		// Next.js will attempt to re-generate the page:
-		// - When a request comes in
-		// - At most once every 10 seconds
-		revalidate: 10, // In seconds
 	}
-}
-
-export const getStaticPaths: GetStaticPaths = async () => {
-	const res: projectMutaionResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/projects`).then(
-		(result) => result.json()
-	)
-	const projects = res.projects
-
-	if (!projects) {
-		return { paths: [], fallback: false }
-	}
-
-	// Get the paths we want to pre-render based on leave
-	const paths = projects.map((project: any) => ({
-		params: { projectId: String(project.id) },
-	}))
-
-	// We'll pre-render only these paths at build time.
-	// { fallback: blocking } will server-render pages
-	// on-demand if the path doesn't exist.
-	return { paths, fallback: false }
 }
 
 Files.getLayout = ProjectLayout

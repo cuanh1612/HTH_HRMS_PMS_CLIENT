@@ -24,6 +24,7 @@ import {
 	allStatusQuery,
 	allTasksByEmployeeAndProjectQuery,
 	allTasksByProjectQuery,
+	detailProjectQuery,
 	milestonesByProjectNormalQuery,
 } from 'queries'
 import { useContext, useEffect, useState } from 'react'
@@ -116,6 +117,9 @@ const tasks: NextLayout = () => {
 	})
 
 	// query
+
+	const { data: dataDetailProject } = detailProjectQuery(isAuthenticated, projectId)
+
 	// get all task by project
 	const { data: allTasks, mutate: refetchTasks } =
 		currentUser && (currentUser.role === 'Admin' || currentUser.role === 'Client')
@@ -420,7 +424,11 @@ const tasks: NextLayout = () => {
 					spacing={10}
 					pt={3}
 				>
-					{currentUser && currentUser.role === 'Admin' && (
+					{((currentUser && currentUser.role === 'Admin') ||
+						(currentUser &&
+							dataDetailProject?.project?.project_Admin &&
+							currentUser.email ===
+								dataDetailProject.project.project_Admin.email)) && (
 						<>
 							<Func
 								icon={<IoAdd />}

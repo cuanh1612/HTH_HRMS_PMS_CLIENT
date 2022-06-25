@@ -366,7 +366,7 @@ const members: NextLayout = () => {
 						<NumberInput
 							min={1}
 							precision={2}
-							onChange={(value) => {
+							onChange={(value: any) => {
 								clearTimeout(hourlyRateTimeOut)
 								hourlyRateTimeOut = setTimeout(() => {
 									setHourlyRate({
@@ -523,7 +523,7 @@ const members: NextLayout = () => {
 				<Box paddingInline={6}>
 					<RadioGroup
 						value={radioFormVl}
-						onChange={(value) => {
+						onChange={(value: any) => {
 							setRadioFormVl(Number(value))
 						}}
 					>

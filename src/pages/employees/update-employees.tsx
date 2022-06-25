@@ -42,7 +42,7 @@ import { mutate } from 'swr'
 
 export interface IUpdateEmployeesProps {
 	onCloseDrawer?: () => void
-	employeeId: number | null
+	employeeId?: number
 }
 
 export default function UpdateEmployees({ onCloseDrawer, employeeId }: IUpdateEmployeesProps) {
@@ -452,7 +452,7 @@ export default function UpdateEmployees({ onCloseDrawer, employeeId }: IUpdateEm
 							<Checkbox
 								colorScheme={'teal'}
 								isChecked={advancedInfo.can_login}
-								onChange={(e) =>
+								onChange={(e: any) =>
 									setAdvancedInfo({
 										...advancedInfo,
 										can_login: e.currentTarget.checked,
@@ -469,7 +469,7 @@ export default function UpdateEmployees({ onCloseDrawer, employeeId }: IUpdateEm
 							<Checkbox
 								colorScheme={'teal'}
 								isChecked={advancedInfo.can_receive_email}
-								onChange={(e) => {
+								onChange={(e: any) => {
 									setAdvancedInfo({
 										...advancedInfo,
 										can_receive_email: e.currentTarget.checked,

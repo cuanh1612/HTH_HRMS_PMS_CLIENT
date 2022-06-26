@@ -1498,6 +1498,7 @@ export const noticeBoardColumn = ({
 	currentUser,
 	onDelete,
 	onUpdate,
+	onDetail
 }: IOptionColumn): TColumn[] => {
 	return [
 		{
@@ -1561,7 +1562,9 @@ export const noticeBoardColumn = ({
 								<MdOutlineMoreVert />
 							</MenuButton>
 							<MenuList>
-								<MenuItem icon={<IoEyeOutline fontSize={'15px'} />}>View</MenuItem>
+								<MenuItem onClick={() => {
+									onDetail(Number(row.values['id']))
+								}} icon={<IoEyeOutline fontSize={'15px'} />}>View</MenuItem>
 								{currentUser?.role === 'Admin' && (
 									<>
 										<MenuItem

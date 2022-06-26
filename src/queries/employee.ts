@@ -3,7 +3,7 @@ import { allEmployeesRequest, detailEmployeeRequest } from 'requests/employee'
 import useSWR from 'swr'
 import { countLeavesTakenEmployeeMutaionResponse, countPCompleteTasksMutationResponse, countPendingTasksMutationResponse, countProjectsEmployeeMutaionResponse, countStatusProjectsMutationResponse, employeeMutaionResponse, hoursLoggedEmployeeMutaionResponse, lateAttendanceEmployeeMutaionResponse, openTasksEmployeeMutaionResponse } from 'type/mutationResponses'
 
-export const detailEmployeeQuery = (isAuthenticated: boolean | null, employeeId?: string | number) => {
+export const detailEmployeeQuery = (isAuthenticated: boolean | null, employeeId?: string | number | null) => {
 	return useSWR<employeeMutaionResponse, AxiosError>(
 		isAuthenticated && employeeId ? `employees/${employeeId}` : null,
 		detailEmployeeRequest,

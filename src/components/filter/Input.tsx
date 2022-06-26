@@ -31,7 +31,7 @@ export const Input = ({
                         color={colorMode == 'light' ? undefined: 'white'}
 						placeholder={placeholder}
 						type={type}
-						onChange={(event)=> {
+						onChange={(event: any)=> {
 							handleSearch({
 								columnId,
 								filterValue: event.target.value,

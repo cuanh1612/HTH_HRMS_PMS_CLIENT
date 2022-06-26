@@ -42,7 +42,7 @@ import { mutate } from 'swr'
 
 export interface IUpdateEmployeesProps {
 	onCloseDrawer?: () => void
-	employeeId?: number
+	employeeId: number | null
 }
 
 export default function UpdateEmployees({ onCloseDrawer, employeeId }: IUpdateEmployeesProps) {

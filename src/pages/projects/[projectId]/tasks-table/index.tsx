@@ -1,14 +1,8 @@
 import {
-	Avatar,
-	AvatarGroup,
 	Box,
 	Button,
 	Collapse,
 	HStack,
-	Menu,
-	MenuButton,
-	MenuItem,
-	MenuList,
 	SimpleGrid,
 	Text,
 	useDisclosure,
@@ -34,13 +28,9 @@ import {
 	AiOutlineDelete,
 	AiOutlineSearch,
 } from 'react-icons/ai'
-import { IoAdd, IoEyeOutline } from 'react-icons/io5'
-import { MdOutlineDeleteOutline, MdOutlineMoreVert } from 'react-icons/md'
-import { RiPencilLine } from 'react-icons/ri'
-import { employeeType, timeLogType } from 'type/basicTypes'
+import { IoAdd } from 'react-icons/io5'
 import { NextLayout } from 'type/element/layout'
 import { IFilter, TColumn } from 'type/tableTypes'
-import { dateFilter, selectFilter, textFilter } from 'utils/tableFilters'
 import AddTask from './add-tasks'
 import DetailTask from './[taskId]'
 import UpdateTask from './[taskId]/update-task'
@@ -48,6 +38,7 @@ import { CSVLink } from 'react-csv'
 import { BiExport } from 'react-icons/bi'
 import { VscFilter } from 'react-icons/vsc'
 import { Drawer } from 'components/Drawer'
+import { projectTasksColumn } from 'utils/columns'
 
 const tasks: NextLayout = () => {
 	const { isAuthenticated, handleLoading, currentUser, setToast, socket } =
@@ -251,156 +242,21 @@ const tasks: NextLayout = () => {
 	}, [socket, projectId])
 
 	// header ----------------------------------------
-	const columns: TColumn[] = [
-		{
-			Header: 'Tasks',
-			columns: [
-				{
-					Header: 'Id',
-					accessor: 'id',
-					width: 80,
-					minWidth: 80,
-					disableResizing: true,
-					Cell: ({ value }) => {
-						return value
-					},
-				},
-				{
-					Header: 'Task',
-					accessor: 'name',
-					Cell: ({ value }) => {
-						return <Text isTruncated>{value}</Text>
-					},
-					filter: textFilter(['name']),
-				},
-				{
-					Header: 'Project',
-					accessor: 'project',
-					Cell: ({ value }) => {
-						return <Text isTruncated>{value.name}</Text>
-					},
-				},
-				{
-					Header: 'Deadline',
-					accessor: 'deadline',
-					Cell: ({ value }) => {
-						const date = new Date(value)
-						return (
-							<Text color={'red'} isTruncated>{`${date.getDate()}-${
-								date.getMonth() + 1
-							}-${date.getFullYear()}`}</Text>
-						)
-					},
-					filter: dateFilter(['deadline']),
-				},
-				{
-					Header: 'Hours Logged',
-					accessor: 'time_logs',
-					Cell: ({ value }) => {
-						var result
-						if (value.length == 0) {
-							result = 0
-						} else {
-							value.map((item: timeLogType) => {
-								result = item.total_hours
-							})
-						}
-
-						return <Text isTruncated>{result} hrs</Text>
-					},
-				},
-				{
-					Header: 'milestone',
-					accessor: 'milestone',
-					Cell: ({ value }) => {
-						return <Text isTruncated>{value?.title}</Text>
-					},
-					filter: selectFilter(['milestone', 'id']),
-				},
-				{
-					Header: 'Assign to',
-					accessor: 'employees',
-					Cell: ({ value }) => {
-						return (
-							<AvatarGroup size="sm" max={2}>
-								{value.length != 0 &&
-									value.map((employee: employeeType) => (
-										<Avatar
-											name={employee.name}
-											key={employee.id}
-											src={employee.avatar?.url}
-										/>
-									))}
-							</AvatarGroup>
-						)
-					},
-				},
-				{
-					Header: 'Status',
-					accessor: 'status',
-					Cell: ({ value }) => (
-						<HStack alignItems={'center'}>
-							<Box background={value.color} w={'3'} borderRadius={'full'} h={'3'} />
-							<Text>{value.title}</Text>
-						</HStack>
-					),
-					filter: selectFilter(['status', 'id']),
-				},
-				{
-					Header: 'Action',
-					accessor: 'action',
-					disableResizing: true,
-					width: 120,
-					minWidth: 120,
-					disableSortBy: true,
-					Cell: ({ row }) => (
-						<Menu>
-							<MenuButton as={Button} paddingInline={3}>
-								<MdOutlineMoreVert />
-							</MenuButton>
-							<MenuList>
-								<MenuItem
-									onClick={() => {
-										setTaskId(Number(row.values['id']))
-										onOpenDetailTask()
-									}}
-									icon={<IoEyeOutline fontSize={'15px'} />}
-								>
-									View
-								</MenuItem>
-
-								{(currentUser?.role === 'Admin' ||
-									(currentUser?.role === 'Employee' &&
-										row.original?.assignBy?.id === currentUser?.id)) && (
-									<>
-										<MenuItem
-											onClick={() => {
-												setTaskId(Number(row.values['id']))
-												onOpenUpdateTask()
-											}}
-											icon={<RiPencilLine fontSize={'15px'} />}
-										>
-											Edit
-										</MenuItem>
-
-										<MenuItem
-											onClick={() => {
-												setTaskId(Number(row.values['id']))
-												onOpenDl()
-											}}
-											icon={<MdOutlineDeleteOutline fontSize={'15px'} />}
-										>
-											Delete
-										</MenuItem>
-									</>
-								)}
-							</MenuList>
-						</Menu>
-					),
-				},
-			],
+	const columns: TColumn[] = projectTasksColumn({
+		currentUser,
+		onDelete: (id: number) => {
+			setTaskId(Number(id))
+			onOpenDl()
 		},
-	]
+		onDetail: (id: number) => {
+			setTaskId(Number(id))
+			onOpenDetailTask()
+		},
+		onUpdate: (id: number) => {
+			setTaskId(id)
+			onOpenUpdateTask()
+		},
+	})
 
 	return (
 		<Box>

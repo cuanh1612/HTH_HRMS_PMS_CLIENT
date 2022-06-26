@@ -11,14 +11,7 @@ import {
 import { TColumn } from 'type/tableTypes'
 import {
 	Avatar,
-	Badge,
-	Button,
 	HStack,
-	NumberDecrementStepper,
-	NumberIncrementStepper,
-	NumberInput,
-	NumberInputField,
-	NumberInputStepper,
 	Radio,
 	Text,
 	useDisclosure,
@@ -47,6 +40,7 @@ import { useForm } from 'react-hook-form'
 import { SelectMany } from 'components/form'
 import { AiOutlineCaretDown, AiOutlineCaretUp } from 'react-icons/ai'
 import { IoAdd } from 'react-icons/io5'
+import { projectMembersColumn } from 'utils/columns'
 
 var hourlyRateTimeOut: NodeJS.Timeout
 
@@ -301,152 +295,31 @@ const members: NextLayout = () => {
 	}, [projectResponse])
 
 	// header ----------------------------------------
-	const columns: TColumn[] = [
-		{
-			Header: 'Project member',
-
-			columns: [
-				{
-					Header: 'Id',
-					accessor: 'id',
-					width: 80,
-					minWidth: 80,
-					disableResizing: true,
-					Cell: ({ value }) => {
-						return value
-					},
-				},
-				{
-					Header: 'Employee Id',
-					accessor: 'employeeId',
-					minWidth: 180,
-					width: 180,
-					disableResizing: true,
-				},
-				{
-					Header: 'Name',
-					accessor: 'name',
-					minWidth: 250,
-					Cell: ({ value, row }) => {
-						return (
-							<HStack w={'full'} spacing={5}>
-								<Avatar
-									flex={'none'}
-									size={'sm'}
-									name={row.values['name']}
-									src={row.original.avatar?.url}
-								/>
-								<VStack w={'70%'} alignItems={'start'}>
-									<Text isTruncated w={'full'}>
-										{value}
-										{currentUser?.id == row.values['id'] && (
-											<Badge
-												marginLeft={'5'}
-												color={'white'}
-												background={'gray.500'}
-											>
-												It's you
-											</Badge>
-										)}
-									</Text>
-									<Text isTruncated w={'full'} fontSize={'sm'} color={'gray.400'}>
-										Junior
-									</Text>
-								</VStack>
-							</HStack>
-						)
-					},
-				},
-				{
-					Header: 'hourly rate',
-					accessor: 'hourly_rate_project',
-					minWidth: 180,
-					width: 180,
-					Cell: ({ value, row }) => (
-						<NumberInput
-							min={1}
-							precision={2}
-							onChange={(value: any) => {
-								clearTimeout(hourlyRateTimeOut)
-								hourlyRateTimeOut = setTimeout(() => {
-									setHourlyRate({
-										hourly_rate: Number(value),
-										idEmployee: Number(row.values['id']),
-										idProject: projectResponse?.project?.id,
-									})
-									setIsloading(true)
-								}, 500)
-							}}
-							defaultValue={Number(value?.hourly_rate)}
-						>
-							<NumberInputField />
-							<NumberInputStepper>
-								<NumberIncrementStepper />
-								<NumberDecrementStepper />
-							</NumberInputStepper>
-						</NumberInput>
-					),
-				},
-				{
-					Header: 'User role',
-					accessor: 'role',
-					minWidth: 180,
-					width: 180,
-					Cell: ({ row }) => {
-						if (currentUser?.role === 'Admin') {
-							return (
-								<HStack spacing={4}>
-									<Radio
-										onChange={() => {
-											setProjectAdmin({
-												idProject: projectId,
-												idEmployee: row.values['id'],
-											})
-										}}
-										isChecked={
-											projectResponse?.project?.project_Admin
-												? projectResponse.project.project_Admin.id ==
-												  row.values['id']
-												: false
-										}
-										value={row.values['id']}
-									/>
-									<Text>Project Admin</Text>
-								</HStack>
-							)
-						} else {
-							return (
-								<Text>
-									{projectResponse?.project?.project_Admin &&
-									projectResponse.project.project_Admin.id == row.values['id']
-										? 'Project Admin'
-										: '--'}
-								</Text>
-							)
-						}
-					},
-				},
-				{
-					Header: 'Action',
-					accessor: 'action',
-					disableResizing: true,
-					width: 120,
-					minWidth: 120,
-					disableSortBy: true,
-					Cell: ({ row }) => (
-						<Button
-							onClick={() => {
-								setIdEmployee(Number(row.values['id']))
-								onOpenDl()
-							}}
-						>
-							Delete
-						</Button>
-					),
-				},
-			],
+	const columns: TColumn[] = projectMembersColumn({
+		currentUser,
+		onDelete: (id: number) => {
+			setIdEmployee(id)
+			onOpenDl()
 		},
-	]
+		setAdmin: (id: number) => {
+			setProjectAdmin({
+				idProject: projectId,
+				idEmployee: id,
+			})
+		},
+		project_Admin: projectResponse?.project?.project_Admin,
+		setHourlyRate: (idMember: number, hourlyRate: number) => {
+			clearTimeout(hourlyRateTimeOut)
+			hourlyRateTimeOut = setTimeout(() => {
+				setHourlyRate({
+					hourly_rate: Number(hourlyRate),
+					idEmployee: Number(idMember),
+					idProject: projectResponse?.project?.id,
+				})
+				setIsloading(true)
+			}, 500)
+		},
+	})
 
 	return (
 		<div>

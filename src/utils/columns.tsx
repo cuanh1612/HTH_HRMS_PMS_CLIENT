@@ -9,7 +9,13 @@ import {
 	MenuButton,
 	MenuItem,
 	MenuList,
+	NumberDecrementStepper,
+	NumberIncrementStepper,
+	NumberInput,
+	NumberInputField,
+	NumberInputStepper,
 	Progress,
+	Radio,
 	Select,
 	Tag,
 	Text,
@@ -59,6 +65,12 @@ interface ILeaveColumn extends IOptionColumn {
 
 interface IContractColumn extends IOptionColumn {
 	onPublic: any
+}
+
+interface IProjectMemberColumn extends IOptionColumn {
+	project_Admin?: employeeType
+	setAdmin: any
+	setHourlyRate: any
 }
 
 export const clientColumn = ({ currentUser, onDelete, onUpdate }: IOptionColumn): TColumn[] => {
@@ -1551,6 +1563,603 @@ export const noticeBoardColumn = ({
 							<MenuList>
 								<MenuItem icon={<IoEyeOutline fontSize={'15px'} />}>View</MenuItem>
 								{currentUser?.role === 'Admin' && (
+									<>
+										<MenuItem
+											onClick={() => {
+												onUpdate(Number(row.values['id']))
+											}}
+											icon={<RiPencilLine fontSize={'15px'} />}
+										>
+											Edit
+										</MenuItem>
+
+										<MenuItem
+											onClick={() => {
+												onDelete(Number(row.values['id']))
+											}}
+											icon={<MdOutlineDeleteOutline fontSize={'15px'} />}
+										>
+											Delete
+										</MenuItem>
+									</>
+								)}
+							</MenuList>
+						</Menu>
+					),
+				},
+			],
+		},
+	]
+}
+
+export const salariesColumn = ({ currentUser, onDetail, onUpdate }: IOptionColumn): TColumn[] => {
+	return [
+		{
+			Header: 'Salaries',
+
+			columns: [
+				{
+					Header: 'Id',
+					accessor: 'id',
+					filter: selectFilter(['id']),
+					width: 80,
+					minWidth: 80,
+					disableResizing: true,
+					Cell: ({ value }) => {
+						return value
+					},
+				},
+				{
+					Header: 'Name',
+					accessor: 'name',
+					minWidth: 250,
+					Cell: ({ value, row }) => {
+						return (
+							<HStack w={'full'} spacing={5}>
+								<Avatar
+									flex={'none'}
+									size={'sm'}
+									name={row.values['name']}
+									src={row.original.avatar?.url}
+								/>
+								<VStack w={'70%'} alignItems={'start'}>
+									<Text isTruncated w={'full'}>
+										{value}
+										{currentUser?.email == row.original['email'] && (
+											<Badge
+												marginLeft={'5'}
+												color={'white'}
+												background={'gray.500'}
+											>
+												It's you
+											</Badge>
+										)}
+									</Text>
+									<Text isTruncated w={'full'} fontSize={'sm'} color={'gray.400'}>
+										{row.original['role']}
+									</Text>
+								</VStack>
+							</HStack>
+						)
+					},
+				},
+				{
+					Header: 'Email',
+					accessor: 'email',
+					minWidth: 150,
+					filter: textFilter(['email']),
+					Cell: ({ value }) => {
+						return <Text isTruncated>{value}</Text>
+					},
+				},
+				{
+					Header: 'Salary',
+					accessor: 'sumSalaries',
+					minWidth: 150,
+					filter: textFilter(['email']),
+					Cell: ({ value }) => {
+						return (
+							<Text isTruncated color={'red'} fontWeight={'semibold'}>
+								${value}
+							</Text>
+						)
+					},
+				},
+				{
+					Header: 'Action',
+					accessor: 'action',
+					disableResizing: true,
+					width: 120,
+					minWidth: 120,
+					disableSortBy: true,
+					Cell: ({ row }) => (
+						<Menu>
+							<MenuButton as={Button} paddingInline={3}>
+								<MdOutlineMoreVert />
+							</MenuButton>
+							<MenuList>
+								<MenuItem
+									onClick={() => {
+										onDetail(row.values['id'])
+									}}
+									icon={<IoEyeOutline fontSize={'15px'} />}
+								>
+									Show history
+								</MenuItem>
+
+								<MenuItem
+									onClick={() => {
+										onUpdate(row.values['id'])
+									}}
+									icon={<RiPencilLine fontSize={'15px'} />}
+								>
+									Update history
+								</MenuItem>
+							</MenuList>
+						</Menu>
+					),
+				},
+			],
+		},
+	]
+}
+
+export const projectMembersColumn = ({
+	currentUser,
+	onDelete,
+	project_Admin,
+	setAdmin,
+	setHourlyRate,
+}: IProjectMemberColumn): TColumn[] => {
+	return [
+		{
+			Header: 'Project member',
+
+			columns: [
+				{
+					Header: 'Id',
+					accessor: 'id',
+					width: 80,
+					minWidth: 80,
+					disableResizing: true,
+					Cell: ({ value }) => {
+						return value
+					},
+				},
+				{
+					Header: 'Employee Id',
+					accessor: 'employeeId',
+					minWidth: 180,
+					width: 180,
+					disableResizing: true,
+				},
+				{
+					Header: 'Name',
+					accessor: 'name',
+					minWidth: 250,
+					Cell: ({ value, row }) => {
+						return (
+							<HStack w={'full'} spacing={5}>
+								<Avatar
+									flex={'none'}
+									size={'sm'}
+									name={row.values['name']}
+									src={row.original.avatar?.url}
+								/>
+								<VStack w={'70%'} alignItems={'start'}>
+									<Text isTruncated w={'full'}>
+										{value}
+										{currentUser?.id == row.values['id'] && (
+											<Badge
+												marginLeft={'5'}
+												color={'white'}
+												background={'gray.500'}
+											>
+												It's you
+											</Badge>
+										)}
+									</Text>
+									<Text isTruncated w={'full'} fontSize={'sm'} color={'gray.400'}>
+										Junior
+									</Text>
+								</VStack>
+							</HStack>
+						)
+					},
+				},
+				{
+					Header: 'hourly rate',
+					accessor: 'hourly_rate_project',
+					minWidth: 180,
+					width: 180,
+					Cell: ({ value, row }) => (
+						<NumberInput
+							min={1}
+							precision={2}
+							onChange={(value: any) => {
+								setHourlyRate(Number(row.values['id']), Number(value))
+							}}
+							defaultValue={Number(value?.hourly_rate)}
+						>
+							<NumberInputField />
+							<NumberInputStepper>
+								<NumberIncrementStepper />
+								<NumberDecrementStepper />
+							</NumberInputStepper>
+						</NumberInput>
+					),
+				},
+				{
+					Header: 'User role',
+					accessor: 'role',
+					minWidth: 180,
+					width: 180,
+					Cell: ({ row }) => {
+						if (currentUser?.role === 'Admin') {
+							return (
+								<HStack spacing={4}>
+									<Radio
+										onChange={() => {
+											setAdmin(row.values['id'])
+										}}
+										isChecked={
+											project_Admin
+												? project_Admin.id == row.values['id']
+												: false
+										}
+										value={row.values['id']}
+									/>
+									<Text>Project Admin</Text>
+								</HStack>
+							)
+						} else {
+							return (
+								<Text>
+									{project_Admin && project_Admin.id == row.values['id']
+										? 'Project Admin'
+										: '--'}
+								</Text>
+							)
+						}
+					},
+				},
+				{
+					Header: 'Action',
+					accessor: 'action',
+					disableResizing: true,
+					width: 120,
+					minWidth: 120,
+					disableSortBy: true,
+					Cell: ({ row }) => (
+						<Button
+							onClick={() => {
+								onDelete(Number(row.values['id']))
+							}}
+						>
+							Delete
+						</Button>
+					),
+				},
+			],
+		},
+	]
+}
+
+export const projectTasksColumn = ({
+	currentUser,
+	onDelete,
+	onDetail,
+	onUpdate,
+}: IOptionColumn): TColumn[] => {
+	return [
+		{
+			Header: 'Tasks',
+			columns: [
+				{
+					Header: 'Id',
+					accessor: 'id',
+					width: 80,
+					minWidth: 80,
+					disableResizing: true,
+					Cell: ({ value }) => {
+						return value
+					},
+				},
+				{
+					Header: 'Task',
+					accessor: 'name',
+					Cell: ({ value }) => {
+						return <Text isTruncated>{value}</Text>
+					},
+					filter: textFilter(['name']),
+				},
+				{
+					Header: 'Project',
+					accessor: 'project',
+					Cell: ({ value }) => {
+						return <Text isTruncated>{value.name}</Text>
+					},
+				},
+				{
+					Header: 'Deadline',
+					accessor: 'deadline',
+					Cell: ({ value }) => {
+						const date = new Date(value)
+						return (
+							<Text color={'red'} isTruncated>{`${date.getDate()}-${
+								date.getMonth() + 1
+							}-${date.getFullYear()}`}</Text>
+						)
+					},
+					filter: dateFilter(['deadline']),
+				},
+				{
+					Header: 'Hours Logged',
+					accessor: 'time_logs',
+					Cell: ({ value }) => {
+						var result
+						if (value.length == 0) {
+							result = 0
+						} else {
+							value.map((item: timeLogType) => {
+								result = item.total_hours
+							})
+						}
+
+						return <Text isTruncated>{result} hrs</Text>
+					},
+				},
+				{
+					Header: 'milestone',
+					accessor: 'milestone',
+					Cell: ({ value }) => {
+						return <Text isTruncated>{value?.title}</Text>
+					},
+					filter: selectFilter(['milestone', 'id']),
+				},
+				{
+					Header: 'Assign to',
+					accessor: 'employees',
+					Cell: ({ value }) => {
+						return (
+							<AvatarGroup size="sm" max={2}>
+								{value.length != 0 &&
+									value.map((employee: employeeType) => (
+										<Avatar
+											name={employee.name}
+											key={employee.id}
+											src={employee.avatar?.url}
+										/>
+									))}
+							</AvatarGroup>
+						)
+					},
+				},
+				{
+					Header: 'Status',
+					accessor: 'status',
+					Cell: ({ value }) => (
+						<HStack alignItems={'center'}>
+							<Box background={value.color} w={'3'} borderRadius={'full'} h={'3'} />
+							<Text>{value.title}</Text>
+						</HStack>
+					),
+					filter: selectFilter(['status', 'id']),
+				},
+				{
+					Header: 'Action',
+					accessor: 'action',
+					disableResizing: true,
+					width: 120,
+					minWidth: 120,
+					disableSortBy: true,
+					Cell: ({ row }) => (
+						<Menu>
+							<MenuButton as={Button} paddingInline={3}>
+								<MdOutlineMoreVert />
+							</MenuButton>
+							<MenuList>
+								<MenuItem
+									onClick={() => {
+										onDetail(Number(row.values['id']))
+									}}
+									icon={<IoEyeOutline fontSize={'15px'} />}
+								>
+									View
+								</MenuItem>
+
+								{(currentUser?.role === 'Admin' ||
+									(currentUser?.role === 'Employee' &&
+										row.original?.assignBy?.id === currentUser?.id)) && (
+									<>
+										<MenuItem
+											onClick={() => {
+												onUpdate(Number(row.values['id']))
+											}}
+											icon={<RiPencilLine fontSize={'15px'} />}
+										>
+											Edit
+										</MenuItem>
+
+										<MenuItem
+											onClick={() => {
+												onDelete(Number(row.values['id']))
+											}}
+											icon={<MdOutlineDeleteOutline fontSize={'15px'} />}
+										>
+											Delete
+										</MenuItem>
+									</>
+								)}
+							</MenuList>
+						</Menu>
+					),
+				},
+			],
+		},
+	]
+}
+
+export const projectTimeLogsColumn = ({
+	currentUser,
+	onDelete,
+	onDetail,
+	onUpdate,
+}: IOptionColumn): TColumn[] => {
+	return [
+		{
+			Header: 'Time logs',
+
+			columns: [
+				{
+					Header: 'Id',
+					accessor: 'id',
+
+					width: 80,
+					minWidth: 80,
+					disableResizing: true,
+					Cell: ({ value }) => {
+						return value
+					},
+				},
+				{
+					Header: 'Task',
+					accessor: 'task',
+					Cell: ({ value }) => {
+						return <Text isTruncated>{value.name}</Text>
+					},
+					filter: textFilter(['task', 'name']),
+				},
+				{
+					Header: 'Employee',
+					accessor: 'employee',
+					minWidth: 250,
+					Cell: ({ value }) => {
+						return (
+							<>
+								{value ? (
+									<HStack w={'full'} spacing={5}>
+										<Avatar
+											flex={'none'}
+											size={'sm'}
+											name={value.name}
+											src={value.avatar?.url}
+										/>
+										<VStack w={'70%'} alignItems={'start'}>
+											<Text isTruncated w={'full'}>
+												{value.name}
+												{currentUser?.email == value.email && (
+													<Badge
+														marginLeft={'5'}
+														color={'white'}
+														background={'gray.500'}
+													>
+														It's you
+													</Badge>
+												)}
+											</Text>
+											<Text
+												isTruncated
+												w={'full'}
+												fontSize={'sm'}
+												color={'gray.400'}
+											>
+												Junior
+											</Text>
+										</VStack>
+									</HStack>
+								) : (
+									''
+								)}
+							</>
+						)
+					},
+				},
+				{
+					Header: 'Start Time',
+					accessor: 'starts_on_date',
+					filter: dateFilter(['starts_on_date']),
+					Cell: ({ value, row }) => {
+						const date = new Date(value)
+						return (
+							<Text isTruncated>{`${date.getDate()}-${
+								date.getMonth() + 1
+							}-${date.getFullYear()} ${row.original['starts_on_time']}`}</Text>
+						)
+					},
+				},
+				{
+					Header: 'End Time',
+					accessor: 'ends_on_date',
+					minWidth: 150,
+					filter: dateFilter(['ends_on_date']),
+					Cell: ({ value, row }) => {
+						const date = new Date(value)
+						return (
+							<Text isTruncated>{`${date.getDate()}-${
+								date.getMonth() + 1
+							}-${date.getFullYear()} ${row.original['ends_on_time']}`}</Text>
+						)
+					},
+				},
+				{
+					Header: 'Status',
+					minWidth: 150,
+					accessor: 'status',
+					filter: selectFilter(['task', 'status', 'id']),
+					Cell: ({ row }) => {
+						return <Text isTruncated>{row.original['task'].status.title}</Text>
+					},
+				},
+				{
+					Header: 'Total Hours',
+					minWidth: 150,
+					accessor: 'total_hours',
+					Cell: ({ value }) => {
+						return <Text isTruncated>{value} hrs</Text>
+					},
+				},
+				{
+					Header: 'Earnings',
+					accessor: 'earnings',
+					Cell: ({ value }) => {
+						return (
+							<Text isTruncated>
+								{Intl.NumberFormat('en-US', {
+									style: 'currency',
+									currency: 'USD',
+									useGrouping: false,
+								}).format(Number(value))}
+							</Text>
+						)
+					},
+				},
+				{
+					Header: 'Action',
+					accessor: 'action',
+					disableResizing: true,
+					width: 120,
+					minWidth: 120,
+					disableSortBy: true,
+					Cell: ({ row }) => (
+						<Menu>
+							<MenuButton as={Button} paddingInline={3}>
+								<MdOutlineMoreVert />
+							</MenuButton>
+							<MenuList>
+								<MenuItem
+									onClick={() => {
+										onDetail(Number(row.values['id']))
+									}}
+									icon={<IoEyeOutline fontSize={'15px'} />}
+								>
+									View
+								</MenuItem>
+								{((currentUser && currentUser.role === 'Admin') ||
+									(currentUser &&
+										dataDetailProject?.project?.project_Admin &&
+										currentUser.email ===
+											dataDetailProject.project.project_Admin.email)) && (
 									<>
 										<MenuItem
 											onClick={() => {

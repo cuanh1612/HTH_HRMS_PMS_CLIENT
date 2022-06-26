@@ -1,14 +1,9 @@
 import {
 	Avatar,
-	Badge,
 	Box,
 	Button,
 	Collapse,
 	HStack,
-	Menu,
-	MenuButton,
-	MenuItem,
-	MenuList,
 	SimpleGrid,
 	Text,
 	useColorMode,
@@ -17,7 +12,7 @@ import {
 } from '@chakra-ui/react'
 import { Func, Table } from 'components/common'
 import { Drawer } from 'components/Drawer'
-import { Input, Select, SelectCustom } from 'components/filter'
+import { Input, SelectCustom } from 'components/filter'
 import { ClientLayout } from 'components/layouts'
 import Modal from 'components/modal/Modal'
 import { AuthContext } from 'contexts/AuthContext'
@@ -25,19 +20,15 @@ import { useRouter } from 'next/router'
 import { allEmployeesNormalQuery, allSalariesQuery } from 'queries'
 import { useContext, useEffect, useState } from 'react'
 import { AiOutlineCaretDown, AiOutlineCaretUp, AiOutlineSearch } from 'react-icons/ai'
-import { IoEyeOutline } from 'react-icons/io5'
-import { MdOutlineMoreVert } from 'react-icons/md'
-import { RiPencilLine } from 'react-icons/ri'
 import { NextLayout } from 'type/element/layout'
 import { IFilter, TColumn } from 'type/tableTypes'
-import { selectFilter, textFilter } from 'utils/tableFilters'
 import HistorySalary from './history'
 import UpdateSalary from './update'
 import { CSVLink } from 'react-csv'
 import { BiExport } from 'react-icons/bi'
-import { FaFileCsv } from 'react-icons/fa'
 import { VscFilter } from 'react-icons/vsc'
 import { IOption } from 'type/basicTypes'
+import { salariesColumn } from 'utils/columns'
 
 const Salaries: NextLayout = () => {
 	const { isAuthenticated, handleLoading, currentUser } = useContext(AuthContext)
@@ -164,118 +155,18 @@ const Salaries: NextLayout = () => {
 	]
 
 	// header ----------------------------------------
-	const columns: TColumn[] = [
-		{
-			Header: 'Salaries',
-
-			columns: [
-				{
-					Header: 'Id',
-					accessor: 'id',
-					filter: selectFilter(['id']),
-					width: 80,
-					minWidth: 80,
-					disableResizing: true,
-					Cell: ({ value }) => {
-						return value
-					},
-				},
-				{
-					Header: 'Name',
-					accessor: 'name',
-					minWidth: 250,
-					Cell: ({ value, row }) => {
-						return (
-							<HStack w={'full'} spacing={5}>
-								<Avatar
-									flex={'none'}
-									size={'sm'}
-									name={row.values['name']}
-									src={row.original.avatar?.url}
-								/>
-								<VStack w={'70%'} alignItems={'start'}>
-									<Text isTruncated w={'full'}>
-										{value}
-										{currentUser?.email == row.original['email'] && (
-											<Badge
-												marginLeft={'5'}
-												color={'white'}
-												background={'gray.500'}
-											>
-												It's you
-											</Badge>
-										)}
-									</Text>
-									<Text isTruncated w={'full'} fontSize={'sm'} color={'gray.400'}>
-										{row.original['role']}
-									</Text>
-								</VStack>
-							</HStack>
-						)
-					},
-				},
-				{
-					Header: 'Email',
-					accessor: 'email',
-					minWidth: 150,
-					filter: textFilter(['email']),
-					Cell: ({ value }) => {
-						return <Text isTruncated>{value}</Text>
-					},
-				},
-				{
-					Header: 'Salary',
-					accessor: 'sumSalaries',
-					minWidth: 150,
-					filter: textFilter(['email']),
-					Cell: ({ value }) => {
-						return (
-							<Text isTruncated color={'red'} fontWeight={'semibold'}>
-								${value}
-							</Text>
-						)
-					},
-				},
-				{
-					Header: 'Action',
-					accessor: 'action',
-					disableResizing: true,
-					width: 120,
-					minWidth: 120,
-					disableSortBy: true,
-					Cell: ({ row }) => (
-						<Menu>
-							<MenuButton as={Button} paddingInline={3}>
-								<MdOutlineMoreVert />
-							</MenuButton>
-							<MenuList>
-								<MenuItem
-									onClick={() => {
-										setEmployeeId(row.values['id'])
+	const columns: TColumn[] = salariesColumn({
+		currentUser,
+		onDetail: (id: number)=> {
+			setEmployeeId(id)
 										onOpenHistory()
-									}}
-									icon={<IoEyeOutline fontSize={'15px'} />}
-								>
-									Show history
-								</MenuItem>
-
-								<MenuItem
-									onClick={() => {
-										setEmployeeId(row.values['id'])
-										onOpenUpdateSalary()
-									}}
-									icon={<RiPencilLine fontSize={'15px'} />}
-								>
-									Update history
-								</MenuItem>
-							</MenuList>
-						</Menu>
-					),
-				},
-			],
 		},
-	]
-
+		onUpdate: (id: number)=> {
+			setEmployeeId(id)
+			onOpenUpdateSalary()
+		}
+	})
+	
 	return (
 		<Box pb={8} w={'full'}>
 			<HStack

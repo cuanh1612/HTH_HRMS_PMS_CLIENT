@@ -51,7 +51,8 @@ import { IoAdd } from 'react-icons/io5'
 var hourlyRateTimeOut: NodeJS.Timeout
 
 const members: NextLayout = () => {
-	const { isAuthenticated, handleLoading, currentUser, setToast } = useContext(AuthContext)
+	const { isAuthenticated, handleLoading, currentUser, setToast, socket } =
+		useContext(AuthContext)
 	const router = useRouter()
 	const { projectId } = router.query
 	const [employeeId, setIdEmployee] = useState<number>()
@@ -158,12 +159,38 @@ const members: NextLayout = () => {
 		})
 	}
 
+	//Join room socket
+	useEffect(() => {
+		//Join room
+		if (socket && projectId) {
+			socket.emit('joinRoomMemberProject', projectId)
+
+			socket.on('getNewMemberProject', () => {
+				refetchMember()
+			})
+		}
+
+		//Leave room
+		function leaveRoom() {
+			if (socket && projectId) {
+				socket.emit('leaveRoomMemberProject', projectId)
+			}
+		}
+
+		return leaveRoom
+	}, [socket, projectId])
+
 	useEffect(() => {
 		if (statusSetAdmin == 'success' && dataProjectAdmin) {
 			setToast({
 				type: 'success',
 				msg: dataProjectAdmin.message,
 			})
+
+			// Emit to other user join room
+			if (socket && projectId) {
+				socket.emit('newMemberProject', projectId)
+			}
 
 			refetchMember()
 		}
@@ -178,6 +205,10 @@ const members: NextLayout = () => {
 			refetchMember()
 			refetchEmplNotIn()
 			setIsloading(false)
+			// Emit to other user join room
+			if (socket && projectId) {
+				socket.emit('newMemberProject', projectId)
+			}
 		}
 	}, [statusDelete])
 
@@ -189,6 +220,10 @@ const members: NextLayout = () => {
 			})
 			refetchMember()
 			setIsloading(false)
+			// Emit to other user join room
+			if (socket && projectId) {
+				socket.emit('newMemberProject', projectId)
+			}
 		}
 	}, [statusHourlyRate])
 
@@ -206,6 +241,10 @@ const members: NextLayout = () => {
 				employees: [],
 			})
 			setRadioFormVl(1)
+			// Emit to other user join room
+			if (socket && projectId) {
+				socket.emit('newMemberProject', projectId)
+			}
 		}
 	}, [statusAssign])
 
@@ -223,6 +262,10 @@ const members: NextLayout = () => {
 				departments: [],
 			})
 			setRadioFormVl(1)
+			// Emit to other user join room
+			if (socket && projectId) {
+				socket.emit('newMemberProject', projectId)
+			}
 		}
 	}, [statusAssignByDepartment])
 

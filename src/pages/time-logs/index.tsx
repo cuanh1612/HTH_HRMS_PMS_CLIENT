@@ -1,14 +1,8 @@
 import {
-	Avatar,
-	Badge,
 	Box,
 	Button,
 	Collapse,
 	HStack,
-	Menu,
-	MenuButton,
-	MenuItem,
-	MenuList,
 	SimpleGrid,
 	Text,
 	useDisclosure,
@@ -29,18 +23,17 @@ import {
 	AiOutlineDelete,
 	AiOutlineSearch,
 } from 'react-icons/ai'
-import { IoAdd, IoEyeOutline } from 'react-icons/io5'
-import { MdOutlineDeleteOutline, MdOutlineEvent, MdOutlineMoreVert } from 'react-icons/md'
-import { RiPencilLine } from 'react-icons/ri'
+import { IoAdd } from 'react-icons/io5'
+import { MdOutlineEvent} from 'react-icons/md'
 import { NextLayout } from 'type/element/layout'
 import { IFilter, TColumn } from 'type/tableTypes'
-import { dateFilter, selectFilter, textFilter } from 'utils/tableFilters'
 import AddTimeLog from './add-time-logs'
 import DetailTimeLog from './[timeLogId]'
 import UpdateTimeLog from './[timeLogId]/update-time-logs'
 import { CSVLink } from 'react-csv'
 import { BiExport } from 'react-icons/bi'
 import { VscFilter } from 'react-icons/vsc'
+import { timeLogsColumn } from 'utils/columns'
 
 const TimeLogs: NextLayout = () => {
 	const { isAuthenticated, handleLoading, setToast, currentUser, socket } =
@@ -240,185 +233,22 @@ const TimeLogs: NextLayout = () => {
 	}, [socket])
 
 	// header ----------------------------------------
-	const columns: TColumn[] = [
-		{
-			Header: 'Time logs',
-
-			columns: [
-				{
-					Header: 'Id',
-					accessor: 'id',
-
-					width: 80,
-					minWidth: 80,
-					disableResizing: true,
-					Cell: ({ value }) => {
-						return value
-					},
-				},
-				{
-					Header: 'Task',
-					accessor: 'task',
-					Cell: ({ value }) => {
-						return <Text isTruncated>{value.name}</Text>
-					},
-					filter: textFilter(['task', 'name']),
-				},
-				{
-					Header: 'Project',
-					accessor: 'project',
-					Cell: ({ value }) => {
-						return <Text isTruncated>{value?.name}</Text>
-					},
-					filter: selectFilter(['project', 'id']),
-				},
-				{
-					Header: 'Employee',
-					accessor: 'employee',
-					minWidth: 250,
-					Cell: ({ value }) => {
-						return (
-							<>
-								{value ? (
-									<HStack w={'full'} spacing={5}>
-										<Avatar
-											flex={'none'}
-											size={'sm'}
-											name={value.name}
-											src={value.avatar?.url}
-										/>
-										<VStack w={'70%'} alignItems={'start'}>
-											<Text isTruncated w={'full'}>
-												{value.name}
-												{currentUser?.email == value.email && (
-													<Badge
-														marginLeft={'5'}
-														color={'white'}
-														background={'gray.500'}
-													>
-														It's you
-													</Badge>
-												)}
-											</Text>
-											<Text
-												isTruncated
-												w={'full'}
-												fontSize={'sm'}
-												color={'gray.400'}
-											>
-												Junior
-											</Text>
-										</VStack>
-									</HStack>
-								) : (
-									''
-								)}
-							</>
-						)
-					},
-				},
-				{
-					Header: 'Start Time',
-					accessor: 'starts_on_date',
-					filter: dateFilter(['starts_on_date']),
-					Cell: ({ value, row }) => {
-						const date = new Date(value)
-						return (
-							<Text isTruncated>{`${date.getDate()}-${
-								date.getMonth() + 1
-							}-${date.getFullYear()} ${row.original['starts_on_time']}`}</Text>
-						)
-					},
-				},
-				{
-					Header: 'End Time',
-					accessor: 'ends_on_date',
-					minWidth: 150,
-					filter: dateFilter(['ends_on_date']),
-					Cell: ({ value, row }) => {
-						const date = new Date(value)
-						return (
-							<Text isTruncated>{`${date.getDate()}-${
-								date.getMonth() + 1
-							}-${date.getFullYear()} ${row.original['ends_on_time']}`}</Text>
-						)
-					},
-				},
-				{
-					Header: 'Total Hours',
-					minWidth: 150,
-					accessor: 'total_hours',
-					Cell: ({ value }) => {
-						return <Text isTruncated>{value} hrs</Text>
-					},
-				},
-				{
-					Header: 'Earnings',
-					accessor: 'earnings',
-					Cell: ({ value }) => {
-						return (
-							<Text isTruncated>
-								{Intl.NumberFormat('en-US', {
-									style: 'currency',
-									currency: 'USD',
-									useGrouping: false,
-								}).format(Number(value))}
-							</Text>
-						)
-					},
-				},
-				{
-					Header: 'Action',
-					accessor: 'action',
-					disableResizing: true,
-					width: 120,
-					minWidth: 120,
-					disableSortBy: true,
-					Cell: ({ row }) => (
-						<Menu>
-							<MenuButton as={Button} paddingInline={3}>
-								<MdOutlineMoreVert />
-							</MenuButton>
-							<MenuList>
-								<MenuItem
-									onClick={() => {
-										setIdTimeLog(Number(row.values['id']))
-										onOpenDetailTimelog()
-									}}
-									icon={<IoEyeOutline fontSize={'15px'} />}
-								>
-									View
-								</MenuItem>
-								{currentUser?.role === 'Admin' && (
-									<>
-										<MenuItem
-											onClick={() => {
-												setIdTimeLog(Number(row.values['id']))
-												onOpenUpdateTimelog()
-											}}
-											icon={<RiPencilLine fontSize={'15px'} />}
-										>
-											Edit
-										</MenuItem>
-
-										<MenuItem
-											onClick={() => {
-												setIdTimeLog(Number(row.values['id']))
-												onOpenDl()
-											}}
-											icon={<MdOutlineDeleteOutline fontSize={'15px'} />}
-										>
-											Delete
-										</MenuItem>
-									</>
-								)}
-							</MenuList>
-						</Menu>
-					),
-				},
-			],
+	const columns: TColumn[] = timeLogsColumn({
+		currentUser,
+		onDelete: (id: number)=> {
+			setIdTimeLog(Number(id))
+			onOpenDl()
 		},
-	]
+		onDetail: (id: number)=> {
+			setIdTimeLog(Number(id))
+			onOpenDetailTimelog()
+		},
+		onUpdate: (id: number)=> {
+			setIdTimeLog(Number(id))
+			onOpenUpdateTimelog()
+		}
+	})
+	
 
 	return (
 		<Box w={'full'} pb={8}>

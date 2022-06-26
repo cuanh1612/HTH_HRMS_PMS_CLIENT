@@ -38,6 +38,7 @@ import UpdateNoticeBoard from './[noticeBoardId]/update'
 import { CSVLink } from 'react-csv'
 import { VscFilter } from 'react-icons/vsc'
 import { BiExport } from 'react-icons/bi'
+import { noticeBoardColumn } from 'utils/columns'
 
 export interface IProjectProps {}
 
@@ -115,99 +116,17 @@ const NoticeBoard: NextLayout = ({}: IProjectProps) => {
 	//User effect ---------------------------------------------------------------
 
 	// header ----------------------------------------
-	const columns: TColumn[] = [
-		{
-			Header: 'Notice board',
-			columns: [
-				{
-					Header: 'Id',
-					accessor: 'id',
-					width: 80,
-					minWidth: 80,
-					disableResizing: true,
-					Cell: ({ value }) => {
-						return value
-					},
-				},
-				{
-					Header: 'Notice',
-					accessor: 'heading',
-					filter: textFilter(['heading']),
-					minWidth: 80,
-					Cell: ({ value }) => {
-						return <Text isTruncated>{value}</Text>
-					},
-				},
-				{
-					Header: 'Date',
-					accessor: 'updatedAt',
-					filter: dateFilter(['updatedAt']),
-					minWidth: 180,
-					width: 180,
-					disableResizing: true,
-					Cell: ({ value }) => {
-						return (
-							<Text isTruncated>{`${new Date(value).getDate()}-${
-								new Date(value).getUTCMonth() + 1
-							}-${new Date(value).getFullYear()}`}</Text>
-						)
-					},
-				},
-				{
-					Header: 'To',
-					accessor: 'notice_to',
-					filter: selectFilter(['notice_to']),
-					minWidth: 180,
-					width: 180,
-					disableResizing: true,
-					Cell: ({ value }) => {
-						return <Text isTruncated>{value}</Text>
-					},
-				},
-				{
-					Header: 'Action',
-					accessor: 'action',
-					disableResizing: true,
-					width: 120,
-					minWidth: 120,
-					disableSortBy: true,
-					Cell: ({ row }) => (
-						<Menu>
-							<MenuButton as={Button} paddingInline={3}>
-								<MdOutlineMoreVert />
-							</MenuButton>
-							<MenuList>
-								<MenuItem icon={<IoEyeOutline fontSize={'15px'} />}>View</MenuItem>
-								{currentUser?.role === 'Admin' && (
-									<>
-										<MenuItem
-											onClick={() => {
-												setNoticeId(Number(row.values['id']))
-												onOpenUpdate()
-											}}
-											icon={<RiPencilLine fontSize={'15px'} />}
-										>
-											Edit
-										</MenuItem>
-
-										<MenuItem
-											onClick={() => {
-												setNoticeId(Number(row.values['id']))
-												onOpenDl()
-											}}
-											icon={<MdOutlineDeleteOutline fontSize={'15px'} />}
-										>
-											Delete
-										</MenuItem>
-									</>
-								)}
-							</MenuList>
-						</Menu>
-					),
-				},
-			],
+	const columns: TColumn[] = noticeBoardColumn({
+		currentUser,
+		onUpdate: (id: number) => {
+			setNoticeId(id)
+			onOpenUpdate()
 		},
-	]
+		onDelete: (id: number) => {
+			setNoticeId(id)
+			onOpenDl()
+		},
+	})
 
 	// set loading == false when get all notices successfully
 	useEffect(() => {

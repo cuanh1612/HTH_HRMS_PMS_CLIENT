@@ -36,6 +36,7 @@ import { RiPencilLine } from 'react-icons/ri'
 import { VscFilter } from 'react-icons/vsc'
 import { NextLayout } from 'type/element/layout'
 import { IFilter, TColumn } from 'type/tableTypes'
+import { holidayColumn } from 'utils/columns'
 import { monthFilter, textFilter, yearFilter } from 'utils/tableFilters'
 import AddHoliday from './add-holidays'
 import UpdateHoliday from './update-holidays'
@@ -79,7 +80,6 @@ const Holiday: NextLayout = () => {
 
 	const [holidayIdDetail, setHolidayIdDetail] = useState<number | null>(null)
 
-	const [holidayIdUpdate, setHolidayIdUpdate] = useState<number | null>(1)
 	// set loading table
 	const [isLoading, setIsloading] = useState(true)
 
@@ -87,7 +87,7 @@ const Holiday: NextLayout = () => {
 	const [dataSl, setDataSl] = useState<Array<number> | null>()
 
 	// get id to delete employee
-	const [idDlHoliday, setIdDlHoliday] = useState<number>()
+	const [idHoliday, setIdHoliday] = useState<number| null>(null)
 
 	// get all holidays
 	const { data: allHolidays, mutate: refetchAllHolidays } = allHolidaysQuery({})
@@ -197,112 +197,23 @@ const Holiday: NextLayout = () => {
 		})
 	}
 
-	// header ----------------------------------------
-	const columns: TColumn[] = [
-		{
-			Header: 'Holidays',
 
-			columns: [
-				{
-					Header: 'Id',
-					accessor: 'id',
-					width: 80,
-					minWidth: 80,
-					disableResizing: true,
-				},
-				{
-					Header: 'Date',
-					filter: yearFilter(['holiday_date']),
-					accessor: 'holiday_date',
-					minWidth: 150,
-					width: 150,
-					Cell: ({ value }) => {
-						const date = new Date(value)
-						return (
-							<Text>{`${date.getDate()}-${
-								date.getMonth() + 1
-							}-${date.getFullYear()}`}</Text>
-						)
-					},
-				},
-				{
-					Header: 'Occasion',
-					filter: textFilter(['occasion']),
-					accessor: 'occasion',
-					minWidth: 250,
-					width: 500,
-				},
-				{
-					Header: 'Day',
-					filter: monthFilter(['holiday_date']),
-					accessor: 'day',
-					minWidth: 150,
-					width: 150,
-					Cell: ({ row }) => {
-						let daysArray = [
-							'Sunday',
-							'Monday',
-							'Tuesday',
-							'Wednesday',
-							'Thursday',
-							'Friday',
-							'Saturday',
-						]
-						const date = new Date(row.values['holiday_date']).getDay()
-						return <Text>{daysArray[date]}</Text>
-					},
-				},
-				{
-					Header: 'Action',
-					accessor: 'action',
-					disableResizing: true,
-					width: 120,
-					minWidth: 120,
-					disableSortBy: true,
-					Cell: ({ row }) => (
-						<Menu>
-							<MenuButton as={Button} paddingInline={3}>
-								<MdOutlineMoreVert />
-							</MenuButton>
-							<MenuList>
-								<MenuItem
-									onClick={() => {
-										setHolidayIdDetail(row.values['id'])
+	// header ----------------------------------------
+	const columns: TColumn[] = holidayColumn({
+		currentUser,
+		onDelete: (id: number)=> {
+			setIdHoliday(id)
 										onOpenDetail()
-									}}
-									icon={<IoEyeOutline fontSize={'15px'} />}
-								>
-									View
-								</MenuItem>
-								{currentUser && currentUser.role === 'Admin' && (
-									<>
-										<MenuItem
-											onClick={() => {
-												setHolidayIdUpdate(row.values['id'])
-												onOpenUpdate()
-											}}
-											icon={<RiPencilLine fontSize={'15px'} />}
-										>
-											Edit
-										</MenuItem>
-										<MenuItem
-											onClick={() => {
-												setIdDlHoliday(row.values['id'])
-												onOpenDl()
-											}}
-											icon={<MdOutlineDeleteOutline fontSize={'15px'} />}
-										>
-											Delete
-										</MenuItem>
-									</>
-								)}
-							</MenuList>
-						</Menu>
-					),
-				},
-			],
 		},
-	]
+		onDetail: (id: number)=> {
+			setHolidayIdDetail(id)
+										onOpenDetail()
+		},
+		onUpdate: (id: number)=> {
+			setIdHoliday(id)
+										onOpenUpdate()
+		},
+	})
 
 	// set loading == false when get all holidays successfully
 	useEffect(() => {
@@ -440,7 +351,7 @@ const Holiday: NextLayout = () => {
 			<AlertDialog
 				handleDelete={() => {
 					setIsloading(true)
-					mutateDeleteHoliday(String(idDlHoliday))
+					mutateDeleteHoliday(String(idHoliday))
 				}}
 				title="Are you sure?"
 				content="You will not be able to recover the deleted record!"
@@ -574,7 +485,7 @@ const Holiday: NextLayout = () => {
 				<AddHoliday onCloseDrawer={onCloseAdd} />
 			</Drawer>
 			<Drawer size="xl" title="Update Holiday" onClose={onCloseUpdate} isOpen={isOpenUpdate}>
-				<UpdateHoliday onCloseDrawer={onCloseUpdate} holidayId={holidayIdUpdate} />
+				<UpdateHoliday onCloseDrawer={onCloseUpdate} holidayId={idHoliday} />
 			</Drawer>
 			<Drawer
 				size="sm"

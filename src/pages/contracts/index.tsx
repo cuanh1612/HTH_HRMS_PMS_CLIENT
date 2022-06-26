@@ -45,6 +45,7 @@ import { VscFilter } from 'react-icons/vsc'
 import { IOption } from 'type/basicTypes'
 import { NextLayout } from 'type/element/layout'
 import { IFilter, TColumn } from 'type/tableTypes'
+import { contractColumn } from 'utils/columns'
 import { dateFilter, selectFilter, textFilter } from 'utils/tableFilters'
 import AddContract from './add-contracts'
 import UpdateContract from './update-contracts'
@@ -385,173 +386,21 @@ const Contracts: NextLayout = () => {
 	}
 
 	// header ----------------------------------------
-	const columns: TColumn[] = [
-		{
-			Header: 'Contracts',
-
-			columns: [
-				{
-					Header: 'Id',
-					accessor: 'id',
-					width: 80,
-					minWidth: 80,
-					disableResizing: true,
-					Cell: ({ value }) => {
-						return value
-					},
-				},
-				{
-					Header: 'Subject',
-					accessor: 'subject',
-					minWidth: 180,
-					width: 180,
-					filter: textFilter(['subject']),
-					Cell: ({ value, row }) => (
-						<Text
-							_hover={{
-								color: 'hu-Green.normal',
-							}}
-						>
-							<Link key={row.values['id']} href={`/contracts/${row.values['id']}`}>
-								{value}
-							</Link>
-						</Text>
-					),
-				},
-				{
-					Header: 'Contract type',
-					accessor: 'contract_type',
-					minWidth: 180,
-					width: 180,
-					filter: selectFilter(['contract_type', 'id']),
-					Cell: () => '',
-				},
-				{
-					Header: 'Client',
-					accessor: 'client',
-					minWidth: 250,
-					filter: selectFilter(['client', 'id']),
-					Cell: ({ row }) => {
-						return (
-							<HStack w={'full'} spacing={5}>
-								<Avatar
-									flex={'none'}
-									size={'sm'}
-									name={row.original.client.name}
-									src={row.original.client.avatar?.url}
-								/>
-								<VStack w={'70%'} alignItems={'start'}>
-									<Text isTruncated w={'full'}>
-										{row.original.client.salutation
-											? `${row.original.salutation}. ${row.original.client.name}`
-											: row.original.client.name}
-									</Text>
-									<Text isTruncated w={'full'} fontSize={'sm'} color={'gray.400'}>
-										{row.original.client.company_name}
-									</Text>
-								</VStack>
-							</HStack>
-						)
-					},
-				},
-				{
-					Header: 'Amount',
-					accessor: 'amount',
-					minWidth: 180,
-					width: 180,
-					Cell: ({ row }) => (
-						<Text>{`${row.original.contract_value} ${row.original.currency}`}</Text>
-					),
-				},
-				{
-					Header: 'Start date',
-					accessor: 'start_date',
-					minWidth: 180,
-					width: 180,
-					filter: dateFilter(['start_date']),
-					Cell: ({ value }) => {
-						const date = new Date(value as string)
-						return (
-							<Text>{`${date.getDate()}-${
-								date.getMonth() + 1
-							}-${date.getFullYear()}`}</Text>
-						)
-					},
-				},
-				{
-					Header: 'End date',
-					accessor: 'end_date',
-					minWidth: 180,
-					width: 180,
-					Cell: ({ value }) => {
-						const date = new Date(value as string)
-						return (
-							<Text>{`${date.getDate()}-${
-								date.getMonth() + 1
-							}-${date.getFullYear()}`}</Text>
-						)
-					},
-				},
-				{
-					Header: 'Action',
-					accessor: 'action',
-					disableResizing: true,
-					width: 120,
-					minWidth: 120,
-					disableSortBy: true,
-					Cell: ({ row }) => (
-						<Menu>
-							<MenuButton as={Button} paddingInline={3}>
-								<MdOutlineMoreVert />
-							</MenuButton>
-							<MenuList>
-								<Link
-									key={row.values['id']}
-									href={`/contracts/${row.values['id']}`}
-								>
-									<MenuItem icon={<IoEyeOutline fontSize={'15px'} />}>
-										view
-									</MenuItem>
-								</Link>
-								{currentUser?.role == 'Admin' && (
-									<>
-										<MenuItem
-											onClick={() => {
-												mutateGetPublic(row.values['id'])
-											}}
-											icon={<BiLinkAlt fontSize={'15px'} />}
-										>
-											Public Link
-										</MenuItem>
-										<MenuItem
-											onClick={() => {
-												setContractIdUpdate(row.values['id'])
-												onOpenUpdate()
-											}}
-											icon={<RiPencilLine fontSize={'15px'} />}
-										>
-											Edit
-										</MenuItem>
-
-										<MenuItem
-											onClick={() => {
-												setIdDlContract(row.values['id'])
-												onOpenDl()
-											}}
-											icon={<MdOutlineDeleteOutline fontSize={'15px'} />}
-										>
-											Delete
-										</MenuItem>
-									</>
-								)}
-							</MenuList>
-						</Menu>
-					),
-				},
-			],
+	const columns: TColumn[] = contractColumn({
+		currentUser,
+		onUpdate: (id: number)=> {
+			setContractIdUpdate(id)
+			onOpenUpdate()
 		},
-	]
-
+		onDelete: (id: number) => {
+			setIdDlContract(id)
+			onOpenDl()
+		},
+		onPublic: (id: number)=> {
+			mutateGetPublic(id)
+		}
+	})	
+							
 	return (
 		<>
 			<HStack

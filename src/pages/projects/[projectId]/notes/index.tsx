@@ -280,7 +280,11 @@ const Notes: NextLayout = ({}: INotesProps) => {
 										</MenuItem>
 									)
 								)}
-								{currentUser?.role == 'Admin' && (
+								{((currentUser && currentUser.role === 'Admin') ||
+									(currentUser &&
+										dataDetailProject?.project?.project_Admin &&
+										currentUser.email ===
+											dataDetailProject.project.project_Admin.email)) && (
 									<>
 										<MenuItem
 											onClick={() => {
@@ -341,8 +345,8 @@ const Notes: NextLayout = ({}: INotesProps) => {
 	}
 
 	//Handle change password
-	const onChangePassword = (value: any) => {
-		setPassword(value.target.value as string)
+	const onChangePassword = (value: string) => {
+		setPassword(value)
 	}
 
 	return (
@@ -522,15 +526,17 @@ const Notes: NextLayout = ({}: INotesProps) => {
 			>
 				<Box paddingInline={6} as={'form'} onSubmit={onSubmitCheckPassword}>
 					<VStack align={'start'}>
-						<Text color={'gray.400'}>
-							Password <span style={{ color: 'red' }}>*</span>
-						</Text>
 						<Input
 							type={'text'}
-							required
 							placeholder="Plear Enter Your Password"
 							defaultValue={password}
-							onChange={(e: any) => onChangePassword(e)}
+							handleSearch={(e: IFilter) => {
+								console.log(e.filterValue)
+								onChangePassword(e.filterValue)
+							}}
+							label={'Password'}
+							required={true}
+							columnId={'password'}
 						/>
 						<VStack align={'end'} w="full">
 							<Button

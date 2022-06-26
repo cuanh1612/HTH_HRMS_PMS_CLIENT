@@ -33,6 +33,7 @@ import { CSVLink } from 'react-csv'
 import { VscFilter } from 'react-icons/vsc'
 import { BiExport } from 'react-icons/bi'
 import { noticeBoardColumn } from 'utils/columns'
+import DetailNoticeBoard from './[noticeBoardId]'
 
 export interface IProjectProps {}
 
@@ -64,6 +65,7 @@ const NoticeBoard: NextLayout = ({}: IProjectProps) => {
 	//Setup drawer --------------------------------------------------------------
 	const { isOpen: isOpenAdd, onOpen: onOpenAdd, onClose: onCloseAdd } = useDisclosure()
 	const { isOpen: isOpenUpdate, onOpen: onOpenUpdate, onClose: onCloseUpdate } = useDisclosure()
+	const { isOpen: isOpenDetail, onOpen: onOpenDetail, onClose: onCloseDetail } = useDisclosure()
 
 	//set isopen of function
 	const { isOpen, onToggle } = useDisclosure({
@@ -120,6 +122,10 @@ const NoticeBoard: NextLayout = ({}: IProjectProps) => {
 			setNoticeId(id)
 			onOpenDl()
 		},
+		onDetail: (id: number) => {
+			setNoticeId(id)
+			onOpenDetail()
+		}
 	})
 
 	// set loading == false when get all notices successfully
@@ -325,6 +331,15 @@ const NoticeBoard: NextLayout = ({}: IProjectProps) => {
 				isOpen={isOpenUpdate}
 			>
 				<UpdateNoticeBoard onCloseDrawer={onCloseUpdate} noticeBoardIdProp={noticeId} />
+			</Drawer>
+
+			<Drawer
+				size="xl"
+				title="Detail notice board"
+				onClose={onCloseDetail}
+				isOpen={isOpenDetail}
+			>
+				<DetailNoticeBoard NoticeBoardIdProp={noticeId} />
 			</Drawer>
 
 			<Drawer

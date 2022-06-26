@@ -469,6 +469,13 @@ const TimeLogs: NextLayout = () => {
 									action={() => {}}
 								/>
 							</CSVLink>
+							<Func
+						icon={<AiOutlineDelete />}
+						title={'Delete all'}
+						description={'Delete all client you selected'}
+						action={onOpenDlMany}
+						disabled={!dataSl || dataSl.length == 0 ? true : false}
+					/>
 						</>
 					)}
 					<Func
@@ -477,13 +484,7 @@ const TimeLogs: NextLayout = () => {
 						title={'filter'}
 						action={onOpenFilter}
 					/>
-					<Func
-						icon={<AiOutlineDelete />}
-						title={'Delete all'}
-						description={'Delete all client you selected'}
-						action={onOpenDlMany}
-						disabled={!dataSl || dataSl.length == 0 ? true : false}
-					/>
+					
 				</SimpleGrid>
 			</Collapse>
 			<br />
@@ -492,7 +493,7 @@ const TimeLogs: NextLayout = () => {
 				data={allTimeLogs?.timeLogs || []}
 				columns={columns}
 				isLoading={isLoading}
-				isSelect
+				isSelect={currentUser?.role == 'Admin'}
 				selectByColumn="id"
 				setSelect={(data: Array<number>) => setDataSl(data)}
 				filter={filter}

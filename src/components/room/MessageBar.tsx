@@ -90,12 +90,12 @@ export const MessageBar = ({
 	useEffect(() => {
 		const result = listEmojis.filter((emoji) => {
 			emoji.group == category && emoji
+			// emoji.group == category && emoji
 		})
 		setDataEmojis(result)
 	}, [category])
 
 	const encodeBase64 = (file: File) => {
-		alert(file.size)
 		if (file.size > 3200) {
 			return setToast({
 				type: 'error',

@@ -1,22 +1,15 @@
-import {
-	Box,
-	Button,
-	Grid,
-	GridItem,
-	Skeleton,
-	Text,
-	useDisclosure,
-	VStack,
-} from '@chakra-ui/react'
-import { AlertDialog } from 'components/common'
+import { Grid, GridItem, Skeleton, Text, useDisclosure, VStack } from '@chakra-ui/react'
+import { AlertDialog, Func, FuncCollapse } from 'components/common'
 import { Drawer } from 'components/Drawer'
 import { ClientLayout } from 'components/layouts'
 import { Cards } from 'components/room'
 import { AuthContext } from 'contexts/AuthContext'
 import { deleteRoomMutation } from 'mutations'
+import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { allRoomsQuery } from 'queries'
 import React, { useCallback, useContext, useEffect, useState } from 'react'
+import { IoAdd } from 'react-icons/io5'
 
 import { NextLayout } from 'type/element/layout'
 import AddRooms from './add-rooms'
@@ -85,14 +78,19 @@ const zoom: NextLayout = () => {
 	}
 	return (
 		<VStack justifyContent={'start'} pb={8} alignItems={'start'} w={'full'} spacing={5}>
-			<Box>
-				<Button mb={5} onClick={onOpenCreRoom}>
-					create room
-				</Button>
-				<Button mb={5} onClick={onOpenUpRoom}>
-					update room
-				</Button>
-			</Box>
+			<Head>
+				<title>Huprom - Rooms</title>
+				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
+			</Head>
+			<FuncCollapse>
+				<Func
+					icon={<IoAdd />}
+					description={'Add new meeting by form'}
+					title={'Add new'}
+					action={onOpenCreRoom}
+				/>
+			</FuncCollapse>
+
 			<VStack w={'full'} spacing={5}>
 				<Text w={'full'} fontWeight={'bold'} fontSize={'xl'}>
 					Your rooms:

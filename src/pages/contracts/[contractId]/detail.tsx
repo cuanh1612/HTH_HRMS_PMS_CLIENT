@@ -28,6 +28,7 @@ import { AuthContext } from 'contexts/AuthContext'
 import { convert } from 'html-to-text'
 import jsPDF from 'jspdf'
 import { GetStaticPaths, GetStaticProps } from 'next'
+import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { detailContractQuery } from 'queries'
 import { companyInfoQuery } from 'queries/companyInfo'
@@ -44,7 +45,7 @@ const DetailContract: NextLayout = () => {
 
 	//Query ------------------------------------------------------------
 	const { data: dataDetailContract } = detailContractQuery(isAuthenticated, Number(contractId))
-	const {	data: dataCompanyInfo } = companyInfoQuery(isAuthenticated)
+	const { data: dataCompanyInfo } = companyInfoQuery(isAuthenticated)
 
 	//Useeffect --------------------------------------------------------
 	//Handle loading page
@@ -71,10 +72,32 @@ const DetailContract: NextLayout = () => {
 
 			doc.text(`Contract #${contractId}`, 20, 20)
 			doc.setFontSize(12)
-			doc.text(dataCompanyInfo?.companyInfo.name ? dataCompanyInfo.companyInfo.name : 'HUPROM', 20, 60)
-			doc.text(dataCompanyInfo?.companyInfo.website  ? dataCompanyInfo.companyInfo.website : 'huprom.com', 20, 80)
-			doc.text(dataCompanyInfo?.companyInfo.phone ? dataCompanyInfo.companyInfo.phone : '+84 833876372', 20, 100)
-			doc.text(dataCompanyInfo?.companyInfo.email ? dataCompanyInfo.companyInfo.email : 'huynqdev1612@gmail.com', 20, 120)
+			doc.text(
+				dataCompanyInfo?.companyInfo.name ? dataCompanyInfo.companyInfo.name : 'HUPROM',
+				20,
+				60
+			)
+			doc.text(
+				dataCompanyInfo?.companyInfo.website
+					? dataCompanyInfo.companyInfo.website
+					: 'huprom.com',
+				20,
+				80
+			)
+			doc.text(
+				dataCompanyInfo?.companyInfo.phone
+					? dataCompanyInfo.companyInfo.phone
+					: '+84 833876372',
+				20,
+				100
+			)
+			doc.text(
+				dataCompanyInfo?.companyInfo.email
+					? dataCompanyInfo.companyInfo.email
+					: 'huynqdev1612@gmail.com',
+				20,
+				120
+			)
 			doc.setFontSize(14)
 			doc.text('Main Contract', 20, 160)
 			doc.setFontSize(12)
@@ -139,6 +162,10 @@ const DetailContract: NextLayout = () => {
 				fallback: {},
 			}}
 		>
+			<Head>
+				<title>Huprom - Detail contract {contractId}</title>
+				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
+			</Head>
 			<Box bgColor={'#f2f4f7'} p={10}>
 				<Container maxW="container.xl" bg="white" color="#262626" borderRadius={5} p={5}>
 					<VStack spacing={4} align="start">
@@ -155,10 +182,26 @@ const DetailContract: NextLayout = () => {
 						</HStack>
 						<Grid templateColumns="repeat(2, 1fr)" gap={6} w={'full'}>
 							<GridItem w="100%" colSpan={[2, 1]}>
-								<Text>{dataCompanyInfo?.companyInfo.name ? dataCompanyInfo.companyInfo.name : "HUPROM"}</Text>
-								<Text>{dataCompanyInfo?.companyInfo.website ? dataCompanyInfo.companyInfo.website : "huprom.com"}</Text>
-								<Text>{dataCompanyInfo?.companyInfo.phone ? dataCompanyInfo.companyInfo.phone : "+84 833876372"}</Text>
-								<Text>{dataCompanyInfo?.companyInfo.email ? dataCompanyInfo.companyInfo.email : "huynqdev1612@gmail.com"}</Text>
+								<Text>
+									{dataCompanyInfo?.companyInfo.name
+										? dataCompanyInfo.companyInfo.name
+										: 'HUPROM'}
+								</Text>
+								<Text>
+									{dataCompanyInfo?.companyInfo.website
+										? dataCompanyInfo.companyInfo.website
+										: 'huprom.com'}
+								</Text>
+								<Text>
+									{dataCompanyInfo?.companyInfo.phone
+										? dataCompanyInfo.companyInfo.phone
+										: '+84 833876372'}
+								</Text>
+								<Text>
+									{dataCompanyInfo?.companyInfo.email
+										? dataCompanyInfo.companyInfo.email
+										: 'huynqdev1612@gmail.com'}
+								</Text>
 							</GridItem>
 
 							<GridItem w="100%" colSpan={[2, 1]}>
@@ -296,7 +339,9 @@ export const getStaticProps: GetStaticProps = async () => {
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-	const res = await fetch('http://localhost:4000/api/contracts').then((result) => result.json()).catch(() => undefined)
+	const res = await fetch('http://localhost:4000/api/contracts')
+		.then((result) => result.json())
+		.catch(() => undefined)
 
 	if (!res || !res.contracts) {
 		return { paths: [], fallback: false }

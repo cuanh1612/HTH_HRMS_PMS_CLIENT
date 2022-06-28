@@ -28,6 +28,7 @@ import DetailHoliday from './[holidayId]'
 import { deleteHolidayMutation } from 'mutations'
 import { Select } from 'components/filter'
 import { IFilter } from 'type/tableTypes'
+import Head from 'next/head'
 
 const calendar: NextLayout = () => {
 	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
@@ -73,7 +74,7 @@ const calendar: NextLayout = () => {
 				router.push('/login')
 			}
 		}
-	}, [isAuthenticated]) 
+	}, [isAuthenticated])
 	useEffect(() => {
 		if (allHolidays) {
 			const newData = allHolidays.holidays?.map((item): EventInput => {
@@ -168,7 +169,11 @@ const calendar: NextLayout = () => {
 	}, [statusDl])
 
 	return (
-		<Box>
+		<Box pb={8}>
+			<Head>
+				<title>Huprom - Holidays calendar</title>
+				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
+			</Head>
 			<HStack paddingBlock={'5'} justifyContent={'space-between'}>
 				<ButtonGroup spacing={4}>
 					<Button color={'white'} bg={'hu-Green.normal'} onClick={onOpenAdd}>
@@ -270,18 +275,24 @@ const calendar: NextLayout = () => {
 				onClose={onCloseDl}
 			/>
 
-			<Drawer footer={
+			<Drawer
+				footer={
 					<Button
 						onClick={() => {
 							setFilter({
 								month: undefined,
-								year: undefined
+								year: undefined,
 							})
 						}}
 					>
 						reset
 					</Button>
-				} isOpen={isOpenFilter} size={'xs'} title={'Filter'} onClose={onCloseFilter}>
+				}
+				isOpen={isOpenFilter}
+				size={'xs'}
+				title={'Filter'}
+				onClose={onCloseFilter}
+			>
 				<VStack spacing={5} p={6}>
 					<Select
 						options={[

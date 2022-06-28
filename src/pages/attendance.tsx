@@ -14,8 +14,6 @@ import {
 	useDisclosure,
 	VStack,
 	useColorMode,
-	Collapse,
-	SimpleGrid,
 } from '@chakra-ui/react'
 import CheckAttendance from 'components/anttendance/CheckAttendance'
 import Dates from 'components/anttendance/Dates'
@@ -65,10 +63,11 @@ import { IFilter } from 'type/tableTypes'
 import { IoAirplaneOutline } from 'react-icons/io5'
 import { BiCheck } from 'react-icons/bi'
 import { IoMdClose } from 'react-icons/io'
-import { AiOutlineCaretDown, AiOutlineCaretUp, AiTwotoneStar } from 'react-icons/ai'
-import { Func } from 'components/common'
+import { AiTwotoneStar } from 'react-icons/ai'
+import { Func, FuncCollapse } from 'components/common'
 import { VscFilter } from 'react-icons/vsc'
 import { Drawer } from 'components/Drawer'
+import Head from 'next/head'
 
 const attendance: NextLayout = () => {
 	const { colorMode } = useColorMode()
@@ -98,11 +97,6 @@ const attendance: NextLayout = () => {
 
 	// get employee id to filter
 	const [employeeSl, setEmployeeSl] = useState<string | undefined>()
-
-	//set isopen of function
-	const { isOpen, onToggle } = useDisclosure({
-		defaultIsOpen: true,
-	})
 
 	// set open modal to check attendance
 	const { isOpen: isOpenInsert, onOpen: onOpenInsert, onClose: onCloseInsert } = useDisclosure()
@@ -263,35 +257,18 @@ const attendance: NextLayout = () => {
 
 	return (
 		<Box w={'full'} pb={8}>
-			<HStack
-				_hover={{
-					textDecoration: 'none',
-				}}
-				onClick={onToggle}
-				color={'gray.500'}
-				cursor={'pointer'}
-				userSelect={'none'}
-			>
-				<Text fontWeight={'semibold'}>Function</Text>
-				{isOpen ? <AiOutlineCaretDown /> : <AiOutlineCaretUp />}
-			</HStack>
-			<Collapse in={isOpen} animateOpacity>
-				<SimpleGrid
-					w={'full'}
-					cursor={'pointer'}
-					columns={[1, 2, 2, 3, null, 4]}
-					spacing={10}
-					pt={3}
-				>
-					<Func
-						icon={<VscFilter />}
-						description={'Open draw to filter'}
-						title={'filter'}
-						action={onOpenFilter}
-					/>
-				</SimpleGrid>
-			</Collapse>
-			<br />
+			<Head>
+				<title>Huprom - Attendances</title>
+				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
+			</Head>
+			<FuncCollapse>
+				<Func
+					icon={<VscFilter />}
+					description={'Open draw to filter'}
+					title={'filter'}
+					action={onOpenFilter}
+				/>
+			</FuncCollapse>
 			<br />
 			<VStack spacing={8} justifyContent={'flex-start'} pos="relative" alignItems={'normal'}>
 				<HStack spacing={5}>

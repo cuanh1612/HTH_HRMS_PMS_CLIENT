@@ -1,14 +1,5 @@
-import {
-	Box,
-	Button,
-	Collapse,
-	HStack,
-	SimpleGrid,
-	Text,
-	useDisclosure,
-	VStack,
-} from '@chakra-ui/react'
-import { AlertDialog, Func, Table } from 'components/common'
+import { Box, Button, useDisclosure, VStack } from '@chakra-ui/react'
+import { AlertDialog, Func, FuncCollapse, Table } from 'components/common'
 import { DateRange, Input, Select as SelectF } from 'components/filter'
 import { ProjectLayout } from 'components/layouts'
 import { AuthContext } from 'contexts/AuthContext'
@@ -22,12 +13,7 @@ import {
 	milestonesByProjectNormalQuery,
 } from 'queries'
 import { useContext, useEffect, useState } from 'react'
-import {
-	AiOutlineCaretDown,
-	AiOutlineCaretUp,
-	AiOutlineDelete,
-	AiOutlineSearch,
-} from 'react-icons/ai'
+import { AiOutlineDelete, AiOutlineSearch } from 'react-icons/ai'
 import { IoAdd } from 'react-icons/io5'
 import { NextLayout } from 'type/element/layout'
 import { IFilter, TColumn } from 'type/tableTypes'
@@ -39,6 +25,7 @@ import { BiExport } from 'react-icons/bi'
 import { VscFilter } from 'react-icons/vsc'
 import { Drawer } from 'components/Drawer'
 import { projectTasksColumn } from 'utils/columns'
+import Head from 'next/head'
 
 const tasks: NextLayout = () => {
 	const { isAuthenticated, handleLoading, currentUser, setToast, socket } =
@@ -102,13 +89,7 @@ const tasks: NextLayout = () => {
 	// set isOpen of drawer to filters
 	const { isOpen: isOpenFilter, onOpen: onOpenFilter, onClose: onCloseFilter } = useDisclosure()
 
-	//set isopen of function
-	const { isOpen, onToggle } = useDisclosure({
-		defaultIsOpen: true,
-	})
-
 	// query
-
 	const { data: dataDetailProject } = detailProjectQuery(isAuthenticated, projectId)
 
 	// get all task by project
@@ -259,66 +240,48 @@ const tasks: NextLayout = () => {
 	})
 
 	return (
-		<Box>
-			<HStack
-				_hover={{
-					textDecoration: 'none',
-				}}
-				onClick={onToggle}
-				color={'gray.500'}
-				cursor={'pointer'}
-				userSelect={'none'}
-			>
-				<Text fontWeight={'semibold'}>Function</Text>
-				{isOpen ? <AiOutlineCaretDown /> : <AiOutlineCaretUp />}
-			</HStack>
-			<Collapse in={isOpen} animateOpacity>
-				<SimpleGrid
-					w={'full'}
-					cursor={'pointer'}
-					columns={[1, 2, 2, 3, null, 4]}
-					spacing={10}
-					pt={3}
-				>
-					{((currentUser && currentUser.role === 'Admin') ||
-						(currentUser &&
-							dataDetailProject?.project?.project_Admin &&
-							currentUser.email ===
-								dataDetailProject.project.project_Admin.email)) && (
-						<>
-							<Func
-								icon={<IoAdd />}
-								description={'Add new client by form'}
-								title={'Add new'}
-								action={onOpenAddTask}
-							/>
+		<Box pb={8}>
+						<Head>
+				<title>Huprom - Tasks of project {projectId}</title>
+				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
+			</Head>
+			<FuncCollapse>
+				{((currentUser && currentUser.role === 'Admin') ||
+					(currentUser &&
+						dataDetailProject?.project?.project_Admin &&
+						currentUser.email === dataDetailProject.project.project_Admin.email)) && (
+					<>
+						<Func
+							icon={<IoAdd />}
+							description={'Add new task by form'}
+							title={'Add new'}
+							action={onOpenAddTask}
+						/>
 
-							<CSVLink filename={'tasks.csv'} headers={headersCSV} data={dataCSV}>
-								<Func
-									icon={<BiExport />}
-									description={'export to csv'}
-									title={'export'}
-									action={() => {}}
-								/>
-							</CSVLink>
+						<CSVLink filename={'tasks.csv'} headers={headersCSV} data={dataCSV}>
 							<Func
-								icon={<AiOutlineDelete />}
-								title={'Delete all'}
-								description={'Delete all client you selected'}
-								action={onOpenDlMany}
-								disabled={!dataSl || dataSl.length == 0 ? true : false}
+								icon={<BiExport />}
+								description={'export to csv'}
+								title={'export'}
+								action={() => {}}
 							/>
-						</>
-					)}
-					<Func
-						icon={<VscFilter />}
-						description={'Open draw to filter'}
-						title={'filter'}
-						action={onOpenFilter}
-					/>
-				</SimpleGrid>
-			</Collapse>
-			<br />
+						</CSVLink>
+						<Func
+							icon={<AiOutlineDelete />}
+							title={'Delete all'}
+							description={'Delete all tasks you selected'}
+							action={onOpenDlMany}
+							disabled={!dataSl || dataSl.length == 0 ? true : false}
+						/>
+					</>
+				)}
+				<Func
+					icon={<VscFilter />}
+					description={'Open draw to filter'}
+					title={'filter'}
+					action={onOpenFilter}
+				/>
+			</FuncCollapse>
 
 			<Table
 				data={allTasks?.tasks || []}

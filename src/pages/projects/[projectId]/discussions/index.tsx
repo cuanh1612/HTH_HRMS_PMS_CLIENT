@@ -6,6 +6,7 @@ import ProjectDiscussionItem from 'components/projectDiscussion/projectDiscussio
 import { AuthContext } from 'contexts/AuthContext'
 import { deleteProjectDiscussionRoomMutation } from 'mutations'
 import { GetServerSideProps } from 'next'
+import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { allProjectDiscussionRoomsQuery, detailProjectQuery } from 'queries'
 import { useContext, useEffect, useState } from 'react'
@@ -128,8 +129,12 @@ const Discussions: NextLayout = () => {
 	}
 
 	return (
-		<>
-			<Box p={10} bgColor={'#f2f4f7'} minHeight={'100vh'}>
+		<Box pb={8}>
+			<Head>
+				<title>Huprom - Discussions of project {projectId}</title>
+				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
+			</Head>
+			<Box p={10} bgColor={'#f2f4f7'}>
 				<VStack
 					align={'start'}
 					w="full"
@@ -223,7 +228,7 @@ const Discussions: NextLayout = () => {
 					discussionIdProp={discussionId}
 				/>
 			</Drawer>
-		</>
+		</Box>
 	)
 }
 
@@ -257,8 +262,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 			} as HeadersInit,
 		}
 	).then((e) => e.json())
-
-	console.log(checkAsignedProject)
 
 	if (!checkAsignedProject.success) {
 		return {

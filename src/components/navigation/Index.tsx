@@ -33,6 +33,7 @@ import {
 import LinkGroup from './LinkGroup'
 import LinkItem from './LinkItem'
 import { companyInfoQuery } from 'queries/companyInfo'
+import Image from 'next/image'
 
 const LinkItems = () => {
 	const { currentUser } = useContext(AuthContext)
@@ -177,13 +178,19 @@ const SideLeft = () => {
 			paddingLeft={5}
 		>
 			<HStack spacing={5} w={'full'} h={'73px'}>
-				<Box w={'50px'} h={'50px'} borderRadius={4} border={'1px solid red'}></Box>
+				<Image src={'/assets/logo1.svg'} width={'50px'} height={'50px'} />
 				<Text fontWeight={'bold'} fontSize={'xl'}>
 					{dataCompanyInfo?.companyInfo.name}
 				</Text>
 			</HStack>
 
-			<VStack paddingTop={4} height={'calc( 100vh - 75px )'} overflow={'auto'} spacing={4}>
+			<VStack
+				paddingTop={4}
+				paddingBottom={4}
+				height={'calc( 100vh - 75px )'}
+				overflow={'auto'}
+				spacing={4}
+			>
 				<LinkItems />
 			</VStack>
 		</Box>
@@ -202,7 +209,6 @@ const SideLeftInDrawer = ({ onClose, isOpen }: { isOpen: boolean; onClose: any }
 			<DrawerContent>
 				<DrawerBody padding={4}>
 					<HStack
-						bg={'white'}
 						zIndex={10}
 						style={{
 							top: '0px',
@@ -212,7 +218,8 @@ const SideLeftInDrawer = ({ onClose, isOpen }: { isOpen: boolean; onClose: any }
 						w={'full'}
 						h={'73px'}
 					>
-						<Box w={'50px'} h={'50px'} borderRadius={4} border={'1px solid red'}></Box>
+						<Image src={'/assets/logo1.svg'} width={'50px'} height={'50px'} />
+
 						<HStack w={'full'} justifyContent={'space-between'}>
 							<Text fontWeight={'bold'} fontSize={'xl'}>
 								{dataCompanyInfo?.companyInfo.name}
@@ -245,7 +252,6 @@ export default function Navigation() {
 		} else {
 			setIsLarge(true)
 		}
-		console.log(breakpoint)
 	}, [breakpoint])
 	return (
 		<>

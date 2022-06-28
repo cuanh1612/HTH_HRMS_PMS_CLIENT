@@ -7,17 +7,8 @@ import { deleteClientMutation, deleteClientsMutation, importCSVClientMutation } 
 import { allClientCategoriesQuery, allClientsQuery, allClientSubCategoriesQuery } from 'queries'
 
 // components
-import {
-	Box,
-	Button,
-	Collapse,
-	HStack,
-	SimpleGrid,
-	Text,
-	useDisclosure,
-	VStack,
-} from '@chakra-ui/react'
-import { AlertDialog, Func, Table } from 'components/common'
+import { Box, Button, useDisclosure, VStack } from '@chakra-ui/react'
+import { AlertDialog, Func, FuncCollapse, Table } from 'components/common'
 import { Drawer } from 'components/Drawer'
 
 // use layout
@@ -30,12 +21,7 @@ import { useRouter } from 'next/router'
 import { useContext, useEffect, useMemo, useState } from 'react'
 
 // icons
-import {
-	AiOutlineCaretDown,
-	AiOutlineCaretUp,
-	AiOutlineDelete,
-	AiOutlineSearch,
-} from 'react-icons/ai'
+import { AiOutlineDelete, AiOutlineSearch } from 'react-icons/ai'
 import { BiExport } from 'react-icons/bi'
 import { FaFileCsv } from 'react-icons/fa'
 import { IoAdd } from 'react-icons/io5'
@@ -58,6 +44,7 @@ import { IOption } from 'type/basicTypes'
 import { IPeople } from 'type/element/commom'
 import { VscFilter } from 'react-icons/vsc'
 import { clientColumn } from 'utils/columns'
+import Head from 'next/head'
 
 const Clients: NextLayout = () => {
 	const { isAuthenticated, handleLoading, currentUser, setToast } = useContext(AuthContext)
@@ -96,11 +83,6 @@ const Clients: NextLayout = () => {
 		onOpen: onOpenImportCSV,
 		onClose: onCloseImportCSV,
 	} = useDisclosure()
-
-	//set isopen of function
-	const { isOpen, onToggle } = useDisclosure({
-		defaultIsOpen: true,
-	})
 
 	//Setup download csv --------------------------------------------------------
 	const headersCSV = [
@@ -352,98 +334,81 @@ const Clients: NextLayout = () => {
 
 	return (
 		<Box w={'full'} pb={8}>
-			<HStack
-				_hover={{
-					textDecoration: 'none',
-				}}
-				onClick={onToggle}
-				color={'gray.500'}
-				cursor={'pointer'}
-				userSelect={'none'}
-			>
-				<Text fontWeight={'semibold'}>Function</Text>
-				{isOpen ? <AiOutlineCaretDown /> : <AiOutlineCaretUp />}
-			</HStack>
-			<Collapse in={isOpen} animateOpacity>
-				<SimpleGrid
-					w={'full'}
-					cursor={'pointer'}
-					columns={[1, 2, 2, 3, null, 4]}
-					spacing={10}
-					pt={3}
-				>
-					{currentUser && currentUser.role === 'Admin' && (
-						<>
+			<Head>
+				<title>Huprom - Clients</title>
+				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
+			</Head>
+			<FuncCollapse>
+				{currentUser && currentUser.role === 'Admin' && (
+					<>
+						<Func
+							icon={<IoAdd />}
+							description={'Add new client by form'}
+							title={'Add new'}
+							action={onOpenAdd}
+						/>
+						<CSVLink filename={'clients.csv'} headers={headersCSV} data={dataCSV}>
 							<Func
-								icon={<IoAdd />}
-								description={'Add new client by form'}
-								title={'Add new'}
-								action={onOpenAdd}
+								icon={<BiExport />}
+								description={'export to csv'}
+								title={'export'}
+								action={() => {}}
 							/>
-							<CSVLink filename={'clients.csv'} headers={headersCSV} data={dataCSV}>
-								<Func
-									icon={<BiExport />}
-									description={'export to csv'}
-									title={'export'}
-									action={() => {}}
-								/>
-							</CSVLink>
+						</CSVLink>
 
-							<CSVLink
-								filename={'clientsTemplate.csv'}
-								headers={headersCSVTemplate}
-								data={dataCSVTemplate}
-							>
-								<Func
-									icon={<FaFileCsv />}
-									description={'export csv template'}
-									title={'export csv template'}
-									action={() => {}}
-								/>
-							</CSVLink>
-
-							<ImportCSV
-								fieldsValid={[
-									'name',
-									'gender',
-									'email',
-									'password',
-									'mobile',
-									'city',
-									'company_address',
-									'company_name',
-									'country',
-									'gst_vat_number',
-									'office_phone_number',
-									'official_website',
-									'postal_code',
-									'shipping_address',
-									'state',
-								]}
-								handleImportCSV={handleImportCSV}
-								statusImport={statusImportCSV === 'running'}
-								isOpenImportCSV={isOpenImportCSV}
-								onCloseImportCSV={onCloseImportCSV}
-								onOpenImportCSV={onOpenImportCSV}
+						<CSVLink
+							filename={'clientsTemplate.csv'}
+							headers={headersCSVTemplate}
+							data={dataCSVTemplate}
+						>
+							<Func
+								icon={<FaFileCsv />}
+								description={'export csv template'}
+								title={'export csv template'}
+								action={() => {}}
 							/>
-						</>
-					)}
-					<Func
-						icon={<VscFilter />}
-						description={'Open draw to filter'}
-						title={'filter'}
-						action={onOpenFilter}
-					/>
-					<Func
-						icon={<AiOutlineDelete />}
-						title={'Delete all'}
-						description={'Delete all client you selected'}
-						action={onOpenDlMany}
-						disabled={!dataSl || dataSl.length == 0 ? true : false}
-					/>
-				</SimpleGrid>
-			</Collapse>
-			<br />
+						</CSVLink>
+
+						<ImportCSV
+							fieldsValid={[
+								'name',
+								'gender',
+								'email',
+								'password',
+								'mobile',
+								'city',
+								'company_address',
+								'company_name',
+								'country',
+								'gst_vat_number',
+								'office_phone_number',
+								'official_website',
+								'postal_code',
+								'shipping_address',
+								'state',
+							]}
+							handleImportCSV={handleImportCSV}
+							statusImport={statusImportCSV === 'running'}
+							isOpenImportCSV={isOpenImportCSV}
+							onCloseImportCSV={onCloseImportCSV}
+							onOpenImportCSV={onOpenImportCSV}
+						/>
+					</>
+				)}
+				<Func
+					icon={<VscFilter />}
+					description={'Open draw to filter'}
+					title={'filter'}
+					action={onOpenFilter}
+				/>
+				<Func
+					icon={<AiOutlineDelete />}
+					title={'Delete all'}
+					description={'Delete all client you selected'}
+					action={onOpenDlMany}
+					disabled={!dataSl || dataSl.length == 0 ? true : false}
+				/>
+			</FuncCollapse>
 
 			{currentUser && (
 				<Table

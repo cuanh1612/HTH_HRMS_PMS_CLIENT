@@ -1,8 +1,23 @@
-import { Box, Collapse, Grid, HStack, Table, TableContainer, Tbody, Td, Text, Th, Thead, Tr, useDisclosure } from '@chakra-ui/react'
+import {
+	Box,
+	Collapse,
+	Grid,
+	HStack,
+	Table,
+	TableContainer,
+	Tbody,
+	Td,
+	Text,
+	Th,
+	Thead,
+	Tr,
+	useDisclosure,
+} from '@chakra-ui/react'
 import { Donut } from 'components/charts'
 import { Card, ItemDashboard } from 'components/common'
 import { ClientLayout } from 'components/layouts'
 import { AuthContext } from 'contexts/AuthContext'
+import Head from 'next/head'
 import { useRouter } from 'next/router'
 import {
 	clientCountProjectStatusQuery,
@@ -61,6 +76,10 @@ const privateDashboard: NextLayout = () => {
 
 	return (
 		<Box w={'100%'} pos={'relative'}>
+			<Head>
+				<title>Huprom - Private dashboard</title>
+				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
+			</Head>
 			<HStack
 				_hover={{
 					textDecoration: 'none',
@@ -144,10 +163,7 @@ const privateDashboard: NextLayout = () => {
 					</>
 				</ItemDashboard>
 
-				<ItemDashboard
-					title="Pending Milestone"
-					overflow={'auto'}
-				>
+				<ItemDashboard title="Pending Milestone" overflow={'auto'}>
 					<TableContainer w={'full'}>
 						<Table w={'full'} variant="simple">
 							<Thead>
@@ -176,7 +192,7 @@ const privateDashboard: NextLayout = () => {
 						</Table>
 					</TableContainer>
 				</ItemDashboard>
-				</Grid>
+			</Grid>
 		</Box>
 	)
 }

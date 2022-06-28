@@ -1,4 +1,4 @@
-/** @type {import('next').NextConfig} */
+
 const withTM = require("next-transpile-modules")([
     "@fullcalendar/common",
     "@babel/preset-react",
@@ -10,6 +10,15 @@ const withTM = require("next-transpile-modules")([
     "@fullcalendar/list",
 ]);
 
+const withPWA = require('next-pwa')
+
 module.exports = withTM({
     // your custom config goes here
+    PluginArray: [withPWA({
+        pwa: {
+            dest: "public",
+            register: true,
+            skipWaiting: true
+        }
+    })]
 });

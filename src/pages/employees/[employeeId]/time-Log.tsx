@@ -1,44 +1,21 @@
-
-import {
-	Avatar,
-	Badge,
-	Button,
-	Collapse,
-	HStack,
-	Menu,
-	MenuButton,
-	MenuItem,
-	MenuList,
-	SimpleGrid,
-	Text,
-	useDisclosure,
-	VStack,
-} from '@chakra-ui/react'
-import { AlertDialog, Func, Table } from 'components/common'
+import { Box, Button, useDisclosure, VStack } from '@chakra-ui/react'
+import { AlertDialog, Func, FuncCollapse, Table } from 'components/common'
 import { Drawer } from 'components/Drawer'
 import { DateRange, Input, Select } from 'components/filter'
-import { ClientLayout } from 'components/layouts'
 import { EmployeeLayout } from 'components/layouts/Employee'
 import { AuthContext } from 'contexts/AuthContext'
 import { deleteTimeLogMutation, deleteTimeLogsMutation } from 'mutations'
+import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { allProjectsNormalQuery, timeLogsCurrentUserQuery } from 'queries'
 import { useContext, useEffect, useState } from 'react'
-import {
-	AiOutlineCaretDown,
-	AiOutlineCaretUp,
-	AiOutlineDelete,
-	AiOutlineSearch,
-} from 'react-icons/ai'
-import { IoEyeOutline } from 'react-icons/io5'
-import { MdOutlineDeleteOutline, MdOutlineMoreVert } from 'react-icons/md'
-import { RiPencilLine } from 'react-icons/ri'
+import { AiOutlineDelete, AiOutlineSearch } from 'react-icons/ai'
 import { VscFilter } from 'react-icons/vsc'
 import DetailTimeLog from 'src/pages/time-logs/[timeLogId]'
 import UpdateTimeLog from 'src/pages/time-logs/[timeLogId]/update-time-logs'
 import { NextLayout } from 'type/element/layout'
 import { IFilter, TColumn } from 'type/tableTypes'
-import { dateFilter, selectFilter, textFilter } from 'utils/tableFilters'
+import { employeeTimeLogsColumn } from 'utils/columns'
 
 const TimeLog: NextLayout = () => {
 	const { isAuthenticated, handleLoading, setToast, currentUser, socket } =
@@ -63,30 +40,7 @@ const TimeLog: NextLayout = () => {
 	// is reset table
 	const [isResetFilter, setIsReset] = useState(false)
 
-	//Setup download csv --------------------------------------------------------
-	const headersCSV = [
-		{ label: 'id', key: 'id' },
-		{ label: 'earnings', key: 'earnings' },
-		{ label: 'employee', key: 'employee' },
-		{ label: 'ends_on_date', key: 'ends_on_date' },
-		{ label: 'ends_on_time', key: 'ends_on_time' },
-		{ label: 'memo', key: 'memo' },
-		{ label: 'project', key: 'project' },
-		{ label: 'starts_on_date', key: 'starts_on_date' },
-		{ label: 'starts_on_time', key: 'starts_on_time' },
-		{ label: 'task', key: 'task' },
-		{ label: 'total_hours', key: 'total_hours' },
-		{ label: 'createdAt', key: 'createdAt' },
-		{ label: 'updatedAt', key: 'updatedAt' },
-	]
-
-	//Modal -------------------------------------------------------------
-
-	//set isopen of function
-	const { isOpen, onToggle } = useDisclosure({
-		defaultIsOpen: true,
-	})
-
+	//Modal ------------------------------------------------------------
 	// set isOpen of drawer to filters
 	const { isOpen: isOpenFilter, onOpen: onOpenFilter, onClose: onCloseFilter } = useDisclosure()
 
@@ -204,232 +158,49 @@ const TimeLog: NextLayout = () => {
 	}, [socket])
 
 	useEffect(() => {
-		if(isOpenUpdateTimelog == false) {
+		if (isOpenUpdateTimelog == false) {
 			refetchTimeLogs()
 		}
 	}, [isOpenUpdateTimelog])
 
-
 	// header ----------------------------------------
-	const columns: TColumn[] = [
-		{
-			Header: 'Time logs',
-
-			columns: [
-				{
-					Header: 'Id',
-					accessor: 'id',
-
-					width: 80,
-					minWidth: 80,
-					disableResizing: true,
-					Cell: ({ value }) => {
-						return value
-					},
-				},
-				{
-					Header: 'Task',
-					accessor: 'task',
-					Cell: ({ value }) => {
-						return <Text isTruncated>{value.name}</Text>
-					},
-					filter: textFilter(['task', 'name']),
-				},
-				{
-					Header: 'Project',
-					accessor: 'project',
-					Cell: ({ value }) => {
-						return <Text isTruncated>{value?.name}</Text>
-					},
-					filter: selectFilter(['project', 'id']),
-				},
-				{
-					Header: 'Employee',
-					accessor: 'employee',
-					minWidth: 250,
-					Cell: ({ value }) => {
-						return (
-							<>
-								{value ? (
-									<HStack w={'full'} spacing={5}>
-										<Avatar
-											flex={'none'}
-											size={'sm'}
-											name={value.name}
-											src={value.avatar?.url}
-										/>
-										<VStack w={'70%'} alignItems={'start'}>
-											<Text isTruncated w={'full'}>
-												{value.name}
-												{currentUser?.email == value.email && (
-													<Badge
-														marginLeft={'5'}
-														color={'white'}
-														background={'gray.500'}
-													>
-														It's you
-													</Badge>
-												)}
-											</Text>
-											<Text
-												isTruncated
-												w={'full'}
-												fontSize={'sm'}
-												color={'gray.400'}
-											>
-												Junior
-											</Text>
-										</VStack>
-									</HStack>
-								) : (
-									''
-								)}
-							</>
-						)
-					},
-				},
-				{
-					Header: 'Start Time',
-					accessor: 'starts_on_date',
-					filter: dateFilter(['starts_on_date']),
-					Cell: ({ value, row }) => {
-						const date = new Date(value)
-						return (
-							<Text isTruncated>{`${date.getDate()}-${
-								date.getMonth() + 1
-							}-${date.getFullYear()} ${row.original['starts_on_time']}`}</Text>
-						)
-					},
-				},
-				{
-					Header: 'End Time',
-					accessor: 'ends_on_date',
-					minWidth: 150,
-					filter: dateFilter(['ends_on_date']),
-					Cell: ({ value, row }) => {
-						const date = new Date(value)
-						return (
-							<Text isTruncated>{`${date.getDate()}-${
-								date.getMonth() + 1
-							}-${date.getFullYear()} ${row.original['ends_on_time']}`}</Text>
-						)
-					},
-				},
-				{
-					Header: 'Total Hours',
-					minWidth: 150,
-					accessor: 'total_hours',
-					Cell: ({ value }) => {
-						return <Text isTruncated>{value} hrs</Text>
-					},
-				},
-				{
-					Header: 'Earnings',
-					accessor: 'earnings',
-					Cell: ({ value }) => {
-						return (
-							<Text isTruncated>
-								{Intl.NumberFormat('en-US', {
-									style: 'currency',
-									currency: 'USD',
-									useGrouping: false,
-								}).format(Number(value))}
-							</Text>
-						)
-					},
-				},
-				{
-					Header: 'Action',
-					accessor: 'action',
-					disableResizing: true,
-					width: 120,
-					minWidth: 120,
-					disableSortBy: true,
-					Cell: ({ row }) => (
-						<Menu>
-							<MenuButton as={Button} paddingInline={3}>
-								<MdOutlineMoreVert />
-							</MenuButton>
-							<MenuList>
-								<MenuItem
-									onClick={() => {
-										setIdTimeLog(Number(row.values['id']))
-										onOpenDetailTimelog()
-									}}
-									icon={<IoEyeOutline fontSize={'15px'} />}
-								>
-									View
-								</MenuItem>
-								{currentUser?.role === 'Admin' && (
-									<>
-										<MenuItem
-											onClick={() => {
-												setIdTimeLog(Number(row.values['id']))
-												onOpenUpdateTimelog()
-											}}
-											icon={<RiPencilLine fontSize={'15px'} />}
-										>
-											Edit
-										</MenuItem>
-
-										<MenuItem
-											onClick={() => {
-												setIdTimeLog(Number(row.values['id']))
-												onOpenDl()
-											}}
-											icon={<MdOutlineDeleteOutline fontSize={'15px'} />}
-										>
-											Delete
-										</MenuItem>
-									</>
-								)}
-							</MenuList>
-						</Menu>
-					),
-				},
-			],
+	const columns: TColumn[] = employeeTimeLogsColumn({
+		currentUser,
+		onDelete: (id: number) => {
+			setIdTimeLog(id)
+			onOpenDl()
 		},
-	]
+		onDetail: (id: number) => {
+			setIdTimeLog(id)
+			onOpenDetailTimelog()
+		},
+		onUpdate: (id: number) => {
+			setIdTimeLog(id)
+			onOpenUpdateTimelog()
+		},
+	})
 
 	return (
-		<>
-			<HStack
-				_hover={{
-					textDecoration: 'none',
-				}}
-				onClick={onToggle}
-				color={'gray.500'}
-				cursor={'pointer'}
-				userSelect={'none'}
-			>
-				<Text fontWeight={'semibold'}>Function</Text>
-				{isOpen ? <AiOutlineCaretDown /> : <AiOutlineCaretUp />}
-			</HStack>
-			<Collapse in={isOpen} animateOpacity>
-				<SimpleGrid
-					w={'full'}
-					cursor={'pointer'}
-					columns={[1, 2, 2, 3, null, 4]}
-					spacing={10}
-					pt={3}
-				>
-					<Func
-						icon={<VscFilter />}
-						description={'Open draw to filter'}
-						title={'filter'}
-						action={onOpenFilter}
-					/>
-					<Func
-						icon={<AiOutlineDelete />}
-						title={'Delete all'}
-						description={'Delete all client you selected'}
-						action={onOpenDlMany}
-						disabled={!dataSl || dataSl.length == 0 ? true : false}
-					/>
-					
-				</SimpleGrid>
-			</Collapse>
-			<br />
+		<Box pb={8}>
+			<Head>
+				<title>Huprom - Time logs of employee {router.query.employeeId}</title>
+				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
+			</Head>
+			<FuncCollapse>
+				<Func
+					icon={<VscFilter />}
+					description={'Open draw to filter'}
+					title={'filter'}
+					action={onOpenFilter}
+				/>
+				<Func
+					icon={<AiOutlineDelete />}
+					title={'Delete all'}
+					description={'Delete all time logs you selected'}
+					action={onOpenDlMany}
+					disabled={!dataSl || dataSl.length == 0 ? true : false}
+				/>
+			</FuncCollapse>
 
 			<Table
 				data={allTimeLogs?.timeLogs || []}
@@ -551,11 +322,10 @@ const TimeLog: NextLayout = () => {
 					/>
 				</VStack>
 			</Drawer>
-		</>
+		</Box>
 	)
 }
 
 TimeLog.getLayout = EmployeeLayout
 
 export default TimeLog
-

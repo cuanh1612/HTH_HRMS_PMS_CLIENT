@@ -1,15 +1,6 @@
 // components
-import {
-	Box,
-	Button,
-	Collapse,
-	HStack,
-	SimpleGrid,
-	Text,
-	useDisclosure,
-	VStack,
-} from '@chakra-ui/react'
-import { AlertDialog, Func, Table } from 'components/common'
+import { Box, Button, useDisclosure, VStack } from '@chakra-ui/react'
+import { AlertDialog, Func, FuncCollapse, Table } from 'components/common'
 import { Drawer } from 'components/Drawer'
 import { CSVLink } from 'react-csv'
 
@@ -33,12 +24,7 @@ import { allDepartmentsQuery, allDesignationsQuery, allEmployeesQuery } from 'qu
 import { useContext, useEffect, useState } from 'react'
 
 // icons
-import {
-	AiOutlineCaretDown,
-	AiOutlineCaretUp,
-	AiOutlineDelete,
-	AiOutlineSearch,
-} from 'react-icons/ai'
+import { AiOutlineDelete, AiOutlineSearch } from 'react-icons/ai'
 import { BiExport } from 'react-icons/bi'
 import { IoAdd } from 'react-icons/io5'
 
@@ -59,6 +45,7 @@ import { IOption } from 'type/basicTypes'
 import { IPeople } from 'type/element/commom'
 import { VscFilter } from 'react-icons/vsc'
 import { employeeColumn } from 'utils/columns'
+import Head from 'next/head'
 
 const Employees: NextLayout = () => {
 	///setting for import csv--------------------------------------------------
@@ -152,11 +139,6 @@ const Employees: NextLayout = () => {
 		onOpen: onOpenImportCSV,
 		onClose: onCloseImportCSV,
 	} = useDisclosure()
-
-	//set isopen of function
-	const { isOpen, onToggle } = useDisclosure({
-		defaultIsOpen: true,
-	})
 
 	//State ---------------------------------------------------------------------
 
@@ -345,7 +327,7 @@ const Employees: NextLayout = () => {
 			setEmployeeId(id)
 			onOpenDl()
 		},
-		onUpdate: (id: number)=> {
+		onUpdate: (id: number) => {
 			setEmployeeId(id)
 			onOpenUpdate()
 		},
@@ -356,100 +338,83 @@ const Employees: NextLayout = () => {
 				employeeId: id,
 				role: event.target.value,
 			})
-		}
+		},
 	})
-	
+
 	return (
 		<Box pb={8}>
-			<HStack
-				_hover={{
-					textDecoration: 'none',
-				}}
-				onClick={onToggle}
-				color={'gray.500'}
-				cursor={'pointer'}
-				userSelect={'none'}
-			>
-				<Text fontWeight={'semibold'}>Function</Text>
-				{isOpen ? <AiOutlineCaretDown /> : <AiOutlineCaretUp />}
-			</HStack>
-			<Collapse in={isOpen} animateOpacity>
-				<SimpleGrid
-					w={'full'}
-					cursor={'pointer'}
-					columns={[1, 2, 2, 3, null, 4]}
-					spacing={10}
-					pt={3}
-				>
-					{currentUser && currentUser.role === 'Admin' && (
-						<>
+			<Head>
+				<title>Huprom - Employees</title>
+				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
+			</Head>
+			<FuncCollapse>
+				{currentUser && currentUser.role === 'Admin' && (
+					<>
+						<Func
+							icon={<IoAdd />}
+							description={'Add new employees by form'}
+							title={'Add new'}
+							action={onOpenAdd}
+						/>
+						<CSVLink filename={'employees.csv'} headers={headersCSV} data={dataCSV}>
 							<Func
-								icon={<IoAdd />}
-								description={'Add new client by form'}
-								title={'Add new'}
-								action={onOpenAdd}
+								icon={<BiExport />}
+								description={'export to csv'}
+								title={'export'}
+								action={() => {}}
 							/>
-							<CSVLink filename={'employees.csv'} headers={headersCSV} data={dataCSV}>
-								<Func
-									icon={<BiExport />}
-									description={'export to csv'}
-									title={'export'}
-									action={() => {}}
-								/>
-							</CSVLink>
+						</CSVLink>
 
-							<CSVLink
-								filename={'employeesTemplate.csv'}
-								headers={headersCSVTemplate}
-								data={dataCSVTemplate}
-							>
-								<Func
-									icon={<FaFileCsv />}
-									description={'export csv template'}
-									title={'export csv template'}
-									action={() => {}}
-								/>
-							</CSVLink>
-
-							<ImportCSV
-								fieldsValid={[
-									'employeeId',
-									'name',
-									'gender',
-									'email',
-									'password',
-									'mobile',
-									'address',
-									'date_of_birth',
-									'department',
-									'designation',
-									'hourly_rate',
-									'joining_date',
-								]}
-								handleImportCSV={handleImportCSV}
-								statusImport={statusImportCSV === 'running'}
-								isOpenImportCSV={isOpenImportCSV}
-								onCloseImportCSV={onCloseImportCSV}
-								onOpenImportCSV={onOpenImportCSV}
+						<CSVLink
+							filename={'employeesTemplate.csv'}
+							headers={headersCSVTemplate}
+							data={dataCSVTemplate}
+						>
+							<Func
+								icon={<FaFileCsv />}
+								description={'export csv template'}
+								title={'export csv template'}
+								action={() => {}}
 							/>
-						</>
-					)}
-					<Func
-						icon={<VscFilter />}
-						description={'Open draw to filter'}
-						title={'filter'}
-						action={onOpenFilter}
-					/>
-					<Func
-						icon={<AiOutlineDelete />}
-						title={'Delete all'}
-						description={'Delete all client you selected'}
-						action={onOpenDlMany}
-						disabled={!dataSl || dataSl.length == 0 ? true : false}
-					/>
-				</SimpleGrid>
-			</Collapse>
-			<br />
+						</CSVLink>
+
+						<ImportCSV
+							fieldsValid={[
+								'employeeId',
+								'name',
+								'gender',
+								'email',
+								'password',
+								'mobile',
+								'address',
+								'date_of_birth',
+								'department',
+								'designation',
+								'hourly_rate',
+								'joining_date',
+							]}
+							handleImportCSV={handleImportCSV}
+							statusImport={statusImportCSV === 'running'}
+							isOpenImportCSV={isOpenImportCSV}
+							onCloseImportCSV={onCloseImportCSV}
+							onOpenImportCSV={onOpenImportCSV}
+						/>
+					</>
+				)}
+				<Func
+					icon={<VscFilter />}
+					description={'Open draw to filter'}
+					title={'filter'}
+					action={onOpenFilter}
+				/>
+				<Func
+					icon={<AiOutlineDelete />}
+					title={'Delete all'}
+					description={'Delete all employees you selected'}
+					action={onOpenDlMany}
+					disabled={!dataSl || dataSl.length == 0 ? true : false}
+				/>
+			</FuncCollapse>
 
 			{currentUser && (
 				<Table

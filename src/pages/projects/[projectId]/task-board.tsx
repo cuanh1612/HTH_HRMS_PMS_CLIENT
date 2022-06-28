@@ -2,7 +2,6 @@ import {
 	Avatar,
 	AvatarGroup,
 	Box,
-	Button,
 	HStack,
 	StackDivider,
 	Text,
@@ -26,6 +25,7 @@ import {
 	deleteTaskMutation,
 	updateStatusColumnMutation,
 } from 'mutations'
+import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { allStatusTasksQuery, detailProjectQuery } from 'queries'
 import { useContext, useEffect, useState } from 'react'
@@ -141,7 +141,7 @@ const taskBoard: NextLayout = () => {
 		if (isUpdate) {
 			updateColumn({
 				inputUpdate: values,
-				columnId: String(statusId)
+				columnId: String(statusId),
 			})
 		} else {
 			createColumn({
@@ -171,36 +171,36 @@ const taskBoard: NextLayout = () => {
 		onOpenDlTask()
 	}
 
-	const addTaskByStatus = (id: number)=> {
+	const addTaskByStatus = (id: number) => {
 		setStatusId(id)
 		onOpenAddTask()
 	}
 
-	const updateTask = (id: number)=> {
+	const updateTask = (id: number) => {
 		setTaskId(id)
 		onOpenUpdateTask()
 	}
 
-	const detailTask = (id: number)=> {
+	const detailTask = (id: number) => {
 		setTaskId(id)
 		onOpenDetailTask()
 	}
 
 	useEffect(() => {
 		if (allStatusTasks?.statuses) {
-			const newColumns = allStatusTasks.statuses.map(column=> {
-				const newTasks = column.tasks?.map(task=> {
-					return ({
+			const newColumns = allStatusTasks.statuses.map((column) => {
+				const newTasks = column.tasks?.map((task) => {
+					return {
 						...task,
 						onOpenUpdate: updateTask,
 						onOpenDelete: setIdTaskToDl,
-						onOpenDetail: detailTask
-					})
+						onOpenDetail: detailTask,
+					}
 				})
-				return ({
+				return {
 					...column,
-					tasks: newTasks
-				})
+					tasks: newTasks,
+				}
 			})
 			setColumns(newColumns)
 		}
@@ -312,7 +312,6 @@ const taskBoard: NextLayout = () => {
 		return leaveRoom
 	}, [socket, projectId])
 
-
 	const onDragEnd = (result: DropResult) => {
 		if (result.destination) {
 			const destination = result.destination
@@ -409,10 +408,12 @@ const taskBoard: NextLayout = () => {
 		return
 	}
 
-	
-
 	return (
-		<Box>
+		<Box pb={8}>
+			<Head> 
+				<title>Huprom - Task board of project {projectId}</title>
+				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
+			</Head>
 			<HStack
 				divider={
 					<StackDivider borderColor={colorMode == 'light' ? 'gray.200' : 'gray.700'} />

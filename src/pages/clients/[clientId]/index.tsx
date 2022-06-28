@@ -1,17 +1,9 @@
 import {
 	Avatar,
-	AvatarGroup,
 	Box,
-	Button,
 	Grid,
 	GridItem,
 	HStack,
-	Tooltip as CTooltip,
-	Menu,
-	MenuButton,
-	MenuItem,
-	MenuList,
-	Progress,
 	Stack,
 	Text,
 	VStack,
@@ -35,24 +27,20 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js'
 import { NextLayout } from 'type/element/layout'
 import { ClientLayout } from 'components/layouts'
 import { Donut } from 'components/charts'
-import { IFilter, TColumn } from 'type/tableTypes'
-import Link from 'next/link'
-import { arrayFilter, selectFilter, textFilter } from 'utils/tableFilters'
-import { clientType, employeeType, projectCategoryType } from 'type/basicTypes'
-import { MdOutlineDeleteOutline, MdOutlineMoreVert } from 'react-icons/md'
-import { IoEyeOutline } from 'react-icons/io5'
-import { RiPencilLine } from 'react-icons/ri'
-import { AlertDialog, Table } from 'components/common'
+import { TColumn } from 'type/tableTypes'
+import { AlertDialog, Static, Table } from 'components/common'
 import { deleteProjectMutation } from 'mutations'
 import { Drawer } from 'components/Drawer'
 import UpdateProject from 'src/pages/projects/update-projects'
+import { clientProjectsColumn } from 'utils/columns'
+import Head from 'next/head'
 ChartJS.register(ArcElement, Tooltip, Legend)
 
 const DetailClient: NextLayout | any = ({
 	dataDetailClientServer,
-	clientIdProp
+	clientIdProp,
 }: {
-	dataDetailClientServer?: clientMutaionResponse,
+	dataDetailClientServer?: clientMutaionResponse
 	clientIdProp?: string | number
 }) => {
 	const { isAuthenticated, handleLoading, currentUser, setToast } = useContext(AuthContext)
@@ -74,12 +62,12 @@ const DetailClient: NextLayout | any = ({
 	const { data: dataDetailClient } = detailClientQuery(isAuthenticated, clientId as string)
 	const { data: dataTotalProjects } = clientTotalProejctsQuery(
 		isAuthenticated,
-		clientId as string || clientIdProp
+		(clientId as string) || clientIdProp
 	)
 	const { data: dataTotalEarnings } = clientTotalEarningQuery(isAuthenticated, clientId as string)
 	const { data: dataCountProjectStatus } = clientCountProjectStatusQuery(
 		isAuthenticated,
-		clientId as string || clientIdProp
+		(clientId as string) || clientIdProp
 	)
 	const { data: allProjects, mutate: refetchAllProjects } =
 		allProjectsByCurrentUserQuery(isAuthenticated)
@@ -149,229 +137,17 @@ const DetailClient: NextLayout | any = ({
 	}, [statusDl])
 
 	// header ----------------------------------------
-	const columns: TColumn[] = [
-		{
-			Header: 'Projects',
-			columns: [
-				{
-					Header: 'Id',
-					accessor: 'id',
-					width: 80,
-					minWidth: 80,
-					disableResizing: true,
-				},
-				{
-					Header: 'Project name',
-					accessor: 'name',
-					minWidth: 200,
-					width: 200,
-					Cell: ({ value, row }) => (
-						<Link href={`/projects/${row.values['id']}/overview`} passHref>
-							<Text
-								_hover={{
-									textDecoration: 'underline',
-									cursor: 'pointer',
-								}}
-								isTruncated={true}
-							>
-								{value}
-							</Text>
-						</Link>
-					),
-					filter: textFilter(['name']),
-				},
-				{
-					Header: 'project_category',
-					accessor: 'project_category',
-					minWidth: 200,
-					width: 200,
-					Cell: ({ value }: { value: projectCategoryType }) => (
-						<Text isTruncated={true}>{value.name}</Text>
-					),
-					filter: selectFilter(['project_category', 'id']),
-				},
-				{
-					Header: 'Members',
-					accessor: 'employees',
-					minWidth: 150,
-					width: 150,
-					filter: arrayFilter(['employees'], 'id'),
-					Cell: ({ value }: { value: employeeType[] }) => {
-						return (
-							<AvatarGroup size="sm" max={4}>
-								{value.map((employee) => (
-									<Avatar
-										key={employee.id}
-										name={employee.name}
-										src={employee.avatar?.url}
-									/>
-								))}
-							</AvatarGroup>
-						)
-					},
-				},
-				{
-					Header: 'Deadline',
-					accessor: 'deadline',
-					minWidth: 150,
-					width: 150,
-					Cell: ({ value }) => {
-						const date = new Date(value)
-						return (
-							<Text>{`${date.getDate()}-${
-								date.getMonth() + 1
-							}-${date.getFullYear()}`}</Text>
-						)
-					},
-				},
-				{
-					Header: 'Client',
-					accessor: 'client',
-					minWidth: 250,
-					filter: selectFilter(['client', 'id']),
-					Cell: ({ value }: { value: clientType }) => (
-						<>
-							{value ? (
-								<HStack w={'full'} spacing={5}>
-									<Avatar
-										flex={'none'}
-										size={'sm'}
-										name={value.name}
-										src={value.avatar?.url}
-									/>
-									<VStack w={'70%'} alignItems={'start'}>
-										<Text isTruncated w={'full'}>
-											{value.salutation
-												? `${value.salutation}. ${value.name}`
-												: value.name}
-										</Text>
-										{value.company_name && (
-											<Text
-												isTruncated
-												w={'full'}
-												fontSize={'sm'}
-												color={'gray.400'}
-											>
-												{value.company_name}
-											</Text>
-										)}
-									</VStack>
-								</HStack>
-							) : (
-								''
-							)}
-						</>
-					),
-				},
-				{
-					Header: 'Progress',
-					accessor: 'Progress',
-					minWidth: 150,
-					width: 150,
-					Cell: ({ value }: { value: employeeType[] }) => {
-						return (
-							<CTooltip hasArrow label={`${value}%`} shouldWrapChildren mt="3">
-								<Progress
-									hasStripe
-									borderRadius={5}
-									colorScheme={
-										Number(value) < 50
-											? 'red'
-											: Number(value) < 70
-											? 'yellow'
-											: 'green'
-									}
-									size="lg"
-									value={Number(value)}
-								/>
-							</CTooltip>
-						)
-					},
-				},
-				{
-					Header: 'Status',
-					accessor: 'project_status',
-					minWidth: 150,
-					width: 150,
-					Cell: ({ value }: { value: string }) => {
-						var color = ''
-						switch (value) {
-							case 'Not Started':
-								color = 'gray.500'
-								break
-							case 'In Progress':
-								color = 'blue.500'
-								break
-							case 'On Hold':
-								color = 'yellow.500'
-								break
-							case 'Canceled':
-								color = 'red.500'
-								break
-							case 'Finished':
-								color = 'green.500'
-								break
-						}
-						return (
-							<HStack alignItems={'center'}>
-								<Box background={color} w={'3'} borderRadius={'full'} h={'3'} />
-								<Text>{value}</Text>
-							</HStack>
-						)
-					},
-				},
-
-				{
-					Header: 'Action',
-					accessor: 'action',
-					disableResizing: true,
-					width: 120,
-					minWidth: 120,
-					disableSortBy: true,
-					Cell: ({ row }) => (
-						<Menu>
-							<MenuButton as={Button} paddingInline={3}>
-								<MdOutlineMoreVert />
-							</MenuButton>
-							<MenuList>
-								<MenuItem
-									onClick={() => {
-										router.push(`/projects/${row.values['id']}/overview`)
-									}}
-									icon={<IoEyeOutline fontSize={'15px'} />}
-								>
-									View
-								</MenuItem>
-
-								{currentUser && currentUser.role === 'Admin' && (
-									<>
-										<MenuItem
-											onClick={() => {
-												setProjectId(row.values['id'])
-												onOpenUpdate()
-											}}
-											icon={<RiPencilLine fontSize={'15px'} />}
-										>
-											Edit
-										</MenuItem>
-										<MenuItem
-											onClick={() => {
-												setProjectId(row.values['id'])
-												onOpenDl()
-											}}
-											icon={<MdOutlineDeleteOutline fontSize={'15px'} />}
-										>
-											Delete
-										</MenuItem>
-									</>
-								)}
-							</MenuList>
-						</Menu>
-					),
-				},
-			],
+	const columns: TColumn[] = clientProjectsColumn({
+		currentUser,
+		onDelete: (id: number) => {
+			setProjectId(id)
+			onOpenDl()
 		},
-	]
+		onUpdate: (id: number) => {
+			setProjectId(id)
+			onOpenUpdate()
+		},
+	})
 
 	//Url initial query detail client
 	const urlDetailClient = `clients/${clientId}`
@@ -383,6 +159,10 @@ const DetailClient: NextLayout | any = ({
 					fallback: { [urlDetailClient]: dataDetailClientServer },
 				}}
 			>
+				<Head>
+					<title>Huprom - Detail client {clientId}</title>
+					<meta name="viewport" content="initial-scale=1.0, width=device-width" />
+				</Head>
 				<Box w="full">
 					<VStack spacing={5} alignItems={'start'} w={'full'}>
 						<HStack spacing={5} h={'full'} w={'full'}>
@@ -502,72 +282,35 @@ const DetailClient: NextLayout | any = ({
 									<Text fontWeight={'semibold'} fontSize={'20px'}>
 										Static
 									</Text>
-									<Grid templateColumns="repeat(2, 1fr)" gap={6} w={'full'}>
-										<GridItem
-											colSpan={[2, null, null, null, null, 1]}
-											p={'20px'}
-											borderBottom={'3px solid'}
-											borderColor={'hu-Green.normal'}
-										>
-											<HStack
-												w="full"
-												justifyContent={'space-between'}
-												spacing={5}
-											>
-												<HStack spacing={5}>
-													<HStack
-														justifyContent={'center'}
-														borderRadius={5}
-														bg={'hu-Green.lightA'}
-														color={'hu-Green.normal'}
-														w={'40px'}
-														h={'40px'}
-													>
-														<AiOutlineProject fontSize={20} />
-													</HStack>
-													<Text>Projects</Text>
-												</HStack>
-												<Text fontWeight={'semibold'} fontSize={'30px'}>
-													{dataTotalProjects?.totalProjects || '0'}
-												</Text>
-											</HStack>
-										</GridItem>
+									<Grid
+										templateColumns={[
+											'repeat(1, 1fr)',
+											null,
+											null,
+											null,
+											null,
+											'repeat(2, 1fr)',
+										]}
+										gap={6}
+										w={'full'}
+									>
+										<Static
+											title={'Projects'}
+											text={dataTotalProjects?.totalProjects}
+											icon={<AiOutlineProject fontSize={20} />}
+											color={'Green'}
+										/>
 
-										<GridItem
-											colSpan={[2, null, null, null, null, 1]}
-											p={'20px'}
-											borderBottom={'3px solid'}
-											borderColor={'hu-Pink.normal'}
-										>
-											<HStack
-												justifyContent={'space-between'}
-												spacing={5}
-												h={'full'}
-											>
-												<HStack spacing={5}>
-													<HStack
-														justifyContent={'center'}
-														borderRadius={5}
-														bg={'hu-Pink.lightA'}
-														color={'hu-Pink.normal'}
-														w={'40px'}
-														h={'40px'}
-													>
-														<AiOutlineProject fontSize={20} />
-													</HStack>
-													<Text>Earnings</Text>
-												</HStack>
-												<Text fontWeight={'semibold'} fontSize={'30px'}>
-													{Intl.NumberFormat('en-US', {
-														style: 'currency',
-														currency: 'USD',
-														useGrouping: false,
-													}).format(
-														Number(dataTotalEarnings?.totalEarnings)
-													) || '0'}
-												</Text>
-											</HStack>
-										</GridItem>
+										<Static
+											title={'Earnings'}
+											text={Intl.NumberFormat('en-US', {
+												style: 'currency',
+												currency: 'USD',
+												useGrouping: false,
+											}).format(Number(dataTotalEarnings?.totalEarnings))}
+											icon={<AiOutlineProject fontSize={20} />}
+											color={'Pink'}
+										/>
 									</Grid>
 								</VStack>
 								<Grid templateColumns="repeat(2, 1fr)" gap={6} w={'full'}>
@@ -643,13 +386,16 @@ const DetailClient: NextLayout | any = ({
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-	const res: authMutaionResponse = await fetch('http://localhost:4000/api/auth/refresh_token', {
-		headers: context.req.headers as HeadersInit,
-	}).then((result) => result.json())
+	const res: authMutaionResponse = await fetch(
+		`${process.env.NEXT_PUBLIC_API_URL}/api/auth/refresh_token`,
+		{
+			headers: context.req.headers as HeadersInit,
+		}
+	).then((result) => result.json())
 
 	//get detail client
 	const queryClient: clientMutaionResponse = await fetch(
-		`http://localhost:4000/api/clients/${context.query.clientId}`,
+		`${process.env.NEXT_PUBLIC_API_URL}/api/clients/${context.query.clientId}`,
 		{
 			headers: {
 				Authorization: `bearer ${res.accessToken}`,

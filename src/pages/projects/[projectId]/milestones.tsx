@@ -1,13 +1,7 @@
 import {
 	Box,
-	Button,
-	ButtonGroup,
 	Divider,
 	HStack,
-	Menu,
-	MenuButton,
-	MenuItem,
-	MenuList,
 	TableContainer,
 	Text,
 	useDisclosure,
@@ -20,11 +14,9 @@ import {
 	Td,
 	Avatar,
 	AvatarGroup,
-	Collapse,
-	SimpleGrid,
 } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { AlertDialog, Table, Loading, Func } from 'components/common'
+import { AlertDialog, Table, Loading, Func, FuncCollapse } from 'components/common'
 import { Input, InputNumber, Select, Textarea } from 'components/form'
 import { ProjectLayout } from 'components/layouts'
 import Modal from 'components/modal/Modal'
@@ -38,15 +30,15 @@ import { useRouter } from 'next/router'
 import { detailMilestoneQuery, milestonesByProjectNormalQuery } from 'queries'
 import React, { useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { MdDriveFileRenameOutline, MdOutlineDeleteOutline, MdOutlineMoreVert } from 'react-icons/md'
-import { RiPencilLine } from 'react-icons/ri'
+import { MdDriveFileRenameOutline } from 'react-icons/md'
 import { NextLayout } from 'type/element/layout'
 import { milestoneForm } from 'type/form/basicFormType'
 import { TColumn } from 'type/tableTypes'
 import { milestoneValidate } from 'utils/validate'
 import { milestoneType } from 'type/basicTypes'
-import { AiOutlineCaretDown, AiOutlineCaretUp } from 'react-icons/ai'
 import { IoAdd } from 'react-icons/io5'
+import { projecMilestonesColumn } from 'utils/columns'
+import Head from 'next/head'
 
 const milestones: NextLayout = () => {
 	const { isAuthenticated, handleLoading, setToast, currentUser } = useContext(AuthContext)
@@ -64,11 +56,6 @@ const milestones: NextLayout = () => {
 
 	// open modal to update, create milestone
 	const { isOpen: isOpenModal, onClose: onCloseModal, onOpen: onOpenModal } = useDisclosure()
-
-	//set isopen of function
-	const { isOpen, onToggle } = useDisclosure({
-		defaultIsOpen: true,
-	})
 
 	// open modal to show detail milestone
 	const { isOpen: isOpenDetail, onClose: onCloseDetail, onOpen: onOpenDetail } = useDisclosure()
@@ -160,106 +147,28 @@ const milestones: NextLayout = () => {
 	}
 
 	// header ----------------------------------------
-	const columns: TColumn[] = [
-		{
-			Header: 'Milestones',
-			columns: [
-				{
-					Header: 'Id',
-					accessor: 'id',
-					width: 80,
-					minWidth: 80,
-					disableResizing: true,
-					Cell: ({ value }) => {
-						return value
-					},
-				},
-				{
-					Header: 'Milestone Title',
-					accessor: 'title',
-					width: 180,
-					minWidth: 180,
-				},
-				{
-					Header: 'Milestone Cost',
-					accessor: 'cost',
-					width: 180,
-					minWidth: 180,
-					Cell: ({ value }) => `$${value}`,
-				},
-				{
-					Header: 'Status',
-					accessor: 'status',
-					width: 180,
-					minWidth: 180,
-					Cell: ({ value }) => (
-						<HStack alignItems={'center'} spacing={4}>
-							<Box
-								background={value ? 'hu-Green.normal' : 'red.300'}
-								w={'2'}
-								borderRadius={'full'}
-								h={'2'}
-							/>
-							<Text>{value ? 'Complete' : 'Incomplete'}</Text>
-						</HStack>
-					),
-				},
-				{
-					Header: 'Action',
-					accessor: 'action',
-					width: 150,
-					minWidth: 150,
-					disableResizing: true,
-					Cell: ({ row }) => (
-						<ButtonGroup isAttached variant="outline">
-							<Button
-								onClick={() => {
-									onOpenDetail()
-									setIdDetail(Number(row.values['id']))
-								}}
-							>
-								View
-							</Button>
-							<Menu>
-								<MenuButton as={Button} paddingInline={3}>
-									<MdOutlineMoreVert />
-								</MenuButton>
-								<MenuList>
-									<MenuItem
-										onClick={() => {
-											setIdMilestone(row.values['id'])
-											formSetting.reset({
-												...row.values,
-												status: row.values['status'] == true ? 2 : 1,
-												addtobudget:
-													row.original['addtobudget'] == true ? 2 : 1,
-												summary: row.original['summary'],
-											})
-											setIsUpdate(true)
-											onOpenModal()
-										}}
-										icon={<RiPencilLine fontSize={'15px'} />}
-									>
-										Edit
-									</MenuItem>
-
-									<MenuItem
-										onClick={() => {
-											setIdMilestone(row.values['id'])
-											onOpenDl()
-										}}
-										icon={<MdOutlineDeleteOutline fontSize={'15px'} />}
-									>
-										Delete
-									</MenuItem>
-								</MenuList>
-							</Menu>
-						</ButtonGroup>
-					),
-				},
-			],
+	const columns: TColumn[] = projecMilestonesColumn({
+		onDelete: (id: number) => {
+			setIdMilestone(id)
+			onOpenDl()
 		},
-	]
+		onUpdate: (id: number, row: any) => {
+			setIdMilestone(id)
+			formSetting.reset({
+				...row.values,
+				status: row.values['status'] == true ? 2 : 1,
+				addtobudget: row.original['addtobudget'] == true ? 2 : 1,
+				summary: row.original['summary'],
+			})
+			setIsUpdate(true)
+			onOpenModal()
+		},
+		onDetail: (id: number) => {
+			onOpenDetail()
+			setIdDetail(Number(id))
+		},
+		currentUser,
+	})
 
 	useEffect(() => {
 		if (statusCreate == 'success' && dataCreate) {
@@ -300,51 +209,33 @@ const milestones: NextLayout = () => {
 	}, [allMilestone])
 
 	return (
-		<div>
-			<HStack
-				_hover={{
-					textDecoration: 'none',
-				}}
-				onClick={onToggle}
-				color={'gray.500'}
-				cursor={'pointer'}
-				userSelect={'none'}
-			>
-				<Text fontWeight={'semibold'}>Function</Text>
-				{isOpen ? <AiOutlineCaretDown /> : <AiOutlineCaretUp />}
-			</HStack>
-			<Collapse in={isOpen} animateOpacity>
-				<SimpleGrid
-					w={'full'}
-					cursor={'pointer'}
-					columns={[1, 2, 2, 3, null, 4]}
-					spacing={10}
-					pt={3}
-				>
-					{currentUser && currentUser.role === 'Admin' && (
-						<>
-							<Func
-								icon={<IoAdd />}
-								description={'Add new client by form'}
-								title={'Add new'}
-								action={()=> {
-									formSetting.reset({
-										addtobudget: 1,
-										cost: 1,
-										status: 1,
-										title: '',
-										summary: '',
-									})
-									setIsUpdate(false)
-									onOpenModal()
-								}}
-							/>
-						</>
-					)}
-				</SimpleGrid>
-			</Collapse>
-
-			
+		<Box pb={8}>
+			<Head>
+				<title>Huprom - Milestones of project {projectId}</title>
+				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
+			</Head>
+			<FuncCollapse>
+				{currentUser && currentUser.role === 'Admin' && (
+					<>
+						<Func
+							icon={<IoAdd />}
+							description={'Add new milestone by form'}
+							title={'Add new'}
+							action={() => {
+								formSetting.reset({
+									addtobudget: 1,
+									cost: 1,
+									status: 1,
+									title: '',
+									summary: '',
+								})
+								setIsUpdate(false)
+								onOpenModal()
+							}}
+						/>
+					</>
+				)}
+			</FuncCollapse>
 			<Table
 				data={allMilestone?.milestones || []}
 				columns={columns}
@@ -555,7 +446,7 @@ const milestones: NextLayout = () => {
 					</VStack>
 				)}
 			</Modal>
-		</div>
+		</Box>
 	)
 }
 

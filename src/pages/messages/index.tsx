@@ -1,7 +1,7 @@
 import { Box, Button, Grid, GridItem, HStack, Text, useDisclosure, VStack } from '@chakra-ui/react'
 import { Input } from 'components/form'
 import Modal from 'components/modal/Modal'
-import {Receiver, Loading, Message} from 'components/common'
+import { Receiver, Loading, Message } from 'components/common'
 import { AuthContext } from 'contexts/AuthContext'
 import { createConversationReplyMutation, deleteConversationMutation } from 'mutations'
 import { useRouter } from 'next/router'
@@ -13,11 +13,12 @@ import { conversationType, employeeType } from 'type/basicTypes'
 import { createConversationReplyForm } from 'type/form/basicFormType'
 import AddConversations from './add-conversations'
 import { AiOutlineMenu, AiOutlineSend } from 'react-icons/ai'
-import {Drawer} from 'components/Drawer'
+import { Drawer } from 'components/Drawer'
 import { NextLayout } from 'type/element/layout'
 import { ClientLayout } from 'components/layouts'
+import Head from 'next/head'
 
-const Messages:NextLayout = ()=> {
+const Messages: NextLayout = () => {
 	const { isAuthenticated, handleLoading, setToast, currentUser, socket } =
 		useContext(AuthContext)
 	const router = useRouter()
@@ -54,10 +55,8 @@ const Messages:NextLayout = ()=> {
 		allConversationRepliesByConversationQuery(isAuthenticated, currentReceiver?.converstion)
 
 	//mutation ----------------------------------------------------------
-	const [
-		mutateCreConversationReply,
-		{ status: statusCreConversationReply },
-	] = createConversationReplyMutation(setToast)
+	const [mutateCreConversationReply, { status: statusCreConversationReply }] =
+		createConversationReplyMutation(setToast)
 
 	const [
 		mutateDeleteConversation,
@@ -198,6 +197,10 @@ const Messages:NextLayout = ()=> {
 
 	return (
 		<Box minH={'500px'} pos="relative" height={'calc( 100vh - 130px )'}>
+			<Head>
+				<title>Huprom - Messages</title>
+				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
+			</Head>
 			<Grid templateColumns="repeat(6, 1fr)" gap={0} height={'100%'}>
 				<GridItem
 					w="100%"
@@ -303,7 +306,7 @@ const Messages:NextLayout = ()=> {
 								name={'reply'}
 								placeholder={'Enter reply'}
 								type={'text'}
-								autoComplete={"off"}
+								autoComplete={'off'}
 							/>
 							<Button
 								type="submit"

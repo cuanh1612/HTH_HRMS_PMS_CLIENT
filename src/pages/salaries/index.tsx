@@ -2,15 +2,13 @@ import {
 	Avatar,
 	Box,
 	Button,
-	Collapse,
 	HStack,
-	SimpleGrid,
 	Text,
 	useColorMode,
 	useDisclosure,
 	VStack,
 } from '@chakra-ui/react'
-import { Func, Table } from 'components/common'
+import { Func, FuncCollapse, Table } from 'components/common'
 import { Drawer } from 'components/Drawer'
 import { Input, SelectCustom } from 'components/filter'
 import { ClientLayout } from 'components/layouts'
@@ -19,7 +17,7 @@ import { AuthContext } from 'contexts/AuthContext'
 import { useRouter } from 'next/router'
 import { allEmployeesNormalQuery, allSalariesQuery } from 'queries'
 import { useContext, useEffect, useState } from 'react'
-import { AiOutlineCaretDown, AiOutlineCaretUp, AiOutlineSearch } from 'react-icons/ai'
+import { AiOutlineSearch } from 'react-icons/ai'
 import { NextLayout } from 'type/element/layout'
 import { IFilter, TColumn } from 'type/tableTypes'
 import HistorySalary from './history'
@@ -29,6 +27,7 @@ import { BiExport } from 'react-icons/bi'
 import { VscFilter } from 'react-icons/vsc'
 import { IOption } from 'type/basicTypes'
 import { salariesColumn } from 'utils/columns'
+import Head from 'next/head'
 
 const Salaries: NextLayout = () => {
 	const { isAuthenticated, handleLoading, currentUser } = useContext(AuthContext)
@@ -58,11 +57,6 @@ const Salaries: NextLayout = () => {
 		onOpen: onOpenHistory,
 		onClose: onCloseHistory,
 	} = useDisclosure()
-
-	//set isopen of function
-	const { isOpen, onToggle } = useDisclosure({
-		defaultIsOpen: true,
-	})
 
 	// set open modal to show update salary
 	const {
@@ -157,59 +151,42 @@ const Salaries: NextLayout = () => {
 	// header ----------------------------------------
 	const columns: TColumn[] = salariesColumn({
 		currentUser,
-		onDetail: (id: number)=> {
+		onDetail: (id: number) => {
 			setEmployeeId(id)
-										onOpenHistory()
+			onOpenHistory()
 		},
-		onUpdate: (id: number)=> {
+		onUpdate: (id: number) => {
 			setEmployeeId(id)
 			onOpenUpdateSalary()
-		}
+		},
 	})
-	
+
 	return (
 		<Box pb={8} w={'full'}>
-			<HStack
-				_hover={{
-					textDecoration: 'none',
-				}}
-				onClick={onToggle}
-				color={'gray.500'}
-				cursor={'pointer'}
-				userSelect={'none'}
-			>
-				<Text fontWeight={'semibold'}>Function</Text>
-				{isOpen ? <AiOutlineCaretDown /> : <AiOutlineCaretUp />}
-			</HStack>
-			<Collapse in={isOpen} animateOpacity>
-				<SimpleGrid
-					w={'full'}
-					cursor={'pointer'}
-					columns={[1, 2, 2, 3, null, 4]}
-					spacing={10}
-					pt={3}
-				>
-					{currentUser && currentUser.role === 'Admin' && (
-						<>
-							<CSVLink filename={'salaries.csv'} headers={headersCSV} data={dataCSV}>
-								<Func
-									icon={<BiExport />}
-									description={'export to csv'}
-									title={'export'}
-									action={() => {}}
-								/>
-							</CSVLink>
-						</>
-					)}
-					<Func
-						icon={<VscFilter />}
-						description={'Open draw to filter'}
-						title={'filter'}
-						action={onOpenFilter}
-					/>
-				</SimpleGrid>
-			</Collapse>
-			<br />
+			<Head>
+				<title>Huprom - Salaries</title>
+				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
+			</Head>
+			<FuncCollapse>
+				{currentUser && currentUser.role === 'Admin' && (
+					<>
+						<CSVLink filename={'salaries.csv'} headers={headersCSV} data={dataCSV}>
+							<Func
+								icon={<BiExport />}
+								description={'export to csv'}
+								title={'export'}
+								action={() => {}}
+							/>
+						</CSVLink>
+					</>
+				)}
+				<Func
+					icon={<VscFilter />}
+					description={'Open draw to filter'}
+					title={'filter'}
+					action={onOpenFilter}
+				/>
+			</FuncCollapse>
 
 			{/* Modal project category and designation */}
 			<Modal

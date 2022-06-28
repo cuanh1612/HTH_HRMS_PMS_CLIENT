@@ -3,18 +3,12 @@ import {
 	Box,
 	Button,
 	ButtonGroup,
-	DrawerBody,
-	DrawerCloseButton,
-	DrawerContent,
-	DrawerHeader,
-	DrawerOverlay,
 	HStack,
 	Text,
 	useColorMode,
 	useColorModeValue,
 	useDisclosure,
 	VStack,
-	Drawer as CDrawer,
 } from '@chakra-ui/react'
 
 import { EventInput } from '@fullcalendar/common'
@@ -43,6 +37,7 @@ import { CSVLink } from 'react-csv'
 import { FaFileCsv } from 'react-icons/fa'
 import DetailEvent from './[eventId]'
 import { deleteEventMutation } from 'mutations'
+import Head from 'next/head'
 
 var timeoutName: NodeJS.Timeout
 
@@ -294,6 +289,10 @@ const Event: NextLayout = () => {
 
 	return (
 		<Box w={'full'} pb={8}>
+			<Head>
+				<title>Huprom - Events</title>
+				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
+			</Head>
 			<HStack paddingBlock={'5'} justifyContent={'space-between'}>
 				<ButtonGroup spacing={4}>
 					<Button color={'white'} bg={'hu-Green.normal'} onClick={() => onOpenAdd()}>

@@ -1,19 +1,14 @@
 import {
 	Avatar,
+	Box,
 	Button,
-	Collapse,
 	HStack,
-	Menu,
-	MenuButton,
-	MenuItem,
-	MenuList,
-	SimpleGrid,
 	Text,
 	useColorMode,
 	useDisclosure,
 	VStack,
 } from '@chakra-ui/react'
-import { AlertDialog, Func, Table } from 'components/common'
+import { AlertDialog, Func, FuncCollapse, Table } from 'components/common'
 import { Drawer } from 'components/Drawer'
 import { DateRange, Input, Select, SelectCustom } from 'components/filter'
 import ImportCSV from 'components/importCSV'
@@ -25,28 +20,20 @@ import {
 	importCSVContractsMutation,
 	publicLinkContractMutation,
 } from 'mutations'
-import Link from 'next/link'
+import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { allClientsQuery, allContractsQuery, allContractTypesQuery } from 'queries'
 import { useContext, useEffect, useState } from 'react'
 import { CSVLink } from 'react-csv'
-import {
-	AiOutlineCaretDown,
-	AiOutlineCaretUp,
-	AiOutlineDelete,
-	AiOutlineSearch,
-} from 'react-icons/ai'
-import { BiExport, BiLinkAlt } from 'react-icons/bi'
+import { AiOutlineDelete, AiOutlineSearch } from 'react-icons/ai'
+import { BiExport } from 'react-icons/bi'
 import { FaFileCsv } from 'react-icons/fa'
-import { IoAdd, IoEyeOutline } from 'react-icons/io5'
-import { MdOutlineDeleteOutline, MdOutlineMoreVert } from 'react-icons/md'
-import { RiPencilLine } from 'react-icons/ri'
+import { IoAdd } from 'react-icons/io5'
 import { VscFilter } from 'react-icons/vsc'
 import { IOption } from 'type/basicTypes'
 import { NextLayout } from 'type/element/layout'
 import { IFilter, TColumn } from 'type/tableTypes'
 import { contractColumn } from 'utils/columns'
-import { dateFilter, selectFilter, textFilter } from 'utils/tableFilters'
 import AddContract from './add-contracts'
 import UpdateContract from './update-contracts'
 
@@ -256,11 +243,6 @@ const Contracts: NextLayout = () => {
 		onClose: onCloseDlMany,
 	} = useDisclosure()
 
-	//set isopen of function
-	const { isOpen, onToggle } = useDisclosure({
-		defaultIsOpen: true,
-	})
-
 	// set isOpen of drawer to filters
 	const { isOpen: isOpenFilter, onOpen: onOpenFilter, onClose: onCloseFilter } = useDisclosure()
 
@@ -388,7 +370,7 @@ const Contracts: NextLayout = () => {
 	// header ----------------------------------------
 	const columns: TColumn[] = contractColumn({
 		currentUser,
-		onUpdate: (id: number)=> {
+		onUpdate: (id: number) => {
 			setContractIdUpdate(id)
 			onOpenUpdate()
 		},
@@ -396,106 +378,89 @@ const Contracts: NextLayout = () => {
 			setIdDlContract(id)
 			onOpenDl()
 		},
-		onPublic: (id: number)=> {
+		onPublic: (id: number) => {
 			mutateGetPublic(id)
-		}
-	})	
-							
+		},
+	})
+
 	return (
-		<>
-			<HStack
-				_hover={{
-					textDecoration: 'none',
-				}}
-				onClick={onToggle}
-				color={'gray.500'}
-				cursor={'pointer'}
-				userSelect={'none'}
-			>
-				<Text fontWeight={'semibold'}>Function</Text>
-				{isOpen ? <AiOutlineCaretDown /> : <AiOutlineCaretUp />}
-			</HStack>
-			<Collapse in={isOpen} animateOpacity>
-				<SimpleGrid
-					w={'full'}
-					cursor={'pointer'}
-					columns={[1, 2, 2, 3, null, 4]}
-					spacing={10}
-					pt={3}
-				>
-					{currentUser && currentUser.role === 'Admin' && (
-						<>
+		<Box pb={8}>
+			<Head>
+				<title>Huprom - Contracts</title>
+				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
+			</Head>
+			<FuncCollapse>
+				{currentUser && currentUser.role === 'Admin' && (
+					<>
+						<Func
+							icon={<IoAdd />}
+							description={'Add new contract by form'}
+							title={'Add new'}
+							action={onOpenAdd}
+						/>
+
+						<CSVLink filename={'contracts.csv'} headers={headersCSV} data={dataCSV}>
 							<Func
-								icon={<IoAdd />}
-								description={'Add new client by form'}
-								title={'Add new'}
-								action={onOpenAdd}
+								icon={<BiExport />}
+								description={'export to csv'}
+								title={'export'}
+								action={() => {}}
 							/>
+						</CSVLink>
 
-							<CSVLink filename={'contracts.csv'} headers={headersCSV} data={dataCSV}>
-								<Func
-									icon={<BiExport />}
-									description={'export to csv'}
-									title={'export'}
-									action={() => {}}
-								/>
-							</CSVLink>
-
-							<CSVLink
-								filename={'contractsTemplate.csv'}
-								headers={headersCSVTemplate}
-								data={dataCSVTemplate}
-							>
-								<Func
-									icon={<FaFileCsv />}
-									description={'export csv template'}
-									title={'export csv template'}
-									action={() => {}}
-								/>
-							</CSVLink>
-
-							<ImportCSV
-								fieldsValid={[
-									'alternate_address',
-									'cell',
-									'city',
-									'client',
-									'contract_type',
-									'contract_value',
-									'country',
-									'currency',
-									'notes',
-									'office_phone_number',
-									'postal_code',
-									'state',
-									'subject',
-									'end_date',
-									'start_date',
-								]}
-								handleImportCSV={handleImportCSV}
-								statusImport={statusImportCSV === 'running'}
-								isOpenImportCSV={isOpenImportCSV}
-								onCloseImportCSV={onCloseImportCSV}
-								onOpenImportCSV={onOpenImportCSV}
+						<CSVLink
+							filename={'contractsTemplate.csv'}
+							headers={headersCSVTemplate}
+							data={dataCSVTemplate}
+						>
+							<Func
+								icon={<FaFileCsv />}
+								description={'export csv template'}
+								title={'export csv template'}
+								action={() => {}}
 							/>
-						</>
-					)}
-					<Func
-						icon={<VscFilter />}
-						description={'Open draw to filter'}
-						title={'filter'}
-						action={onOpenFilter}
-					/>
-					<Func
-						icon={<AiOutlineDelete />}
-						title={'Delete all'}
-						description={'Delete all client you selected'}
-						action={onOpenDlMany}
-						disabled={!dataSl || dataSl.length == 0 ? true : false}
-					/>
-				</SimpleGrid>
-			</Collapse>
-			<br />
+						</CSVLink>
+
+						<ImportCSV
+							fieldsValid={[
+								'alternate_address',
+								'cell',
+								'city',
+								'client',
+								'contract_type',
+								'contract_value',
+								'country',
+								'currency',
+								'notes',
+								'office_phone_number',
+								'postal_code',
+								'state',
+								'subject',
+								'end_date',
+								'start_date',
+							]}
+							handleImportCSV={handleImportCSV}
+							statusImport={statusImportCSV === 'running'}
+							isOpenImportCSV={isOpenImportCSV}
+							onCloseImportCSV={onCloseImportCSV}
+							onOpenImportCSV={onOpenImportCSV}
+						/>
+					</>
+				)}
+				<Func
+					icon={<VscFilter />}
+					description={'Open draw to filter'}
+					title={'filter'}
+					action={onOpenFilter}
+				/>
+				<Func
+					icon={<AiOutlineDelete />}
+					title={'Delete all'}
+					description={'Delete all contracts you selected'}
+					action={onOpenDlMany}
+					disabled={!dataSl || dataSl.length == 0 ? true : false}
+				/>
+			</FuncCollapse>
 
 			<Table
 				data={allContracts?.contracts || []}
@@ -621,7 +586,7 @@ const Contracts: NextLayout = () => {
 					)}
 				</VStack>
 			</Drawer>
-		</>
+		</Box>
 	)
 }
 

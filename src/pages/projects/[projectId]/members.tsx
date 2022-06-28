@@ -18,8 +18,6 @@ import {
 	VStack,
 	RadioGroup,
 	Box,
-	Collapse,
-	SimpleGrid,
 } from '@chakra-ui/react'
 import {
 	assignEmplByDepartmentMutation,
@@ -28,7 +26,7 @@ import {
 	projectAdminMutation,
 	updateHourlyRateMutation,
 } from 'mutations'
-import { AlertDialog, Func, Table } from 'components/common'
+import { AlertDialog, Func, FuncCollapse, Table } from 'components/common'
 import { projectMutaionResponse } from 'type/mutationResponses'
 import Modal from 'components/modal/Modal'
 import { IOption } from 'type/basicTypes'
@@ -38,9 +36,9 @@ import {
 } from 'type/form/basicFormType'
 import { useForm } from 'react-hook-form'
 import { SelectMany } from 'components/form'
-import { AiOutlineCaretDown, AiOutlineCaretUp } from 'react-icons/ai'
 import { IoAdd } from 'react-icons/io5'
 import { projectMembersColumn } from 'utils/columns'
+import Head from 'next/head'
 
 var hourlyRateTimeOut: NodeJS.Timeout
 
@@ -104,11 +102,6 @@ const members: NextLayout = () => {
 
 	// set isOpen of dialog to delete one
 	const { isOpen: isOpenDialogDl, onOpen: onOpenDl, onClose: onCloseDl } = useDisclosure()
-
-	//set isopen of function
-	const { isOpen, onToggle } = useDisclosure({
-		defaultIsOpen: true,
-	})
 
 	// setForm and submit form to add employees not in project
 	const formSetting = useForm<EmployeesNotInProjectForm>({
@@ -322,40 +315,23 @@ const members: NextLayout = () => {
 	})
 
 	return (
-		<div>
-			<HStack
-				_hover={{
-					textDecoration: 'none',
-				}}
-				onClick={onToggle}
-				color={'gray.500'}
-				cursor={'pointer'}
-				userSelect={'none'}
-			>
-				<Text fontWeight={'semibold'}>Function</Text>
-				{isOpen ? <AiOutlineCaretDown /> : <AiOutlineCaretUp />}
-			</HStack>
-			<Collapse in={isOpen} animateOpacity>
-				<SimpleGrid
-					w={'full'}
-					cursor={'pointer'}
-					columns={[1, 2, 2, 3, null, 4]}
-					spacing={10}
-					pt={3}
-				>
-					{currentUser && currentUser.role === 'Admin' && (
-						<>
-							<Func
-								icon={<IoAdd />}
-								description={'Add new client by form'}
-								title={'Add new'}
-								action={onOpenAdd}
-							/>
-						</>
-					)}
-				</SimpleGrid>
-			</Collapse>
-			<br />
+		<Box pb={8}>
+			<Head>
+				<title>Huprom - Members of project {projectId}</title>
+				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
+			</Head>
+			<FuncCollapse>
+				{currentUser && currentUser.role === 'Admin' && (
+					<>
+						<Func
+							icon={<IoAdd />}
+							description={'Add new client by form'}
+							title={'Add new'}
+							action={onOpenAdd}
+						/>
+					</>
+				)}
+			</FuncCollapse>
 
 			<Table
 				data={projectResponse?.project?.employees || []}
@@ -439,7 +415,7 @@ const members: NextLayout = () => {
 					</RadioGroup>
 				</Box>
 			</Modal>
-		</div>
+		</Box>
 	)
 }
 

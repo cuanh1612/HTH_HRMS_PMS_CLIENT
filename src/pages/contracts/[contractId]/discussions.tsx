@@ -1,5 +1,5 @@
 import { Avatar, Box, Button, HStack, Text, useDisclosure, VStack } from '@chakra-ui/react'
-import {Loading, Discussion as CDiscussion} from 'components/common'
+import { Loading, Discussion as CDiscussion } from 'components/common'
 import { AuthContext } from 'contexts/AuthContext'
 import {
 	createDiscussionMutation,
@@ -18,10 +18,11 @@ import { GetStaticPaths, GetStaticProps } from 'next'
 import { contractMutaionResponse } from 'type/mutationResponses'
 import { NextLayout } from 'type/element/layout'
 import { ContractLayout } from 'components/layouts/Contract'
+import Head from 'next/head'
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
 
-const Discussion:NextLayout = ()=> {
+const Discussion: NextLayout = () => {
 	const { isAuthenticated, handleLoading, setToast, currentUser, socket } =
 		useContext(AuthContext)
 	const router = useRouter()
@@ -190,6 +191,10 @@ const Discussion:NextLayout = ()=> {
 
 	return (
 		<Box p={10} bgColor={'#f2f4f7'}>
+			<Head>
+				<title>Huprom - Discussions of contract {contractId}</title>
+				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
+			</Head>
 			<VStack align={'start'} w="full" bgColor={'white'} p={5} borderRadius={5} spacing={5}>
 				<Text fontSize={18} fontWeight={'semibold'}>
 					Discussion
@@ -302,7 +307,11 @@ export const getStaticProps: GetStaticProps = async () => {
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-	const res: contractMutaionResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/contracts`).then((result) => result.json()).catch(() => undefined)
+	const res: contractMutaionResponse = await fetch(
+		`${process.env.NEXT_PUBLIC_API_URL}/api/contracts`
+	)
+		.then((result) => result.json())
+		.catch(() => undefined)
 
 	if (!res || !res.contracts) {
 		return { paths: [], fallback: false }

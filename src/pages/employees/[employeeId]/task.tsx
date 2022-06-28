@@ -1,26 +1,37 @@
-import { Avatar, AvatarGroup, Box, Button, Collapse, HStack, Menu, MenuButton, MenuItem, MenuList, SimpleGrid, Text, useColorMode, useDisclosure, VStack } from "@chakra-ui/react"
-import { AlertDialog, Func, Table } from "components/common"
-import { Drawer } from "components/Drawer"
-import { DateRange, Input, Select, SelectCustom } from "components/filter"
-import { ClientLayout } from "components/layouts"
-import { EmployeeLayout } from "components/layouts/Employee"
-import { AuthContext } from "contexts/AuthContext"
-import { deleteTaskMutation, deleteTasksMutation } from "mutations"
-import { useRouter } from "next/router"
-import { allEmployeesNormalQuery, allMilestonesQuery, allProjectsNormalQuery, allTaskCategoriesQuery, allTasksByEmployeeQuery } from "queries"
-import { useContext, useEffect, useState } from "react"
-import { AiOutlineCaretDown, AiOutlineCaretUp, AiOutlineDelete, AiOutlineSearch } from "react-icons/ai"
-import { IoEyeOutline } from "react-icons/io5"
-import { MdOutlineDeleteOutline, MdOutlineEvent, MdOutlineMoreVert } from "react-icons/md"
-import { RiPencilLine } from "react-icons/ri"
-import { VscFilter } from "react-icons/vsc"
-import DetailTask from "src/pages/tasks/[taskId]"
-import UpdateTask from "src/pages/tasks/[taskId]/update-task"
-import { employeeType, IOption, timeLogType } from "type/basicTypes"
-import { NextLayout } from "type/element/layout"
-import { IFilter, TColumn } from "type/tableTypes"
-import { arrayFilter, dateFilter, selectFilter, textFilter } from "utils/tableFilters"
-
+import {
+	Avatar,
+	Box,
+	Button,
+	HStack,
+	Text,
+	useColorMode,
+	useDisclosure,
+	VStack,
+} from '@chakra-ui/react'
+import { AlertDialog, Func, FuncCollapse, Table } from 'components/common'
+import { Drawer } from 'components/Drawer'
+import { DateRange, Input, Select, SelectCustom } from 'components/filter'
+import { EmployeeLayout } from 'components/layouts/Employee'
+import { AuthContext } from 'contexts/AuthContext'
+import { deleteTaskMutation, deleteTasksMutation } from 'mutations'
+import Head from 'next/head'
+import { useRouter } from 'next/router'
+import {
+	allEmployeesNormalQuery,
+	allMilestonesQuery,
+	allProjectsNormalQuery,
+	allTaskCategoriesQuery,
+	allTasksByEmployeeQuery,
+} from 'queries'
+import { useContext, useEffect, useState } from 'react'
+import { AiOutlineDelete, AiOutlineSearch } from 'react-icons/ai'
+import { VscFilter } from 'react-icons/vsc'
+import DetailTask from 'src/pages/tasks/[taskId]'
+import UpdateTask from 'src/pages/tasks/[taskId]/update-task'
+import { IOption } from 'type/basicTypes'
+import { NextLayout } from 'type/element/layout'
+import { IFilter, TColumn } from 'type/tableTypes'
+import { employeeTasksColumn } from 'utils/columns'
 
 const TasksEmployee: NextLayout = () => {
 	const { isAuthenticated, handleLoading, setToast, currentUser, socket } =
@@ -31,9 +42,6 @@ const TasksEmployee: NextLayout = () => {
 	const { colorMode } = useColorMode()
 
 	const [taskId, setTaskId] = useState<string | number>()
-
-	//state csv
-	const [dataCSV, setDataCSV] = useState<any[]>([])
 
 	// set loading table
 	const [isLoading, setIsloading] = useState(true)
@@ -55,7 +63,10 @@ const TasksEmployee: NextLayout = () => {
 
 	// query
 	// get all tasks
-	const { data: allTasks, mutate: refetchTasks } =   allTasksByEmployeeQuery(isAuthenticated, employeeId as string)
+	const { data: allTasks, mutate: refetchTasks } = allTasksByEmployeeQuery(
+		isAuthenticated,
+		employeeId as string
+	)
 
 	// get all projects to filter
 	const { data: dataAllProjects } = allProjectsNormalQuery(isAuthenticated)
@@ -68,7 +79,6 @@ const TasksEmployee: NextLayout = () => {
 
 	// get all milestones to filter
 	const { data: allMilestones } = allMilestonesQuery(isAuthenticated)
-
 
 	// mutation----------------------------------------------------------
 	// delete one
@@ -91,11 +101,6 @@ const TasksEmployee: NextLayout = () => {
 		onOpen: onOpenDetailTask,
 		onClose: onCloseDetailTask,
 	} = useDisclosure()
-
-	//set isopen of function
-	const { isOpen, onToggle } = useDisclosure({
-		defaultIsOpen: true,
-	})
 
 	// set isOpen of dialog to delete one
 	const { isOpen: isOpenDialogDl, onOpen: onOpenDl, onClose: onCloseDl } = useDisclosure()
@@ -206,223 +211,51 @@ const TasksEmployee: NextLayout = () => {
 		return leaveRoom
 	}, [socket])
 
-	useEffect(()=> {
-		if(isOpenUpdateTask == false){ 
+	useEffect(() => {
+		if (isOpenUpdateTask == false) {
 			refetchTasks()
 		}
 	}, [isOpenUpdateTask])
 
 	// header ----------------------------------------
-	const columns: TColumn[] = [
-		{
-			Header: 'Tasks',
-			columns: [
-				{
-					Header: 'Id',
-					accessor: 'id',
-					width: 80,
-					minWidth: 80,
-					disableResizing: true,
-					Cell: ({ value }) => {
-						return value
-					},
-				},
-				{
-					Header: 'Task',
-					accessor: 'name',
-					Cell: ({ value }) => {
-						return <Text isTruncated>{value}</Text>
-					},
-					filter: textFilter(['name']),
-				},
-				{
-					Header: 'Project',
-					accessor: 'project',
-					Cell: ({ value }) => {
-						return <Text isTruncated>{value.name}</Text>
-					},
-					filter: selectFilter(['project', 'id']),
-				},
-				{
-					Header: 'Deadline',
-					accessor: 'deadline',
-					Cell: ({ value }) => {
-						const date = new Date(value)
-						return (
-							<Text color={'red'} isTruncated>{`${date.getDate()}-${
-								date.getMonth() + 1
-							}-${date.getFullYear()}`}</Text>
-						)
-					},
-					filter: dateFilter(['deadline']),
-				},
-				{
-					Header: 'Hours Logged',
-					accessor: 'time_logs',
-					Cell: ({ value }) => {
-						var result
-						if (value.length == 0) {
-							result = 0
-						} else {
-							value.map((item: timeLogType) => {
-								result = item.total_hours
-							})
-						}
-
-						return <Text isTruncated>{result} hrs</Text>
-					},
-				},
-				{
-					Header: 'milestone',
-					accessor: 'milestone',
-					Cell: ({ value }) => {
-						return <Text isTruncated>{value?.title}</Text>
-					},
-					filter: selectFilter(['milestone', 'id']),
-				},
-				{
-					Header: 'Task Category',
-					accessor: 'task_category',
-					Cell: ({ value }) => {
-						return <Text isTruncated>{value?.name}</Text>
-					},
-					filter: selectFilter(['task_category', 'id']),
-				},
-
-				{
-					Header: 'Assign to',
-					accessor: 'employees',
-					filter: arrayFilter(['employees'], 'id'),
-					Cell: ({ value }) => {
-						return (
-							<AvatarGroup size="sm" max={2}>
-								{value.length != 0 &&
-									value.map((employee: employeeType) => (
-										<Avatar
-											name={employee.name}
-											key={employee.id}
-											src={employee.avatar?.url}
-										/>
-									))}
-							</AvatarGroup>
-						)
-					},
-				},
-				{
-					Header: 'Assign By',
-					accessor: 'assignBy',
-					filter: selectFilter(['assignBy', 'id']),
-					Cell: ({ value }) => {
-						return value?.name
-					},
-				},
-				{
-					Header: 'Status',
-					accessor: 'status',
-					Cell: ({ value }) => (
-						<HStack alignItems={'center'}>
-							<Box background={value.color} w={'3'} borderRadius={'full'} h={'3'} />
-							<Text>{value.title}</Text>
-						</HStack>
-					),
-					filter: selectFilter(['status', 'id']),
-				},
-				{
-					Header: 'Action',
-					accessor: 'action',
-					disableResizing: true,
-					width: 120,
-					minWidth: 120,
-					disableSortBy: true,
-					Cell: ({ row }) => {
-						return (
-							<Menu>
-								<MenuButton as={Button} paddingInline={3}>
-									<MdOutlineMoreVert />
-								</MenuButton>
-								<MenuList>
-									<MenuItem
-										onClick={() => {
-											setTaskId(Number(row.values['id']))
-											onOpenDetailTask()
-										}}
-										icon={<IoEyeOutline fontSize={'15px'} />}
-									>
-										View
-									</MenuItem>
-
-									{(currentUser?.role === 'Admin' ||
-										(currentUser?.role === 'Employee' &&
-											row.original?.assignBy?.id === currentUser?.id)) && (
-										<>
-											<MenuItem
-												onClick={() => {
-													setTaskId(Number(row.values['id']))
-													onOpenUpdateTask()
-												}}
-												icon={<RiPencilLine fontSize={'15px'} />}
-											>
-												Edit
-											</MenuItem>
-
-											<MenuItem
-												onClick={() => {
-													setTaskId(Number(row.values['id']))
-													onOpenDl()
-												}}
-												icon={<MdOutlineDeleteOutline fontSize={'15px'} />}
-											>
-												Delete
-											</MenuItem>
-										</>
-									)}
-								</MenuList>
-							</Menu>
-						)
-					},
-				},
-			],
+	const columns: TColumn[] = employeeTasksColumn({
+		currentUser,
+		onDelete: (id: number) => {
+			setTaskId(Number(id))
+			onOpenDl()
 		},
-	]
+		onDetail: (id: number) => {
+			setTaskId(Number(id))
+			onOpenDetailTask()
+		},
+		onUpdate: (id: number) => {
+			setTaskId(Number(id))
+			onOpenUpdateTask()
+		},
+	})
 
 	return (
-		<Box>
-			<HStack
-				_hover={{
-					textDecoration: 'none',
-				}}
-				onClick={onToggle}
-				color={'gray.500'}
-				cursor={'pointer'}
-				userSelect={'none'}
-			>
-				<Text fontWeight={'semibold'}>Function</Text>
-				{isOpen ? <AiOutlineCaretDown /> : <AiOutlineCaretUp />}
-			</HStack>
-			<Collapse in={isOpen} animateOpacity>
-				<SimpleGrid
-					w={'full'}
-					cursor={'pointer'}
-					columns={[1, 2, 2, 3, null, 4]}
-					spacing={10}
-					pt={3}
-				>
-					<Func
-						icon={<VscFilter />}
-						description={'Open draw to filter'}
-						title={'filter'}
-						action={onOpenFilter}
-					/>
-					<Func
-						icon={<AiOutlineDelete />}
-						title={'Delete all'}
-						description={'Delete all client you selected'}
-						action={onOpenDlMany}
-						disabled={!dataSl || dataSl.length == 0 ? true : false}
-					/>
-				</SimpleGrid>
-			</Collapse>
-			<br />
+		<Box pb={8}>
+			<Head>
+				<title>Huprom - Tasks of employee {employeeId}</title>
+				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
+			</Head>
+
+			<FuncCollapse>
+				<Func
+					icon={<VscFilter />}
+					description={'Open draw to filter'}
+					title={'filter'}
+					action={onOpenFilter}
+				/>
+				<Func
+					icon={<AiOutlineDelete />}
+					title={'Delete all'}
+					description={'Delete all tasks you selected'}
+					action={onOpenDlMany}
+					disabled={!dataSl || dataSl.length == 0 ? true : false}
+				/>
+			</FuncCollapse>
 
 			<Table
 				data={allTasks?.tasks || []}
@@ -479,127 +312,129 @@ const TasksEmployee: NextLayout = () => {
 				isOpen={isOpenDialogDlMany}
 				onClose={onCloseDlMany}
 			/>
-			<Drawer isOpen={isOpenFilter} size={'xs'} title={'Filter'} onClose={onCloseFilter} footer={
-							<Button
-							onClick={() => {
-								setIsReset(true)
-								setTimeout(() => {
-									setIsReset(false)
-								}, 1000)
+			<Drawer
+				isOpen={isOpenFilter}
+				size={'xs'}
+				title={'Filter'}
+				onClose={onCloseFilter}
+				footer={
+					<Button
+						onClick={() => {
+							setIsReset(true)
+							setTimeout(() => {
+								setIsReset(false)
+							}, 1000)
+						}}
+					>
+						reset filter
+					</Button>
+				}
+			>
+				<VStack spacing={5} p={6}>
+					<Input
+						handleSearch={(data: IFilter) => {
+							setFilter(data)
+						}}
+						columnId={'name'}
+						label="Task"
+						placeholder="Enter task title"
+						icon={<AiOutlineSearch fontSize={'20px'} color="gray" opacity={0.6} />}
+						type={'text'}
+					/>
+					<DateRange
+						handleSelect={(date: { from: Date; to: Date }) => {
+							setFilter({
+								columnId: 'deadline',
+								filterValue: date,
+							})
+						}}
+						label="Select date"
+					/>
+					<Select
+						options={dataAllProjects?.projects?.map((project) => ({
+							label: project.name,
+							value: project.id,
+						}))}
+						handleSearch={(data: IFilter) => {
+							setFilter(data)
+						}}
+						columnId={'project'}
+						label="Project"
+						placeholder="Select project"
+					/>
+
+					<Select
+						options={allCategories?.taskCategories?.map((category) => ({
+							label: category.name,
+							value: category.id,
+						}))}
+						handleSearch={(data: IFilter) => {
+							setFilter(data)
+						}}
+						columnId={'task_category'}
+						label="Category"
+						placeholder="Select category"
+					/>
+					<Select
+						options={allMilestones?.milestones?.map((milestone) => ({
+							label: milestone.title,
+							value: milestone.id,
+						}))}
+						handleSearch={(data: IFilter) => {
+							setFilter(data)
+						}}
+						columnId={'milestone'}
+						label="Milestone"
+						placeholder="Select milestone"
+					/>
+
+					<SelectCustom
+						handleSearch={(field: any) => {
+							setFilter({
+								columnId: 'employees',
+								filterValue: field.value,
+							})
+						}}
+						label={'Assign to'}
+						name={'employees'}
+						options={[
+							{
+								label: (
+									<Text color={colorMode == 'light' ? 'black' : 'white'}>
+										all
+									</Text>
+								),
+								value: '',
+							},
+							...employees,
+						]}
+						required={false}
+					/>
+					{(currentUser?.role === 'Admin' || currentUser?.role === 'Client') && (
+						<SelectCustom
+							handleSearch={(field: any) => {
+								setFilter({
+									columnId: 'assignBy',
+									filterValue: field.value,
+								})
 							}}
-						>
-							reset filter
-						</Button>
-			} >
-						<VStack spacing={5} p={6}>
-							<Input
-								handleSearch={(data: IFilter) => {
-									setFilter(data)
-								}}
-								columnId={'name'}
-								label="Task"
-								placeholder="Enter task title"
-								icon={
-									<AiOutlineSearch fontSize={'20px'} color="gray" opacity={0.6} />
-								}
-								type={'text'}
-							/>
-							<DateRange
-								handleSelect={(date: { from: Date; to: Date }) => {
-									setFilter({
-										columnId: 'deadline',
-										filterValue: date,
-									})
-								}}
-								label="Select date"
-							/>
-							<Select
-								options={dataAllProjects?.projects?.map((project) => ({
-									label: project.name,
-									value: project.id,
-								}))}
-								handleSearch={(data: IFilter) => {
-									setFilter(data)
-								}}
-								columnId={'project'}
-								label="Project"
-								placeholder="Select project"
-							/>
-
-							<Select
-								options={allCategories?.taskCategories?.map((category) => ({
-									label: category.name,
-									value: category.id,
-								}))}
-								handleSearch={(data: IFilter) => {
-									setFilter(data)
-								}}
-								columnId={'task_category'}
-								label="Category"
-								placeholder="Select category"
-							/>
-							<Select
-								options={allMilestones?.milestones?.map((milestone) => ({
-									label: milestone.title,
-									value: milestone.id,
-								}))}
-								handleSearch={(data: IFilter) => {
-									setFilter(data)
-								}}
-								columnId={'milestone'}
-								label="Milestone"
-								placeholder="Select milestone"
-							/>
-
-							<SelectCustom
-								handleSearch={(field: any) => {
-									setFilter({
-										columnId: 'employees',
-										filterValue: field.value,
-									})
-								}}
-								label={'Assign to'}
-								name={'employees'}
-								options={[
-									{
-										label: (
-											<Text color={colorMode == 'light' ? 'black' : 'white'}>
-												all
-											</Text>
-										),
-										value: '',
-									},
-									...employees,
-								]}
-								required={false}
-							/>
-							{(currentUser?.role === 'Admin' || currentUser?.role === 'Client') && (
-								<SelectCustom
-									handleSearch={(field: any) => {
-										setFilter({
-											columnId: 'assignBy',
-											filterValue: field.value,
-										})
-									}}
-									label={'Assign by'}
-									name={'assignBy'}
-									options={[
-										{
-											label: (
-												<Text
-													color={colorMode == 'light' ? 'black' : 'white'}
-												>
-													all
-												</Text>
-											),
-											value: '',
-										},
-										...employees,
-									]}
-									required={false}
-								/>
-							)}
-						</VStack>
+							label={'Assign by'}
+							name={'assignBy'}
+							options={[
+								{
+									label: (
+										<Text color={colorMode == 'light' ? 'black' : 'white'}>
+											all
+										</Text>
+									),
+									value: '',
+								},
+								...employees,
+							]}
+							required={false}
+						/>
+					)}
+				</VStack>
 			</Drawer>
 		</Box>
 	)
@@ -608,4 +443,3 @@ const TasksEmployee: NextLayout = () => {
 TasksEmployee.getLayout = EmployeeLayout
 
 export default TasksEmployee
-

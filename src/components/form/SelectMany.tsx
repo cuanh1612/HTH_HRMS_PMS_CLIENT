@@ -1,4 +1,11 @@
-import { FormControl, FormHelperText, FormLabel, useColorModeValue } from '@chakra-ui/react'
+import {
+	Button,
+	FormControl,
+	FormHelperText,
+	FormLabel,
+	HStack,
+	useColorModeValue,
+} from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
 import { UseFormReturn } from 'react-hook-form'
 import Select from 'react-select'
@@ -15,18 +22,19 @@ export const SelectMany = ({
 	required = false,
 	options,
 	selectedOptions,
-}: ISelect & { form: UseFormReturn<any, any> })=> {
+	isModal,
+	onOpenModal,
+}: ISelect & { form: UseFormReturn<any, any> }) => {
 	const errorColor = useColorModeValue('red.400', 'pink.400')
-
 
 	const [selectedOptionsState, setSelectedOptionsState] = useState<IOption[]>([])
 
-		//set state when have selected option prop
-		useEffect(() => {
-			if(selectedOptions){
-				setSelectedOptionsState(selectedOptions)
-			}
-		}, [selectedOptions])
+	//set state when have selected option prop
+	useEffect(() => {
+		if (selectedOptions) {
+			setSelectedOptionsState(selectedOptions)
+		}
+	}, [selectedOptions])
 
 	//handle change select
 	const onChangeSelect = (options: IOption[]) => {
@@ -51,7 +59,6 @@ export const SelectMany = ({
 		}
 	}, [selectedOptions])
 
-
 	return (
 		<>
 			<FormControl isRequired={required}>
@@ -59,16 +66,19 @@ export const SelectMany = ({
 					{label}
 				</FormLabel>
 
-				<Select
-					options={options}
-					value={selectedOptionsState}
-					closeMenuOnSelect={false}
-					components={animatedComponents}
-					isMulti
-					onChange={(value) => {
-						onChangeSelect(value as IOption[])
-					}}
-				/>
+				<HStack w={'full'} position={'relative'}>
+					<Select
+						options={options}
+						value={selectedOptionsState}
+						closeMenuOnSelect={false}
+						components={animatedComponents}
+						isMulti
+						onChange={(value) => {
+							onChangeSelect(value as IOption[])
+						}}
+					/>
+					{isModal && onOpenModal && <Button onClick={onOpenModal}>Add</Button>}
+				</HStack>
 
 				{form?.formState?.errors[name] && (
 					<FormHelperText color={errorColor}>

@@ -8,19 +8,16 @@ import {
 	GridItem,
 	HStack,
 	Input,
-	VStack,
+	VStack
 } from '@chakra-ui/react'
-import {ButtonIcon, Loading} from 'components/common'
+import { ButtonIcon, Loading } from 'components/common'
 import { AuthContext } from 'contexts/AuthContext'
-import { createHolidaysMutation } from 'mutations'
 import { createSkillsMutation } from 'mutations/skill'
 import { useRouter } from 'next/router'
-import { allHolidaysQuery } from 'queries'
 import { allSkillsQuery } from 'queries/skill'
 import { FormEventHandler, useContext, useEffect, useState } from 'react'
 import { AiOutlineCheck } from 'react-icons/ai'
 import { MdDeleteOutline } from 'react-icons/md'
-import { createHolidayForm, createSkillsForm } from 'type/form/basicFormType'
 import { v4 as uuidv4 } from 'uuid'
 
 export interface IAddSkillProps {

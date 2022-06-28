@@ -230,3 +230,37 @@ export const dataTypeFile: string[] = [
 	'xls',
 	'zip',
 ]
+
+export const dataJobStatus: IOption[] = [
+	{
+		value: 'Open',
+		label: 'Open',
+	},
+	{
+		value: 'Close',
+		label: 'Close',
+	},
+]
+
+export const dataJobRate: IOption[] = [
+	{
+		value: 'Per Hour',
+		label: 'Per Hour',
+	},
+	{
+		value: 'Per Day',
+		label: 'Per Day',
+	},
+	{
+		value: 'Per Week',
+		label: 'Per Week',
+	},
+	{
+		value: 'Per Month',
+		label: 'Per Month',
+	},
+	{
+		value: 'Per Year',
+		label: 'Per Year',
+	},
+]

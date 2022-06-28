@@ -635,3 +635,66 @@ export interface updateSkillsForm {
 export interface deleteSkillsForm {
 	skills: number []
 }
+
+export interface createJobForm {
+    title: string
+    skills: number[]
+    locations: number[]
+    department: number
+    status: boolean | string
+    total_openings: number
+    job_type: number
+    work_experience: number
+    recruiter: number
+    starting_salary_amount: number
+    job_description?: string
+	starts_on_date: Date
+	ends_on_date: Date
+	rate: string
+}
+
+export interface updateJobForm {
+	jobId: number
+    title: string
+    skills: number[]
+    locations: number[]
+    department: number
+    status: boolean
+    total_openings: number
+    job_type: number
+    work_experience: number
+    recruiter: number
+    starting_salary_amount: number
+    job_description?: string
+}
+
+export interface deleteJobsForm {
+	jobs: number []
+}
+
+export interface createLocationsForm {
+	locations: string []
+}
+
+export interface updateLocationForm {
+	name: string
+	locationId: string | number
+}
+
+export interface createJobTypeForm {
+	name: string
+}
+
+export interface updateJobTypeForm {
+	name: string
+	jobTypeId: string | number
+}
+
+export interface createWorkExperienceForm {
+	name: string
+}
+
+export interface updateWorkExperienceForm {
+	name: string
+	workExperienceId: string | number
+}

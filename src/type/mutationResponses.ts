@@ -15,8 +15,11 @@ import {
 	eventType,
 	holidayType,
 	Hourly_rate_project,
+	jobType,
+	jobTypeType,
 	leaveType,
 	leaveTypeType,
+	locationType,
 	milestoneType,
 	noticeBoardType,
 	notificationType,
@@ -39,6 +42,7 @@ import {
 	taskType,
 	timeLogType,
 	userType,
+	workExperienceType,
 } from './basicTypes'
 
 export interface commonResponse {
@@ -317,4 +321,24 @@ export interface pendingMilestoneClientMutaionResponse extends commonResponse {
 
 export interface IpendingTasks  extends commonResponse {
 	pendingTasksRaw: taskType[]
+}
+
+export interface jobMutationResponse extends commonResponse {
+	job?: jobType
+	jobs?: jobType[]
+}
+
+export interface locationMutationResponse extends commonResponse {
+	location?: locationType
+	locations?: locationType[]
+}
+
+export interface jobTypeMutationResponse extends commonResponse {
+	jobType?: jobTypeType
+	jobTypes?: jobTypeType[]
+}
+
+export interface workExperienceMutationResponse extends commonResponse {
+	workExperience?: workExperienceType
+	workExperiences?: workExperienceType[]
 }

@@ -153,7 +153,7 @@ const Employees: NextLayout = () => {
 	// all departments
 	const [departments, setDepartments] = useState<IOption[]>()
 
-	// all departments
+	// all designations
 	const [designations, setDesignations] = useState<IOption[]>()
 
 	// data all users to select

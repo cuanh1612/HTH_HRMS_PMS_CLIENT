@@ -226,7 +226,10 @@ export const updateStickyNoteValidate = yup.object({
 })
 
 export const createRoomValidate = yup.object({
-	title: yup.string().required('Please enter field title').matches(/^[^-\s][a-zA-Z0-9_\s-]+$/, 'This field cannot contain special character'),
+	title: yup
+		.string()
+		.required('Please enter field title')
+		.matches(/^[^-\s][a-zA-Z0-9_\s-]+$/, 'This field cannot contain special character'),
 	date: yup.date().required('Please select start on date'),
 	description: yup.string().required('Please enter field description'),
 	employees: yup.array().required('Please select employees'),
@@ -234,9 +237,27 @@ export const createRoomValidate = yup.object({
 })
 
 export const updateRoomValidate = yup.object({
-	title: yup.string().required('Please enter field title').matches(/^[^-\s][a-zA-Z0-9_\s-]+$/, 'This field cannot contain and special character'),
+	title: yup
+		.string()
+		.required('Please enter field title')
+		.matches(/^[^-\s][a-zA-Z0-9_\s-]+$/, 'This field cannot contain and special character'),
 	date: yup.date().required('Please select start on date'),
 	description: yup.string().required('Please enter field description'),
 	employees: yup.array().required('Please select employees'),
 	clients: yup.array().required('Please select clients'),
+})
+
+export const CreateJobValidate = yup.object({
+	title: yup.string().required('Please enter field title'),
+	skills: yup.array().required('Please select skills for job'),
+	locations: yup.array().required('Please select locations for job'),
+	department: yup.number().required('Please select department for job'),
+	total_openings: yup.number().min(0).required('Please select department for job'),
+	job_type: yup.number().required('Please select job type for job'),
+	work_experience: yup.number().required('Please select work experience for job'),
+	recruiter: yup.number().required('Please select department for job'),
+	starting_salary_amount: yup.number().min(0).required('Please select department for job'),
+	starts_on_date: yup.date().required('Please select starts on date'),
+	ends_on_date: yup.date().required('Please select ends ondate'),
+	rate: yup.string().required('Please select job rate')
 })

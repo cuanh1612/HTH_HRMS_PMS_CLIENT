@@ -1,4 +1,4 @@
-import { FormControl, FormHelperText, FormLabel, useColorModeValue } from '@chakra-ui/react'
+import { Button, FormControl, FormHelperText, FormLabel, HStack, useColorModeValue } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
 import { UseFormReturn } from 'react-hook-form'
 import Select from 'react-select'
@@ -15,17 +15,18 @@ export const SelectCustom = ({
 	required = false,
 	options,
 	selectedOption,
-	onChangeValue
-}: ISelect & { form: UseFormReturn<any, any> })=> {
+	onChangeValue,
+	isModal,
+	onOpenModal,
+}: ISelect & { form: UseFormReturn<any, any> }) => {
 	const errorColor = useColorModeValue('red.400', 'pink.400')
-	
 
 	//Sate
 	const [optionSelect, setOptionSelect] = useState<IOption | undefined>(undefined)
 
 	//set state when have selected option prop
 	useEffect(() => {
-		if(selectedOption){
+		if (selectedOption) {
 			setOptionSelect(selectedOption)
 		}
 	}, [selectedOption])
@@ -39,37 +40,43 @@ export const SelectCustom = ({
 		form.setValue(name, options.value)
 
 		//Handle when change value
-		if(onChangeValue){
+		if (onChangeValue) {
 			onChangeValue(options.value as string | number)
 		}
 	}
 
 	//Change value selected when form data change
 	useEffect(() => {
-		if(form.getValues(name)){
-			console.log("doi", form.getValues(name));
-			
-			const selectedOption = options.filter(option => option.value === form.getValues(name))[0]
+		if (form.getValues(name)) {
+			console.log('doi', form.getValues(name))
+
+			const selectedOption = options.filter(
+				(option) => option.value === form.getValues(name)
+			)[0]
 			setOptionSelect(selectedOption)
 		}
 	}, [form.getValues(name)])
 
 	return (
 		<>
-			<FormControl isRequired={required} zIndex={3}>
+			<FormControl isRequired={required}>
 				<FormLabel color={'gray.400'} fontWeight={'normal'} htmlFor={name}>
 					{label}
 				</FormLabel>
 
-				<Select
-					value={optionSelect ? optionSelect : selectedOption}
-					options={options}
-					closeMenuOnSelect={false}
-					components={animatedComponents}
-					onChange={(value) => {
-						onChangeSelect(value as IOption)
-					}}
-				/>
+				<HStack w={'full'} position={'relative'}>
+					<Select
+						value={optionSelect ? optionSelect : selectedOption}
+						options={options}
+						closeMenuOnSelect={false}
+						components={animatedComponents}
+						onChange={(value) => {
+							onChangeSelect(value as IOption)
+						}}
+					/>
+
+					{isModal && onOpenModal && <Button onClick={onOpenModal}>Add</Button>}
+				</HStack>
 
 				{form?.formState?.errors[name] && (
 					<FormHelperText color={errorColor}>

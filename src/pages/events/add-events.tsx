@@ -188,21 +188,21 @@ export default function AddEvent({ onCloseDrawer }: IAddEventProps) {
 					msg: 'Ends on time cannot be less than starts on time',
 					type: 'warning',
 				})
+			} else {
+				//Set value submit
+				values.description = description
+				values.isRepeat = isRepeatEvent
+				if (!isRepeatEvent) {
+					values.repeatEvery = undefined
+					values.cycles = undefined
+				} else if (values.repeatEvery && values.cycles) {
+					values.repeatEvery = Number(values.repeatEvery)
+					values.cycles = Number(values.cycles)
+				}
+				mutateCreEvent({
+					...values,
+				})
 			}
-
-			//Set value submit
-			values.description = description
-			values.isRepeat = isRepeatEvent
-			if (!isRepeatEvent) {
-				values.repeatEvery = undefined
-				values.cycles = undefined
-			} else if (values.repeatEvery && values.cycles) {
-				values.repeatEvery = Number(values.repeatEvery)
-				values.cycles = Number(values.cycles)
-			}
-			mutateCreEvent({
-				...values,
-			})
 		}
 	}
 

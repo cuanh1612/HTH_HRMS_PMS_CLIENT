@@ -8,9 +8,9 @@ import {
 	GridItem,
 	HStack,
 	Input,
-	VStack,
+	VStack
 } from '@chakra-ui/react'
-import {ButtonIcon, Loading} from 'components/common'
+import { ButtonIcon, Loading } from 'components/common'
 import { AuthContext } from 'contexts/AuthContext'
 import { createSkillsMutation } from 'mutations/skill'
 import { useRouter } from 'next/router'

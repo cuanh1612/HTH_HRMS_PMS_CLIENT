@@ -534,3 +534,45 @@ export interface skillType {
 	id: number
 	name: string
 }
+
+export interface locationType {
+    id: number
+    name: string
+    jobs?: jobType[]
+	createdAt: Date
+	updatedAt: Date
+}
+
+export interface jobTypeType {
+    id: number
+    name: string
+    jobs?: jobType
+	createdAt: Date
+	updatedAt: Date
+}
+
+export interface workExperienceType {
+	id: number
+	name: string
+	jobs?: jobType[]
+	createdAt: Date
+	updatedAt: Date
+}
+
+
+export interface jobType {
+    id: number
+    title: string
+	starts_on_date: Date
+	ends_on_date: Date
+    skills: skillType[]
+    locations: locationType[]
+    department: departmentType
+    status: boolean
+    total_openings: number
+    job_type: jobTypeType
+    work_experience: workExperienceType
+    recruiter: employeeType
+    starting_salary_amount: number
+    job_description?: string
+}

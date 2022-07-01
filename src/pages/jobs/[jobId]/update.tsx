@@ -14,10 +14,11 @@ import { Loading } from 'components/common'
 import { Input, InputNumber, SelectCustom, SelectMany } from 'components/form'
 import Modal from 'components/modal/Modal'
 import { AuthContext } from 'contexts/AuthContext'
-import { createJobMutation } from 'mutations/job'
+import { updateJobMutation } from 'mutations/job'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 import { allDepartmentsQuery, allEmployeesQuery } from 'queries'
+import { allJobsQuery, detailJobQuery } from 'queries/job'
 import { allJobTypesQuery } from 'queries/jobType'
 import { allLocationsQuery } from 'queries/location'
 import { allSkillsQuery } from 'queries/skill'
@@ -29,36 +30,27 @@ import { BsCalendarDate } from 'react-icons/bs'
 import { MdDriveFileRenameOutline } from 'react-icons/md'
 import 'react-quill/dist/quill.bubble.css'
 import 'react-quill/dist/quill.snow.css'
-import { mutate } from 'swr'
+import Department from 'src/pages/departments'
+import JobTypes from 'src/pages/jobTypes'
+import Locations from 'src/pages/locations'
+import AddSkillModal from 'src/pages/skills/add-skills-modal'
+import WorkExperiences from 'src/pages/workExperiences'
 import { IOption } from 'type/basicTypes'
-import { createJobForm } from 'type/form/basicFormType'
+import { updateJobForm } from 'type/form/basicFormType'
 import { dataJobRate, dataJobStatus } from 'utils/basicData'
-import { CreateJobValidate } from 'utils/validate'
-import Department from '../departments'
-import JobTypes from '../jobTypes'
-import Locations from '../locations'
-import AddSkillModal from '../skills/add-skills-modal'
-import WorkExperiences from '../workExperiences'
+import { UpdateJobValidate } from 'utils/validate'
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
 
-export interface IAddJobProps {
+export interface IUpdateJobProps {
 	onCloseDrawer?: () => void
+	JobIdProp?: number
 }
 
-export default function AddJob({ onCloseDrawer }: IAddJobProps) {
-	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
+export default function UpdateJob({ onCloseDrawer, JobIdProp }: IUpdateJobProps) {
+	const { isAuthenticated, handleLoading, setToast, socket } = useContext(AuthContext)
 	const router = useRouter()
-
-	//State -------------------------------------------------------------------
-	// all departments
-	const [optionDepartments, setOptionDepartments] = useState<IOption[]>([])
-	const [optionSkills, setOptionSkills] = useState<IOption[]>([])
-	const [optionJobTypes, setOptionJobTypes] = useState<IOption[]>([])
-	const [optionWorkExperiences, setOptionWorkExperiences] = useState<IOption[]>([])
-	const [optionLocations, setOptionLocations] = useState<IOption[]>([])
-	const [optionEmployees, setOptionEmployees] = useState<IOption[]>([])
-	const [jobDescription, setJobDescription] = useState<string>('')
+	const { jobId: jobIdRouter } = router.query
 
 	//Setup modal -------------------------------------------------------------
 	const {
@@ -86,7 +78,33 @@ export default function AddJob({ onCloseDrawer }: IAddJobProps) {
 		onClose: onCloseWorkExperience,
 	} = useDisclosure()
 
-	//Query -------------------------------------------------------------------
+	//State ----------------------------------------------------------------------
+	// all departments
+	const [optionDepartments, setOptionDepartments] = useState<IOption[]>([])
+	const [optionSkills, setOptionSkills] = useState<IOption[]>([])
+	const [optionJobTypes, setOptionJobTypes] = useState<IOption[]>([])
+	const [optionWorkExperiences, setOptionWorkExperiences] = useState<IOption[]>([])
+	const [optionLocations, setOptionLocations] = useState<IOption[]>([])
+	const [optionEmployees, setOptionEmployees] = useState<IOption[]>([])
+	const [jobDescription, setJobDescription] = useState<string>('')
+
+	//State selected
+	const [selectedOptionSkills, setSelectedSkills] = useState<IOption[]>([])
+	const [selectedOptionlocations, setSelectedLocations] = useState<IOption[]>([])
+	const [selectedOptionDepartment, setSelectedDepartment] = useState<IOption>()
+
+	//query ----------------------------------------------------------------------
+	// get detail job Id
+	const { data: dataDetailJob } = detailJobQuery(
+		isAuthenticated,
+		JobIdProp || (jobIdRouter as string)
+	)
+
+	console.log(dataDetailJob)
+
+	// refetch all jobs
+	const { mutate: refetchJobs } = allJobsQuery(isAuthenticated)
+
 	// get all department
 	const { data: dataDepartments, error: errorDepartments } = allDepartmentsQuery(isAuthenticated)
 	// get all skills
@@ -100,16 +118,11 @@ export default function AddJob({ onCloseDrawer }: IAddJobProps) {
 	// get all work experience
 	const { data: allWorkExperience } = allWorkExperiencesQuery(isAuthenticated)
 
-	//mutation ----------------------------------------------------------------
-	const [mutateCreJob, { status: statusCreJob, data: dataCreJob }] = createJobMutation(setToast)
-
-	//Funcion -----------------------------------------------------------------
-	const onChangeDescription = (value: string) => {
-		setJobDescription(value)
-	}
+	//mutation -------------------------------------------------------------------
+	const [mutateUpJob, { status: statusUpJob, data: dataUpJob }] = updateJobMutation(setToast)
 
 	// setForm and submit form create new job ---------------------------------
-	const formSetting = useForm<createJobForm>({
+	const formSetting = useForm<updateJobForm>({
 		defaultValues: {
 			title: '',
 			skills: undefined,
@@ -125,13 +138,13 @@ export default function AddJob({ onCloseDrawer }: IAddJobProps) {
 			ends_on_date: undefined,
 			rate: undefined,
 		},
-		resolver: yupResolver(CreateJobValidate),
+		resolver: yupResolver(UpdateJobValidate),
 	})
 
 	const { handleSubmit } = formSetting
 
 	//Handle crete job
-	const onSubmit = async (values: createJobForm) => {
+	const onSubmit = async (values: updateJobForm) => {
 		//Check time valid
 		if (new Date(values.starts_on_date) > new Date(values.ends_on_date)) {
 			setToast({
@@ -146,8 +159,16 @@ export default function AddJob({ onCloseDrawer }: IAddJobProps) {
 			console.log(values)
 
 			//create new job
-			mutateCreJob(values)
+			mutateUpJob({
+				...values,
+				jobId: JobIdProp || jobIdRouter as string
+			})
 		}
+	}
+
+	//Funtion -------------------------------------------------------------------
+	const onChangeDescription = (value: string) => {
+		setJobDescription(value)
 	}
 
 	//User effect ---------------------------------------------------------------
@@ -298,12 +319,12 @@ export default function AddJob({ onCloseDrawer }: IAddJobProps) {
 
 	//Note when request success
 	useEffect(() => {
-		if (statusCreJob === 'success') {
+		if (statusUpJob === 'success') {
 			//Inform notice success
-			if (dataCreJob) {
+			if (dataUpJob) {
 				setToast({
 					type: 'success',
-					msg: dataCreJob?.message,
+					msg: dataUpJob?.message,
 				})
 			}
 
@@ -311,26 +332,91 @@ export default function AddJob({ onCloseDrawer }: IAddJobProps) {
 			if (onCloseDrawer) {
 				onCloseDrawer()
 			}
-
-			//Reset data form
-			formSetting.reset({
-				title: '',
-				skills: [],
-				locations: [],
-				department: undefined,
-				status: undefined,
-				total_openings: 1,
-				job_type: undefined,
-				work_experience: undefined,
-				recruiter: undefined,
-				starting_salary_amount: 1,
-				starts_on_date: undefined,
-				ends_on_date: undefined,
-			})
-
-			setJobDescription('')
 		}
-	}, [statusCreJob])
+	}, [statusUpJob])
+
+	//Chane data form when have data detail event
+	useEffect(() => {
+		if (dataDetailJob && dataDetailJob.job) {
+			//Set data selected option skills
+			if (dataDetailJob.job.skills) {
+				let newSelectedOptionSkils: IOption[] = []
+
+				dataDetailJob.job.skills.map((skill) => {
+					newSelectedOptionSkils.push({
+						label: (
+							<>
+								<Text>{skill.name}</Text>
+							</>
+						),
+						value: skill.id,
+					})
+				})
+
+				setSelectedSkills(newSelectedOptionSkils)
+			}
+
+			//Set data selected option locations
+			if (dataDetailJob.job.locations) {
+				let newSelectedOptionlocations: IOption[] = []
+
+				dataDetailJob.job.locations.map((location) => {
+					newSelectedOptionlocations.push({
+						label: (
+							<>
+								<Text>{location.name}</Text>
+							</>
+						),
+						value: location.id,
+					})
+				})
+
+				setSelectedLocations(newSelectedOptionlocations)
+			}
+
+			//Set data selected option department
+			if (dataDetailJob.job.department) {
+				const newSelectedDepartment: IOption = {
+					label: (
+						<>
+							<Text>{dataDetailJob.job.department.name}</Text>
+						</>
+					),
+					value: dataDetailJob.job.department.id,
+				}
+				setSelectedDepartment(newSelectedDepartment)
+			}
+
+			//Set date description
+			setJobDescription(dataDetailJob.job.job_description || '')
+
+			//set data form
+			formSetting.reset({
+				title: dataDetailJob.job.title || '',
+				skills: dataDetailJob.job.skills
+					? dataDetailJob.job.skills.map((skill) => skill.id)
+					: undefined,
+				locations: dataDetailJob.job.locations
+					? dataDetailJob.job.locations.map((location) => location.id)
+					: undefined,
+				department: dataDetailJob.job.department
+					? dataDetailJob.job.department.id
+					: undefined,
+				status: dataDetailJob.job.status ? 'Open' : 'Close',
+				total_openings: dataDetailJob.job.total_openings || 1,
+				job_type: dataDetailJob.job.job_type ? dataDetailJob.job.job_type.id : undefined,
+				work_experience: dataDetailJob.job.work_experience
+					? dataDetailJob.job.work_experience.id
+					: undefined,
+				recruiter: dataDetailJob.job.recruiter ? dataDetailJob.job.recruiter.id : undefined,
+				starting_salary_amount: dataDetailJob.job.starting_salary_amount || 1,
+				starts_on_date: dataDetailJob.job.starts_on_date || undefined,
+				ends_on_date: dataDetailJob.job.ends_on_date || undefined,
+				rate: dataDetailJob.job.rate || undefined,
+				job_description: dataDetailJob.job.job_description || '',
+			})
+		}
+	}, [dataDetailJob])
 
 	return (
 		<>
@@ -364,6 +450,7 @@ export default function AddJob({ onCloseDrawer }: IAddJobProps) {
 							isModal={true}
 							onOpenModal={onOpenDepartment}
 							placeholder={'Select department'}
+							selectedOption={selectedOptionDepartment}
 						/>
 					</GridItem>
 
@@ -377,6 +464,7 @@ export default function AddJob({ onCloseDrawer }: IAddJobProps) {
 								options={optionSkills}
 								isModal={true}
 								onOpenModal={onOpenSkill}
+								selectedOptions={selectedOptionSkills}
 							/>
 						</HStack>
 					</GridItem>
@@ -391,6 +479,7 @@ export default function AddJob({ onCloseDrawer }: IAddJobProps) {
 								options={optionLocations}
 								isModal={true}
 								onOpenModal={onOpenLocation}
+								selectedOptions={selectedOptionlocations}
 							/>
 						</HStack>
 					</GridItem>
@@ -538,7 +627,7 @@ export default function AddJob({ onCloseDrawer }: IAddJobProps) {
 				>
 					Save
 				</Button>
-				{statusCreJob === 'running' && <Loading />}
+				{statusUpJob === 'running' && <Loading />}
 			</Box>
 
 			{/* Modal department and designation */}

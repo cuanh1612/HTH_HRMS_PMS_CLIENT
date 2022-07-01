@@ -6,8 +6,8 @@ import { useRouter } from 'next/router'
 import { allJobsQuery } from 'queries/job'
 import { useContext, useEffect } from 'react'
 import { NextLayout } from 'type/element/layout'
-import AddSkill from './add-jobs'
-import UpdateSkill from './update-jobs'
+import AddJob from './add-jobs'
+import UpdateJob from './[jobId]/update'
 
 const Job: NextLayout = () => {
 	const { isAuthenticated, handleLoading, setToast, currentUser } = useContext(AuthContext)
@@ -37,10 +37,10 @@ const Job: NextLayout = () => {
 			<Button onClick={onOpenAdd}>add jobs</Button>
 			<Button onClick={onOpenUpdate}>update jobs</Button>
 			<Drawer size="xl" title="Add Jobs" onClose={onCloseAdd} isOpen={isOpenAdd}>
-				<AddSkill onCloseDrawer={onCloseAdd} />
+				<AddJob onCloseDrawer={onCloseAdd} />
 			</Drawer>
 			<Drawer size="xl" title="Update Jobs" onClose={onCloseUpdate} isOpen={isOpenUpdate}>
-				<UpdateSkill onCloseDrawer={onCloseUpdate} skillId={1} />
+				<UpdateJob onCloseDrawer={onCloseUpdate} JobIdProp={8} />
 			</Drawer>
 		</>
 	)

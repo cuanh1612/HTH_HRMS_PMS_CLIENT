@@ -575,4 +575,5 @@ export interface jobType {
     recruiter: employeeType
     starting_salary_amount: number
     job_description?: string
+	rate: string
 }

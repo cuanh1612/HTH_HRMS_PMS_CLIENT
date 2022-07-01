@@ -654,18 +654,21 @@ export interface createJobForm {
 }
 
 export interface updateJobForm {
-	jobId: number
+	jobId: number | string
     title: string
     skills: number[]
     locations: number[]
     department: number
-    status: boolean
+    status: boolean | string
     total_openings: number
     job_type: number
     work_experience: number
     recruiter: number
     starting_salary_amount: number
     job_description?: string
+	starts_on_date: Date
+	ends_on_date: Date
+	rate: string
 }
 
 export interface deleteJobsForm {

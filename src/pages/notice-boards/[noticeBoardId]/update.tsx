@@ -39,7 +39,7 @@ export default function UpdateNoticeBoard({
 }: IUpdateNoticeBoardProps) {
 	const { isAuthenticated, handleLoading, setToast, socket } = useContext(AuthContext)
 	const router = useRouter()
-	const { noticeBoardIdRouter } = router.query
+	const { notiiceBoardId: noticeBoardIdRouter } = router.query
 
 	//State ----------------------------------------------------------------------
 	const [detailNotice, setDetailNotice] = useState<string>('')

@@ -117,6 +117,7 @@ const attendance: NextLayout = () => {
 
 	console.log(allAttendances)
 
+
 	// get all employees
 	const { data: allEmployees } = allEmployeesNormalQuery(isAuthenticated)
 

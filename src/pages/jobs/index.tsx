@@ -3,14 +3,14 @@ import { Drawer } from 'components/Drawer'
 import { ClientLayout } from 'components/layouts'
 import { AuthContext } from 'contexts/AuthContext'
 import { useRouter } from 'next/router'
-import { allJobsQuery } from 'queries/job'
+// import { allJobsQuery } from 'queries/job'
 import { useContext, useEffect } from 'react'
 import { NextLayout } from 'type/element/layout'
 import AddSkill from './add-jobs'
 import UpdateSkill from './update-jobs'
 
 const Job: NextLayout = () => {
-	const { isAuthenticated, handleLoading, setToast, currentUser } = useContext(AuthContext)
+	const { isAuthenticated, handleLoading } = useContext(AuthContext)
 	const router = useRouter()
 
 	//Setup drawer --------------------------------------------------------------
@@ -18,7 +18,7 @@ const Job: NextLayout = () => {
 	const { isOpen: isOpenUpdate, onOpen: onOpenUpdate, onClose: onCloseUpdate } = useDisclosure()
 
 	//Query ---------------------------------------------------------------------
-	const { data: dataAllJobs } = allJobsQuery(isAuthenticated)
+	// const { data: dataAllJobs } = allJobsQuery(isAuthenticated)
 
 	//User effect ---------------------------------------------------------------
 	//Handle check loged in

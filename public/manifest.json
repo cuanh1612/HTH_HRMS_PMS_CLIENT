@@ -1,12 +1,12 @@
 {
-    "theme_color": "#f69435",
-    "background_color": "#f69435",
-    "display": "standalone",
-    "scope": "/",
+    "short_name": "Huprom",
+    "name": "Human resource and project management",
+    "description": "...",
     "start_url": "/",
-    "name": "Human resource and project manager",
-    "short_name": "Humprom",
-    "description": "This web application helps to managements humans and projects of the company ",
+    "background_color": "#FFFFFF",
+    "scope": "/",
+    "display": "standalone",
+    "theme_color": "#000000",
     "icons": [
         {
             "src": "/icon-192x192.png",

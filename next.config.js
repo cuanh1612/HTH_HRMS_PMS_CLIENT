@@ -12,13 +12,13 @@ const withTM = require("next-transpile-modules")([
 
 const withPWA = require('next-pwa')
 
-module.exports = withTM({
-    // your custom config goes here
-    PluginArray: [withPWA({
+module.exports =withPWA({
+    reactStrictMote: true,
         pwa: {
             dest: "public",
             register: true,
-            skipWaiting: true
-        }
-    })]
-});
+            skipWaiting: true,
+
+        },
+        ...withTM()
+    })

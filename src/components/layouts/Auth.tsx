@@ -1,4 +1,4 @@
-import { Box, Center, Flex, HStack, Image, useColorModeValue, VStack } from '@chakra-ui/react'
+import { Box, Center, Flex, HStack, useColorModeValue, VStack } from '@chakra-ui/react'
 
 export const AuthLayout = ({ children }: { children: JSX.Element }) => {
 	// set color when use darkMode

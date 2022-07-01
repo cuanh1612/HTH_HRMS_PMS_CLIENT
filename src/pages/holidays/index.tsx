@@ -1,43 +1,25 @@
-import {
-	Button,
-	Collapse,
-	HStack,
-	Menu,
-	MenuButton,
-	MenuItem,
-	MenuList,
-	SimpleGrid,
-	Text,
-	useDisclosure,
-	VStack,
-} from '@chakra-ui/react'
-import { AlertDialog, Func, Table } from 'components/common'
+import { Box, Button, useDisclosure, VStack } from '@chakra-ui/react'
+import { AlertDialog, Func, FuncCollapse, Table } from 'components/common'
 import { Drawer } from 'components/Drawer'
 import { Input, Select } from 'components/filter'
 import ImportCSV from 'components/importCSV'
 import { ClientLayout } from 'components/layouts'
 import { AuthContext } from 'contexts/AuthContext'
 import { createHolidaysMutation, deleteHolidayMutation, deleteHolidaysMutation } from 'mutations'
+import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { allHolidaysQuery } from 'queries'
 import { useContext, useEffect, useState } from 'react'
 import { CSVLink } from 'react-csv'
-import {
-	AiOutlineCaretDown,
-	AiOutlineCaretUp,
-	AiOutlineDelete,
-	AiOutlineSearch,
-} from 'react-icons/ai'
+import { AiOutlineDelete, AiOutlineSearch } from 'react-icons/ai'
 import { BiExport } from 'react-icons/bi'
 import { FaFileCsv } from 'react-icons/fa'
-import { IoAdd, IoEyeOutline } from 'react-icons/io5'
-import { MdOutlineDeleteOutline, MdOutlineEvent, MdOutlineMoreVert } from 'react-icons/md'
-import { RiPencilLine } from 'react-icons/ri'
+import { IoAdd } from 'react-icons/io5'
+import { MdOutlineEvent } from 'react-icons/md'
 import { VscFilter } from 'react-icons/vsc'
 import { NextLayout } from 'type/element/layout'
 import { IFilter, TColumn } from 'type/tableTypes'
 import { holidayColumn } from 'utils/columns'
-import { monthFilter, textFilter, yearFilter } from 'utils/tableFilters'
 import AddHoliday from './add-holidays'
 import UpdateHoliday from './update-holidays'
 import DetailHoliday from './[holidayId]'
@@ -47,11 +29,6 @@ const Holiday: NextLayout = () => {
 	const router = useRouter()
 
 	//Setup drawer --------------------------------------------------------------
-	//set isopen of function
-	const { isOpen, onToggle } = useDisclosure({
-		defaultIsOpen: true,
-	})
-
 	const { isOpen: isOpenAdd, onOpen: onOpenAdd, onClose: onCloseAdd } = useDisclosure()
 	const { isOpen: isOpenUpdate, onOpen: onOpenUpdate, onClose: onCloseUpdate } = useDisclosure()
 	const { isOpen: isOpenDetail, onOpen: onOpenDetail, onClose: onCloseDetail } = useDisclosure()
@@ -87,7 +64,7 @@ const Holiday: NextLayout = () => {
 	const [dataSl, setDataSl] = useState<Array<number> | null>()
 
 	// get id to delete employee
-	const [idHoliday, setIdHoliday] = useState<number| null>(null)
+	const [idHoliday, setIdHoliday] = useState<number | null>(null)
 
 	// get all holidays
 	const { data: allHolidays, mutate: refetchAllHolidays } = allHolidaysQuery({})
@@ -197,21 +174,20 @@ const Holiday: NextLayout = () => {
 		})
 	}
 
-
 	// header ----------------------------------------
 	const columns: TColumn[] = holidayColumn({
 		currentUser,
-		onDelete: (id: number)=> {
+		onDelete: (id: number) => {
 			setIdHoliday(id)
-										onOpenDetail()
+			onOpenDl()
 		},
-		onDetail: (id: number)=> {
+		onDetail: (id: number) => {
 			setHolidayIdDetail(id)
-										onOpenDetail()
+			onOpenDetail()
 		},
-		onUpdate: (id: number)=> {
+		onUpdate: (id: number) => {
 			setIdHoliday(id)
-										onOpenUpdate()
+			onOpenUpdate()
 		},
 	})
 
@@ -236,91 +212,74 @@ const Holiday: NextLayout = () => {
 	}, [allHolidays])
 
 	return (
-		<>
-			<HStack
-				_hover={{
-					textDecoration: 'none',
-				}}
-				onClick={onToggle}
-				color={'gray.500'}
-				cursor={'pointer'}
-				userSelect={'none'}
-			>
-				<Text fontWeight={'semibold'}>Function</Text>
-				{isOpen ? <AiOutlineCaretDown /> : <AiOutlineCaretUp />}
-			</HStack>
-			<Collapse in={isOpen} animateOpacity>
-				<SimpleGrid
-					w={'full'}
-					cursor={'pointer'}
-					columns={[1, 2, 2, 3, null, 4]}
-					spacing={10}
-					pt={3}
-				>
-					{currentUser && currentUser.role === 'Admin' && (
-						<>
+		<Box pb={8}>
+			<Head>
+				<title>Huprom - Holidays</title>
+				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
+			</Head>
+			<FuncCollapse>
+				{currentUser && currentUser.role === 'Admin' && (
+					<>
+						<Func
+							icon={<IoAdd />}
+							description={'Add new holiday by form'}
+							title={'Add new'}
+							action={onOpenAdd}
+						/>
+						<CSVLink filename={'holidays.csv'} headers={headersCSV} data={dataCSV}>
 							<Func
-								icon={<IoAdd />}
-								description={'Add new client by form'}
-								title={'Add new'}
-								action={onOpenAdd}
+								icon={<BiExport />}
+								description={'export to csv'}
+								title={'export'}
+								action={() => {}}
 							/>
-							<CSVLink filename={'holidays.csv'} headers={headersCSV} data={dataCSV}>
-								<Func
-									icon={<BiExport />}
-									description={'export to csv'}
-									title={'export'}
-									action={() => {}}
-								/>
-							</CSVLink>
+						</CSVLink>
 
-							<CSVLink
-								filename={'holidaysTemplate.csv'}
-								headers={headersCSVTemplate}
-								data={dataCSVTemplate}
-							>
-								<Func
-									icon={<FaFileCsv />}
-									description={'export csv template'}
-									title={'export csv template'}
-									action={() => {}}
-								/>
-							</CSVLink>
-
-							<ImportCSV
-								fieldsValid={['holiday_date', 'occasion']}
-								handleImportCSV={handleImportCSV}
-								statusImport={statusCreHolidays === 'running'}
-								isOpenImportCSV={isOpenImportCSV}
-								onCloseImportCSV={onCloseImportCSV}
-								onOpenImportCSV={onOpenImportCSV}
-							/>
+						<CSVLink
+							filename={'holidaysTemplate.csv'}
+							headers={headersCSVTemplate}
+							data={dataCSVTemplate}
+						>
 							<Func
-								icon={<MdOutlineEvent />}
-								title={'Calendar'}
-								description={'show tasks as calendar'}
-								action={() => {
-									router.push('/holidays/calendar')
-								}}
+								icon={<FaFileCsv />}
+								description={'export csv template'}
+								title={'export csv template'}
+								action={() => {}}
 							/>
-						</>
-					)}
-					<Func
-						icon={<VscFilter />}
-						description={'Open draw to filter'}
-						title={'filter'}
-						action={onOpenFilter}
-					/>
-					<Func
-						icon={<AiOutlineDelete />}
-						title={'Delete all'}
-						description={'Delete all holiday you selected'}
-						action={onOpenDlMany}
-						disabled={!dataSl || dataSl.length == 0 ? true : false}
-					/>
-				</SimpleGrid>
-			</Collapse>
-			<br />
+						</CSVLink>
+
+						<ImportCSV
+							fieldsValid={['holiday_date', 'occasion']}
+							handleImportCSV={handleImportCSV}
+							statusImport={statusCreHolidays === 'running'}
+							isOpenImportCSV={isOpenImportCSV}
+							onCloseImportCSV={onCloseImportCSV}
+							onOpenImportCSV={onOpenImportCSV}
+						/>
+						<Func
+							icon={<MdOutlineEvent />}
+							title={'Calendar'}
+							description={'show holidays as calendar'}
+							action={() => {
+								router.push('/holidays/calendar')
+							}}
+						/>
+					</>
+				)}
+				<Func
+					icon={<VscFilter />}
+					description={'Open draw to filter'}
+					title={'filter'}
+					action={onOpenFilter}
+				/>
+				<Func
+					icon={<AiOutlineDelete />}
+					title={'Delete all'}
+					description={'Delete all holiday you selected'}
+					action={onOpenDlMany}
+					disabled={!dataSl || dataSl.length == 0 ? true : false}
+				/>
+			</FuncCollapse>
 
 			<Table
 				data={allHolidays?.holidays || []}
@@ -495,7 +454,7 @@ const Holiday: NextLayout = () => {
 			>
 				<DetailHoliday holidayIdProp={holidayIdDetail} />
 			</Drawer>
-		</>
+		</Box>
 	)
 }
 Holiday.getLayout = ClientLayout

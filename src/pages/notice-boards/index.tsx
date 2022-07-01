@@ -1,14 +1,5 @@
-import {
-	Button,
-	Text,
-	useDisclosure,
-	VStack,
-	Collapse,
-	SimpleGrid,
-	HStack,
-	Box,
-} from '@chakra-ui/react'
-import { AlertDialog, Func, Table } from 'components/common'
+import { Button, useDisclosure, VStack, Box } from '@chakra-ui/react'
+import { AlertDialog, Func, FuncCollapse, Table } from 'components/common'
 import { Drawer } from 'components/Drawer'
 import { DateRange, Input, Select } from 'components/filter'
 import { ClientLayout } from 'components/layouts'
@@ -17,14 +8,8 @@ import { deleteNoticeMutation, deleteNoticesMutation } from 'mutations'
 import { useRouter } from 'next/router'
 import { allNoticeBoardQuery, allNoticeBoardToQuery } from 'queries'
 import { useContext, useEffect, useState } from 'react'
-import {
-	AiOutlineCaretDown,
-	AiOutlineCaretUp,
-	AiOutlineDelete,
-	AiOutlineSearch,
-} from 'react-icons/ai'
+import { AiOutlineDelete, AiOutlineSearch } from 'react-icons/ai'
 import { IoAdd } from 'react-icons/io5'
-import { MdOutlineEvent } from 'react-icons/md'
 import { NextLayout } from 'type/element/layout'
 import { IFilter, TColumn } from 'type/tableTypes'
 import AddNoticeBoard from './add-notice-boards'
@@ -34,10 +19,9 @@ import { VscFilter } from 'react-icons/vsc'
 import { BiExport } from 'react-icons/bi'
 import { noticeBoardColumn } from 'utils/columns'
 import DetailNoticeBoard from './[noticeBoardId]'
+import Head from 'next/head'
 
-export interface IProjectProps {}
-
-const NoticeBoard: NextLayout = ({}: IProjectProps) => {
+const NoticeBoard: NextLayout = () => {
 	const { isAuthenticated, handleLoading, setToast, currentUser, socket } =
 		useContext(AuthContext)
 	const router = useRouter()
@@ -66,11 +50,6 @@ const NoticeBoard: NextLayout = ({}: IProjectProps) => {
 	const { isOpen: isOpenAdd, onOpen: onOpenAdd, onClose: onCloseAdd } = useDisclosure()
 	const { isOpen: isOpenUpdate, onOpen: onOpenUpdate, onClose: onCloseUpdate } = useDisclosure()
 	const { isOpen: isOpenDetail, onOpen: onOpenDetail, onClose: onCloseDetail } = useDisclosure()
-
-	//set isopen of function
-	const { isOpen, onToggle } = useDisclosure({
-		defaultIsOpen: true,
-	})
 
 	// set isOpen of dialog to delete one
 	const { isOpen: isOpenDialogDl, onOpen: onOpenDl, onClose: onCloseDl } = useDisclosure()
@@ -125,7 +104,7 @@ const NoticeBoard: NextLayout = ({}: IProjectProps) => {
 		onDetail: (id: number) => {
 			setNoticeId(id)
 			onOpenDetail()
-		}
+		},
 	})
 
 	// set loading == false when get all notices successfully
@@ -216,72 +195,43 @@ const NoticeBoard: NextLayout = ({}: IProjectProps) => {
 
 	return (
 		<Box w={'full'} pb={8}>
-			<HStack
-				_hover={{
-					textDecoration: 'none',
-				}}
-				onClick={onToggle}
-				color={'gray.500'}
-				cursor={'pointer'}
-				userSelect={'none'}
-			>
-				<Text fontWeight={'semibold'}>Function</Text>
-				{isOpen ? <AiOutlineCaretDown /> : <AiOutlineCaretUp />}
-			</HStack>
-			<Collapse in={isOpen} animateOpacity>
-				<SimpleGrid
-					w={'full'}
-					cursor={'pointer'}
-					columns={[1, 2, 2, 3, null, 4]}
-					spacing={10}
-					pt={3}
-				>
-					{currentUser && currentUser.role === 'Admin' && (
-						<>
+			<Head>
+				<title>Huprom - Notice boards</title>
+				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
+			</Head>
+			<FuncCollapse>
+				{currentUser && currentUser.role === 'Admin' && (
+					<>
+						<Func
+							icon={<IoAdd />}
+							description={'Add new notice by form'}
+							title={'Add new'}
+							action={onOpenAdd}
+						/>
+						<CSVLink filename={'noticeBoards.csv'} headers={headersCSV} data={dataCSV}>
 							<Func
-								icon={<IoAdd />}
-								description={'Add new client by form'}
-								title={'Add new'}
-								action={onOpenAdd}
+								icon={<BiExport />}
+								description={'export to csv'}
+								title={'export'}
+								action={() => {}}
 							/>
-							<CSVLink
-								filename={'noticeBoards.csv'}
-								headers={headersCSV}
-								data={dataCSV}
-							>
-								<Func
-									icon={<BiExport />}
-									description={'export to csv'}
-									title={'export'}
-									action={() => {}}
-								/>
-							</CSVLink>
-							<Func
-								icon={<AiOutlineDelete />}
-								title={'Delete all'}
-								description={'Delete all client you selected'}
-								action={onOpenDlMany}
-								disabled={!dataSl || dataSl.length == 0 ? true : false}
-							/>
-						</>
-					)}
-					<Func
-						icon={<VscFilter />}
-						description={'Open draw to filter'}
-						title={'filter'}
-						action={onOpenFilter}
-					/>
-					<Func
-						icon={<MdOutlineEvent />}
-						title={'Calendar'}
-						description={'show tasks as calendar'}
-						action={() => {
-							router.push('/time-logs/calendar')
-						}}
-					/>
-				</SimpleGrid>
-			</Collapse>
-			<br />
+						</CSVLink>
+						<Func
+							icon={<AiOutlineDelete />}
+							title={'Delete all'}
+							description={'Delete all notices you selected'}
+							action={onOpenDlMany}
+							disabled={!dataSl || dataSl.length == 0 ? true : false}
+						/>
+					</>
+				)}
+				<Func
+					icon={<VscFilter />}
+					description={'Open draw to filter'}
+					title={'filter'}
+					action={onOpenFilter}
+				/>
+			</FuncCollapse>
 
 			<Table
 				data={allNotices?.noticeBoards || []}

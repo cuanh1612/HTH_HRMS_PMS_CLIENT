@@ -14,7 +14,8 @@ import { ProjectLayout } from 'components/layouts'
 
 import { AuthContext } from 'contexts/AuthContext'
 import { createProjectFileMutation, deleteProjectFileMutation } from 'mutations'
-import { GetServerSideProps, GetStaticPaths, GetStaticProps } from 'next'
+import { GetServerSideProps } from 'next'
+import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { allProjectFilesQuery, detailProjectQuery } from 'queries'
 import { useCallback, useContext, useEffect, useState } from 'react'
@@ -217,6 +218,10 @@ const Files: NextLayout = () => {
 
 	return (
 		<Box p={10} bgColor={'#f2f4f7'} minHeight={'100vh'}>
+			<Head>
+				<title>Huprom - Files of project {projectId}</title>
+				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
+			</Head>
 			<VStack align={'start'} w="full" bgColor={'white'} p={5} borderRadius={5} spacing={5}>
 				<Text fontSize={18} fontWeight={'semibold'}>
 					Files

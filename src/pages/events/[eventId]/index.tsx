@@ -2,12 +2,9 @@ import {
 	Avatar,
 	Box,
 	Button,
-	Divider,
 	Grid,
 	GridItem,
-	Text,
 	Tooltip,
-	VStack,
 	Wrap,
 	WrapItem,
 } from '@chakra-ui/react'

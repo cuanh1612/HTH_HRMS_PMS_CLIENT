@@ -23,26 +23,10 @@ import { useContext, useEffect } from 'react'
 import { NextLayout } from 'type/element/layout'
 import { ProjectLayout } from 'components/layouts'
 import { StatisticPrj } from 'components/common'
-import dynamic from 'next/dynamic'
 import { Bar, Donut } from 'components/charts'
-
-const Chart = dynamic(() => import('react-apexcharts'), { ssr: false })
+import Head from 'next/head'
 
 const Overview: NextLayout = () => {
-	var data = {
-		options: {
-			xaxis: {
-				categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999],
-			},
-		},
-		series: [
-			{
-				name: 'series-1',
-				data: [30, 40, 35, 50, 49, 60, 70, 91, 125],
-			},
-		],
-	}
-
 	const { isAuthenticated, handleLoading } = useContext(AuthContext)
 	const router = useRouter()
 	const { projectId } = router.query
@@ -67,7 +51,11 @@ const Overview: NextLayout = () => {
 	}, [isAuthenticated])
 
 	return (
-		<Stack direction={'row'} spacing={'30px'}>
+		<Stack pb={8} direction={'row'} spacing={'30px'}>
+			<Head>
+				<title>Huprom - Overview of project {projectId}</title>
+				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
+			</Head>
 			<VStack spacing={5} flex={1}>
 				<VStack spacing={'4'} w={'full'} alignItems={'start'}>
 					<Text fontWeight={'semibold'} fontSize={'xl'}>
@@ -117,8 +105,8 @@ const Overview: NextLayout = () => {
 											(e) => `${e.color}`
 										)}
 										data={
-											dataCountStatus.countstatusTasks.map(
-												(e) => Number(e.count)
+											dataCountStatus.countstatusTasks.map((e) =>
+												Number(e.count)
 											) as number[]
 										}
 										height={280}

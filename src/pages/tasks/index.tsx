@@ -8,8 +8,6 @@ import {
 	useDisclosure,
 	VStack,
 	useColorMode,
-	SimpleGrid,
-	Collapse,
 } from '@chakra-ui/react'
 import { ClientLayout } from 'components/layouts'
 import { useContext, useEffect, useState } from 'react'
@@ -28,22 +26,18 @@ import {
 	allTasksQuery,
 } from 'queries'
 import { IFilter, TColumn } from 'type/tableTypes'
-import { AlertDialog, Func, Table } from 'components/common'
+import { AlertDialog, Func, FuncCollapse, Table } from 'components/common'
 import { MdOutlineEvent } from 'react-icons/md'
 import { IOption } from 'type/basicTypes'
 import { IoAdd } from 'react-icons/io5'
 import { deleteTaskMutation, deleteTasksMutation } from 'mutations'
 import { DateRange, Input, Select as SelectF, SelectCustom } from 'components/filter'
-import {
-	AiOutlineCaretDown,
-	AiOutlineCaretUp,
-	AiOutlineDelete,
-	AiOutlineSearch,
-} from 'react-icons/ai'
+import { AiOutlineDelete, AiOutlineSearch } from 'react-icons/ai'
 import { CSVLink } from 'react-csv'
 import { VscFilter } from 'react-icons/vsc'
 import { BiExport } from 'react-icons/bi'
 import { TasksColumn } from 'utils/columns'
+import Head from 'next/head'
 
 const tasks: NextLayout = () => {
 	const { isAuthenticated, handleLoading, setToast, currentUser, socket } =
@@ -137,11 +131,6 @@ const tasks: NextLayout = () => {
 		onOpen: onOpenDetailTask,
 		onClose: onCloseDetailTask,
 	} = useDisclosure()
-
-	//set isopen of function
-	const { isOpen, onToggle } = useDisclosure({
-		defaultIsOpen: true,
-	})
 
 	// set isOpen of dialog to delete one
 	const { isOpen: isOpenDialogDl, onOpen: onOpenDl, onClose: onCloseDl } = useDisclosure()
@@ -293,68 +282,51 @@ const tasks: NextLayout = () => {
 
 	return (
 		<Box pb={8}>
-			<HStack
-				_hover={{
-					textDecoration: 'none',
-				}}
-				onClick={onToggle}
-				color={'gray.500'}
-				cursor={'pointer'}
-				userSelect={'none'}
-			>
-				<Text fontWeight={'semibold'}>Function</Text>
-				{isOpen ? <AiOutlineCaretDown /> : <AiOutlineCaretUp />}
-			</HStack>
-			<Collapse in={isOpen} animateOpacity>
-				<SimpleGrid
-					w={'full'}
-					cursor={'pointer'}
-					columns={[1, 2, 2, 3, null, 4]}
-					spacing={10}
-					pt={3}
-				>
-					{currentUser && currentUser.role === 'Admin' && (
-						<>
+			<Head>
+				<title>Huprom - Tasks</title>
+				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
+			</Head>
+			<FuncCollapse>
+				{currentUser && currentUser.role === 'Admin' && (
+					<>
+						<Func
+							icon={<IoAdd />}
+							description={'Add new task by form'}
+							title={'Add new'}
+							action={onOpenAddTask}
+						/>
+						<CSVLink filename={'tasks.csv'} headers={headersCSV} data={dataCSV}>
 							<Func
-								icon={<IoAdd />}
-								description={'Add new client by form'}
-								title={'Add new'}
-								action={onOpenAddTask}
+								icon={<BiExport />}
+								description={'export to csv'}
+								title={'export'}
+								action={() => {}}
 							/>
-							<CSVLink filename={'tasks.csv'} headers={headersCSV} data={dataCSV}>
-								<Func
-									icon={<BiExport />}
-									description={'export to csv'}
-									title={'export'}
-									action={() => {}}
-								/>
-							</CSVLink>
-							<Func
-								icon={<AiOutlineDelete />}
-								title={'Delete all'}
-								description={'Delete all client you selected'}
-								action={onOpenDlMany}
-								disabled={!dataSl || dataSl.length == 0 ? true : false}
-							/>
-						</>
-					)}
-					<Func
-						icon={<VscFilter />}
-						description={'Open draw to filter'}
-						title={'filter'}
-						action={onOpenFilter}
-					/>
-					<Func
-						icon={<MdOutlineEvent />}
-						title={'Calendar'}
-						description={'show tasks as calendar'}
-						action={() => {
-							router.push('/tasks/calendar')
-						}}
-					/>
-				</SimpleGrid>
-			</Collapse>
-			<br />
+						</CSVLink>
+						<Func
+							icon={<AiOutlineDelete />}
+							title={'Delete all'}
+							description={'Delete all tasks you selected'}
+							action={onOpenDlMany}
+							disabled={!dataSl || dataSl.length == 0 ? true : false}
+						/>
+					</>
+				)}
+				<Func
+					icon={<VscFilter />}
+					description={'Open draw to filter'}
+					title={'filter'}
+					action={onOpenFilter}
+				/>
+				<Func
+					icon={<MdOutlineEvent />}
+					title={'Calendar'}
+					description={'show tasks as calendar'}
+					action={() => {
+						router.push('/tasks/calendar')
+					}}
+				/>
+			</FuncCollapse>
 
 			<Table
 				data={allTasks?.tasks || []}

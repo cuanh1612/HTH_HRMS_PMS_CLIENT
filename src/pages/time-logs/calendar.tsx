@@ -44,6 +44,7 @@ import { deleteTimeLogMutation } from 'mutations'
 import { Select, SelectCustom } from 'components/filter'
 import { IFilter } from 'type/tableTypes'
 import { IOption } from 'type/basicTypes'
+import Head from 'next/head'
 
 const calendar: NextLayout = () => {
 	const { isAuthenticated, handleLoading, setToast, currentUser } = useContext(AuthContext)
@@ -269,6 +270,10 @@ const calendar: NextLayout = () => {
 
 	return (
 		<Box w={'full'} pb={8}>
+			<Head>
+				<title>Huprom - Time logs calendar</title>
+				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
+			</Head>
 			<HStack paddingBlock={'5'} justifyContent={'space-between'}>
 				<ButtonGroup spacing={4}>
 					{currentUser?.role === 'Admin' && (

@@ -24,6 +24,7 @@ import { ICloudinaryImg } from 'type/fileType'
 import { contractMutaionResponse } from 'type/mutationResponses'
 import { generateImgFile } from 'utils/helper'
 import { uploadFile } from 'utils/uploadFile'
+import Head from 'next/head'
 
 const Files: NextLayout = () => {
 	const { isAuthenticated, handleLoading, setToast, socket, currentUser } =
@@ -214,6 +215,10 @@ const Files: NextLayout = () => {
 
 	return (
 		<Box p={10} bgColor={'#f2f4f7'}>
+			<Head>
+				<title>Huprom - Files of contract {contractId}</title>
+				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
+			</Head>
 			<VStack align={'start'} w="full" bgColor={'white'} p={5} borderRadius={5} spacing={5}>
 				<Text fontSize={18} fontWeight={'semibold'}>
 					Files
@@ -324,7 +329,7 @@ const Files: NextLayout = () => {
 									onDeleteFile={onDeleteFile}
 									srcImg={generateImgFile(contractFile.name)}
 									urlFile={contractFile.url}
-									isChange={currentUser?.role === "Admin"}
+									isChange={currentUser?.role === 'Admin'}
 								/>
 							</GridItem>
 						))}
@@ -345,10 +350,10 @@ export const getStaticProps: GetStaticProps = async () => {
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-	const res: contractMutaionResponse = await fetch('http://localhost:4000/api/contracts').then(
-		(result) => result.json()
-	).catch(() => undefined)
-	
+	const res: contractMutaionResponse = await fetch('http://localhost:4000/api/contracts')
+		.then((result) => result.json())
+		.catch(() => undefined)
+
 	if (!res || !res.contracts) {
 		return { paths: [], fallback: false }
 	}

@@ -3,24 +3,8 @@ import { deleteLeaveMutation, deleteLeavesMutation, updateStatusMutation } from 
 import { allLeaveQuery, allLeaveTypesQuery } from 'queries'
 
 // components
-import {
-	Avatar,
-	Badge,
-	Box,
-	Button,
-	Collapse,
-	HStack,
-	Menu,
-	MenuButton,
-	MenuItem,
-	MenuList,
-	SimpleGrid,
-	Tag,
-	Text,
-	useDisclosure,
-	VStack,
-} from '@chakra-ui/react'
-import { AlertDialog, Func, Table } from 'components/common'
+import { Box, Button, useDisclosure, VStack } from '@chakra-ui/react'
+import { AlertDialog, Func, FuncCollapse, Table } from 'components/common'
 import { Drawer } from 'components/Drawer'
 import { CSVLink } from 'react-csv'
 
@@ -33,25 +17,15 @@ import { useRouter } from 'next/router'
 import { useContext, useEffect, useState } from 'react'
 
 // icons
-import {
-	AiOutlineCaretDown,
-	AiOutlineCaretUp,
-	AiOutlineDelete,
-	AiOutlineSearch,
-} from 'react-icons/ai'
+import { AiOutlineDelete, AiOutlineSearch } from 'react-icons/ai'
 import { BiExport } from 'react-icons/bi'
-import { IoMdClose } from 'react-icons/io'
-import { IoAdd, IoEyeOutline } from 'react-icons/io5'
-import { MdOutlineDeleteOutline, MdOutlineEvent, MdOutlineMoreVert } from 'react-icons/md'
-import { RiPencilLine } from 'react-icons/ri'
+import { IoAdd } from 'react-icons/io5'
+import { MdOutlineEvent } from 'react-icons/md'
 
 import { NextLayout } from 'type/element/layout'
 
 // fucs, component to setup table
 import { IFilter, TColumn } from 'type/tableTypes'
-
-// filter of column
-import { dateFilter, selectFilter, textFilter, yearFilter } from 'utils/tableFilters'
 
 // page add and update employee
 import AddCurrentLeave from './add-current-leave'
@@ -62,13 +36,13 @@ import UpdateLeave from './update-leaves'
 // component to filter
 import { DateRange, Input, Select, SelectUser } from 'components/filter'
 
-import { BsCheck2 } from 'react-icons/bs'
 import { IOption } from 'type/basicTypes'
 import { IPeople } from 'type/element/commom'
 import { VscFilter } from 'react-icons/vsc'
 import DetailLeave from './[leaveId]'
 import { leaveColumn } from 'utils/columns'
 import { dataStatusLeave } from 'utils/basicData'
+import Head from 'next/head'
 
 // get current year
 const year = new Date().getFullYear()
@@ -100,11 +74,6 @@ const Leaves: NextLayout = () => {
 		onOpen: onOpenDlMany,
 		onClose: onCloseDlMany,
 	} = useDisclosure()
-
-	//set isopen of function
-	const { isOpen, onToggle } = useDisclosure({
-		defaultIsOpen: true,
-	})
 
 	//State ---------------------------------------------------------------------
 
@@ -284,69 +253,52 @@ const Leaves: NextLayout = () => {
 
 	return (
 		<Box pb={8}>
-			<HStack
-				_hover={{
-					textDecoration: 'none',
-				}}
-				onClick={onToggle}
-				color={'gray.500'}
-				cursor={'pointer'}
-				userSelect={'none'}
-			>
-				<Text fontWeight={'semibold'}>Function</Text>
-				{isOpen ? <AiOutlineCaretDown /> : <AiOutlineCaretUp />}
-			</HStack>
-			<Collapse in={isOpen} animateOpacity>
-				<SimpleGrid
-					w={'full'}
-					cursor={'pointer'}
-					columns={[1, 2, 2, 3, null, 4]}
-					spacing={10}
-					pt={3}
-				>
-					{currentUser && currentUser.role === 'Admin' && (
-						<>
+			<Head>
+				<title>Huprom - Leaves</title>
+				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
+			</Head>
+			<FuncCollapse>
+				{currentUser && currentUser.role === 'Admin' && (
+					<>
+						<Func
+							icon={<IoAdd />}
+							description={'Add new leave by form'}
+							title={'Add new'}
+							action={onOpenAdd}
+						/>
+						<CSVLink filename={'leaves.csv'} headers={headersCSV} data={dataCSV}>
 							<Func
-								icon={<IoAdd />}
-								description={'Add new client by form'}
-								title={'Add new'}
-								action={onOpenAdd}
+								icon={<BiExport />}
+								description={'export to csv'}
+								title={'export'}
+								action={() => {}}
 							/>
-							<CSVLink filename={'leaves.csv'} headers={headersCSV} data={dataCSV}>
-								<Func
-									icon={<BiExport />}
-									description={'export to csv'}
-									title={'export'}
-									action={() => {}}
-								/>
-							</CSVLink>
-							<Func
-								icon={<AiOutlineDelete />}
-								title={'Delete all'}
-								description={'Delete all client you selected'}
-								action={onOpenDlMany}
-								disabled={!dataSl || dataSl.length == 0 ? true : false}
-							/>
-						</>
-					)}
-					<Func
-						icon={<VscFilter />}
-						description={'Open draw to filter'}
-						title={'filter'}
-						action={onOpenFilter}
-					/>
+						</CSVLink>
+						<Func
+							icon={<AiOutlineDelete />}
+							title={'Delete all'}
+							description={'Delete all leaves you selected'}
+							action={onOpenDlMany}
+							disabled={!dataSl || dataSl.length == 0 ? true : false}
+						/>
+					</>
+				)}
+				<Func
+					icon={<VscFilter />}
+					description={'Open draw to filter'}
+					title={'filter'}
+					action={onOpenFilter}
+				/>
 
-					<Func
-						icon={<MdOutlineEvent />}
-						title={'Calendar'}
-						description={'show tasks as calendar'}
-						action={() => {
-							router.push('/leaves/calendar')
-						}}
-					/>
-				</SimpleGrid>
-			</Collapse>
-			<br />
+				<Func
+					icon={<MdOutlineEvent />}
+					title={'Calendar'}
+					description={'show leaves as calendar'}
+					action={() => {
+						router.push('/leaves/calendar')
+					}}
+				/>
+			</FuncCollapse>
 
 			{currentUser && (
 				<Table

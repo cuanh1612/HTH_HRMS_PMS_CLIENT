@@ -1,19 +1,10 @@
 import {
 	Box,
 	Button,
-	Collapse,
-	HStack,
-	Menu,
-	MenuButton,
-	MenuItem,
-	MenuList,
-	SimpleGrid,
-	Tag,
-	Text,
 	useDisclosure,
 	VStack,
 } from '@chakra-ui/react'
-import { AlertDialog, Func, Table } from 'components/common'
+import { AlertDialog, Func, FuncCollapse, Table } from 'components/common'
 import { Drawer } from 'components/Drawer'
 import { Input, Select } from 'components/filter'
 import { ProjectLayout } from 'components/layouts'
@@ -25,24 +16,21 @@ import {
 	reEnterPasswordMutation,
 } from 'mutations'
 import { GetServerSideProps } from 'next'
+import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { allProjectNotesQuery, detailProjectQuery } from 'queries'
 import { FormEventHandler, useContext, useEffect, useState } from 'react'
 import {
-	AiOutlineCaretDown,
-	AiOutlineCaretUp,
 	AiOutlineCheck,
 	AiOutlineDelete,
 	AiOutlineSearch,
 } from 'react-icons/ai'
-import { IoAdd, IoEyeOutline } from 'react-icons/io5'
-import { MdOutlineDeleteOutline, MdOutlineMoreVert } from 'react-icons/md'
-import { RiPencilLine } from 'react-icons/ri'
+import { IoAdd } from 'react-icons/io5'
 import { VscFilter } from 'react-icons/vsc'
 import { NextLayout } from 'type/element/layout'
 import { projectMutaionResponse } from 'type/mutationResponses'
 import { IFilter, TColumn } from 'type/tableTypes'
-import { selectFilter, textFilter } from 'utils/tableFilters'
+import { projectNotesColumn } from 'utils/columns'
 import AddNote from './add-notes'
 import DetailProjectNote from './[noteId]'
 import UpdateNote from './[noteId]/update-note'
@@ -68,10 +56,6 @@ const Notes: NextLayout = ({}: INotesProps) => {
 	const [filter, setFilter] = useState<IFilter>({
 		columnId: '',
 		filterValue: '',
-	})
-	//set isopen of function
-	const { isOpen, onToggle } = useDisclosure({
-		defaultIsOpen: true,
 	})
 	// set isOpen of dialog to filters
 	const { isOpen: isOpenFilter, onOpen: onOpenFilter, onClose: onCloseFilter } = useDisclosure()
@@ -204,115 +188,22 @@ const Notes: NextLayout = ({}: INotesProps) => {
 	}, [socket, projectId])
 
 	// header ----------------------------------------
-	const columns: TColumn[] = [
-		{
-			Header: 'Notes',
-
-			columns: [
-				{
-					Header: 'Id',
-					accessor: 'id',
-					width: 80,
-					minWidth: 80,
-					disableResizing: true,
-				},
-				{
-					Header: 'Note title',
-					accessor: 'title',
-					minWidth: 150,
-					filter: textFilter(['title']),
-					Cell: ({ value }) => {
-						return <Text isTruncated>{value}</Text>
-					},
-				},
-				{
-					Header: 'Type',
-					accessor: 'note_type',
-					minWidth: 150,
-					filter: selectFilter(['note_type']),
-					Cell: ({ value }) => {
-						return <Tag colorScheme={value == 'Private' ? 'red' : 'green'}>{value}</Tag>
-					},
-				},
-				{
-					Header: 'Action',
-					accessor: 'action',
-					disableResizing: true,
-					width: 120,
-					minWidth: 120,
-					disableSortBy: true,
-					Cell: ({ row }) => (
-						<Menu>
-							<MenuButton as={Button} paddingInline={3}>
-								<MdOutlineMoreVert />
-							</MenuButton>
-							<MenuList>
-								{row.original['note_type'] === 'Public' ||
-								(currentUser && currentUser.role === 'Admin') ||
-								(currentUser && currentUser.role === 'Client') ? (
-									<MenuItem
-										onClick={() => {
-											setProjectNoteId(row.values['id'])
-											onOpenDetailProjectNote(row.original['ask_re_password'])
-										}}
-										icon={<IoEyeOutline fontSize={'15px'} />}
-									>
-										View
-									</MenuItem>
-								) : (
-									((row.original['employees'] &&
-										currentUser?.role === 'Employee' &&
-										row.original['employees'].some(
-											(employeeItem: any) =>
-												employeeItem.id === currentUser.id
-										)) ||
-										currentUser?.role == 'Admin') && (
-										<MenuItem
-											onClick={() => {
-												setProjectNoteId(row.values['id'])
-												onOpenDetailProjectNote(
-													row.original['ask_re_password']
-												)
-											}}
-											icon={<IoEyeOutline fontSize={'15px'} />}
-										>
-											View
-										</MenuItem>
-									)
-								)}
-								{((currentUser && currentUser.role === 'Admin') ||
-									(currentUser &&
-										dataDetailProject?.project?.project_Admin &&
-										currentUser.email ===
-											dataDetailProject.project.project_Admin.email)) && (
-									<>
-										<MenuItem
-											onClick={() => {
-												setProjectNoteId(row.values['id'])
-												onOpenUpdateNote()
-											}}
-											icon={<RiPencilLine fontSize={'15px'} />}
-										>
-											Edit
-										</MenuItem>
-										<MenuItem
-											onClick={() => {
-												setProjectNoteId(row.values['id'])
-												onOpenDl()
-											}}
-											icon={<MdOutlineDeleteOutline fontSize={'15px'} />}
-										>
-											Delete
-										</MenuItem>
-									</>
-								)}
-							</MenuList>
-						</Menu>
-					),
-				},
-			],
+	const columns: TColumn[] = projectNotesColumn({
+		currentUser,
+		onDelete: (id: number) => {
+			setProjectNoteId(id)
+			onOpenDl()
 		},
-	]
+		onDetail: ({ id, askPassword }: { id: number; askPassword: boolean }) => {
+			setProjectNoteId(id)
+			onOpenDetailProjectNote(askPassword)
+		},
+		onUpdate: (id: number) => {
+			setProjectNoteId(id)
+			onOpenUpdateNote()
+		},
+		project_Admin: dataDetailProject?.project?.project_Admin,
+	})
 
 	//Function -----------------------------------------------------------
 	//handle open detail note
@@ -350,58 +241,40 @@ const Notes: NextLayout = ({}: INotesProps) => {
 	}
 
 	return (
-		<>
-			<HStack
-				_hover={{
-					textDecoration: 'none',
-				}}
-				onClick={onToggle}
-				color={'gray.500'}
-				cursor={'pointer'}
-				userSelect={'none'}
-			>
-				<Text fontWeight={'semibold'}>Function</Text>
-				{isOpen ? <AiOutlineCaretDown /> : <AiOutlineCaretUp />}
-			</HStack>
-			<Collapse in={isOpen} animateOpacity>
-				<SimpleGrid
-					w={'full'}
-					cursor={'pointer'}
-					columns={[1, 2, 2, 3, null, 4]}
-					spacing={10}
-					pt={3}
-				>
-					{((currentUser && currentUser.role === 'Admin') ||
-						(currentUser &&
-							dataDetailProject?.project?.project_Admin &&
-							currentUser.email ===
-								dataDetailProject.project.project_Admin.email)) && (
-						<>
-							<Func
-								icon={<IoAdd />}
-								description={'Add new client by form'}
-								title={'Add new'}
-								action={onOpenAddNote}
-							/>
+		<Box pb={8}>
+						<Head> 
+				<title>Huprom - Notes of project {projectId}</title>
+				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
+			</Head>
+			<FuncCollapse>
+				{((currentUser && currentUser.role === 'Admin') ||
+					(currentUser &&
+						dataDetailProject?.project?.project_Admin &&
+						currentUser.email === dataDetailProject.project.project_Admin.email)) && (
+					<>
+						<Func
+							icon={<IoAdd />}
+							description={'Add new note by form'}
+							title={'Add new'}
+							action={onOpenAddNote}
+						/>
 
-							<Func
-								icon={<VscFilter />}
-								description={'Open draw to filter'}
-								title={'filter'}
-								action={onOpenFilter}
-							/>
-							<Func
-								icon={<AiOutlineDelete />}
-								title={'Delete all'}
-								description={'Delete all client you selected'}
-								action={onOpenDlMany}
-								disabled={!dataSl || dataSl.length == 0 ? true : false}
-							/>
-						</>
-					)}
-				</SimpleGrid>
-			</Collapse>
-			<br />
+						<Func
+							icon={<VscFilter />}
+							description={'Open draw to filter'}
+							title={'filter'}
+							action={onOpenFilter}
+						/>
+						<Func
+							icon={<AiOutlineDelete />}
+							title={'Delete all'}
+							description={'Delete all notes you selected'}
+							action={onOpenDlMany}
+							disabled={!dataSl || dataSl.length == 0 ? true : false}
+						/>
+					</>
+				)}
+			</FuncCollapse>
 
 			<Table
 				data={dataAllNotes?.projectNotes || []}
@@ -558,7 +431,7 @@ const Notes: NextLayout = ({}: INotesProps) => {
 					</VStack>
 				</Box>
 			</Modal>
-		</>
+		</Box>
 	)
 }
 

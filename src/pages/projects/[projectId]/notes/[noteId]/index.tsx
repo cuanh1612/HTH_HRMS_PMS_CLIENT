@@ -13,7 +13,7 @@ export interface IDetailNoteProps {
 export default function DetailProjectNote({ noteIdProp }: IDetailNoteProps) {
 	const { isAuthenticated, handleLoading } = useContext(AuthContext)
 	const router = useRouter()
-	const { noteId: noteIdRouter, projectId } = router.query
+	const { noteId: noteIdRouter } = router.query
 
 	//query ---------------------------------------------------------------------
 	//Get detail project note

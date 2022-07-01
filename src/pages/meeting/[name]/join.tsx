@@ -35,6 +35,8 @@ import copy from 'copy-to-clipboard'
 import { AiOutlineSetting, AiTwotoneSetting } from 'react-icons/ai'
 import RightSide from 'components/room/RightSide'
 import { ButtonMenu } from 'components/common'
+import Head from 'next/head'
+import Image from 'next/image'
 
 export default function join() {
 	const layoutSize = useBreakpoint()
@@ -280,6 +282,10 @@ export default function join() {
 
 	return (
 		<Box bg={'#1b1a1d'} pos={'relative'} w={'100%'} h={'100vh'}>
+			<Head>
+				<title>Huprom - {name} joined</title>
+				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
+			</Head>
 			<HStack
 				borderBottom={'1px solid'}
 				borderColor={'gray'}
@@ -290,7 +296,7 @@ export default function join() {
 			>
 				<HStack w={'full'} spacing={5} divider={<StackDivider borderColor="gray" />}>
 					<HStack spacing={5}>
-						<Box border={'1px solid red'} w={'50px'} h={'50px'}></Box>
+						<Image src={'/assets/logo1.svg'} width={'50px'} height={'50px'} />
 						<Text fontWeight={'semibold'} fontSize={'xl'} color={'white'}>
 							HUPROM
 						</Text>
@@ -304,9 +310,9 @@ export default function join() {
 						<Text isTruncated fontSize={'xl'} color={'white'}>
 							{dataRoom?.room?.title.replace(/-/g, ' ')}
 						</Text>
-						
-						<ButtonMenu dir={'end'} onOpenMenu={onOpenRightBar} />
-								
+						{!layoutSize?.includes('xl') && (
+							<ButtonMenu dir={'end'} onOpenMenu={onOpenRightBar} />
+						)}
 					</HStack>
 				</HStack>
 			</HStack>
@@ -343,7 +349,7 @@ export default function join() {
 										as="div"
 										paddingBlock={['10px', null, '0px', '10px']}
 										paddingInline={['10px', null, null, '0px']}
-										height={['120px', null,'170px']}
+										height={['120px', null, '170px']}
 										key={key}
 									>
 										<Skeleton
@@ -363,11 +369,11 @@ export default function join() {
 				</LeftBar>
 
 				<Stack
-				  alignItems={'start'}
-				  justifyContent={'start'}
-				  spacing={6}
-				  direction={['row-reverse','row-reverse', 'column']}
-					pt={['0px',null, null, 8]}
+					alignItems={'start'}
+					justifyContent={'start'}
+					spacing={6}
+					direction={['row-reverse', 'row-reverse', 'column']}
+					pt={['0px', null, null, 8]}
 					pr={'10px'}
 					pl={['0px', null, '10px', '0px']}
 					minW={'300px'}
@@ -379,8 +385,12 @@ export default function join() {
 					<Box
 						paddingInline={['0px', null, null, '10px']}
 						w={'full'}
-						h={['calc( 100% - 30px )', 'calc( 100% - 30px )', 'calc( 100% - 150px )', 'calc( 100% - 110px )']}
-						
+						h={[
+							'calc( 100% - 30px )',
+							'calc( 100% - 30px )',
+							'calc( 100% - 150px )',
+							'calc( 100% - 110px )',
+						]}
 					>
 						<Box
 							background={localParticipant ? '#000000' : '#222222'}
@@ -411,16 +421,23 @@ export default function join() {
 							{pinId && <Tile id={pinId} isCurrentUser={true} isCenter={true} />}
 						</Box>
 					</Box>
-					<Box overflow={'auto'} paddingInline={[0, null, null, 3]} minW={'50px'}  w={['50px', '50px','full']} height={['calc( 100% - 30px )', null, '120px']} mt={'30px'}>
+					<Box
+						overflow={'auto'}
+						paddingInline={[0, null, null, 3]}
+						minW={'50px'}
+						w={['50px', '50px', 'full']}
+						height={['calc( 100% - 30px )', null, '120px']}
+						mt={'30px'}
+					>
 						<Stack
 							direction={['column', 'column', 'row']}
 							w={'full'}
 							spacing={[5, null, 0]}
-							pt={[null, null,'25px']}
+							pt={[null, null, '25px']}
 							h={'100%'}
 							borderTop={[null, null, '2px solid']}
 							borderColor={'gray'}
-							justifyContent={['start', null,'space-between']}
+							justifyContent={['start', null, 'space-between']}
 							alignItems={'start'}
 						>
 							<ButtonRoom
@@ -436,7 +453,13 @@ export default function join() {
 								iconClose={<BiLinkAlt />}
 								iconOpen={<BiLinkAlt />}
 							/>
-							<Stack direction={['column', 'column', 'row']} justifyContent={'start'} p={[0, null, 'auto']} alignItems={'start'} spacing={5}>
+							<Stack
+								direction={['column', 'column', 'row']}
+								justifyContent={'start'}
+								p={[0, null, 'auto']}
+								alignItems={'start'}
+								spacing={5}
+							>
 								<ButtonRoom
 									title="Mic"
 									handle={() => {

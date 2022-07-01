@@ -10,15 +10,9 @@ import {
 	Box,
 	Button,
 	ButtonGroup,
-	DrawerBody,
-	DrawerCloseButton,
-	DrawerContent,
-	DrawerHeader,
-	DrawerOverlay,
 	HStack,
 	useDisclosure,
 	VStack,
-	Drawer as CDrawer,
 	useColorMode,
 	useColorModeValue,
 	Avatar,
@@ -40,6 +34,7 @@ import { IFilter } from 'type/tableTypes'
 import { IOption } from 'type/basicTypes'
 import DetailLeave from './[leaveId]'
 import { deleteLeaveMutation } from 'mutations'
+import Head from 'next/head'
 
 const calendar: NextLayout = () => {
 	const { colorMode } = useColorMode()
@@ -64,12 +59,8 @@ const calendar: NextLayout = () => {
 	// set isOpen of dialog to filters
 	const { isOpen: isOpenFilter, onClose: onCloseFilter, onOpen: onOpenFilter } = useDisclosure()
 
-		// set isOpen of dialog to delete one
-		const {
-			isOpen: isOpenDialogDl,
-			onOpen: onOpenDl,
-			onClose: onCloseDl,
-		} = useDisclosure()
+	// set isOpen of dialog to delete one
+	const { isOpen: isOpenDialogDl, onOpen: onOpenDl, onClose: onCloseDl } = useDisclosure()
 
 	// query
 	const { data: allLeaves, mutate: refetchAllLeaves } = allLeaveQuery({
@@ -203,6 +194,10 @@ const calendar: NextLayout = () => {
 
 	return (
 		<Box>
+			<Head>
+				<title>Huprom - Leaves calendar</title>
+				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
+			</Head>
 			<HStack paddingBlock={'5'} justifyContent={'space-between'}>
 				<ButtonGroup spacing={4}>
 					<Button color={'white'} bg={'hu-Green.normal'} onClick={() => onOpenAdd()}>

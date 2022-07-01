@@ -1,14 +1,5 @@
-import {
-	Box,
-	Button,
-	Collapse,
-	HStack,
-	SimpleGrid,
-	Text,
-	useDisclosure,
-	VStack,
-} from '@chakra-ui/react'
-import { AlertDialog, Func, Table } from 'components/common'
+import { Box, Button, useDisclosure, VStack } from '@chakra-ui/react'
+import { AlertDialog, Func, FuncCollapse, Table } from 'components/common'
 import { Drawer } from 'components/Drawer'
 import { DateRange, Input, Select } from 'components/filter'
 import { ClientLayout } from 'components/layouts'
@@ -17,14 +8,9 @@ import { deleteTimeLogMutation, deleteTimeLogsMutation } from 'mutations'
 import { useRouter } from 'next/router'
 import { allProjectsNormalQuery, timeLogsCurrentUserQuery, timeLogsQuery } from 'queries'
 import { useContext, useEffect, useState } from 'react'
-import {
-	AiOutlineCaretDown,
-	AiOutlineCaretUp,
-	AiOutlineDelete,
-	AiOutlineSearch,
-} from 'react-icons/ai'
+import { AiOutlineDelete, AiOutlineSearch } from 'react-icons/ai'
 import { IoAdd } from 'react-icons/io5'
-import { MdOutlineEvent} from 'react-icons/md'
+import { MdOutlineEvent } from 'react-icons/md'
 import { NextLayout } from 'type/element/layout'
 import { IFilter, TColumn } from 'type/tableTypes'
 import AddTimeLog from './add-time-logs'
@@ -34,6 +20,7 @@ import { CSVLink } from 'react-csv'
 import { BiExport } from 'react-icons/bi'
 import { VscFilter } from 'react-icons/vsc'
 import { timeLogsColumn } from 'utils/columns'
+import Head from 'next/head'
 
 const TimeLogs: NextLayout = () => {
 	const { isAuthenticated, handleLoading, setToast, currentUser, socket } =
@@ -77,13 +64,6 @@ const TimeLogs: NextLayout = () => {
 		{ label: 'createdAt', key: 'createdAt' },
 		{ label: 'updatedAt', key: 'updatedAt' },
 	]
-
-	//Modal -------------------------------------------------------------
-
-	//set isopen of function
-	const { isOpen, onToggle } = useDisclosure({
-		defaultIsOpen: true,
-	})
 
 	// set open add time log
 	const {
@@ -235,85 +215,67 @@ const TimeLogs: NextLayout = () => {
 	// header ----------------------------------------
 	const columns: TColumn[] = timeLogsColumn({
 		currentUser,
-		onDelete: (id: number)=> {
+		onDelete: (id: number) => {
 			setIdTimeLog(Number(id))
 			onOpenDl()
 		},
-		onDetail: (id: number)=> {
+		onDetail: (id: number) => {
 			setIdTimeLog(Number(id))
 			onOpenDetailTimelog()
 		},
-		onUpdate: (id: number)=> {
+		onUpdate: (id: number) => {
 			setIdTimeLog(Number(id))
 			onOpenUpdateTimelog()
-		}
+		},
 	})
-	
 
 	return (
 		<Box w={'full'} pb={8}>
-			<HStack
-				_hover={{
-					textDecoration: 'none',
-				}}
-				onClick={onToggle}
-				color={'gray.500'}
-				cursor={'pointer'}
-				userSelect={'none'}
-			>
-				<Text fontWeight={'semibold'}>Function</Text>
-				{isOpen ? <AiOutlineCaretDown /> : <AiOutlineCaretUp />}
-			</HStack>
-			<Collapse in={isOpen} animateOpacity>
-				<SimpleGrid
-					w={'full'}
-					cursor={'pointer'}
-					columns={[1, 2, 2, 3, null, 4]}
-					spacing={10}
-					pt={3}
-				>
-					{currentUser && currentUser.role === 'Admin' && (
-						<>
+			<Head>
+				<title>Huprom - Time logs</title>
+				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
+			</Head>
+			<FuncCollapse>
+				{currentUser && currentUser.role === 'Admin' && (
+					<>
+						<Func
+							icon={<IoAdd />}
+							description={'Add new time log by form'}
+							title={'Add new'}
+							action={onOpenAddTimeLog}
+						/>
+						<CSVLink filename={'timelogs.csv'} headers={headersCSV} data={dataCSV}>
 							<Func
-								icon={<IoAdd />}
-								description={'Add new client by form'}
-								title={'Add new'}
-								action={onOpenAddTimeLog}
+								icon={<BiExport />}
+								description={'export to csv'}
+								title={'export'}
+								action={() => {}}
 							/>
-							<CSVLink filename={'timelogs.csv'} headers={headersCSV} data={dataCSV}>
-								<Func
-									icon={<BiExport />}
-									description={'export to csv'}
-									title={'export'}
-									action={() => {}}
-								/>
-							</CSVLink>
-							<Func
-								icon={<AiOutlineDelete />}
-								title={'Delete all'}
-								description={'Delete all client you selected'}
-								action={onOpenDlMany}
-								disabled={!dataSl || dataSl.length == 0 ? true : false}
-							/>
-						</>
-					)}
-					<Func
-						icon={<VscFilter />}
-						description={'Open draw to filter'}
-						title={'filter'}
-						action={onOpenFilter}
-					/>
-					<Func
-						icon={<MdOutlineEvent />}
-						title={'Calendar'}
-						description={'show tasks as calendar'}
-						action={() => {
-							router.push('/time-logs/calendar')
-						}}
-					/>
-				</SimpleGrid>
-			</Collapse>
-			<br />
+						</CSVLink>
+						<Func
+							icon={<AiOutlineDelete />}
+							title={'Delete all'}
+							description={'Delete all time logs you selected'}
+							action={onOpenDlMany}
+							disabled={!dataSl || dataSl.length == 0 ? true : false}
+						/>
+					</>
+				)}
+				<Func
+					icon={<VscFilter />}
+					description={'Open draw to filter'}
+					title={'filter'}
+					action={onOpenFilter}
+				/>
+				<Func
+					icon={<MdOutlineEvent />}
+					title={'Calendar'}
+					description={'show time logs as calendar'}
+					action={() => {
+						router.push('/time-logs/calendar')
+					}}
+				/>
+			</FuncCollapse>
 
 			<Table
 				data={allTimeLogs?.timeLogs || []}

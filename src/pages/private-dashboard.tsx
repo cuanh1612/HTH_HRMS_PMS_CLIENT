@@ -56,6 +56,7 @@ import { MdOutlineNavigateBefore, MdOutlineNavigateNext } from 'react-icons/md'
 import DetailEvent from './events/[eventId]'
 import { VscTasklist } from 'react-icons/vsc'
 import { BiTimeFive } from 'react-icons/bi'
+import Head from 'next/head'
 
 const TaskCategory: NextLayout = () => {
 	const { isAuthenticated, handleLoading, currentUser } = useContext(AuthContext)
@@ -216,6 +217,10 @@ const TaskCategory: NextLayout = () => {
 
 	return (
 		<Box w={'100%'} pb={8} pos={'relative'}>
+			<Head>
+				<title>Huprom - Private dashboard</title>
+				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
+			</Head>
 			<HStack
 				_hover={{
 					textDecoration: 'none',
@@ -533,9 +538,7 @@ const TaskCategory: NextLayout = () => {
 				<DetailTask taskIdProp={taskId} onCloseDrawer={onCloseDetailTask} />
 			</Drawer>
 			<Drawer size="md" title="Detail Event" onClose={onCloseDetail} isOpen={isOpenDetail}>
-				<DetailEvent
-					EventIdProp={eventId}
-				/>
+				<DetailEvent EventIdProp={eventId} />
 			</Drawer>
 		</Box>
 	)

@@ -10,7 +10,7 @@ import {
 	Img,
 	Text,
 	useDisclosure,
-	VStack
+	VStack,
 } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { ItemFileUpload, Loading } from 'components/common'
@@ -23,7 +23,9 @@ import { useRouter } from 'next/router'
 import {
 	allClientsQuery,
 	allDepartmentsQuery,
-	allEmployeesNormalQuery, allProjectCategoriesQuery, allProjectsByCurrentUserQuery, allProjectsQuery
+	allEmployeesNormalQuery,
+	allProjectCategoriesQuery,
+	allProjectsByCurrentUserQuery,
 } from 'queries'
 import { useCallback, useContext, useEffect, useState } from 'react'
 import { useDropzone } from 'react-dropzone'

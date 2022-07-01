@@ -1,21 +1,12 @@
-import {
-	Avatar,
-	Box,
-	Grid,
-	GridItem,
-	HStack,
-	Stack,
-	Text,
-	VStack,
-} from '@chakra-ui/react'
+import { Avatar, Box, Grid, GridItem, HStack, Stack, Text, VStack } from '@chakra-ui/react'
 import { Donut } from 'components/charts'
-import { ClientLayout } from 'components/layouts'
+import { Static } from 'components/common'
 import { EmployeeLayout } from 'components/layouts/Employee'
 import { AuthContext } from 'contexts/AuthContext'
 import { GetServerSideProps } from 'next'
+import Head from 'next/head'
 import { useRouter } from 'next/router'
 import {
-	allTasksByEmployeeQuery,
 	countProjectsEmployeeQuery,
 	countTasksStatusEmployeeQuery,
 	detailEmployeeQuery,
@@ -26,15 +17,18 @@ import {
 } from 'queries'
 import { useContext, useEffect } from 'react'
 import { AiOutlineProject } from 'react-icons/ai'
+import { BiTime } from 'react-icons/bi'
+import { BsCheck2 } from 'react-icons/bs'
+import { VscTasklist } from 'react-icons/vsc'
 import { SWRConfig } from 'swr'
 import { NextLayout } from 'type/element/layout'
 import { authMutaionResponse, employeeMutaionResponse } from 'type/mutationResponses'
 
 export const DetailEmployee: NextLayout | any = ({
 	dataDetailEmployee,
-	employeeIdProp
+	employeeIdProp,
 }: {
-	dataDetailEmployee: employeeMutaionResponse,
+	dataDetailEmployee: employeeMutaionResponse
 	employeeIdProp?: string | number
 }) => {
 	// const { isOpen, onOpen, onClose } = useDisclosure()
@@ -47,35 +41,35 @@ export const DetailEmployee: NextLayout | any = ({
 
 	const { data: openTasksEmployee } = openTasksEmployeeQuery(
 		isAuthenticated,
-		employeeId as string || employeeIdProp
+		(employeeId as string) || employeeIdProp
 	)
 
 	const { data: hoursLoggedEmployee } = hoursLoggedEmployeeQuery(
 		isAuthenticated,
-		employeeId as string || employeeIdProp
+		(employeeId as string) || employeeIdProp
 	)
 
 	const { data: countProjectsEmployee } = countProjectsEmployeeQuery(
 		isAuthenticated,
-		employeeId as string || employeeIdProp
+		(employeeId as string) || employeeIdProp
 	)
 
 	const { data: countLateAttendancesEmployee } = lateAttendanceEmployeeQuery(
 		isAuthenticated,
-		employeeId as string || employeeIdProp
+		(employeeId as string) || employeeIdProp
 	)
 
 	const { data: countTasksStatus } = countTasksStatusEmployeeQuery(
 		isAuthenticated,
-		employeeId as string || employeeIdProp
+		(employeeId as string) || employeeIdProp
 	)
-
-
 
 	const { data: countLeavesTakenEmployee } = leavesTakenEmployeeQuery(
 		isAuthenticated,
 		employeeId as string
 	)
+
+	console.log(countTasksStatus)
 
 	//User effect ---------------------------------------------------------------
 	//Handle check loged in
@@ -99,7 +93,11 @@ export const DetailEmployee: NextLayout | any = ({
 					fallback: { [urlDetailEmployee]: dataDetailEmployee },
 				}}
 			>
-				<Box w="full">
+				<Head>
+					<title>Huprom - Detail employee {employeeId}</title>
+					<meta name="viewport" content="initial-scale=1.0, width=device-width" />
+				</Head>
+				<Box w="full" pb={8}>
 					<VStack spacing={5} alignItems={'start'} w={'full'}>
 						<HStack spacing={5} h={'full'} w={'full'}>
 							<Avatar
@@ -212,165 +210,54 @@ export const DetailEmployee: NextLayout | any = ({
 									<Text fontWeight={'semibold'} fontSize={'20px'}>
 										Static
 									</Text>
-									<Grid templateColumns="repeat(2, 1fr)" gap={6} w={'full'}>
-										<GridItem
-											colSpan={[2, null, null, null, null, 1]}
-											p={'20px'}
-											borderBottom={'3px solid'}
-											borderColor={'hu-Green.normal'}
-										>
-											<HStack
-												w="full"
-												justifyContent={'space-between'}
-												spacing={5}
-											>
-												<HStack spacing={5}>
-													<HStack
-														justifyContent={'center'}
-														borderRadius={5}
-														bg={'hu-Green.lightA'}
-														color={'hu-Green.normal'}
-														w={'40px'}
-														h={'40px'}
-													>
-														<AiOutlineProject fontSize={20} />
-													</HStack>
-													<Text>Open Tasks</Text>
-												</HStack>
-												<Text fontWeight={'semibold'} fontSize={'30px'}>
-													{openTasksEmployee?.countOpentasks || 0}
-												</Text>
-											</HStack>
-										</GridItem>
+									<Grid
+										templateColumns={[
+											'repeat(1, 1fr)',
+											null,
+											null,
+											null,
+											null,
+											'repeat(2, 1fr)',
+										]}
+										gap={6}
+										w={'full'}
+									>
+										<Static
+											title={'Open tasks'}
+											text={openTasksEmployee?.countOpentasks}
+											icon={<VscTasklist fontSize={20} />}
+											color={'Green'}
+										/>
 
-										<GridItem
-											colSpan={[2, null, null, null, null, 1]}
-											p={'20px'}
-											borderBottom={'3px solid'}
-											borderColor={'hu-Pink.normal'}
-										>
-											<HStack
-												justifyContent={'space-between'}
-												spacing={5}
-												h={'full'}
-											>
-												<HStack spacing={5}>
-													<HStack
-														justifyContent={'center'}
-														borderRadius={5}
-														bg={'hu-Pink.lightA'}
-														color={'hu-Pink.normal'}
-														w={'40px'}
-														h={'40px'}
-													>
-														<AiOutlineProject fontSize={20} />
-													</HStack>
-													<Text>Projects</Text>
-												</HStack>
-												<Text fontWeight={'semibold'} fontSize={'30px'}>
-													{countProjectsEmployee?.countProjects || 0}
-												</Text>
-											</HStack>
-										</GridItem>
+										<Static
+											title={'Projects'}
+											text={countProjectsEmployee?.countProjects}
+											icon={<AiOutlineProject fontSize={20} />}
+											color={'GreenN'}
+										/>
+										<Static
+											title={'Hours Logged'}
+											text={`${hoursLoggedEmployee?.hoursLogged} Hrs`}
+											icon={<BiTime fontSize={20} />}
+											color={'Pink'}
+										/>
+										<Static
+											title={'Late Attendance'}
+											text={countLateAttendancesEmployee?.lateAttendance}
+											icon={<BsCheck2 fontSize={20} />}
+											color={'Lam'}
+										/>
 
-										<GridItem
-											colSpan={[2, null, null, null, null, 1]}
-											p={'20px'}
-											borderBottom={'3px solid'}
-											borderColor={'hu-Pink.normal'}
-										>
-											<HStack
-												justifyContent={'space-between'}
-												spacing={5}
-												h={'full'}
-											>
-												<HStack spacing={5}>
-													<HStack
-														justifyContent={'center'}
-														borderRadius={5}
-														bg={'hu-Pink.lightA'}
-														color={'hu-Pink.normal'}
-														w={'40px'}
-														h={'40px'}
-													>
-														<AiOutlineProject fontSize={20} />
-													</HStack>
-													<Text>Hours Logged</Text>
-												</HStack>
-												<Text fontWeight={'semibold'} fontSize={'30px'}>
-													{hoursLoggedEmployee?.hoursLogged || 0}
-												</Text>
-											</HStack>
-										</GridItem>
-
-										<GridItem
-											colSpan={[2, null, null, null, null, 1]}
-											p={'20px'}
-											borderBottom={'3px solid'}
-											borderColor={'hu-Pink.normal'}
-										>
-											<HStack
-												justifyContent={'space-between'}
-												spacing={5}
-												h={'full'}
-											>
-												<HStack spacing={5}>
-													<HStack
-														justifyContent={'center'}
-														borderRadius={5}
-														bg={'hu-Pink.lightA'}
-														color={'hu-Pink.normal'}
-														w={'40px'}
-														h={'40px'}
-													>
-														<AiOutlineProject fontSize={20} />
-													</HStack>
-													<Text>Late Attendance</Text>
-												</HStack>
-												<Text fontWeight={'semibold'} fontSize={'30px'}>
-													{countLateAttendancesEmployee?.lateAttendance ||
-														0}
-												</Text>
-											</HStack>
-										</GridItem>
-
-										<GridItem
-											colSpan={[2, null, null, null, null, 1]}
-											p={'20px'}
-											borderBottom={'3px solid'}
-											borderColor={'hu-Pink.normal'}
-										>
-											<HStack
-												justifyContent={'space-between'}
-												spacing={5}
-												h={'full'}
-											>
-												<HStack spacing={5}>
-													<HStack
-														justifyContent={'center'}
-														borderRadius={5}
-														bg={'hu-Pink.lightA'}
-														color={'hu-Pink.normal'}
-														w={'40px'}
-														h={'40px'}
-													>
-														<AiOutlineProject fontSize={20} />
-													</HStack>
-													<Text>Late Attendance</Text>
-												</HStack>
-												<Text fontWeight={'semibold'} fontSize={'30px'}>
-													{countLeavesTakenEmployee?.countLeavesTaken ||
-														0}
-												</Text>
-											</HStack>
-										</GridItem>
+										<Static
+											title={'Leave taken'}
+											text={countLeavesTakenEmployee?.countLeavesTaken}
+											icon={<AiOutlineProject fontSize={20} />}
+											color={'Green'}
+										/>
 									</Grid>
 								</VStack>
 								<Grid templateColumns="repeat(2, 1fr)" gap={6} w={'full'}>
-									<GridItem
-										colSpan={[2, null, null, null, null, 1]}
-										borderRadius={5}
-									>
+									<GridItem borderRadius={5}>
 										<VStack spacing={'4'} alignItems={'start'} w={'full'}>
 											<Text fontWeight={'semibold'} fontSize={'xl'}>
 												Tasks
@@ -384,18 +271,24 @@ export const DetailEmployee: NextLayout | any = ({
 												borderRadius={'10px'}
 												h={'300px'}
 											>
-												{countTasksStatus?.countProjects && (
+												{countTasksStatus?.countTasksStatus && (
 													<Donut
-														labels={countTasksStatus.countProjects.map(task=> {
-															return task.title
-														})}
-														colors={countTasksStatus.countProjects.map(task=> {
-															return task.color
-														})}
-														data={countTasksStatus.countProjects.map(task=> {
-															return Number(task.count)
-														})}
-														height={280}
+														labels={countTasksStatus.countTasksStatus.map(
+															(task: any) => {
+																return task.title
+															}
+														)}
+														colors={countTasksStatus.countTasksStatus.map(
+															(task: any) => {
+																return task.color
+															}
+														)}
+														data={countTasksStatus.countTasksStatus.map(
+															(task: any) => {
+																return Number(task.count)
+															}
+														)}
+														height={300}
 													/>
 												)}
 											</Box>
@@ -412,13 +305,16 @@ export const DetailEmployee: NextLayout | any = ({
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-	const res: authMutaionResponse = await fetch('http://localhost:4000/api/auth/refresh_token', {
-		headers: context.req.headers as HeadersInit,
-	}).then((result) => result.json())
+	const res: authMutaionResponse = await fetch(
+		`${process.env.NEXT_PUBLIC_API_URL}/api/auth/refresh_token`,
+		{
+			headers: context.req.headers as HeadersInit,
+		}
+	).then((result) => result.json())
 
 	//get detail employee
 	const queryEmployee: employeeMutaionResponse = await fetch(
-		`http://localhost:4000/api/employees/${context.query.employeeId}`,
+		`${process.env.NEXT_PUBLIC_API_URL}/api/employees/${context.query.employeeId}`,
 		{
 			headers: {
 				Authorization: `bearer ${res.accessToken}`,

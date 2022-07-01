@@ -6,10 +6,9 @@ import {
 	useDisclosure,
 	VStack,
 	useColorMode,
-	Collapse,
-	SimpleGrid,
+	Box,
 } from '@chakra-ui/react'
-import { AlertDialog, Func, Table } from 'components/common'
+import { AlertDialog, Func, FuncCollapse, Table } from 'components/common'
 import { Drawer } from 'components/Drawer'
 import { Input, Select, SelectCustom } from 'components/filter'
 import { ClientLayout } from 'components/layouts'
@@ -23,12 +22,7 @@ import {
 	allProjectsByCurrentUserQuery,
 } from 'queries'
 import { useContext, useEffect, useState } from 'react'
-import {
-	AiOutlineCaretDown,
-	AiOutlineCaretUp,
-	AiOutlineDelete,
-	AiOutlineSearch,
-} from 'react-icons/ai'
+import { AiOutlineDelete, AiOutlineSearch } from 'react-icons/ai'
 import { IoAdd } from 'react-icons/io5'
 import { IOption } from 'type/basicTypes'
 import { NextLayout } from 'type/element/layout'
@@ -39,6 +33,7 @@ import { CSVLink } from 'react-csv'
 import { BiExport } from 'react-icons/bi'
 import { VscFilter } from 'react-icons/vsc'
 import { projectColumn } from 'utils/columns'
+import Head from 'next/head'
 
 const Projects: NextLayout = () => {
 	const { isAuthenticated, handleLoading, setToast, currentUser } = useContext(AuthContext)
@@ -107,11 +102,6 @@ const Projects: NextLayout = () => {
 		onClose: onCloseDlMany,
 	} = useDisclosure()
 
-	//set isopen of function
-	const { isOpen, onToggle } = useDisclosure({
-		defaultIsOpen: true,
-	})
-
 	// query and mutation
 	const { data: allProjects, mutate: refetchAllProjects } =
 		allProjectsByCurrentUserQuery(isAuthenticated)
@@ -135,10 +125,10 @@ const Projects: NextLayout = () => {
 			setProjectId(id)
 			onOpenDl()
 		},
-		onUpdate: (id: number)=> {
+		onUpdate: (id: number) => {
 			setProjectId(id)
 			onOpenUpdate()
-		}
+		},
 	})
 
 	//User effect ---------------------------------------------------------------
@@ -255,62 +245,45 @@ const Projects: NextLayout = () => {
 	}, [allEmployees, colorMode])
 
 	return (
-		<>
-			<HStack
-				_hover={{
-					textDecoration: 'none',
-				}}
-				onClick={onToggle}
-				color={'gray.500'}
-				cursor={'pointer'}
-				userSelect={'none'}
-			>
-				<Text fontWeight={'semibold'}>Function</Text>
-				{isOpen ? <AiOutlineCaretDown /> : <AiOutlineCaretUp />}
-			</HStack>
-			<Collapse in={isOpen} animateOpacity>
-				<SimpleGrid
-					w={'full'}
-					cursor={'pointer'}
-					columns={[1, 2, 2, 3, null, 4]}
-					spacing={10}
-					pt={3}
-				>
-					{currentUser && currentUser.role === 'Admin' && (
-						<>
-							<Func
-								icon={<IoAdd />}
-								description={'Add new client by form'}
-								title={'Add new'}
-								action={onOpenAdd}
-							/>
+		<Box pb={8}>
+			<Head>
+				<title>Huprom - Projects</title>
+				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
+			</Head>
+			<FuncCollapse>
+				{currentUser && currentUser.role === 'Admin' && (
+					<>
+						<Func
+							icon={<IoAdd />}
+							description={'Add new project by form'}
+							title={'Add new'}
+							action={onOpenAdd}
+						/>
 
-							<CSVLink filename={'projects.csv'} headers={headersCSV} data={dataCSV}>
-								<Func
-									icon={<BiExport />}
-									description={'export to csv'}
-									title={'export'}
-									action={() => {}}
-								/>
-							</CSVLink>
+						<CSVLink filename={'projects.csv'} headers={headersCSV} data={dataCSV}>
 							<Func
-								icon={<AiOutlineDelete />}
-								title={'Delete all'}
-								description={'Delete all client you selected'}
-								action={onOpenDlMany}
-								disabled={!dataSl || dataSl.length == 0 ? true : false}
+								icon={<BiExport />}
+								description={'export to csv'}
+								title={'export'}
+								action={() => {}}
 							/>
-						</>
-					)}
-					<Func
-						icon={<VscFilter />}
-						description={'Open draw to filter'}
-						title={'filter'}
-						action={onOpenFilter}
-					/>
-				</SimpleGrid>
-			</Collapse>
-			<br />
+						</CSVLink>
+						<Func
+							icon={<AiOutlineDelete />}
+							title={'Delete all'}
+							description={'Delete all projects you selected'}
+							action={onOpenDlMany}
+							disabled={!dataSl || dataSl.length == 0 ? true : false}
+						/>
+					</>
+				)}
+				<Func
+					icon={<VscFilter />}
+					description={'Open draw to filter'}
+					title={'filter'}
+					action={onOpenFilter}
+				/>
+			</FuncCollapse>
 
 			<Table
 				data={allProjects?.projects || []}
@@ -484,7 +457,7 @@ const Projects: NextLayout = () => {
 					)}
 				</VStack>
 			</Drawer>
-		</>
+		</Box>
 	)
 }
 

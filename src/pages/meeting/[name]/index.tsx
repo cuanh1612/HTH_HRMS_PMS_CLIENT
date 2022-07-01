@@ -36,10 +36,11 @@ import { MdLensBlur } from 'react-icons/md'
 import { backgroundBlur, backgroundImage, backgroundNone } from 'utils/RoomUtils'
 import { FiXCircle } from 'react-icons/fi'
 import { createClient, PhotosWithTotalResults } from 'pexels'
+import Head from 'next/head'
 
 export default function index() {
-	const {colorMode, toggleColorMode} = useColorMode()
-	
+	const { colorMode, toggleColorMode } = useColorMode()
+
 	const { isOpen, onOpen, onClose } = useDisclosure()
 	const { isAuthenticated, handleLoading, currentUser, setToast } = useContext(AuthContext)
 	const router = useRouter()
@@ -53,7 +54,7 @@ export default function index() {
 	const { search } = pexel.photos
 
 	useEffect(() => {
-		if(colorMode == 'dark') {
+		if (colorMode == 'dark') {
 			toggleColorMode()
 		}
 	}, [colorMode])
@@ -150,6 +151,10 @@ export default function index() {
 
 	return (
 		<Box boxSizing="border-box" padding={5} w={'full'} h={'96vh'}>
+			<Head>
+				<title>Huprom - {name} meeting</title>
+				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
+			</Head>
 			<HStack alignItems={'center'} justifyContent={'space-between'}>
 				<Box border={'1px solid red'} w={'50px'} h={'50px'}></Box>
 				{currentUser && (

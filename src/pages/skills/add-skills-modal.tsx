@@ -19,14 +19,14 @@ import {
 } from '@chakra-ui/react'
 import { ButtonIcon, Loading } from 'components/common'
 import { AuthContext } from 'contexts/AuthContext'
-import {
-	createDepartmentMutation,
-	deleteDepartmentMutation,
-	updateDepartmentMutation,
-} from 'mutations'
+// import {
+// 	createDepartmentMutation,
+// 	deleteDepartmentMutation,
+// 	updateDepartmentMutation,
+// } from 'mutations'
 import { createSkillsMutation, deleteSkillMutation, updateSkillMutation } from 'mutations/skill'
 import { useRouter } from 'next/router'
-import { allDepartmentsQuery } from 'queries'
+// import { allDepartmentsQuery } from 'queries'
 import { allSkillsQuery } from 'queries/skill'
 import { ChangeEvent, ChangeEventHandler, useContext, useEffect, useState } from 'react'
 import { AiOutlineCheck } from 'react-icons/ai'

@@ -42,13 +42,11 @@ import {
 	countProjectsOverdueQuery,
 	hoursLoggedQuery,
 	lastestClientsQuery,
-	lateAttendanceQuery,
 	pendingLeavesRawQuery,
 	pendingMilestoneQuery,
 	pendingTasksQuery,
 	pendingTasksRawQuery,
 	projectsEarningQuery,
-	projectsHoursLoggedQuery,
 	statusWiseProjects,
 	todayAttendanceQuery,
 	totalClientsQuery,
@@ -73,6 +71,7 @@ import DetailLeave from './leaves/[leaveId]'
 import DetailTask from './tasks/[taskId]'
 import { GrDocumentText } from 'react-icons/gr'
 import { clientType } from 'type/basicTypes'
+import Head from 'next/head'
 
 const dashboard: NextLayout = () => {
 	const { isAuthenticated, handleLoading, currentUser, setToast } = useContext(AuthContext)
@@ -112,11 +111,9 @@ const dashboard: NextLayout = () => {
 	const { data: dataClientWiseTimeLogs } = clientWiseTimeLogsQuery(isAuthenticated)
 	const { data: dataLastestClients } = lastestClientsQuery(isAuthenticated)
 	const { data: dataProjectsEarning } = projectsEarningQuery(isAuthenticated)
-	const { data: dataProjectsHoursLogged } = projectsHoursLoggedQuery(isAuthenticated)
 	const { data: dataCountByDateAttendance } = countByDateAttendanceQuery(isAuthenticated)
 	const { data: dataCountByDateLeave } = countByDateLeaveQuery(isAuthenticated)
 	const { data: dataCountProjectsOverdue } = countProjectsOverdueQuery(isAuthenticated)
-	const { data: dataLateAttendance } = lateAttendanceQuery(isAuthenticated)
 
 	// mutation ----------------------------------------
 	// update status of leave
@@ -147,6 +144,10 @@ const dashboard: NextLayout = () => {
 
 	return (
 		<Box w={'100%'} pb={8} pos={'relative'}>
+			<Head>
+				<title>Huprom - Dashboard</title>
+				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
+			</Head>
 			<HStack
 				_hover={{
 					textDecoration: 'none',
@@ -474,9 +475,7 @@ const dashboard: NextLayout = () => {
 																src={item.avatar?.url}
 															/>
 															<VStack alignItems={'start'}>
-																<Text>
-																	{item.name}
-																</Text>
+																<Text>{item.name}</Text>
 																<Text
 																	isTruncated
 																	w={'full'}

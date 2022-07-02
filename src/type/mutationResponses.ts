@@ -15,6 +15,7 @@ import {
 	eventType,
 	holidayType,
 	Hourly_rate_project,
+	jobApplicationType,
 	jobType,
 	jobTypeType,
 	leaveType,
@@ -341,4 +342,9 @@ export interface jobTypeMutationResponse extends commonResponse {
 export interface workExperienceMutationResponse extends commonResponse {
 	workExperience?: workExperienceType
 	workExperiences?: workExperienceType[]
+}
+
+export interface jobApplicationMutationResponse extends commonResponse {
+	jobApplicatiion?: jobApplicationType
+	jobApplicatiions?: jobApplicationType[]
 }

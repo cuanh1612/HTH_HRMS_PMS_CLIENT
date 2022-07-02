@@ -1,0 +1,53 @@
+import {
+	createJobApplicationForm,
+	deleteJobApplicationsForm,
+	updateJobApplicationForm,
+} from 'type/form/basicFormType'
+import { jobApplicationMutationResponse } from 'type/mutationResponses'
+import { deleteData, getData, postData, putData } from 'utils/fetchData'
+
+//Function handle create job application
+export async function createJobApplicationRequest(inputCreate: createJobApplicationForm) {
+	const resultFetch = await postData<jobApplicationMutationResponse>({
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/job-applications`,
+		body: inputCreate,
+	})
+
+	return resultFetch
+}
+
+//Function handle update job appliication
+export async function updateJobApplicationRequest(inputUpdate: updateJobApplicationForm) {
+	const resultFetch = await putData<jobApplicationMutationResponse>({
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/job-applications/${inputUpdate.jobApplicationId}`,
+		body: inputUpdate,
+	})
+
+	return resultFetch
+}
+
+//Function handle get all or detail job application
+export const getJobApplicationRequest = async (url: string) => {
+	return await getData<jobApplicationMutationResponse>({
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/${url}`,
+	})
+}
+
+//Function handle delete jobs
+export async function deleteJobApplicationRequest(jobApplicationId: string | number) {
+	const resultFetch = await deleteData<jobApplicationMutationResponse>({
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/job-applications/${jobApplicationId}`,
+	})
+
+	return resultFetch
+}
+
+//Function handle delete many job applications
+export async function deleteManyJobApplicationsRequest(inputDelete: deleteJobApplicationsForm) {
+	const resultFetch = await putData<jobApplicationMutationResponse>({
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/job-applications/delete-many`,
+		body: inputDelete,
+	})
+
+	return resultFetch
+}

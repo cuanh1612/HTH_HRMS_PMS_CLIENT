@@ -259,7 +259,7 @@ export const CreateJobValidate = yup.object({
 	starting_salary_amount: yup.number().min(0).required('Please select department for job'),
 	starts_on_date: yup.date().required('Please select starts on date'),
 	ends_on_date: yup.date().required('Please select ends ondate'),
-	rate: yup.string().required('Please select job rate')
+	rate: yup.string().required('Please select job rate'),
 })
 
 export const UpdateJobValidate = yup.object({
@@ -274,5 +274,18 @@ export const UpdateJobValidate = yup.object({
 	starting_salary_amount: yup.number().min(0).required('Please select department for job'),
 	starts_on_date: yup.date().required('Please select starts on date'),
 	ends_on_date: yup.date().required('Please select ends ondate'),
-	rate: yup.string().required('Please select job rate')
+	rate: yup.string().required('Please select job rate'),
+})
+
+export const CreateJobApplicationValidate = yup.object({
+	name: yup.string().required('Please enter field name'),
+	email: yup
+		.string()
+		.required('Please, enter email')
+		.email('Please, Enter the correct email format'),
+	mobile: yup.string().required('Please enter field mobile'),
+	status: yup.string().required('Please select status'),
+	source: yup.string().required('Please select status'),
+	jobs: yup.number().required('Please select job'),
+	location: yup.number().required('Please select location'),
 })

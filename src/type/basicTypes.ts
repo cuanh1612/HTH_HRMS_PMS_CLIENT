@@ -536,17 +536,17 @@ export interface skillType {
 }
 
 export interface locationType {
-    id: number
-    name: string
-    jobs?: jobType[]
+	id: number
+	name: string
+	jobs?: jobType[]
 	createdAt: Date
 	updatedAt: Date
 }
 
 export interface jobTypeType {
-    id: number
-    name: string
-    jobs?: jobType
+	id: number
+	name: string
+	jobs?: jobType
 	createdAt: Date
 	updatedAt: Date
 }
@@ -559,21 +559,40 @@ export interface workExperienceType {
 	updatedAt: Date
 }
 
-
 export interface jobType {
-    id: number
-    title: string
+	id: number
+	title: string
 	starts_on_date: Date
 	ends_on_date: Date
-    skills: skillType[]
-    locations: locationType[]
-    department: departmentType
-    status: boolean
-    total_openings: number
-    job_type: jobTypeType
-    work_experience: workExperienceType
-    recruiter: employeeType
-    starting_salary_amount: number
-    job_description?: string
+	skills: skillType[]
+	locations: locationType[]
+	department: departmentType
+	status: boolean
+	total_openings: number
+	job_type: jobTypeType
+	work_experience: workExperienceType
+	recruiter: employeeType
+	starting_salary_amount: number
+	job_description?: string
 	rate: string
+}
+
+export interface jobApplicationType {
+	id: number
+	name: string
+	email: string
+	mobile: number
+	picture: {
+		id: number
+		url: string
+		public_id: string
+		name: string
+	}
+	cover_leter: string
+	status: string
+	source: string
+	jobs: jobType
+	location: Location
+	createdAt: Date
+	updatedAt: Date
 }

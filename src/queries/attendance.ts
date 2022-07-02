@@ -10,7 +10,7 @@ export const allAttendancesQuery = (
 	employee?: string | number
 ) => {
 	const fieldUrl: string[] = []
-	date && fieldUrl.push(`date=${date.toLocaleDateString()}`)
+	date && fieldUrl.push(`date=${date}`)
 	department && fieldUrl.push(`department=${department}`)
 	employee && fieldUrl.push(`employee=${employee}`)
 

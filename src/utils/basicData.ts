@@ -264,3 +264,49 @@ export const dataJobRate: IOption[] = [
 		label: 'Per Year',
 	},
 ]
+
+export const dataJobApplicationStatus: IOption[] = [
+	{
+		value: 'Applied',
+		label: 'Applied',
+	},
+	{
+		value: 'Phone screen',
+		label: 'Phone screen',
+	},
+	{
+		value: 'Interview',
+		label: 'Interview',
+	},
+	{
+		value: 'Hired',
+		label: 'Hired',
+	},
+	{
+		value: 'Rejected',
+		label: 'Rejected',
+	},
+]
+
+export const dataApplicationSource: IOption[] = [
+	{
+		value: 'Linkedin',
+		label: 'Linkedin',
+	},
+	{
+		value: 'Facebook',
+		label: 'Facebook',
+	},
+	{
+		value: 'Instagram',
+		label: 'Instagram',
+	},
+	{
+		value: 'Instagram',
+		label: 'Twitter',
+	},
+	{
+		value: 'Other',
+		label: 'Other',
+	},
+]

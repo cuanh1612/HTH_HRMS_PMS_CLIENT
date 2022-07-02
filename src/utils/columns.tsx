@@ -771,10 +771,13 @@ export const contractColumn = ({
 					Cell: ({ value, row }) => (
 						<Text
 							_hover={{
-								textDecoration: 'underline'
+								textDecoration: 'underline',
 							}}
 						>
-							<Link key={row.values['id']} href={`/contracts/${row.values['id']}/detail`}>
+							<Link
+								key={row.values['id']}
+								href={`/contracts/${row.values['id']}/detail`}
+							>
 								{value}
 							</Link>
 						</Text>
@@ -3196,6 +3199,74 @@ export const employeeLeavesColumn = ({
 	]
 }
 
+export const SkillsColumn = ({ onDelete, onUpdate, currentUser }: IOptionColumn): TColumn[] => {
+	return [
+		{
+			Header: 'Skills',
+			columns: [
+				{
+					Header: 'Id',
+					accessor: 'id',
+					width: 80,
+					minWidth: 80,
+					disableResizing: true,
+					Cell: ({ value }) => {
+						return value
+					},
+				},
+				{
+					Header: 'Name',
+					accessor: 'name',
+					filter: textFilter(['heading']),
+					minWidth: 80,
+					Cell: ({ value }) => {
+						return <Text isTruncated>{value}</Text>
+					},
+				},
+
+				{
+					Header: 'Action',
+					accessor: 'action',
+					disableResizing: true,
+					width: 120,
+					minWidth: 120,
+					disableSortBy: true,
+					Cell: ({ row }) => (
+						<Menu>
+							<MenuButton as={Button} paddingInline={3}>
+								<MdOutlineMoreVert />
+							</MenuButton>
+							<MenuList>
+								{currentUser?.role === 'Admin' && (
+									<>
+										<MenuItem
+											onClick={() => {
+												onUpdate(row.values['id'])
+											}}
+											icon={<RiPencilLine fontSize={'15px'} />}
+										>
+											Edit
+										</MenuItem>
+
+										<MenuItem
+											onClick={() => {
+												onDelete(row.values['id'])
+											}}
+											icon={<MdOutlineDeleteOutline fontSize={'15px'} />}
+										>
+											Delete
+										</MenuItem>
+									</>
+								)}
+							</MenuList>
+						</Menu>
+					),
+				},
+			],
+		},
+	]
+}
+
 export const clientProjectsColumn = ({
 	onDelete,
 	onUpdate,
@@ -3387,9 +3458,7 @@ export const clientProjectsColumn = ({
 							</MenuButton>
 							<MenuList>
 								<Link href={`/projects/${row.values['id']}/overview`} passHref>
-									<MenuItem
-										icon={<IoEyeOutline fontSize={'15px'} />}
-									>
+									<MenuItem icon={<IoEyeOutline fontSize={'15px'} />}>
 										View
 									</MenuItem>
 								</Link>

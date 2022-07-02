@@ -44,7 +44,7 @@ const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
 
 export interface IUpdateJobProps {
 	onCloseDrawer?: () => void
-	JobIdProp?: number
+	JobIdProp: number | null
 }
 
 export default function UpdateJob({ onCloseDrawer, JobIdProp }: IUpdateJobProps) {
@@ -99,8 +99,6 @@ export default function UpdateJob({ onCloseDrawer, JobIdProp }: IUpdateJobProps)
 		isAuthenticated,
 		JobIdProp || (jobIdRouter as string)
 	)
-
-	console.log(dataDetailJob)
 
 	// refetch all jobs
 	const { mutate: refetchJobs } = allJobsQuery(isAuthenticated)
@@ -159,7 +157,7 @@ export default function UpdateJob({ onCloseDrawer, JobIdProp }: IUpdateJobProps)
 			console.log(values)
 
 			//create new job
-			mutateUpJob({
+			await mutateUpJob({
 				...values,
 				jobId: JobIdProp || jobIdRouter as string
 			})
@@ -187,7 +185,7 @@ export default function UpdateJob({ onCloseDrawer, JobIdProp }: IUpdateJobProps)
 	//Set data option employees state
 	useEffect(() => {
 		if (allEmployees && allEmployees.employees) {
-			let newOptionEmployees: IOption[] = []
+			const newOptionEmployees: IOption[] = []
 
 			allEmployees.employees.map((employee) => {
 				newOptionEmployees.push({
@@ -214,7 +212,7 @@ export default function UpdateJob({ onCloseDrawer, JobIdProp }: IUpdateJobProps)
 	//Set data option job type state
 	useEffect(() => {
 		if (allJobType && allJobType.jobTypes) {
-			let newOptionJobTypes: IOption[] = []
+			const newOptionJobTypes: IOption[] = []
 
 			allJobType.jobTypes.map((jobType) => {
 				newOptionJobTypes.push({
@@ -234,7 +232,7 @@ export default function UpdateJob({ onCloseDrawer, JobIdProp }: IUpdateJobProps)
 	//Set data option work experience state
 	useEffect(() => {
 		if (allWorkExperience && allWorkExperience.workExperiences) {
-			let newOptionWorkExperiences: IOption[] = []
+			const newOptionWorkExperiences: IOption[] = []
 
 			allWorkExperience.workExperiences.map((workExperience) => {
 				newOptionWorkExperiences.push({
@@ -254,7 +252,7 @@ export default function UpdateJob({ onCloseDrawer, JobIdProp }: IUpdateJobProps)
 	//Set data option skills state
 	useEffect(() => {
 		if (allSkills && allSkills.skills) {
-			let newOptionSkills: IOption[] = []
+			const newOptionSkills: IOption[] = []
 
 			allSkills.skills.map((skill) => {
 				newOptionSkills.push({
@@ -274,7 +272,7 @@ export default function UpdateJob({ onCloseDrawer, JobIdProp }: IUpdateJobProps)
 	//Set data option locations state
 	useEffect(() => {
 		if (allLocations && allLocations.locations) {
-			let newOptionLocations: IOption[] = []
+			const newOptionLocations: IOption[] = []
 
 			allLocations.locations.map((location) => {
 				newOptionLocations.push({
@@ -332,6 +330,8 @@ export default function UpdateJob({ onCloseDrawer, JobIdProp }: IUpdateJobProps)
 			if (onCloseDrawer) {
 				onCloseDrawer()
 			}
+
+			refetchJobs()
 		}
 	}, [statusUpJob])
 
@@ -340,7 +340,7 @@ export default function UpdateJob({ onCloseDrawer, JobIdProp }: IUpdateJobProps)
 		if (dataDetailJob && dataDetailJob.job) {
 			//Set data selected option skills
 			if (dataDetailJob.job.skills) {
-				let newSelectedOptionSkils: IOption[] = []
+				const newSelectedOptionSkils: IOption[] = []
 
 				dataDetailJob.job.skills.map((skill) => {
 					newSelectedOptionSkils.push({
@@ -358,7 +358,7 @@ export default function UpdateJob({ onCloseDrawer, JobIdProp }: IUpdateJobProps)
 
 			//Set data selected option locations
 			if (dataDetailJob.job.locations) {
-				let newSelectedOptionlocations: IOption[] = []
+				const newSelectedOptionlocations: IOption[] = []
 
 				dataDetailJob.job.locations.map((location) => {
 					newSelectedOptionlocations.push({

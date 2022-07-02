@@ -19,7 +19,7 @@ import {
 	AiOutlineUsergroupAdd,
 } from 'react-icons/ai'
 import { BiMessageDots, BiTime } from 'react-icons/bi'
-import { BsCheck2, BsPerson } from 'react-icons/bs'
+import { BsCheck2, BsPerson, BsPersonBadge } from 'react-icons/bs'
 import { VscTasklist } from 'react-icons/vsc'
 import { IoIosGitNetwork } from 'react-icons/io'
 import { IoAirplaneOutline, IoExitOutline, IoVideocamOutline } from 'react-icons/io5'
@@ -34,6 +34,8 @@ import LinkGroup from './LinkGroup'
 import LinkItem from './LinkItem'
 import { companyInfoQuery } from 'queries/companyInfo'
 import Image from 'next/image'
+import { GiSkills } from 'react-icons/gi'
+import { RiSuitcaseLine } from 'react-icons/ri'
 
 const LinkItems = () => {
 	const { currentUser } = useContext(AuthContext)
@@ -145,11 +147,29 @@ const LinkItems = () => {
 				/>
 			)}
 			{currentUser?.role == 'Admin' && (
-				<LinkItem
-					link="/salaries"
-					title="Salaries"
-					icon={<MdOutlineAttachMoney fontSize={20} />}
-				/>
+				<>
+					<LinkItem
+						link="/salaries"
+						title="Salaries"
+						icon={<MdOutlineAttachMoney fontSize={20} />}
+					/>
+					<LinkGroup
+						data={[
+							{
+								icon: <GiSkills fontSize={20} />,
+								link: '/skills',
+								title: 'Skills',
+							},
+							{
+								icon: <RiSuitcaseLine fontSize={20} />,
+								link: '/jobs',
+								title: 'Jobs',
+							},
+						]}
+						title="Recruit"
+						icon={<BsPersonBadge fontSize={20} />}
+					/>
+				</>
 			)}
 
 			{currentUser?.role != 'Client' && (

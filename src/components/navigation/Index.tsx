@@ -22,7 +22,7 @@ import { BiMessageDots, BiTime } from 'react-icons/bi'
 import { BsCheck2, BsPerson, BsPersonBadge } from 'react-icons/bs'
 import { VscTasklist } from 'react-icons/vsc'
 import { IoIosGitNetwork } from 'react-icons/io'
-import { IoAirplaneOutline, IoExitOutline, IoVideocamOutline } from 'react-icons/io5'
+import { IoAirplaneOutline, IoDocumentTextOutline, IoExitOutline, IoVideocamOutline } from 'react-icons/io5'
 import {
 	MdOutlineAttachMoney,
 	MdOutlineDashboard,
@@ -36,6 +36,7 @@ import { companyInfoQuery } from 'queries/companyInfo'
 import Image from 'next/image'
 import { GiSkills } from 'react-icons/gi'
 import { RiSuitcaseLine } from 'react-icons/ri'
+import { GrDocumentText } from 'react-icons/gr'
 
 const LinkItems = () => {
 	const { currentUser } = useContext(AuthContext)
@@ -164,6 +165,11 @@ const LinkItems = () => {
 								icon: <RiSuitcaseLine fontSize={20} />,
 								link: '/jobs',
 								title: 'Jobs',
+							},
+							{
+								icon: <IoDocumentTextOutline fontSize={20} />,
+								link: '/job-applications',
+								title: 'Job applications',
 							},
 						]}
 						title="Recruit"

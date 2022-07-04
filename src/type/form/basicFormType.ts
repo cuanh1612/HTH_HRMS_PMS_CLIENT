@@ -701,3 +701,40 @@ export interface updateWorkExperienceForm {
 	name: string
 	workExperienceId: string | number
 }
+
+export interface createJobApplicationForm {
+    name: string
+    email: string
+    mobile: number
+    cover_leter?: string
+    status: string
+    source?: string
+    jobs: number
+    location: number
+	picture: {
+		name: string
+		public_id: string
+		url: string
+	}
+}
+
+export interface updateJobApplicationForm {
+	jobApplicationId: string | number
+    name: string
+    email: string
+    mobile: number
+    cover_leter?: string
+    status: string
+    source?: string
+    jobs: number
+    location: number
+	picture: {
+		name: string
+		public_id: string
+		url: string
+	}
+}
+
+export interface deleteJobApplicationsForm {
+	jobApplications: number []
+}

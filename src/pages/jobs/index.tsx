@@ -1,12 +1,6 @@
 import {
 	Box,
 	Button,
-	Menu,
-	MenuButton,
-	MenuItem,
-	MenuList,
-	Select,
-	Text,
 	useDisclosure,
 	VStack,
 } from '@chakra-ui/react'
@@ -19,18 +13,16 @@ import { useRouter } from 'next/router'
 import { allJobsQuery } from 'queries/job'
 import { useContext, useEffect, useState } from 'react'
 import { IoAdd } from 'react-icons/io5'
-import { MdOutlineDeleteOutline, MdOutlineMoreVert } from 'react-icons/md'
-import { RiPencilLine } from 'react-icons/ri'
 import { VscFilter } from 'react-icons/vsc'
 import { NextLayout } from 'type/element/layout'
 import { IFilter, TColumn } from 'type/tableTypes'
 import { dataJobStatus } from 'utils/basicData'
-import { dateFilter, selectFilter, textFilter } from 'utils/tableFilters'
 import AddJob from './add-jobs'
 import UpdateJob from './[jobId]/update'
 import { deleteJobMutation, deleteJobsMutation, updateJobStatusMutation } from 'mutations/job'
 import { AiOutlineDelete, AiOutlineSearch } from 'react-icons/ai'
 import { DateRange, Input, Select as FSelect } from 'components/filter'
+import { jobColumn } from 'utils/columns'
 
 const Job: NextLayout = () => {
 	const { isAuthenticated, handleLoading, currentUser, setToast } = useContext(AuthContext)
@@ -125,128 +117,24 @@ const Job: NextLayout = () => {
 		}
 	}, [statusDlMany])
 
-	const columns: TColumn[] = [
-		{
-			Header: 'Jobs',
-			columns: [
-				{
-					Header: 'Id',
-					accessor: 'id',
-					width: 80,
-					minWidth: 80,
-					disableResizing: true,
-					Cell: ({ value }) => {
-						return value
-					},
-				},
-				{
-					Header: 'Title',
-					accessor: 'title',
-					filter: textFilter(['title']),
-					minWidth: 80,
-					Cell: ({ value }) => {
-						return <Text isTruncated>{value}</Text>
-					},
-				},
-				{
-					Header: 'Start date',
-					accessor: 'starts_on_date',
-					minWidth: 180,
-					width: 180,
-					filter: dateFilter(['starts_on_date']),
-					Cell: ({ value }) => {
-						const date = new Date(value as string)
-						return (
-							<Text>{`${date.getDate()}-${
-								date.getMonth() + 1
-							}-${date.getFullYear()}`}</Text>
-						)
-					},
-				},
-				{
-					Header: 'End date',
-					accessor: 'ends_on_date',
-					minWidth: 180,
-					width: 180,
-
-					Cell: ({ value }) => {
-						const date = new Date(value as string)
-						return (
-							<Text>{`${date.getDate()}-${
-								date.getMonth() + 1
-							}-${date.getFullYear()}`}</Text>
-						)
-					},
-				},
-				{
-					Header: 'Status',
-					accessor: 'status',
-					filter: selectFilter(['status']),
-
-					minWidth: 160,
-					Cell: ({ value, row }) => {
-						return (
-							<Select
-								onChange={async (event) => {
-									setIsloading(true)
-									await updateStatus({
-										id: row.values['id'],
-										status: event.target.value == 'Open' ? true : false,
-									})
-								}}
-								defaultValue={value == true ? 'Open' : 'Close'}
-							>
-								{dataJobStatus.map((e) => (
-									<option value={e.value}>{e.label}</option>
-								))}
-							</Select>
-						)
-					},
-				},
-
-				{
-					Header: 'Action',
-					accessor: 'action',
-					disableResizing: true,
-					width: 120,
-					minWidth: 120,
-					disableSortBy: true,
-					Cell: ({ row }) => (
-						<Menu>
-							<MenuButton as={Button} paddingInline={3}>
-								<MdOutlineMoreVert />
-							</MenuButton>
-							<MenuList>
-								{currentUser?.role === 'Admin' && (
-									<>
-										<MenuItem
-											onClick={() => {
-												setIdJob(row.values['id'])
-												onOpenUpdate()
-											}}
-											icon={<RiPencilLine fontSize={'15px'} />}
-										>
-											Edit
-										</MenuItem>
-
-										<MenuItem
-											onClick={() => {
-												setIdJob(row.values['id'])
-												onOpenDl()
-											}}
-											icon={<MdOutlineDeleteOutline fontSize={'15px'} />}
-										>
-											Delete
-										</MenuItem>
-									</>
-								)}
-							</MenuList>
-						</Menu>
-					),
-				},
-			],
+	const columns: TColumn[] = jobColumn({
+		currentUser,
+		onDelete: (id: number) => {
+			setIdJob(id)
+			onOpenDl()
 		},
-	]
+		onUpdate: (id: number) => {
+			setIdJob(id)
+			onOpenUpdate()
+		},
+		onChangeStatus: async (id: number, event: any) => {
+			setIsloading(true)
+			await updateStatus({
+				id,
+				status: event.target.value == 'Open' ? true : false,
+			})
+		},
+	})
 
 	return (
 		<Box pb={8}>

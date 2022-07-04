@@ -592,7 +592,7 @@ export interface jobApplicationType {
 	status: string
 	source: string
 	jobs: jobType
-	location: Location
+	location: locationType
 	createdAt: Date
 	updatedAt: Date
 }

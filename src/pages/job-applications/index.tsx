@@ -6,6 +6,7 @@ import { useRouter } from 'next/router'
 import { useContext, useEffect } from 'react'
 import { NextLayout } from 'type/element/layout'
 import AddJobApplications from './add-job-applications'
+import UpdateJobApplication from './[jobApplicationId]/update'
 // import UpdateJob from './[jobId]/update'
 
 const jobApplications: NextLayout = () => {
@@ -38,9 +39,9 @@ const jobApplications: NextLayout = () => {
 			<Drawer size="xl" title="Add Job Application" onClose={onCloseAdd} isOpen={isOpenAdd}>
 				<AddJobApplications onCloseDrawer={onCloseAdd} />
 			</Drawer>
-			{/* <Drawer size="xl" title="Update Jobs" onClose={onCloseUpdate} isOpen={isOpenUpdate}>
-				<UpdateJob onCloseDrawer={onCloseUpdate} JobIdProp={8} />
-			</Drawer> */}
+			<Drawer size="xl" title="Update Jobs" onClose={onCloseUpdate} isOpen={isOpenUpdate}>
+				<UpdateJobApplication onCloseDrawer={onCloseUpdate} jobApplicationId={12} />
+			</Drawer>
 		</>
 	)
 }

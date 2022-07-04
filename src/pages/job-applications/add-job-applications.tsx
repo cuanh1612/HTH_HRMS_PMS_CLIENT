@@ -209,7 +209,7 @@ export default function AddJobApplication({ onCloseDrawer }: IAddJobApplicationP
 
 					<GridItem w="100%" colSpan={[2, 1]}>
 						<HStack>
-							<SelectMany
+							<SelectCustom
 								form={formSetting}
 								label={'Jobs'}
 								name={'jobs'}
@@ -263,7 +263,7 @@ export default function AddJobApplication({ onCloseDrawer }: IAddJobApplicationP
 
 					<GridItem w="100%" colSpan={[2, 1]}>
 						<HStack>
-							<SelectMany
+							<SelectCustom
 								form={formSetting}
 								label={'Location'}
 								name={'location'}

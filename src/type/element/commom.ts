@@ -50,6 +50,7 @@ export interface ITextarea {
 	label: string
 	placeholder: string
 	required?: boolean
+	defaultValue? : string
 }
 
 // components/form/ButtonIcon

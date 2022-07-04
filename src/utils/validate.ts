@@ -289,3 +289,16 @@ export const CreateJobApplicationValidate = yup.object({
 	jobs: yup.number().required('Please select job'),
 	location: yup.number().required('Please select location'),
 })
+
+export const UpdateJobApplicationValidate = yup.object({
+	name: yup.string().required('Please enter field name'),
+	email: yup
+		.string()
+		.required('Please, enter email')
+		.email('Please, Enter the correct email format'),
+	mobile: yup.string().required('Please enter field mobile'),
+	status: yup.string().required('Please select status'),
+	source: yup.string().required('Please select status'),
+	jobs: yup.number().required('Please select job'),
+	location: yup.number().required('Please select location'),
+})

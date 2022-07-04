@@ -10,6 +10,7 @@ export const Textarea = ({
 	form,
 	placeholder,
 	required = false,
+	defaultValue
 }: ITextarea & { form: UseFormReturn<any, any> }) => {
 	const errorColor = useColorModeValue('red.400', 'pink.400')
 
@@ -28,6 +29,7 @@ export const Textarea = ({
 						{label} { required && <Text as='span' color={'red'}>*</Text>}
 					</FormLabel>
 					<TextareaChakra
+						defaultValue={defaultValue ? defaultValue : undefined}
 						placeholder={placeholder}
 						id={name}
 						{...field}

@@ -1,4 +1,5 @@
 import {
+	changeSkillsJobApplicationRequest,
 	createJobApplicationRequest,
 	deleteJobApplicationRequest,
 	deleteManyJobApplicationsRequest,
@@ -58,6 +59,18 @@ export const deleteJobApplicationMutation = (setToast: TToast) => {
 // delete many
 export const deleteJobApplicationsMutation = (setToast: TToast) => {
 	return useMutation(deleteManyJobApplicationsRequest, {
+		onFailure({ error }) {
+			setToast({
+				msg: error.message,
+				type: 'error',
+			})
+		},
+	})
+}
+
+//change skills for application
+export const changeSkillsobApplicationMutation = (setToast: TToast) => {
+	return useMutation(changeSkillsJobApplicationRequest, {
 		onFailure({ error }) {
 			setToast({
 				msg: error.message,

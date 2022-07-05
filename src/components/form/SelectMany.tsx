@@ -62,9 +62,11 @@ export const SelectMany = ({
 	return (
 		<>
 			<FormControl isRequired={required}>
-				<FormLabel color={'gray.400'} fontWeight={'normal'} htmlFor={name}>
-					{label}
-				</FormLabel>
+				{label && (
+					<FormLabel color={'gray.400'} fontWeight={'normal'} htmlFor={name}>
+						{label}
+					</FormLabel>
+				)}
 
 				<HStack w={'full'} position={'relative'}>
 					<Select

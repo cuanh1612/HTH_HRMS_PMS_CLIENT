@@ -264,8 +264,8 @@ export const CreateJobValidate = yup.object({
 
 export const UpdateJobValidate = yup.object({
 	title: yup.string().required('Please enter field title'),
-	skills: yup.array().length(1).required('Please select skills for job'),
-	locations: yup.array().length(1).required('Please select locations for job'),
+	skills: yup.array().min(1).required('Please select skills for job'),
+	locations: yup.array().min(1).required('Please select locations for job'),
 	department: yup.number().required('Please select department for job'),
 	total_openings: yup.number().min(0).required('Please select department for job'),
 	job_type: yup.number().required('Please select job type for job'),
@@ -301,4 +301,8 @@ export const UpdateJobApplicationValidate = yup.object({
 	source: yup.string().required('Please select status'),
 	jobs: yup.number().required('Please select job'),
 	location: yup.number().required('Please select location'),
+})
+
+export const changeSkillsJobApplicationValidate = yup.object({
+	skills: yup.array().min(1).required('Please select skills for job application'),
 })

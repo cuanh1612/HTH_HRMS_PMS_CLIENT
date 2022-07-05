@@ -36,6 +36,7 @@ import { IFilter, TColumn } from 'type/tableTypes'
 import { dataJobApplicationStatus } from 'utils/basicData'
 import { dateFilter, selectFilter, textFilter } from 'utils/tableFilters'
 import AddJobApplications from './add-job-applications'
+import DetailJobApplication from './[jobApplicationId]'
 import UpdateJobApplication from './[jobApplicationId]/update'
 // import UpdateJob from './[jobId]/update'
 
@@ -62,6 +63,7 @@ const jobApplications: NextLayout = () => {
 	//Setup drawer --------------------------------------------------------------
 	const { isOpen: isOpenAdd, onOpen: onOpenAdd, onClose: onCloseAdd } = useDisclosure()
 	const { isOpen: isOpenUpdate, onOpen: onOpenUpdate, onClose: onCloseUpdate } = useDisclosure()
+<<<<<<< HEAD
 	// set isOpen of dialog to filters
 	const { isOpen: isOpenFilter, onOpen: onOpenFilter, onClose: onCloseFilter } = useDisclosure()
 	// set isOpen of dialog to delete one
@@ -73,6 +75,9 @@ const jobApplications: NextLayout = () => {
 		onOpen: onOpenDlMany,
 		onClose: onCloseDlMany,
 	} = useDisclosure()
+=======
+	const { isOpen: isOpenDetail, onOpen: onOpenDetail, onClose: onCloseDetail } = useDisclosure()
+>>>>>>> ea1c53ff4e52b8b93e91a71e6c2ca88479a352f7
 
 	//Query ---------------------------------------------------------------------
 	const { data: dataAllJobApplications, mutate: refetchAllData } =
@@ -260,6 +265,7 @@ const jobApplications: NextLayout = () => {
 	]
 
 	return (
+<<<<<<< HEAD
 		<Box pb={8}>
 			<Head>
 				<title>Huprom - Jobs</title>
@@ -426,6 +432,22 @@ const jobApplications: NextLayout = () => {
 				</VStack>
 			</Drawer>
 		</Box>
+=======
+		<>
+			<Button onClick={onOpenAdd}>add job application</Button>
+			<Button onClick={onOpenUpdate}>update jobs</Button>
+			<Button onClick={onOpenDetail}>Detail jobs</Button>
+			<Drawer size="xl" title="Add Job Application" onClose={onCloseAdd} isOpen={isOpenAdd}>
+				<AddJobApplications onCloseDrawer={onCloseAdd} />
+			</Drawer>
+			<Drawer size="xl" title="Update Job Application" onClose={onCloseUpdate} isOpen={isOpenUpdate}>
+				<UpdateJobApplication onCloseDrawer={onCloseUpdate} jobApplicationId={12} />
+			</Drawer>
+			<Drawer size="xl" title="Detail Jobs Application" onClose={onCloseDetail} isOpen={isOpenDetail}>
+				<DetailJobApplication onCloseDrawer={onCloseDetail} jobApplicationId={12} />
+			</Drawer>
+		</>
+>>>>>>> ea1c53ff4e52b8b93e91a71e6c2ca88479a352f7
 	)
 }
 jobApplications.getLayout = ClientLayout

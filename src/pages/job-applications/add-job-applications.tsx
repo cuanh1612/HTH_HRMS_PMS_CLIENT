@@ -3,7 +3,6 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { Loading } from 'components/common'
 import {
 	Input, SelectCustom,
-	SelectMany,
 	Textarea,
 	UploadAvatar
 } from 'components/form'

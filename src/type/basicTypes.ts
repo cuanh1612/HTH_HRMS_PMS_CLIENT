@@ -595,4 +595,5 @@ export interface jobApplicationType {
 	location: locationType
 	createdAt: Date
 	updatedAt: Date
+	skills?: skillType[]
 }

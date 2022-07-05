@@ -1,12 +1,16 @@
 import { Box, Button, Grid, GridItem, HStack, Text } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Loading } from 'components/common'
-import { Input, SelectCustom, SelectMany, Textarea, UploadAvatar } from 'components/form'
+import { Input, SelectCustom, Textarea, UploadAvatar } from 'components/form'
 import { AuthContext } from 'contexts/AuthContext'
+<<<<<<< HEAD
 import {
 	createJobApplicationMutation,
 	updateJobApplicationMutation,
 } from 'mutations/jobApplication'
+=======
+import { updateJobApplicationMutation } from 'mutations/jobApplication'
+>>>>>>> ea1c53ff4e52b8b93e91a71e6c2ca88479a352f7
 import { useRouter } from 'next/router'
 import { allJobsQuery } from 'queries/job'
 import { allJobApplicationsQuery, detailJobApplicationQuery } from 'queries/jobApplication'
@@ -17,10 +21,10 @@ import { AiOutlineCheck, AiOutlineMail, AiOutlineMobile } from 'react-icons/ai'
 import { MdDriveFileRenameOutline } from 'react-icons/md'
 import { IOption } from 'type/basicTypes'
 import { ICloudinaryImg, IImg } from 'type/fileType'
-import { createJobApplicationForm, updateJobApplicationForm } from 'type/form/basicFormType'
+import { updateJobApplicationForm } from 'type/form/basicFormType'
 import { dataApplicationSource, dataJobApplicationStatus } from 'utils/basicData'
 import { uploadFile } from 'utils/uploadFile'
-import { CreateJobApplicationValidate, UpdateJobApplicationValidate } from 'utils/validate'
+import { UpdateJobApplicationValidate } from 'utils/validate'
 
 export interface IUpdateJobApplicationProps {
 	onCloseDrawer?: () => void

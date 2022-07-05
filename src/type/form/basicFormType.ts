@@ -8,8 +8,8 @@ export type TCoverPassword = {
 }
 
 export type TResetPassword = {
-	password: string,
-	activeToken: string,
+	password: string
+	activeToken: string
 	passwordConfirm: string
 }
 
@@ -581,8 +581,8 @@ export type updateProjectTimeLogForm = {
 }
 
 export type updateStatusProjectForm = {
-	project: number | string 
-	project_status?: "Not Started" | "In Progress" | "On Hold" | "Canceled" | "Finished"
+	project: number | string
+	project_status?: 'Not Started' | 'In Progress' | 'On Hold' | 'Canceled' | 'Finished'
 }
 
 export type createStickyNoteForm = {
@@ -602,8 +602,8 @@ export type createRoomForm = {
 	start_time: string
 	date: Date
 	empl_create: number
-	employees: number[];
-	clients: number[];
+	employees: number[]
+	clients: number[]
 }
 
 export type updateRoomForm = {
@@ -612,8 +612,8 @@ export type updateRoomForm = {
 	id: number
 	start_time: string
 	date: Date
-	employees: number[];
-	clients: number[];
+	employees: number[]
+	clients: number[]
 }
 
 export type updateCompanyInfoForm = {
@@ -624,7 +624,7 @@ export type updateCompanyInfoForm = {
 }
 
 export interface createSkillsForm {
-	skills: string []
+	skills: string[]
 }
 
 export interface updateSkillsForm {
@@ -633,21 +633,21 @@ export interface updateSkillsForm {
 }
 
 export interface deleteSkillsForm {
-	skills: number []
+	skills: number[]
 }
 
 export interface createJobForm {
-    title: string
-    skills: number[]
-    locations: number[]
-    department: number
-    status: boolean | string
-    total_openings: number
-    job_type: number
-    work_experience: number
-    recruiter: number
-    starting_salary_amount: number
-    job_description?: string
+	title: string
+	skills: number[]
+	locations: number[]
+	department: number
+	status: boolean | string
+	total_openings: number
+	job_type: number
+	work_experience: number
+	recruiter: number
+	starting_salary_amount: number
+	job_description?: string
 	starts_on_date: Date
 	ends_on_date: Date
 	rate: string
@@ -655,28 +655,28 @@ export interface createJobForm {
 
 export interface updateJobForm {
 	jobId: number | string
-    title: string
-    skills: number[]
-    locations: number[]
-    department: number
-    status: boolean | string
-    total_openings: number
-    job_type: number
-    work_experience: number
-    recruiter: number
-    starting_salary_amount: number
-    job_description?: string
+	title: string
+	skills: number[]
+	locations: number[]
+	department: number
+	status: boolean | string
+	total_openings: number
+	job_type: number
+	work_experience: number
+	recruiter: number
+	starting_salary_amount: number
+	job_description?: string
 	starts_on_date: Date
 	ends_on_date: Date
 	rate: string
 }
 
 export interface deleteJobsForm {
-	jobs: number []
+	jobs: number[]
 }
 
 export interface createLocationsForm {
-	locations: string []
+	locations: string[]
 }
 
 export interface updateLocationForm {
@@ -703,14 +703,14 @@ export interface updateWorkExperienceForm {
 }
 
 export interface createJobApplicationForm {
-    name: string
-    email: string
-    mobile: number
-    cover_leter?: string
-    status: string
-    source?: string
-    jobs: number
-    location: number
+	name: string
+	email: string
+	mobile: number
+	cover_leter?: string
+	status: string
+	source?: string
+	jobs: number
+	location: number
 	picture: {
 		name: string
 		public_id: string
@@ -720,14 +720,14 @@ export interface createJobApplicationForm {
 
 export interface updateJobApplicationForm {
 	jobApplicationId: string | number
-    name: string
-    email: string
-    mobile: number
-    cover_leter?: string
-    status: string
-    source?: string
-    jobs: number
-    location: number
+	name: string
+	email: string
+	mobile: number
+	cover_leter?: string
+	status: string
+	source?: string
+	jobs: number
+	location: number
 	picture: {
 		name: string
 		public_id: string
@@ -736,5 +736,11 @@ export interface updateJobApplicationForm {
 }
 
 export interface deleteJobApplicationsForm {
-	jobApplications: number []
+	jobApplications: number[]
 }
+
+export interface changeSkillsJobApplicationForm {
+	skills: number[]
+	jobApplicationId: number
+}
+

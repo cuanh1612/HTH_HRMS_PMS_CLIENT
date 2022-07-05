@@ -1,4 +1,5 @@
 import {
+	changeSkillsJobApplicationForm,
 	createJobApplicationForm,
 	deleteJobApplicationsForm,
 	updateJobApplicationForm,
@@ -47,6 +48,16 @@ export async function deleteManyJobApplicationsRequest(inputDelete: deleteJobApp
 	const resultFetch = await putData<jobApplicationMutationResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/job-applications/delete-many`,
 		body: inputDelete,
+	})
+
+	return resultFetch
+}
+
+//Function handle change skills job appliication
+export async function changeSkillsJobApplicationRequest(inputUpdate: changeSkillsJobApplicationForm) {
+	const resultFetch = await postData<jobApplicationMutationResponse>({
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/job-applications/change-skills`,
+		body: inputUpdate,
 	})
 
 	return resultFetch

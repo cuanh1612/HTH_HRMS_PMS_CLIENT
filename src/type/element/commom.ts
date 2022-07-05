@@ -25,7 +25,7 @@ export interface IInputNumber {
 
 export interface ISelect {
 	name: string
-	label: string
+	label?: string
 	required: boolean
 	placeholder?: string
 	options: IOption[]

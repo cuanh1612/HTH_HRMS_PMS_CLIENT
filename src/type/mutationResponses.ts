@@ -345,6 +345,6 @@ export interface workExperienceMutationResponse extends commonResponse {
 }
 
 export interface jobApplicationMutationResponse extends commonResponse {
-	jobApplicatiion?: jobApplicationType
-	jobApplicatiions?: jobApplicationType[]
+	jobApplication?: jobApplicationType
+	jobApplications?: jobApplicationType[]
 }

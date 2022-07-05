@@ -1,16 +1,15 @@
 import { Box, Button, Grid, GridItem, HStack, Text } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Loading } from 'components/common'
-import {
-	Input, SelectCustom,
-	SelectMany,
-	Textarea,
-	UploadAvatar
-} from 'components/form'
+import { Input, SelectCustom, SelectMany, Textarea, UploadAvatar } from 'components/form'
 import { AuthContext } from 'contexts/AuthContext'
-import { createJobApplicationMutation } from 'mutations/jobApplication'
+import {
+	createJobApplicationMutation,
+	updateJobApplicationMutation,
+} from 'mutations/jobApplication'
 import { useRouter } from 'next/router'
 import { allJobsQuery } from 'queries/job'
+import { allJobApplicationsQuery, detailJobApplicationQuery } from 'queries/jobApplication'
 import { allLocationsQuery } from 'queries/location'
 import { useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -18,21 +17,23 @@ import { AiOutlineCheck, AiOutlineMail, AiOutlineMobile } from 'react-icons/ai'
 import { MdDriveFileRenameOutline } from 'react-icons/md'
 import { IOption } from 'type/basicTypes'
 import { ICloudinaryImg, IImg } from 'type/fileType'
-import { createJobApplicationForm } from 'type/form/basicFormType'
-import {
-	dataApplicationSource,
-	dataJobApplicationStatus
-} from 'utils/basicData'
+import { createJobApplicationForm, updateJobApplicationForm } from 'type/form/basicFormType'
+import { dataApplicationSource, dataJobApplicationStatus } from 'utils/basicData'
 import { uploadFile } from 'utils/uploadFile'
-import { CreateJobApplicationValidate } from 'utils/validate'
+import { CreateJobApplicationValidate, UpdateJobApplicationValidate } from 'utils/validate'
 
-export interface IAddJobApplicationProps {
+export interface IUpdateJobApplicationProps {
 	onCloseDrawer?: () => void
+	jobApplicationId: string | number | null
 }
 
-export default function AddJobApplication({ onCloseDrawer }: IAddJobApplicationProps) {
+export default function UpdateJobApplication({
+	onCloseDrawer,
+	jobApplicationId: jobApplicationIdProp,
+}: IUpdateJobApplicationProps) {
 	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
 	const router = useRouter()
+	const { jobApplicationId: jobApplicationIdRouter } = router.query
 
 	//State -------------------------------------------------------------------
 	// all departments
@@ -42,17 +43,28 @@ export default function AddJobApplication({ onCloseDrawer }: IAddJobApplicationP
 	const [infoImg, setInfoImg] = useState<IImg>() // state data image upload
 	const [loadingImg, setLoadingImg] = useState<boolean>(false) // state loading when image upload
 
+	//Selected option
+	const [selectedJob, setSelectedJob] = useState<IOption>()
+	const [selectedLocation, setSelectedLocation] = useState<IOption>()
+
 	//Query -------------------------------------------------------------------
 
 	// get all locations
 	const { data: allLocations } = allLocationsQuery(isAuthenticated)
 	const { data: allJobs } = allJobsQuery(isAuthenticated)
 
+	//Get detail job application
+	const { data: dataDetailJobApplication } = detailJobApplicationQuery(
+		isAuthenticated,
+		jobApplicationIdProp || (jobApplicationIdRouter as string)
+	)
+
+	// refetch all job application
+	const { mutate: refetchJobApplications } = allJobApplicationsQuery(isAuthenticated)
+
 	//mutation ----------------------------------------------------------------
-	const [
-		mutateCreJobApplication,
-		{ status: statusCreJobApplication, data: dataCreJobApplication },
-	] = createJobApplicationMutation(setToast)
+	const [mutateUpJobApplication, { status: statusUpJobApplication, data: dataUpJobApplication }] =
+		updateJobApplicationMutation(setToast)
 
 	//Funcion -----------------------------------------------------------------
 	const handleUploadAvatar = async () => {
@@ -76,7 +88,7 @@ export default function AddJobApplication({ onCloseDrawer }: IAddJobApplicationP
 	}
 
 	// setForm and submit form create new job application ---------------------
-	const formSetting = useForm<createJobApplicationForm>({
+	const formSetting = useForm<updateJobApplicationForm>({
 		defaultValues: {
 			name: undefined,
 			email: undefined,
@@ -87,13 +99,13 @@ export default function AddJobApplication({ onCloseDrawer }: IAddJobApplicationP
 			jobs: undefined,
 			location: undefined,
 		},
-		resolver: yupResolver(CreateJobApplicationValidate),
+		resolver: yupResolver(UpdateJobApplicationValidate),
 	})
 
 	const { handleSubmit } = formSetting
 
-	//Handle crete job
-	const onSubmit = async (values: createJobApplicationForm) => {
+	//Handle update job application
+	const onSubmit = async (values: updateJobApplicationForm) => {
 		//Upload avatar
 		const dataUploadAvattar: ICloudinaryImg | null = await handleUploadAvatar()
 
@@ -105,8 +117,11 @@ export default function AddJobApplication({ onCloseDrawer }: IAddJobApplicationP
 				public_id: dataUploadAvattar.public_id,
 			}
 		}
-		//create new job aplication
-		mutateCreJobApplication(values)
+
+		values.jobApplicationId = jobApplicationIdProp || (jobApplicationIdRouter as string)
+
+		//updat
+		mutateUpJobApplication(values)
 	}
 
 	//User effect ---------------------------------------------------------------
@@ -125,7 +140,7 @@ export default function AddJobApplication({ onCloseDrawer }: IAddJobApplicationP
 	//Set data option locations state
 	useEffect(() => {
 		if (allLocations && allLocations.locations) {
-			let newOptionLocations: IOption[] = []
+			const newOptionLocations: IOption[] = []
 
 			allLocations.locations.map((location) => {
 				newOptionLocations.push({
@@ -145,7 +160,7 @@ export default function AddJobApplication({ onCloseDrawer }: IAddJobApplicationP
 	//Set data option jobs
 	useEffect(() => {
 		if (allJobs && allJobs.jobs) {
-			let newOptionJobs: IOption[] = []
+			const newOptionJobs: IOption[] = []
 
 			allJobs.jobs.map((job) => {
 				newOptionJobs.push({
@@ -164,12 +179,12 @@ export default function AddJobApplication({ onCloseDrawer }: IAddJobApplicationP
 
 	//Note when request success
 	useEffect(() => {
-		if (statusCreJobApplication === 'success') {
+		if (statusUpJobApplication === 'success') {
 			//Inform notice success
-			if (dataCreJobApplication) {
+			if (dataUpJobApplication) {
 				setToast({
 					type: 'success',
-					msg: dataCreJobApplication?.message,
+					msg: dataUpJobApplication?.message,
 				})
 			}
 
@@ -189,32 +204,79 @@ export default function AddJobApplication({ onCloseDrawer }: IAddJobApplicationP
 				jobs: undefined,
 				location: undefined,
 			})
+
+			refetchJobApplications()
 		}
-	}, [statusCreJobApplication])
+	}, [statusUpJobApplication])
+
+	//Chane data form when have data detail event
+	useEffect(() => {
+		if (dataDetailJobApplication && dataDetailJobApplication.jobApplication) {
+			//Set data selected option job
+			if (dataDetailJobApplication.jobApplication.jobs) {
+				const newSelectedJob: IOption = {
+					label: (
+						<>
+							<Text>{dataDetailJobApplication.jobApplication.jobs.title}</Text>
+						</>
+					),
+					value: dataDetailJobApplication.jobApplication.jobs.id,
+				}
+				setSelectedJob(newSelectedJob)
+			}
+
+			//Set data selected option location
+			if (dataDetailJobApplication.jobApplication.location) {
+				const newSelectedLocation: IOption = {
+					label: (
+						<>
+							<Text>{dataDetailJobApplication.jobApplication.location.name}</Text>
+						</>
+					),
+					value: dataDetailJobApplication.jobApplication.location.id,
+				}
+				setSelectedLocation(newSelectedLocation)
+			}
+
+			//set data form
+			formSetting.reset({
+				name: dataDetailJobApplication.jobApplication.name || undefined,
+				email: dataDetailJobApplication.jobApplication.email || undefined,
+				mobile: dataDetailJobApplication.jobApplication.mobile || undefined,
+				cover_leter: dataDetailJobApplication.jobApplication.cover_leter || undefined,
+				status: dataDetailJobApplication.jobApplication.status || undefined,
+				source: dataDetailJobApplication.jobApplication.source || undefined,
+				jobs: dataDetailJobApplication.jobApplication.jobs.id || undefined,
+				location: dataDetailJobApplication.jobApplication.location.id || undefined,
+			})
+		}
+	}, [dataDetailJobApplication])
 
 	return (
 		<>
 			<Box pos="relative" p={6} as={'form'} h="auto" onSubmit={handleSubmit(onSubmit)}>
 				<Grid templateColumns="repeat(2, 1fr)" gap={6}>
 					<GridItem w="100%" colSpan={2}>
-						<Text color={"gray.400"} mb={2}>
-							Job Application Picture <span style={{color: "red"}}>*</span>
+						<Text color={'gray.400'} mb={2}>
+							Job Application Picture <span style={{ color: 'red' }}>*</span>
 						</Text>
 						<UploadAvatar
 							setInfoImg={(data?: IImg) => {
 								setInfoImg(data)
 							}}
+							oldImg={dataDetailJobApplication?.jobApplication?.picture?.url}
 						/>
 					</GridItem>
 
 					<GridItem w="100%" colSpan={[2, 1]}>
 						<HStack>
-							<SelectMany
+							<SelectCustom
 								form={formSetting}
 								label={'Jobs'}
 								name={'jobs'}
 								required={true}
 								options={optionJobs}
+								selectedOption={selectedJob}
 							/>
 						</HStack>
 					</GridItem>
@@ -263,12 +325,13 @@ export default function AddJobApplication({ onCloseDrawer }: IAddJobApplicationP
 
 					<GridItem w="100%" colSpan={[2, 1]}>
 						<HStack>
-							<SelectMany
+							<SelectCustom
 								form={formSetting}
 								label={'Location'}
 								name={'location'}
 								required={true}
 								options={optionLocations}
+								selectedOption={selectedLocation}
 							/>
 						</HStack>
 					</GridItem>
@@ -295,8 +358,11 @@ export default function AddJobApplication({ onCloseDrawer }: IAddJobApplicationP
 
 					<GridItem w="100%" colSpan={[2]}>
 						<Textarea
-							name="cover_Letter"
-							label="Application Cover Leeter"
+							defaultValue={
+								dataDetailJobApplication?.jobApplication?.cover_leter || undefined
+							}
+							name="cover_leter"
+							label="Application Cover Leter"
 							form={formSetting}
 							placeholder="Application Source"
 						/>
@@ -318,7 +384,7 @@ export default function AddJobApplication({ onCloseDrawer }: IAddJobApplicationP
 				>
 					Save
 				</Button>
-				{statusCreJobApplication === 'running' && <Loading />}
+				{(statusUpJobApplication === 'running' || loadingImg) && <Loading />}
 			</Box>
 		</>
 	)

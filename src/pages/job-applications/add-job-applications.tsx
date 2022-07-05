@@ -11,6 +11,7 @@ import { AuthContext } from 'contexts/AuthContext'
 import { createJobApplicationMutation } from 'mutations/jobApplication'
 import { useRouter } from 'next/router'
 import { allJobsQuery } from 'queries/job'
+import { allJobApplicationsQuery } from 'queries/jobApplication'
 import { allLocationsQuery } from 'queries/location'
 import { useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -47,6 +48,9 @@ export default function AddJobApplication({ onCloseDrawer }: IAddJobApplicationP
 	// get all locations
 	const { data: allLocations } = allLocationsQuery(isAuthenticated)
 	const { data: allJobs } = allJobsQuery(isAuthenticated)
+
+		// refetch all job application
+		const { mutate: refetchJobApplications } = allJobApplicationsQuery(isAuthenticated)
 
 	//mutation ----------------------------------------------------------------
 	const [
@@ -189,6 +193,7 @@ export default function AddJobApplication({ onCloseDrawer }: IAddJobApplicationP
 				jobs: undefined,
 				location: undefined,
 			})
+			refetchJobApplications()
 		}
 	}, [statusCreJobApplication])
 
@@ -209,7 +214,7 @@ export default function AddJobApplication({ onCloseDrawer }: IAddJobApplicationP
 
 					<GridItem w="100%" colSpan={[2, 1]}>
 						<HStack>
-							<SelectMany
+							<SelectCustom
 								form={formSetting}
 								label={'Jobs'}
 								name={'jobs'}
@@ -263,7 +268,7 @@ export default function AddJobApplication({ onCloseDrawer }: IAddJobApplicationP
 
 					<GridItem w="100%" colSpan={[2, 1]}>
 						<HStack>
-							<SelectMany
+							<SelectCustom
 								form={formSetting}
 								label={'Location'}
 								name={'location'}

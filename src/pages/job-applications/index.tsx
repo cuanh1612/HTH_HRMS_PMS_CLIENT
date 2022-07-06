@@ -27,7 +27,7 @@ import { allJobApplicationsQuery } from 'queries/jobApplication'
 import { allLocationsQuery } from 'queries/location'
 import { useContext, useEffect, useState } from 'react'
 import { AiOutlineDelete, AiOutlineSearch } from 'react-icons/ai'
-import { IoAdd } from 'react-icons/io5'
+import { IoAdd, IoEyeOutline } from 'react-icons/io5'
 import { MdOutlineDeleteOutline, MdOutlineMoreVert } from 'react-icons/md'
 import { RiPencilLine } from 'react-icons/ri'
 import { VscFilter } from 'react-icons/vsc'
@@ -63,7 +63,6 @@ const jobApplications: NextLayout = () => {
 	//Setup drawer --------------------------------------------------------------
 	const { isOpen: isOpenAdd, onOpen: onOpenAdd, onClose: onCloseAdd } = useDisclosure()
 	const { isOpen: isOpenUpdate, onOpen: onOpenUpdate, onClose: onCloseUpdate } = useDisclosure()
-<<<<<<< HEAD
 	// set isOpen of dialog to filters
 	const { isOpen: isOpenFilter, onOpen: onOpenFilter, onClose: onCloseFilter } = useDisclosure()
 	// set isOpen of dialog to delete one
@@ -75,9 +74,7 @@ const jobApplications: NextLayout = () => {
 		onOpen: onOpenDlMany,
 		onClose: onCloseDlMany,
 	} = useDisclosure()
-=======
 	const { isOpen: isOpenDetail, onOpen: onOpenDetail, onClose: onCloseDetail } = useDisclosure()
->>>>>>> ea1c53ff4e52b8b93e91a71e6c2ca88479a352f7
 
 	//Query ---------------------------------------------------------------------
 	const { data: dataAllJobApplications, mutate: refetchAllData } =
@@ -233,6 +230,15 @@ const jobApplications: NextLayout = () => {
 								<MdOutlineMoreVert />
 							</MenuButton>
 							<MenuList>
+								<MenuItem
+									onClick={() => {
+										setIdJobApplication(row.values['id'])
+										onOpenDetail()
+									}}
+									icon={<IoEyeOutline fontSize={'15px'} />}
+								>
+									View
+								</MenuItem>
 								{currentUser?.role === 'Admin' && (
 									<>
 										<MenuItem
@@ -265,7 +271,6 @@ const jobApplications: NextLayout = () => {
 	]
 
 	return (
-<<<<<<< HEAD
 		<Box pb={8}>
 			<Head>
 				<title>Huprom - Jobs</title>
@@ -314,6 +319,17 @@ const jobApplications: NextLayout = () => {
 			<Drawer size="xl" title="Update Jobs" onClose={onCloseUpdate} isOpen={isOpenUpdate}>
 				<UpdateJobApplication
 					onCloseDrawer={onCloseUpdate}
+					jobApplicationId={idJobApplication}
+				/>
+			</Drawer>
+			<Drawer
+				size="xl"
+				title="Detail Jobs Application"
+				onClose={onCloseDetail}
+				isOpen={isOpenDetail}
+			>
+				<DetailJobApplication
+					onCloseDrawer={onCloseDetail}
 					jobApplicationId={idJobApplication}
 				/>
 			</Drawer>
@@ -432,22 +448,6 @@ const jobApplications: NextLayout = () => {
 				</VStack>
 			</Drawer>
 		</Box>
-=======
-		<>
-			<Button onClick={onOpenAdd}>add job application</Button>
-			<Button onClick={onOpenUpdate}>update jobs</Button>
-			<Button onClick={onOpenDetail}>Detail jobs</Button>
-			<Drawer size="xl" title="Add Job Application" onClose={onCloseAdd} isOpen={isOpenAdd}>
-				<AddJobApplications onCloseDrawer={onCloseAdd} />
-			</Drawer>
-			<Drawer size="xl" title="Update Job Application" onClose={onCloseUpdate} isOpen={isOpenUpdate}>
-				<UpdateJobApplication onCloseDrawer={onCloseUpdate} jobApplicationId={12} />
-			</Drawer>
-			<Drawer size="xl" title="Detail Jobs Application" onClose={onCloseDetail} isOpen={isOpenDetail}>
-				<DetailJobApplication onCloseDrawer={onCloseDetail} jobApplicationId={12} />
-			</Drawer>
-		</>
->>>>>>> ea1c53ff4e52b8b93e91a71e6c2ca88479a352f7
 	)
 }
 jobApplications.getLayout = ClientLayout

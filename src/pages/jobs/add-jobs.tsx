@@ -18,6 +18,7 @@ import { createJobMutation } from 'mutations/job'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 import { allDepartmentsQuery, allEmployeesQuery } from 'queries'
+import { allJobsQuery } from 'queries/job'
 import { allJobTypesQuery } from 'queries/jobType'
 import { allLocationsQuery } from 'queries/location'
 import { allSkillsQuery } from 'queries/skill'
@@ -29,7 +30,6 @@ import { BsCalendarDate } from 'react-icons/bs'
 import { MdDriveFileRenameOutline } from 'react-icons/md'
 import 'react-quill/dist/quill.bubble.css'
 import 'react-quill/dist/quill.snow.css'
-import { mutate } from 'swr'
 import { IOption, jobType } from 'type/basicTypes'
 import { createJobForm } from 'type/form/basicFormType'
 import { dataJobRate, dataJobStatus } from 'utils/basicData'
@@ -99,6 +99,8 @@ export default function AddJob({ onCloseDrawer }: IAddJobProps) {
 	const { data: allJobType } = allJobTypesQuery(isAuthenticated)
 	// get all work experience
 	const { data: allWorkExperience } = allWorkExperiencesQuery(isAuthenticated)
+	// refetch when add new jobs
+	const { mutate: refetchAllJobs } = allJobsQuery(isAuthenticated)
 
 	//mutation ----------------------------------------------------------------
 	const [mutateCreJob, { status: statusCreJob, data: dataCreJob }] = createJobMutation(setToast)
@@ -143,10 +145,8 @@ export default function AddJob({ onCloseDrawer }: IAddJobProps) {
 			values.job_description = jobDescription
 			values.status = values.status === 'Open' ? true : false
 
-			console.log(values)
-
 			//create new job
-			mutateCreJob(values)
+			await mutateCreJob(values)
 		}
 	}
 
@@ -329,6 +329,7 @@ export default function AddJob({ onCloseDrawer }: IAddJobProps) {
 			})
 
 			setJobDescription('')
+			refetchAllJobs()
 		}
 	}, [statusCreJob])
 

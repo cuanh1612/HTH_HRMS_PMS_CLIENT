@@ -36,7 +36,7 @@ const interviews: NextLayout = () => {
 		<>
 			<Button onClick={onOpenAdd}>add interviews</Button>
 			<Button onClick={onOpenUpdate}>update jobs</Button>
-			<Drawer size="xl" title="Add Jobs" onClose={onCloseAdd} isOpen={isOpenAdd}>
+			<Drawer size="xl" title="Add Interview" onClose={onCloseAdd} isOpen={isOpenAdd}>
 				<AddInterviews onCloseDrawer={onCloseAdd} />
 			</Drawer>
 			{/* <Drawer size="xl" title="Update Jobs" onClose={onCloseUpdate} isOpen={isOpenUpdate}>

@@ -38,6 +38,7 @@ import {
 	timeLogType,
 } from 'type/basicTypes'
 import { TColumn } from 'type/tableTypes'
+import { dataJobStatus } from './basicData'
 import {
 	arrayFilter,
 	dateFilter,
@@ -57,6 +58,10 @@ interface IOptionColumn {
 interface IEmployeeColumn extends IOptionColumn {
 	onChangeRole: any
 	dataRoleEmployee: IOption[]
+}
+
+interface IJobColumn extends IOptionColumn {
+	onChangeStatus: any
 }
 
 interface ILeaveColumn extends IOptionColumn {
@@ -771,10 +776,13 @@ export const contractColumn = ({
 					Cell: ({ value, row }) => (
 						<Text
 							_hover={{
-								textDecoration: 'underline'
+								textDecoration: 'underline',
 							}}
 						>
-							<Link key={row.values['id']} href={`/contracts/${row.values['id']}/detail`}>
+							<Link
+								key={row.values['id']}
+								href={`/contracts/${row.values['id']}/detail`}
+							>
 								{value}
 							</Link>
 						</Text>
@@ -3196,6 +3204,74 @@ export const employeeLeavesColumn = ({
 	]
 }
 
+export const SkillsColumn = ({ onDelete, onUpdate, currentUser }: IOptionColumn): TColumn[] => {
+	return [
+		{
+			Header: 'Skills',
+			columns: [
+				{
+					Header: 'Id',
+					accessor: 'id',
+					width: 80,
+					minWidth: 80,
+					disableResizing: true,
+					Cell: ({ value }) => {
+						return value
+					},
+				},
+				{
+					Header: 'Name',
+					accessor: 'name',
+					filter: textFilter(['heading']),
+					minWidth: 80,
+					Cell: ({ value }) => {
+						return <Text isTruncated>{value}</Text>
+					},
+				},
+
+				{
+					Header: 'Action',
+					accessor: 'action',
+					disableResizing: true,
+					width: 120,
+					minWidth: 120,
+					disableSortBy: true,
+					Cell: ({ row }) => (
+						<Menu>
+							<MenuButton as={Button} paddingInline={3}>
+								<MdOutlineMoreVert />
+							</MenuButton>
+							<MenuList>
+								{currentUser?.role === 'Admin' && (
+									<>
+										<MenuItem
+											onClick={() => {
+												onUpdate(row.values['id'])
+											}}
+											icon={<RiPencilLine fontSize={'15px'} />}
+										>
+											Edit
+										</MenuItem>
+
+										<MenuItem
+											onClick={() => {
+												onDelete(row.values['id'])
+											}}
+											icon={<MdOutlineDeleteOutline fontSize={'15px'} />}
+										>
+											Delete
+										</MenuItem>
+									</>
+								)}
+							</MenuList>
+						</Menu>
+					),
+				},
+			],
+		},
+	]
+}
+
 export const clientProjectsColumn = ({
 	onDelete,
 	onUpdate,
@@ -3387,9 +3463,7 @@ export const clientProjectsColumn = ({
 							</MenuButton>
 							<MenuList>
 								<Link href={`/projects/${row.values['id']}/overview`} passHref>
-									<MenuItem
-										icon={<IoEyeOutline fontSize={'15px'} />}
-									>
+									<MenuItem icon={<IoEyeOutline fontSize={'15px'} />}>
 										View
 									</MenuItem>
 								</Link>
@@ -3404,6 +3478,125 @@ export const clientProjectsColumn = ({
 										>
 											Edit
 										</MenuItem>
+										<MenuItem
+											onClick={() => {
+												onDelete(row.values['id'])
+											}}
+											icon={<MdOutlineDeleteOutline fontSize={'15px'} />}
+										>
+											Delete
+										</MenuItem>
+									</>
+								)}
+							</MenuList>
+						</Menu>
+					),
+				},
+			],
+		},
+	]
+}
+
+export const jobColumn = ({ onDelete, onUpdate, currentUser, onChangeStatus}: IJobColumn): TColumn[] => {
+	return [
+		{
+			Header: 'Jobs',
+			columns: [
+				{
+					Header: 'Id',
+					accessor: 'id',
+					width: 80,
+					minWidth: 80,
+					disableResizing: true,
+					Cell: ({ value }) => {
+						return value
+					},
+				},
+				{
+					Header: 'Title',
+					accessor: 'title',
+					filter: textFilter(['title']),
+					minWidth: 80,
+					Cell: ({ value }) => {
+						return <Text isTruncated>{value}</Text>
+					},
+				},
+				{
+					Header: 'Start date',
+					accessor: 'starts_on_date',
+					minWidth: 180,
+					width: 180,
+					filter: dateFilter(['starts_on_date']),
+					Cell: ({ value }) => {
+						const date = new Date(value as string)
+						return (
+							<Text>{`${date.getDate()}-${
+								date.getMonth() + 1
+							}-${date.getFullYear()}`}</Text>
+						)
+					},
+				},
+				{
+					Header: 'End date',
+					accessor: 'ends_on_date',
+					minWidth: 180,
+					width: 180,
+
+					Cell: ({ value }) => {
+						const date = new Date(value as string)
+						return (
+							<Text>{`${date.getDate()}-${
+								date.getMonth() + 1
+							}-${date.getFullYear()}`}</Text>
+						)
+					},
+				},
+				{
+					Header: 'Status',
+					accessor: 'status',
+					filter: selectFilter(['status']),
+
+					minWidth: 160,
+					Cell: ({ value, row }) => {
+						return (
+							<Select
+								onChange={async (event: any) => {
+									await onChangeStatus(row.values['id'], event)
+								}}
+								defaultValue={value == true ? 'Open' : 'Close'}
+							>
+								{dataJobStatus.map((e) => (
+									<option value={e.value}>{e.label}</option>
+								))}
+							</Select>
+						)
+					},
+				},
+
+				{
+					Header: 'Action',
+					accessor: 'action',
+					disableResizing: true,
+					width: 120,
+					minWidth: 120,
+					disableSortBy: true,
+					Cell: ({ row }) => (
+						<Menu>
+							<MenuButton as={Button} paddingInline={3}>
+								<MdOutlineMoreVert />
+							</MenuButton>
+							<MenuList>
+								{currentUser?.role === 'Admin' && (
+									<>
+										<MenuItem
+											onClick={() => {
+												onUpdate(row.values['id'])
+											}}
+											icon={<RiPencilLine fontSize={'15px'} />}
+										>
+											Edit
+										</MenuItem>
+
 										<MenuItem
 											onClick={() => {
 												onDelete(row.values['id'])

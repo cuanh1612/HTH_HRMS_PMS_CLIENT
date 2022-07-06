@@ -23,7 +23,7 @@ import { BsEmojiLaughing } from 'react-icons/bs'
 export const MessageBar = ({
 	msgs,
 	handleSendMsg,
-	isDisabled = false
+	isDisabled = false,
 }: {
 	msgs: ImessageRoom[]
 	handleSendMsg: any
@@ -88,9 +88,9 @@ export const MessageBar = ({
 	>([])
 
 	useEffect(() => {
+		console.log(listEmojis)
 		const result = listEmojis.filter((emoji) => {
-			emoji.group == category && emoji
-			// emoji.group == category && emoji
+			return emoji.group == category
 		})
 		setDataEmojis(result)
 	}, [category])
@@ -126,13 +126,7 @@ export const MessageBar = ({
 				paddingInline={4}
 			>
 				{msgs.map((msg, key) => (
-					<Msg
-						id={msg.id}
-						time={msg.time}
-						name={msg.name}
-						key={key}
-						text={msg.text}
-					/>
+					<Msg id={msg.id} time={msg.time} name={msg.name} key={key} text={msg.text} />
 				))}
 			</VStack>
 			<HStack w={'full'} paddingInline={4}>
@@ -183,8 +177,8 @@ export const MessageBar = ({
 											<GridItem
 												cursor={'pointer'}
 												userSelect={'none'}
-												onClick={()=> {
-													setMsg(msg => {
+												onClick={() => {
+													setMsg((msg) => {
 														return `${msg} ${emoji.char}`
 													})
 												}}
@@ -226,17 +220,17 @@ export const MessageBar = ({
 				<IconButton
 					aria-label="send msg"
 					onClick={() => {
-						if(isDisabled) {
+						if (isDisabled) {
 							setMsg('')
 							return setToast({
 								type: 'warning',
-								msg: 'You not allow to use'
+								msg: 'You not allow to use',
 							})
 						}
-						if(!msg) {
+						if (!msg) {
 							return setToast({
 								type: 'warning',
-								msg: 'Pease, enter your message'
+								msg: 'Pease, enter your message',
 							})
 						}
 						handleSendMsg({ text: msg })

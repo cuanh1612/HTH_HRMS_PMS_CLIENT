@@ -6,6 +6,7 @@ import { AuthContext } from 'contexts/AuthContext'
 import { createJobApplicationMutation } from 'mutations/jobApplication'
 import { useRouter } from 'next/router'
 import { allJobsQuery } from 'queries/job'
+import { allJobApplicationsQuery } from 'queries/jobApplication'
 import { allLocationsQuery } from 'queries/location'
 import { useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -43,6 +44,9 @@ export default function AddJobApplication({ onCloseDrawer, dataJob }: IAddJobApp
 	const { data: allLocations } = allLocationsQuery(isAuthenticated)
 	const { data: allJobs } = allJobsQuery(isAuthenticated)
 
+		// refetch all job application
+		const { mutate: refetchJobApplications } = allJobApplicationsQuery(isAuthenticated)
+
 	//mutation ----------------------------------------------------------------
 	const [
 		mutateCreJobApplication,
@@ -59,7 +63,7 @@ export default function AddJobApplication({ onCloseDrawer, dataJob }: IAddJobApp
 				raw: false,
 				tags: ['avatar'],
 				options: infoImg.options,
-				upload_preset: 'huprom-avatar',
+				upload_preset: 'job-applications',
 			})
 
 			setLoadingImg(false)
@@ -120,7 +124,7 @@ export default function AddJobApplication({ onCloseDrawer, dataJob }: IAddJobApp
 	//Set data option locations state
 	useEffect(() => {
 		if (allLocations && allLocations.locations) {
-			let newOptionLocations: IOption[] = []
+			const newOptionLocations: IOption[] = []
 
 			allLocations.locations.map((location) => {
 				newOptionLocations.push({
@@ -140,7 +144,7 @@ export default function AddJobApplication({ onCloseDrawer, dataJob }: IAddJobApp
 	//Set data option jobs
 	useEffect(() => {
 		if (allJobs && allJobs.jobs) {
-			let newOptionJobs: IOption[] = []
+			const newOptionJobs: IOption[] = []
 
 			allJobs.jobs.map((job) => {
 				newOptionJobs.push({
@@ -199,6 +203,7 @@ export default function AddJobApplication({ onCloseDrawer, dataJob }: IAddJobApp
 				...(dataJob?.job ? { jobs: undefined } : {}),
 				location: undefined,
 			})
+			refetchJobApplications()
 		}
 	}, [statusCreJobApplication])
 

@@ -19,7 +19,6 @@ export const textFilter = (columns: string[]) => {
 
 		return rows.filter((row) => {
 			const data = getData(columns, row)
-			console.log(data)
 			return String(data).toUpperCase().includes(String(filterValue).toUpperCase())
 		})
 	}

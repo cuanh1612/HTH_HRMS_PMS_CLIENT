@@ -4,6 +4,7 @@ import {
 	deleteJobApplicationRequest,
 	deleteManyJobApplicationsRequest,
 	updateJobApplicationRequest,
+	updateJobApplicationsStatusRequest,
 } from 'requests/jobApplication'
 import { TToast } from 'type/basicTypes'
 import useMutation from 'use-mutation'
@@ -11,6 +12,17 @@ import useMutation from 'use-mutation'
 //create
 export const createJobApplicationMutation = (setToast: TToast) => {
 	return useMutation(createJobApplicationRequest, {
+		onFailure({ error }) {
+			setToast({
+				msg: error.message,
+				type: 'error',
+			})
+		},
+	})
+}
+//update job's status
+export const updateJobApplicationStatusMutation = (setToast: TToast) => {
+	return useMutation(updateJobApplicationsStatusRequest, {
 		onFailure({ error }) {
 			setToast({
 				msg: error.message,

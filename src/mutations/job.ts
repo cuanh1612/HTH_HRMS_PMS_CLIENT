@@ -3,6 +3,7 @@ import {
 	deleteJobRequest,
 	deleteManyJobsRequest,
 	updateJoblRequest,
+	updateJobStatusRequest,
 } from 'requests/job'
 import { TToast } from 'type/basicTypes'
 import useMutation from 'use-mutation'
@@ -30,6 +31,20 @@ export const updateJobMutation = (setToast: TToast) => {
 		},
 	})
 }
+
+//update job's status
+export const updateJobStatusMutation = (setToast: TToast) => {
+	return useMutation(updateJobStatusRequest, {
+		onFailure({ error }) {
+			setToast({
+				msg: error.message,
+				type: 'error',
+			})
+		},
+	})
+}
+
+
 
 // delete one
 export const deleteJobMutation = (setToast: TToast) => {

@@ -3,10 +3,17 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { Loading } from 'components/common'
 import { Input, SelectCustom, Textarea, UploadAvatar } from 'components/form'
 import { AuthContext } from 'contexts/AuthContext'
+<<<<<<< HEAD
+import {
+	createJobApplicationMutation,
+	updateJobApplicationMutation,
+} from 'mutations/jobApplication'
+=======
 import { updateJobApplicationMutation } from 'mutations/jobApplication'
+>>>>>>> ea1c53ff4e52b8b93e91a71e6c2ca88479a352f7
 import { useRouter } from 'next/router'
 import { allJobsQuery } from 'queries/job'
-import { detailJobApplicationQuery } from 'queries/jobApplication'
+import { allJobApplicationsQuery, detailJobApplicationQuery } from 'queries/jobApplication'
 import { allLocationsQuery } from 'queries/location'
 import { useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -21,7 +28,7 @@ import { UpdateJobApplicationValidate } from 'utils/validate'
 
 export interface IUpdateJobApplicationProps {
 	onCloseDrawer?: () => void
-	jobApplicationId?: string | number
+	jobApplicationId: string | number | null
 }
 
 export default function UpdateJobApplication({
@@ -56,11 +63,12 @@ export default function UpdateJobApplication({
 		jobApplicationIdProp || (jobApplicationIdRouter as string)
 	)
 
+	// refetch all job application
+	const { mutate: refetchJobApplications } = allJobApplicationsQuery(isAuthenticated)
+
 	//mutation ----------------------------------------------------------------
-	const [
-		mutateUpJobApplication,
-		{ status: statusUpJobApplication, data: dataUpJobApplication },
-	] = updateJobApplicationMutation(setToast)
+	const [mutateUpJobApplication, { status: statusUpJobApplication, data: dataUpJobApplication }] =
+		updateJobApplicationMutation(setToast)
 
 	//Funcion -----------------------------------------------------------------
 	const handleUploadAvatar = async () => {
@@ -114,7 +122,7 @@ export default function UpdateJobApplication({
 			}
 		}
 
-		values.jobApplicationId = jobApplicationIdProp || jobApplicationIdRouter as string
+		values.jobApplicationId = jobApplicationIdProp || (jobApplicationIdRouter as string)
 
 		//updat
 		mutateUpJobApplication(values)
@@ -136,7 +144,7 @@ export default function UpdateJobApplication({
 	//Set data option locations state
 	useEffect(() => {
 		if (allLocations && allLocations.locations) {
-			let newOptionLocations: IOption[] = []
+			const newOptionLocations: IOption[] = []
 
 			allLocations.locations.map((location) => {
 				newOptionLocations.push({
@@ -156,7 +164,7 @@ export default function UpdateJobApplication({
 	//Set data option jobs
 	useEffect(() => {
 		if (allJobs && allJobs.jobs) {
-			let newOptionJobs: IOption[] = []
+			const newOptionJobs: IOption[] = []
 
 			allJobs.jobs.map((job) => {
 				newOptionJobs.push({
@@ -200,6 +208,8 @@ export default function UpdateJobApplication({
 				jobs: undefined,
 				location: undefined,
 			})
+
+			refetchJobApplications()
 		}
 	}, [statusUpJobApplication])
 

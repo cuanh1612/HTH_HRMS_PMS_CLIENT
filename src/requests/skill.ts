@@ -32,7 +32,7 @@ export const getSkillRequest = async (url: string) => {
 }
 
 //Function handle delete skills
-export async function deleteSkillRequest(skillId: string | number) {
+export async function deleteSkillRequest(skillId: string | number | null) {
 	const resultFetch = await deleteData<skillMutationResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/skills/${skillId}`,
 	})
@@ -42,7 +42,7 @@ export async function deleteSkillRequest(skillId: string | number) {
 
 //Function handle delete many skills
 export async function deleteManySkillsRequest(inputDelete: deleteSkillsForm) {
-	const resultFetch = await putData<skillMutationResponse>({
+	const resultFetch = await postData<skillMutationResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/skills/delete-many`,
 		body: inputDelete,
 	})

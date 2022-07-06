@@ -2,39 +2,30 @@ import {
 	Avatar,
 	Box,
 	Button,
+	Checkbox,
 	Grid,
 	GridItem,
 	HStack,
-	Text, VStack
+	Text,
+	VStack,
 } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Loading } from 'components/common'
-import { Input, InputNumber, SelectCustom, SelectMany } from 'components/form'
-import Modal from 'components/modal/Modal'
+import { Input, SelectCustom, SelectMany, Textarea, TimePicker } from 'components/form'
 import { AuthContext } from 'contexts/AuthContext'
 import { createInterviewMutation } from 'mutations/interview'
-import { createJobMutation } from 'mutations/job'
-import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
+import { allEmployeesQuery } from 'queries'
+import { allInterviewsQuery } from 'queries/interview'
 import { allJobApplicationsQuery } from 'queries/jobApplication'
-import { useContext, useEffect } from 'react'
+import { ChangeEvent, useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { AiOutlineCheck } from 'react-icons/ai'
 import { BsCalendarDate } from 'react-icons/bs'
-import { MdDriveFileRenameOutline } from 'react-icons/md'
-import 'react-quill/dist/quill.bubble.css'
-import 'react-quill/dist/quill.snow.css'
 import { IOption } from 'type/basicTypes'
-import { createInterviewForm, createJobForm } from 'type/form/basicFormType'
-import { dataJobRate, dataJobStatus } from 'utils/basicData'
-import { CreateInterviewValidate, CreateJobValidate } from 'utils/validate'
-import Department from '../departments'
-import JobTypes from '../jobTypes'
-import Locations from '../locations'
-import AddSkillModal from '../skills/add-skills-modal'
-import WorkExperiences from '../workExperiences'
-
-const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
+import { createInterviewForm } from 'type/form/basicFormType'
+import { dataInterviewType } from 'utils/basicData'
+import { CreateInterviewValidate } from 'utils/validate'
 
 export interface IAddJobProps {
 	onCloseDrawer?: () => void
@@ -45,14 +36,20 @@ export default function AddJob({ onCloseDrawer }: IAddJobProps) {
 	const router = useRouter()
 
 	//State -------------------------------------------------------------------
+	const [optionsCandidates, setOptionsCandidates] = useState<IOption[]>([])
+	const [optionsInterviews, setOptionsInterviews] = useState<IOption[]>([])
+	const [isSendReminder, setIsSendReminder] = useState<boolean>(false)
 
 	//Setup modal -------------------------------------------------------------
 	//Query -------------------------------------------------------------------
 	// get all work candidate
-	const { data: allCandidate } = allJobApplicationsQuery(isAuthenticated)
+	const { data: allCandidates } = allJobApplicationsQuery(isAuthenticated)
+	const { mutate: refetchAllInterviews } = allInterviewsQuery(isAuthenticated)
+	const { data: allEmployees } = allEmployeesQuery(isAuthenticated)
 
 	//mutation ----------------------------------------------------------------
-	const [mutateCreInterview, { status: statusCreInterview, data: dataCreInterview }] = createInterviewMutation(setToast)
+	const [mutateCreInterview, { status: statusCreInterview, data: dataCreInterview }] =
+		createInterviewMutation(setToast)
 
 	//Funcion -----------------------------------------------------------------
 
@@ -63,18 +60,18 @@ export default function AddJob({ onCloseDrawer }: IAddJobProps) {
 			candidate: undefined,
 			interviewer: undefined,
 			comment: undefined,
-			start_time: undefined,
-			status: undefined
+			start_time: '',
+			type: undefined,
 		},
-		resolver: yupResolver(CreateInterviewValidate)
+		resolver: yupResolver(CreateInterviewValidate),
 	})
 
 	const { handleSubmit } = formSetting
 
 	//Handle crete job
 	const onSubmit = async (values: createInterviewForm) => {
-		//Check time valid
-		
+		values.isSendReminder = isSendReminder
+		mutateCreInterview(values)
 	}
 
 	//User effect ---------------------------------------------------------------
@@ -90,13 +87,40 @@ export default function AddJob({ onCloseDrawer }: IAddJobProps) {
 		}
 	}, [isAuthenticated])
 
-	//Set data option employees state
+	//Set data option candidate
+	useEffect(() => {
+		if (allCandidates && allCandidates.jobApplications) {
+			let newOptionCandidates: IOption[] = []
+
+			allCandidates.jobApplications.map((candidate) => {
+				newOptionCandidates.push({
+					label: (
+						<>
+							<HStack>
+								<Avatar
+									size={'xs'}
+									name={candidate.name}
+									src={candidate.picture?.url}
+								/>
+								<Text>{candidate.name}</Text>
+							</HStack>
+						</>
+					),
+					value: candidate.id,
+				})
+			})
+
+			setOptionsCandidates(newOptionCandidates)
+		}
+	}, [allCandidates])
+
+	//Set data option interviewers
 	useEffect(() => {
 		if (allEmployees && allEmployees.employees) {
-			let newOptionEmployees: IOption[] = []
+			let newOptionsInterviewer: IOption[] = []
 
 			allEmployees.employees.map((employee) => {
-				newOptionEmployees.push({
+				newOptionsInterviewer.push({
 					label: (
 						<>
 							<HStack>
@@ -105,7 +129,7 @@ export default function AddJob({ onCloseDrawer }: IAddJobProps) {
 									name={employee.name}
 									src={employee.avatar?.url}
 								/>
-								<Text>{employee.email}</Text>
+								<Text>{employee.name}</Text>
 							</HStack>
 						</>
 					),
@@ -113,124 +137,18 @@ export default function AddJob({ onCloseDrawer }: IAddJobProps) {
 				})
 			})
 
-			setOptionEmployees(newOptionEmployees)
+			setOptionsInterviews(newOptionsInterviewer)
 		}
 	}, [allEmployees])
 
-	//Set data option job type state
-	useEffect(() => {
-		if (allJobType && allJobType.jobTypes) {
-			let newOptionJobTypes: IOption[] = []
-
-			allJobType.jobTypes.map((jobType) => {
-				newOptionJobTypes.push({
-					label: (
-						<>
-							<Text>{jobType.name}</Text>
-						</>
-					),
-					value: jobType.id,
-				})
-			})
-
-			setOptionJobTypes(newOptionJobTypes)
-		}
-	}, [allJobType])
-
-	//Set data option work experience state
-	useEffect(() => {
-		if (allWorkExperience && allWorkExperience.workExperiences) {
-			let newOptionWorkExperiences: IOption[] = []
-
-			allWorkExperience.workExperiences.map((workExperience) => {
-				newOptionWorkExperiences.push({
-					label: (
-						<>
-							<Text>{workExperience.name}</Text>
-						</>
-					),
-					value: workExperience.id,
-				})
-			})
-
-			setOptionWorkExperiences(newOptionWorkExperiences)
-		}
-	}, [allWorkExperience])
-
-	//Set data option skills state
-	useEffect(() => {
-		if (allSkills && allSkills.skills) {
-			let newOptionSkills: IOption[] = []
-
-			allSkills.skills.map((skill) => {
-				newOptionSkills.push({
-					label: (
-						<>
-							<Text>{skill.name}</Text>
-						</>
-					),
-					value: skill.id,
-				})
-			})
-
-			setOptionSkills(newOptionSkills)
-		}
-	}, [allSkills])
-
-	//Set data option locations state
-	useEffect(() => {
-		if (allLocations && allLocations.locations) {
-			let newOptionLocations: IOption[] = []
-
-			allLocations.locations.map((location) => {
-				newOptionLocations.push({
-					label: (
-						<>
-							<Text>{location.name}</Text>
-						</>
-					),
-					value: location.id,
-				})
-			})
-
-			setOptionLocations(newOptionLocations)
-		}
-	}, [allLocations])
-
-	//Set data all department
-	useEffect(() => {
-		if (dataDepartments?.departments) {
-			const newOptionDepartments: IOption[] = dataDepartments.departments.map(
-				(department) => {
-					return {
-						value: department.id.toString(),
-						label: department.name,
-					}
-				}
-			)
-
-			setOptionDepartments(newOptionDepartments)
-		}
-	}, [dataDepartments])
-
-	//Show error
-	useEffect(() => {
-		if (errorDepartments) {
-			setToast({
-				type: 'error',
-				msg: errorDepartments.response?.data.message,
-			})
-		}
-	}, [errorDepartments])
-
 	//Note when request success
 	useEffect(() => {
-		if (statusCreJob === 'success') {
+		if (statusCreInterview === 'success') {
 			//Inform notice success
-			if (dataCreJob) {
+			if (dataCreInterview) {
 				setToast({
 					type: 'success',
-					msg: dataCreJob?.message,
+					msg: dataCreInterview?.message,
 				})
 			}
 
@@ -241,101 +159,59 @@ export default function AddJob({ onCloseDrawer }: IAddJobProps) {
 
 			//Reset data form
 			formSetting.reset({
-				title: '',
-				skills: [],
-				locations: [],
-				department: undefined,
-				status: undefined,
-				total_openings: 1,
-				job_type: undefined,
-				work_experience: undefined,
-				recruiter: undefined,
-				starting_salary_amount: 1,
-				starts_on_date: undefined,
-				ends_on_date: undefined,
+				date: undefined,
+				candidate: undefined,
+				interviewer: undefined,
+				comment: undefined,
+				start_time: '',
+				type: undefined,
 			})
 
-			setJobDescription('')
+			refetchAllInterviews()
 		}
-	}, [statusCreJob])
+	}, [statusCreInterview])
 
 	return (
 		<>
 			<Box pos="relative" p={6} as={'form'} h="auto" onSubmit={handleSubmit(onSubmit)}>
 				<Grid templateColumns="repeat(2, 1fr)" gap={6}>
 					<GridItem w="100%" colSpan={[2, 1]}>
-						<Input
-							name="title"
-							label="Job Title"
-							icon={
-								<MdDriveFileRenameOutline
-									fontSize={'20px'}
-									color="gray"
-									opacity={0.6}
-								/>
-							}
+						<SelectCustom
 							form={formSetting}
-							placeholder="Job Title"
-							type="text"
-							required
+							label={'Candidate'}
+							name={'candidate'}
+							required={true}
+							options={optionsCandidates}
+							placeholder={'Select Candidate'}
 						/>
+					</GridItem>
+
+					<GridItem w="100%" colSpan={[2, 1]}>
+						<HStack>
+							<SelectMany
+								form={formSetting}
+								label={'Select Interview'}
+								name={'interviewer'}
+								required={true}
+								options={optionsInterviews}
+							/>
+						</HStack>
 					</GridItem>
 
 					<GridItem w="100%" colSpan={[2, 1]}>
 						<SelectCustom
-							form={formSetting}
-							label={'Department'}
-							name={'department'}
+							name="type"
+							label="Interview Type"
 							required={true}
-							options={optionDepartments}
-							isModal={true}
-							onOpenModal={onOpenDepartment}
-							placeholder={'Select department'}
-						/>
-					</GridItem>
-
-					<GridItem w="100%" colSpan={[2, 1]}>
-						<HStack>
-							<SelectMany
-								form={formSetting}
-								label={'Select Skills'}
-								name={'skills'}
-								required={true}
-								options={optionSkills}
-								isModal={true}
-								onOpenModal={onOpenSkill}
-							/>
-						</HStack>
-					</GridItem>
-
-					<GridItem w="100%" colSpan={[2, 1]}>
-						<HStack>
-							<SelectMany
-								form={formSetting}
-								label={'Select Locations'}
-								name={'locations'}
-								required={true}
-								options={optionLocations}
-								isModal={true}
-								onOpenModal={onOpenLocation}
-							/>
-						</HStack>
-					</GridItem>
-
-					<GridItem w="100%" colSpan={[2, 1]}>
-						<InputNumber
-							name="total_openings"
-							label="Total Openings"
 							form={formSetting}
-							required
-							min={1}
+							options={dataInterviewType}
 						/>
 					</GridItem>
 
 					<GridItem w="100%" colSpan={[2, 1]}>
 						<Input
-							name="starts_on_date"
-							label="Starts On Date"
+							name="date"
+							label="Start On"
 							icon={<BsCalendarDate fontSize={'20px'} color="gray" opacity={0.6} />}
 							form={formSetting}
 							placeholder="Starts on date"
@@ -343,109 +219,37 @@ export default function AddJob({ onCloseDrawer }: IAddJobProps) {
 							required
 						/>
 					</GridItem>
-
 					<GridItem w="100%" colSpan={[2, 1]}>
-						<Input
-							name="ends_on_date"
-							label="Ends On Date"
-							icon={<BsCalendarDate fontSize={'20px'} color="gray" opacity={0.6} />}
+						<TimePicker
 							form={formSetting}
-							placeholder="Ends on date"
-							type="date"
-							required
-						/>
-					</GridItem>
-
-					<GridItem w="100%" colSpan={[2, 1]}>
-						<SelectCustom
-							name="status"
-							label="status"
+							label="Start Time"
+							name={'start_time'}
 							required={true}
+							timeInit={formSetting.getValues()['start_time']}
+						/>
+					</GridItem>
+
+					<GridItem w="100%" colSpan={[2]}>
+						<Textarea
+							name="comment"
+							label="Comment"
 							form={formSetting}
-							options={dataJobStatus}
+							placeholder="Comment"
 						/>
 					</GridItem>
 
 					<GridItem w="100%" colSpan={[2, 1]}>
-						<SelectCustom
-							name="recruiter"
-							label="Recruiter"
-							required={false}
-							form={formSetting}
-							placeholder={'Select Recruiter'}
-							options={optionEmployees}
-						/>
-					</GridItem>
-
-					<GridItem w="100%" colSpan={[2, 1]}>
-						<HStack>
-							<SelectCustom
-								form={formSetting}
-								label={'Select Job Type'}
-								name={'job_type'}
-								required={true}
-								options={optionJobTypes}
-								isModal={true}
-								onOpenModal={onOpenJobType}
-							/>
-						</HStack>
-					</GridItem>
-
-					<GridItem w="100%" colSpan={[2, 1]}>
-						<HStack>
-							<SelectCustom
-								form={formSetting}
-								label={'Work Experience'}
-								name={'work_experience'}
-								required={true}
-								options={optionWorkExperiences}
-								isModal={true}
-								onOpenModal={onOpenWorkExperience}
-							/>
-						</HStack>
-					</GridItem>
-
-					<GridItem w="100%" colSpan={[2, 1]}>
-						<SelectCustom
-							name="rate"
-							label="Rate"
-							required={true}
-							form={formSetting}
-							options={dataJobRate}
-						/>
-					</GridItem>
-
-					<GridItem w="100%" colSpan={2}>
-						<VStack align={'start'}>
-							<Text fontWeight={'normal'} color={'gray.400'}>
-								Description
-							</Text>
-							<ReactQuill
-								placeholder="Enter you text"
-								modules={{
-									toolbar: [
-										['bold', 'italic', 'underline', 'strike'], // toggled buttons
-										['blockquote', 'code-block'],
-
-										[{ header: 1 }, { header: 2 }], // custom button values
-										[{ list: 'ordered' }, { list: 'bullet' }],
-										[{ script: 'sub' }, { script: 'super' }], // superscript/subscript
-										[{ indent: '-1' }, { indent: '+1' }], // outdent/indent
-										[{ direction: 'rtl' }], // text direction
-
-										[{ size: ['small', false, 'large', 'huge'] }], // custom dropdown
-										[{ header: [1, 2, 3, 4, 5, 6, false] }],
-
-										[{ color: [] }, { background: [] }], // dropdown with defaults from theme
-										[{ font: [] }],
-										[{ align: [] }],
-
-										['clean'], // remove formatting button
-									],
-								}}
-								value={jobDescription}
-								onChange={onChangeDescription}
-							/>
+						<VStack alignItems={'start'}>
+							<Checkbox
+								colorScheme={'teal'}
+								name="can_login"
+								defaultChecked={isSendReminder}
+								onChange={(e: ChangeEvent<HTMLInputElement>) =>
+									setIsSendReminder(e.target.checked)
+								}
+							>
+								Send Reminder
+							</Checkbox>
 						</VStack>
 					</GridItem>
 				</Grid>
@@ -465,63 +269,8 @@ export default function AddJob({ onCloseDrawer }: IAddJobProps) {
 				>
 					Save
 				</Button>
-				{statusCreJob === 'running' && <Loading />}
+				{statusCreInterview === 'running' && <Loading />}
 			</Box>
-
-			{/* Modal department and designation */}
-			<Modal
-				size="3xl"
-				isOpen={isOpenDepartment}
-				onOpen={onOpenDepartment}
-				onClose={onCloseDepartment}
-				title="Department"
-			>
-				<Department />
-			</Modal>
-
-			{/* Modal skill */}
-			<Modal
-				size="3xl"
-				isOpen={isOpenSkill}
-				onOpen={onOpenSkill}
-				onClose={onCloseSkill}
-				title="Skill"
-			>
-				<AddSkillModal />
-			</Modal>
-
-			{/* Modal location */}
-			<Modal
-				size="3xl"
-				isOpen={isOpenLocation}
-				onOpen={onOpenLocation}
-				onClose={onCloseLocation}
-				title="Location"
-			>
-				<Locations />
-			</Modal>
-
-			{/* Modal jobType */}
-			<Modal
-				size="3xl"
-				isOpen={isOpenJobType}
-				onOpen={onOpenJobType}
-				onClose={onCloseJobType}
-				title="Job Type"
-			>
-				<JobTypes />
-			</Modal>
-
-			{/* Modal Work Experience */}
-			<Modal
-				size="3xl"
-				isOpen={isOpenWorkExperience}
-				onOpen={onOpenWorkExperience}
-				onClose={onCloseWorkExperience}
-				title="Work Experience"
-			>
-				<WorkExperiences />
-			</Modal>
 		</>
 	)
 }

@@ -57,7 +57,7 @@ const NoticeBoard: NextLayout = () => {
 	// set isOpen of drawer to filters
 	const { isOpen: isOpenFilter, onOpen: onOpenFilter, onClose: onCloseFilter } = useDisclosure()
 
-	// set isOpen of dialog to delete one
+	// set isOpen of dialog to delete many
 	const {
 		isOpen: isOpenDialogDlMany,
 		onOpen: onOpenDlMany,

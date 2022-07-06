@@ -310,3 +310,18 @@ export const dataApplicationSource: IOption[] = [
 		label: 'Other',
 	},
 ]
+
+export const dataInterviewType: IOption[] = [
+	{
+		value: 'In Person',
+		label: 'In Person',
+	},
+	{
+		value: 'Video',
+		label: 'Video',
+	},
+	{
+		value: 'Phone',
+		label: 'Phone',
+	}
+]

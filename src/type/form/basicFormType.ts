@@ -747,20 +747,24 @@ export interface changeSkillsJobApplicationForm {
 export interface createInterviewForm {
 	date: Date
 	candidate: number
-	interviewer: number
+	interviewer: number[]
 	comment?: string
 	start_time: string
 	status: string
+	type: string
+	isSendReminder: boolean
 }
 
 export interface updateInterviewForm {
 	interviewId: number | string
 	date: Date
 	candidate: number
-	interviewer: number
+	interviewer: number[]
 	comment?: string
 	start_time: string
 	status: string
+	type: string
+	isSendReminder: boolean
 }
 
 export interface deleteInterviewsForm {

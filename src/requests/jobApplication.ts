@@ -17,6 +17,19 @@ export async function createJobApplicationRequest(inputCreate: createJobApplicat
 	return resultFetch
 }
 
+//Function handle update job's status
+export async function updateJobApplicationsStatusRequest({id, status}: {id: number | null, status: string}) {
+	const resultFetch = await putData<jobApplicationMutationResponse>({
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/job-applications/status/${id}`,
+		body: {
+			status
+		},
+	})
+
+	return resultFetch
+}
+
+
 //Function handle update job appliication
 export async function updateJobApplicationRequest(inputUpdate: updateJobApplicationForm) {
 	const resultFetch = await putData<jobApplicationMutationResponse>({
@@ -45,7 +58,7 @@ export async function deleteJobApplicationRequest(jobApplicationId: string | num
 
 //Function handle delete many job applications
 export async function deleteManyJobApplicationsRequest(inputDelete: deleteJobApplicationsForm) {
-	const resultFetch = await putData<jobApplicationMutationResponse>({
+	const resultFetch = await postData<jobApplicationMutationResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/job-applications/delete-many`,
 		body: inputDelete,
 	})

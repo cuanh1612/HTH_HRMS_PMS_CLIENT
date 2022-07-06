@@ -1,11 +1,7 @@
 import { Box, Button, Grid, GridItem, HStack, Text } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Loading } from 'components/common'
-import {
-	Input, SelectCustom,
-	Textarea,
-	UploadAvatar
-} from 'components/form'
+import { Input, SelectCustom, Textarea, UploadAvatar } from 'components/form'
 import { AuthContext } from 'contexts/AuthContext'
 import { createJobApplicationMutation } from 'mutations/jobApplication'
 import { useRouter } from 'next/router'
@@ -15,21 +11,20 @@ import { useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { AiOutlineCheck, AiOutlineMail, AiOutlineMobile } from 'react-icons/ai'
 import { MdDriveFileRenameOutline } from 'react-icons/md'
-import { IOption } from 'type/basicTypes'
+import { IOption, jobType } from 'type/basicTypes'
 import { ICloudinaryImg, IImg } from 'type/fileType'
 import { createJobApplicationForm } from 'type/form/basicFormType'
-import {
-	dataApplicationSource,
-	dataJobApplicationStatus
-} from 'utils/basicData'
+import { jobMutationResponse } from 'type/mutationResponses'
+import { dataApplicationSource, dataJobApplicationStatus } from 'utils/basicData'
 import { uploadFile } from 'utils/uploadFile'
 import { CreateJobApplicationValidate } from 'utils/validate'
 
 export interface IAddJobApplicationProps {
 	onCloseDrawer?: () => void
+	dataJob?: jobMutationResponse
 }
 
-export default function AddJobApplication({ onCloseDrawer }: IAddJobApplicationProps) {
+export default function AddJobApplication({ onCloseDrawer, dataJob }: IAddJobApplicationProps) {
 	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
 	const router = useRouter()
 
@@ -37,6 +32,7 @@ export default function AddJobApplication({ onCloseDrawer }: IAddJobApplicationP
 	// all departments
 	const [optionJobs, setOptionJobs] = useState<IOption[]>([])
 	const [optionLocations, setOptionLocations] = useState<IOption[]>([])
+	const [selectedJobOption, setSelectedJobOption] = useState<IOption>()
 
 	const [infoImg, setInfoImg] = useState<IImg>() // state data image upload
 	const [loadingImg, setLoadingImg] = useState<boolean>(false) // state loading when image upload
@@ -83,7 +79,7 @@ export default function AddJobApplication({ onCloseDrawer }: IAddJobApplicationP
 			cover_leter: undefined,
 			status: undefined,
 			source: undefined,
-			jobs: undefined,
+			jobs: dataJob?.job?.id || undefined,
 			location: undefined,
 		},
 		resolver: yupResolver(CreateJobApplicationValidate),
@@ -158,6 +154,21 @@ export default function AddJobApplication({ onCloseDrawer }: IAddJobApplicationP
 			})
 
 			setOptionJobs(newOptionJobs)
+
+			if (dataJob?.job) {
+				allJobs.jobs.map((job) => {
+					if (job.id === dataJob.job?.id) {
+						setSelectedJobOption({
+							label: (
+								<>
+									<Text>{job.title}</Text>
+								</>
+							),
+							value: job.id,
+						})
+					}
+				})
+			}
 		}
 	}, [allJobs])
 
@@ -185,7 +196,7 @@ export default function AddJobApplication({ onCloseDrawer }: IAddJobApplicationP
 				cover_leter: undefined,
 				status: undefined,
 				source: undefined,
-				jobs: undefined,
+				...(dataJob?.job ? { jobs: undefined } : {}),
 				location: undefined,
 			})
 		}
@@ -196,8 +207,8 @@ export default function AddJobApplication({ onCloseDrawer }: IAddJobApplicationP
 			<Box pos="relative" p={6} as={'form'} h="auto" onSubmit={handleSubmit(onSubmit)}>
 				<Grid templateColumns="repeat(2, 1fr)" gap={6}>
 					<GridItem w="100%" colSpan={2}>
-						<Text color={"gray.400"} mb={2}>
-							Job Application Picture <span style={{color: "red"}}>*</span>
+						<Text color={'gray.400'} mb={2}>
+							Job Application Picture <span style={{ color: 'red' }}>*</span>
 						</Text>
 						<UploadAvatar
 							setInfoImg={(data?: IImg) => {
@@ -214,6 +225,8 @@ export default function AddJobApplication({ onCloseDrawer }: IAddJobApplicationP
 								name={'jobs'}
 								required={true}
 								options={optionJobs}
+								selectedOption={selectedJobOption}
+								disabled={dataJob?.job ? true : false}
 							/>
 						</HStack>
 					</GridItem>

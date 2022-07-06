@@ -18,6 +18,7 @@ export const SelectCustom = ({
 	onChangeValue,
 	isModal,
 	onOpenModal,
+	disabled
 }: ISelect & { form: UseFormReturn<any, any> }) => {
 	const errorColor = useColorModeValue('red.400', 'pink.400')
 
@@ -73,6 +74,7 @@ export const SelectCustom = ({
 						onChange={(value) => {
 							onChangeSelect(value as IOption)
 						}}
+						isDisabled={disabled}
 					/>
 
 					{isModal && onOpenModal && <Button onClick={onOpenModal}>Add</Button>}

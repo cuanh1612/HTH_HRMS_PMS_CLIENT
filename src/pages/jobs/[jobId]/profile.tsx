@@ -23,8 +23,6 @@ export default function DetailJob({ jobIdProp, onOpenDl, onOpenUpdate }: IDetail
 		jobIdProp || (jobIdRouter as string)
 	)
 
-	console.log(detailJob)
-
 	//User effect ---------------------------------------------------------------
 	//Handle check loged in
 	useEffect(() => {

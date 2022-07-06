@@ -597,3 +597,16 @@ export interface jobApplicationType {
 	updatedAt: Date
 	skills?: skillType[]
 }
+
+export interface interviewType {
+	id: number
+	date: Date
+	candidate: jobApplicationType
+	interviewer: employeeType
+	comment?: string
+	start_time: string
+	type: string
+	status: string
+	createdAt: Date
+	updatedAt: Date
+}

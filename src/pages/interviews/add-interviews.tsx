@@ -5,35 +5,29 @@ import {
 	Grid,
 	GridItem,
 	HStack,
-	Text,
-	useDisclosure,
-	VStack,
+	Text, VStack
 } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Loading } from 'components/common'
 import { Input, InputNumber, SelectCustom, SelectMany } from 'components/form'
 import Modal from 'components/modal/Modal'
 import { AuthContext } from 'contexts/AuthContext'
+import { createInterviewMutation } from 'mutations/interview'
 import { createJobMutation } from 'mutations/job'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
-import { allDepartmentsQuery, allEmployeesQuery } from 'queries'
-import { allJobTypesQuery } from 'queries/jobType'
-import { allLocationsQuery } from 'queries/location'
-import { allSkillsQuery } from 'queries/skill'
-import { allWorkExperiencesQuery } from 'queries/workExperience'
-import { useContext, useEffect, useState } from 'react'
+import { allJobApplicationsQuery } from 'queries/jobApplication'
+import { useContext, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { AiOutlineCheck } from 'react-icons/ai'
 import { BsCalendarDate } from 'react-icons/bs'
 import { MdDriveFileRenameOutline } from 'react-icons/md'
 import 'react-quill/dist/quill.bubble.css'
 import 'react-quill/dist/quill.snow.css'
-import { mutate } from 'swr'
-import { IOption, jobType } from 'type/basicTypes'
-import { createJobForm } from 'type/form/basicFormType'
+import { IOption } from 'type/basicTypes'
+import { createInterviewForm, createJobForm } from 'type/form/basicFormType'
 import { dataJobRate, dataJobStatus } from 'utils/basicData'
-import { CreateJobValidate } from 'utils/validate'
+import { CreateInterviewValidate, CreateJobValidate } from 'utils/validate'
 import Department from '../departments'
 import JobTypes from '../jobTypes'
 import Locations from '../locations'
@@ -51,103 +45,36 @@ export default function AddJob({ onCloseDrawer }: IAddJobProps) {
 	const router = useRouter()
 
 	//State -------------------------------------------------------------------
-	// all departments
-	const [optionDepartments, setOptionDepartments] = useState<IOption[]>([])
-	const [optionSkills, setOptionSkills] = useState<IOption[]>([])
-	const [optionJobTypes, setOptionJobTypes] = useState<IOption[]>([])
-	const [optionWorkExperiences, setOptionWorkExperiences] = useState<IOption[]>([])
-	const [optionLocations, setOptionLocations] = useState<IOption[]>([])
-	const [optionEmployees, setOptionEmployees] = useState<IOption[]>([])
-	const [jobDescription, setJobDescription] = useState<string>('')
 
 	//Setup modal -------------------------------------------------------------
-	const {
-		isOpen: isOpenDepartment,
-		onOpen: onOpenDepartment,
-		onClose: onCloseDepartment,
-	} = useDisclosure()
-
-	const { isOpen: isOpenSkill, onOpen: onOpenSkill, onClose: onCloseSkill } = useDisclosure()
-	const {
-		isOpen: isOpenLocation,
-		onOpen: onOpenLocation,
-		onClose: onCloseLocation,
-	} = useDisclosure()
-
-	const {
-		isOpen: isOpenJobType,
-		onOpen: onOpenJobType,
-		onClose: onCloseJobType,
-	} = useDisclosure()
-
-	const {
-		isOpen: isOpenWorkExperience,
-		onOpen: onOpenWorkExperience,
-		onClose: onCloseWorkExperience,
-	} = useDisclosure()
-
 	//Query -------------------------------------------------------------------
-	// get all department
-	const { data: dataDepartments, error: errorDepartments } = allDepartmentsQuery(isAuthenticated)
-	// get all skills
-	const { data: allSkills } = allSkillsQuery(isAuthenticated)
-	// get all locations
-	const { data: allLocations } = allLocationsQuery(isAuthenticated)
-	// get all employees
-	const { data: allEmployees } = allEmployeesQuery(isAuthenticated)
-	// get all job type
-	const { data: allJobType } = allJobTypesQuery(isAuthenticated)
-	// get all work experience
-	const { data: allWorkExperience } = allWorkExperiencesQuery(isAuthenticated)
+	// get all work candidate
+	const { data: allCandidate } = allJobApplicationsQuery(isAuthenticated)
 
 	//mutation ----------------------------------------------------------------
-	const [mutateCreJob, { status: statusCreJob, data: dataCreJob }] = createJobMutation(setToast)
+	const [mutateCreInterview, { status: statusCreInterview, data: dataCreInterview }] = createInterviewMutation(setToast)
 
 	//Funcion -----------------------------------------------------------------
-	const onChangeDescription = (value: string) => {
-		setJobDescription(value)
-	}
 
-	// setForm and submit form create new job ---------------------------------
-	const formSetting = useForm<createJobForm>({
+	// setForm and submit form create new interview ---------------------------
+	const formSetting = useForm<createInterviewForm>({
 		defaultValues: {
-			title: '',
-			skills: undefined,
-			locations: undefined,
-			department: undefined,
-			status: undefined,
-			total_openings: 1,
-			job_type: undefined,
-			work_experience: undefined,
-			recruiter: undefined,
-			starting_salary_amount: 1,
-			starts_on_date: undefined,
-			ends_on_date: undefined,
-			rate: undefined,
+			date: undefined,
+			candidate: undefined,
+			interviewer: undefined,
+			comment: undefined,
+			start_time: undefined,
+			status: undefined
 		},
-		resolver: yupResolver(CreateJobValidate),
+		resolver: yupResolver(CreateInterviewValidate)
 	})
 
 	const { handleSubmit } = formSetting
 
 	//Handle crete job
-	const onSubmit = async (values: createJobForm) => {
+	const onSubmit = async (values: createInterviewForm) => {
 		//Check time valid
-		if (new Date(values.starts_on_date) > new Date(values.ends_on_date)) {
-			setToast({
-				msg: 'Ends on time cannot be less than starts on time',
-				type: 'warning',
-			})
-		} else {
-			//Set value submit
-			values.job_description = jobDescription
-			values.status = values.status === 'Open' ? true : false
-
-			console.log(values)
-
-			//create new job
-			mutateCreJob(values)
-		}
+		
 	}
 
 	//User effect ---------------------------------------------------------------

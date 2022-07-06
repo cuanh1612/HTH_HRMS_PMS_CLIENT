@@ -744,3 +744,25 @@ export interface changeSkillsJobApplicationForm {
 	jobApplicationId: number
 }
 
+export interface createInterviewForm {
+	date: Date
+	candidate: number
+	interviewer: number
+	comment?: string
+	start_time: string
+	status: string
+}
+
+export interface updateInterviewForm {
+	interviewId: number | string
+	date: Date
+	candidate: number
+	interviewer: number
+	comment?: string
+	start_time: string
+	status: string
+}
+
+export interface deleteInterviewsForm {
+	interviews: number[]
+}

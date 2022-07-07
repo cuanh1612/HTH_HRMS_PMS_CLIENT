@@ -770,3 +770,12 @@ export interface updateInterviewForm {
 export interface deleteInterviewsForm {
 	interviews: number[]
 }
+
+export type createInterviewFileForm = {
+	files: {
+		name: string
+		public_id: string
+		url: string
+	}[]
+	interview: number
+}

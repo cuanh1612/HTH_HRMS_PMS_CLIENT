@@ -7,6 +7,7 @@ import { useRouter } from 'next/router'
 import { useContext, useEffect } from 'react'
 import { NextLayout } from 'type/element/layout'
 import AddInterviews from './add-interviews'
+import DetailInterview from './[interviewId]'
 import UpdateInterview from './[interviewId]/update'
 // import UpdateJob from './[jobId]/update'
 
@@ -17,6 +18,7 @@ const interviews: NextLayout = () => {
 	//Setup drawer --------------------------------------------------------------
 	const { isOpen: isOpenAdd, onOpen: onOpenAdd, onClose: onCloseAdd } = useDisclosure()
 	const { isOpen: isOpenUpdate, onOpen: onOpenUpdate, onClose: onCloseUpdate } = useDisclosure()
+	const { isOpen: isOpenDetail, onOpen: onOpenDetail, onClose: onCloseDetail } = useDisclosure()
 
 	//Query ---------------------------------------------------------------------
 	// const { data: dataAllJobs } = allJobsQuery(isAuthenticated)
@@ -37,11 +39,15 @@ const interviews: NextLayout = () => {
 		<>
 			<Button onClick={onOpenAdd}>add interviews</Button>
 			<Button onClick={onOpenUpdate}>update interview</Button>
+			<Button onClick={onOpenDetail}>detail interview</Button>
 			<Drawer size="xl" title="Add Interview" onClose={onCloseAdd} isOpen={isOpenAdd}>
 				<AddInterviews onCloseDrawer={onCloseAdd} />
 			</Drawer>
 			<Drawer size="xl" title="Update Interview" onClose={onCloseUpdate} isOpen={isOpenUpdate}>
 				<UpdateInterview onCloseDrawer={onCloseUpdate} interviewId={1} />
+			</Drawer>
+			<Drawer size="xl" title="Update Interview" onClose={onCloseDetail} isOpen={isOpenDetail}>
+				<DetailInterview onCloseDrawer={onCloseDetail} interviewId={1} />
 			</Drawer>
 		</>
 	)

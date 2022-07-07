@@ -610,3 +610,11 @@ export interface interviewType {
 	createdAt: Date
 	updatedAt: Date
 }
+
+export interface interviewFileType {
+	id: number
+	url: string
+	name: string
+	public_id: string
+	createdAt: Date
+}

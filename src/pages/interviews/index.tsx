@@ -7,6 +7,7 @@ import { useRouter } from 'next/router'
 import { useContext, useEffect } from 'react'
 import { NextLayout } from 'type/element/layout'
 import AddInterviews from './add-interviews'
+import UpdateInterview from './[interviewId]/update'
 // import UpdateJob from './[jobId]/update'
 
 const interviews: NextLayout = () => {
@@ -35,13 +36,13 @@ const interviews: NextLayout = () => {
 	return (
 		<>
 			<Button onClick={onOpenAdd}>add interviews</Button>
-			<Button onClick={onOpenUpdate}>update jobs</Button>
+			<Button onClick={onOpenUpdate}>update interview</Button>
 			<Drawer size="xl" title="Add Interview" onClose={onCloseAdd} isOpen={isOpenAdd}>
 				<AddInterviews onCloseDrawer={onCloseAdd} />
 			</Drawer>
-			{/* <Drawer size="xl" title="Update Jobs" onClose={onCloseUpdate} isOpen={isOpenUpdate}>
-				<UpdateJob onCloseDrawer={onCloseUpdate} JobIdProp={8} />
-			</Drawer> */}
+			<Drawer size="xl" title="Update Interview" onClose={onCloseUpdate} isOpen={isOpenUpdate}>
+				<UpdateInterview onCloseDrawer={onCloseUpdate} interviewId={1} />
+			</Drawer>
 		</>
 	)
 }

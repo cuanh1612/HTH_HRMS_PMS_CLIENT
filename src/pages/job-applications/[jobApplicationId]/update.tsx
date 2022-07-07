@@ -3,14 +3,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { Loading } from 'components/common'
 import { Input, SelectCustom, Textarea, UploadAvatar } from 'components/form'
 import { AuthContext } from 'contexts/AuthContext'
-<<<<<<< HEAD
-import {
-	createJobApplicationMutation,
-	updateJobApplicationMutation,
-} from 'mutations/jobApplication'
-=======
 import { updateJobApplicationMutation } from 'mutations/jobApplication'
->>>>>>> ea1c53ff4e52b8b93e91a71e6c2ca88479a352f7
 import { useRouter } from 'next/router'
 import { allJobsQuery } from 'queries/job'
 import { allJobApplicationsQuery, detailJobApplicationQuery } from 'queries/jobApplication'

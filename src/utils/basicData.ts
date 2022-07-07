@@ -325,3 +325,26 @@ export const dataInterviewType: IOption[] = [
 		label: 'Phone',
 	}
 ]
+
+export const dataInterviewStatus: IOption[] = [
+	{
+		value: 'Pending',
+		label: 'Pending',
+	},
+	{
+		value: 'Hired',
+		label: 'Hired',
+	},
+	{
+		value: 'Completed',
+		label: 'Completed',
+	},
+	{
+		value: 'Canceled',
+		label: 'Canceled',
+	},
+	{
+		value: 'Rejected',
+		label: 'Rejected',
+	}
+]

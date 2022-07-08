@@ -29,6 +29,7 @@ import {
 	MdOutlineDashboardCustomize,
 	MdOutlineEditNote,
 	MdOutlineEvent,
+	MdOutlinePreview,
 } from 'react-icons/md'
 import LinkGroup from './LinkGroup'
 import LinkItem from './LinkItem'
@@ -170,6 +171,11 @@ const LinkItems = () => {
 								icon: <IoDocumentTextOutline fontSize={20} />,
 								link: '/job-applications',
 								title: 'Job applications',
+							},
+							{
+								icon: <MdOutlinePreview fontSize={20} />,
+								link: '/recruit',
+								title: 'Front website',
 							},
 						]}
 						title="Recruit"

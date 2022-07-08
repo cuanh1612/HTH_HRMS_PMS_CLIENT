@@ -38,7 +38,7 @@ import {
 	timeLogType,
 } from 'type/basicTypes'
 import { TColumn } from 'type/tableTypes'
-import { dataJobStatus } from './basicData'
+import { dataJobApplicationStatus, dataJobStatus } from './basicData'
 import {
 	arrayFilter,
 	dateFilter,
@@ -186,7 +186,7 @@ export const clientColumn = ({ currentUser, onDelete, onUpdate }: IOptionColumn)
 					minWidth: 150,
 					filter: dateFilter(['createdAt']),
 					Cell: ({ value }) => {
-						const createdDate = new Date(value).toLocaleDateString('en-GB')
+						const createdDate = new Date(value).toLocaleDateString('es-CL')
 						return <Text isTruncated>{createdDate}</Text>
 					},
 				},
@@ -523,7 +523,7 @@ export const leaveColumn = ({
 					filter: dateFilter(['date']),
 					minWidth: 150,
 					Cell: ({ value }) => {
-						return <Text>{new Date(value).toLocaleDateString('en-GB')}</Text>
+						return <Text>{new Date(value).toLocaleDateString('es-CL')}</Text>
 					},
 				},
 				{
@@ -3091,7 +3091,7 @@ export const employeeLeavesColumn = ({
 					filter: dateFilter(['date']),
 					minWidth: 150,
 					Cell: ({ value }) => {
-						return <Text>{new Date(value).toLocaleDateString('en-GB')}</Text>
+						return <Text>{new Date(value).toLocaleDateString('es-CL')}</Text>
 					},
 				},
 				{
@@ -3497,7 +3497,12 @@ export const clientProjectsColumn = ({
 	]
 }
 
-export const jobColumn = ({ onDelete, onUpdate, currentUser, onChangeStatus}: IJobColumn): TColumn[] => {
+export const jobColumn = ({
+	onDelete,
+	onUpdate,
+	currentUser,
+	onChangeStatus,
+}: IJobColumn): TColumn[] => {
 	return [
 		{
 			Header: 'Jobs',
@@ -3545,7 +3550,13 @@ export const jobColumn = ({ onDelete, onUpdate, currentUser, onChangeStatus}: IJ
 					Cell: ({ value }) => {
 						const date = new Date(value as string)
 						return (
-							<Text>{`${date.getDate()}-${
+							<Text
+								color={
+									new Date(value as string).getTime() <= new Date().getTime()
+										? 'red'
+										: undefined
+								}
+							>{`${date.getDate()}-${
 								date.getMonth() + 1
 							}-${date.getFullYear()}`}</Text>
 						)
@@ -3586,6 +3597,142 @@ export const jobColumn = ({ onDelete, onUpdate, currentUser, onChangeStatus}: IJ
 								<MdOutlineMoreVert />
 							</MenuButton>
 							<MenuList>
+								<Link href={`/jobs/${row.values['id']}/profile`} passHref>
+									<MenuItem icon={<IoEyeOutline fontSize={'15px'} />}>
+										View
+									</MenuItem>
+								</Link>
+								{currentUser?.role === 'Admin' && (
+									<>
+										<MenuItem
+											onClick={() => {
+												onUpdate(row.values['id'])
+											}}
+											icon={<RiPencilLine fontSize={'15px'} />}
+										>
+											Edit
+										</MenuItem>
+
+										<MenuItem
+											onClick={() => {
+												onDelete(row.values['id'])
+											}}
+											icon={<MdOutlineDeleteOutline fontSize={'15px'} />}
+										>
+											Delete
+										</MenuItem>
+									</>
+								)}
+							</MenuList>
+						</Menu>
+					),
+				},
+			],
+		},
+	]
+}
+
+export const jobApplicationColumn = ({
+	onDelete,
+	onUpdate,
+	onDetail,
+	currentUser,
+	onChangeStatus,
+}: IJobColumn): TColumn[] => {
+	return [
+		{
+			Header: 'Job applications',
+			columns: [
+				{
+					Header: 'Id',
+					accessor: 'id',
+					width: 80,
+					minWidth: 80,
+					disableResizing: true,
+					Cell: ({ value }) => {
+						return value
+					},
+				},
+				{
+					Header: 'Name',
+					accessor: 'name',
+					filter: textFilter(['title']),
+					minWidth: 80,
+					Cell: ({ value }) => {
+						return <Text isTruncated>{value}</Text>
+					},
+				},
+				{
+					Header: 'Job',
+					accessor: 'jobs',
+					filter: textFilter(['jobs', 'id']),
+					minWidth: 80,
+					Cell: ({ value }) => {
+						return <Text isTruncated>{value.title}</Text>
+					},
+				},
+				{
+					Header: 'Location',
+					accessor: 'location',
+					filter: selectFilter(['location', 'name']),
+					minWidth: 80,
+					Cell: ({ value }) => {
+						return <Text isTruncated>{value.name}</Text>
+					},
+				},
+				{
+					Header: 'Date',
+					accessor: 'createdAt',
+					filter: dateFilter(['createdAt']),
+					minWidth: 80,
+					Cell: ({ value }) => {
+						return (
+							<Text isTruncated>{new Date(value).toLocaleDateString('es-CL')}</Text>
+						)
+					},
+				},
+				{
+					Header: 'Status',
+					accessor: 'status',
+					filter: selectFilter(['status']),
+
+					minWidth: 160,
+					Cell: ({ value, row }) => {
+						return (
+							<Select
+								onChange={async (event) => {
+									await onChangeStatus(row.values['id'], event)
+								}}
+								defaultValue={value}
+							>
+								{dataJobApplicationStatus.map((e) => (
+									<option value={e.value}>{e.label}</option>
+								))}
+							</Select>
+						)
+					},
+				},
+				{
+					Header: 'Action',
+					accessor: 'action',
+					disableResizing: true,
+					width: 120,
+					minWidth: 120,
+					disableSortBy: true,
+					Cell: ({ row }) => (
+						<Menu>
+							<MenuButton as={Button} paddingInline={3}>
+								<MdOutlineMoreVert />
+							</MenuButton>
+							<MenuList>
+								<MenuItem
+									onClick={() => {
+										onDetail(row.values['id'])
+									}}
+									icon={<IoEyeOutline fontSize={'15px'} />}
+								>
+									View
+								</MenuItem>
 								{currentUser?.role === 'Admin' && (
 									<>
 										<MenuItem

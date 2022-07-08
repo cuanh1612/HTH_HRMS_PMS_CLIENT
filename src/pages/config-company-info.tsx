@@ -1,4 +1,5 @@
 import { Box, Button, Divider, Grid, GridItem, HStack, Input, Text, VStack } from '@chakra-ui/react'
+import { ClientLayout } from 'components/layouts'
 import { AuthContext } from 'contexts/AuthContext'
 import { updateCompanyInfoMutation } from 'mutations/companyInfo'
 import { useRouter } from 'next/router'
@@ -7,7 +8,7 @@ import { useContext, useEffect, useState } from 'react'
 import { AiOutlineCheck } from 'react-icons/ai'
 import { NextLayout } from 'type/element/layout'
 
-const Files: NextLayout = () => {
+const ConfigCompany: NextLayout = () => {
 	const { isAuthenticated, handleLoading, setToast, currentUser } = useContext(AuthContext)
 	const router = useRouter()
 
@@ -80,14 +81,8 @@ const Files: NextLayout = () => {
 	}
 
 	return (
-		<Box p={10} bgColor={'#f2f4f7'} minHeight={'100vh'}>
+		<Box pb={8}>
 			<Box w="full" bgColor={'white'} borderRadius={5}>
-				<Box p={5}>
-					<Text fontSize={18} fontWeight={'semibold'}>
-						Company Settings
-					</Text>
-				</Box>
-				<Divider />
 				<Box p={5}>
 					<Grid templateColumns="repeat(2, 1fr)" gap={6}>
 						<GridItem w="100%" colSpan={[2, 1]}>
@@ -161,7 +156,6 @@ const Files: NextLayout = () => {
 				</Box>
 				{currentUser?.role === 'Admin' && (
 					<>
-						<Divider />
 						<Box p={5}>
 							<HStack>
 								<Button
@@ -175,7 +169,7 @@ const Files: NextLayout = () => {
 									}}
 									leftIcon={<AiOutlineCheck />}
 									onClick={handleUpdateInfo}
-                                    disabled={statusUpCompanyInfo === "running"}
+									disabled={statusUpCompanyInfo === 'running'}
 								>
 									Save
 								</Button>
@@ -200,4 +194,5 @@ const Files: NextLayout = () => {
 	)
 }
 
-export default Files
+ConfigCompany.getLayout = ClientLayout
+export default ConfigCompany

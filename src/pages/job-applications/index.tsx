@@ -1,12 +1,6 @@
 import {
 	Box,
 	Button,
-	Menu,
-	MenuButton,
-	MenuItem,
-	MenuList,
-	Select,
-	Text,
 	useDisclosure,
 	VStack,
 } from '@chakra-ui/react'
@@ -27,15 +21,12 @@ import { allJobApplicationsQuery } from 'queries/jobApplication'
 import { allLocationsQuery } from 'queries/location'
 import { useContext, useEffect, useState } from 'react'
 import { AiOutlineDelete, AiOutlineSearch } from 'react-icons/ai'
-import { IoAdd, IoEyeOutline } from 'react-icons/io5'
-import { MdOutlineDeleteOutline, MdOutlineMoreVert } from 'react-icons/md'
-import { RiPencilLine } from 'react-icons/ri'
+import { IoAdd } from 'react-icons/io5'
 import { VscFilter } from 'react-icons/vsc'
 import { NextLayout } from 'type/element/layout'
 import { IFilter, TColumn } from 'type/tableTypes'
 import { dataJobApplicationStatus } from 'utils/basicData'
 import { jobApplicationColumn } from 'utils/columns'
-import { dateFilter, selectFilter, textFilter } from 'utils/tableFilters'
 import AddJobApplications from './add-job-applications'
 import DetailJobApplication from './[jobApplicationId]'
 import UpdateJobApplication from './[jobApplicationId]/update'
@@ -82,7 +73,7 @@ const jobApplications: NextLayout = () => {
 		allJobApplicationsQuery(isAuthenticated)
 
 	const { data: dataAllLocations } = allLocationsQuery(isAuthenticated)
-	const { data: dataAllJobs } = allJobsQuery(isAuthenticated)
+	const { data: dataAllJobs } = allJobsQuery()
 
 	// mutate
 	const [updateStatus, { status: statusUpdate, data: dataUpdate }] =
@@ -167,7 +158,7 @@ const jobApplications: NextLayout = () => {
 	return (
 		<Box pb={8}>
 			<Head>
-				<title>Huprom - Jobs</title>
+				<title>Huprom - Job applications</title>
 				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
 			</Head>
 			<FuncCollapse>

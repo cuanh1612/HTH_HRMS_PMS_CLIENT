@@ -3571,7 +3571,7 @@ export const jobColumn = ({
 					Cell: ({ value, row }) => {
 						return (
 							<Select
-								onChange={async (event) => {
+								onChange={async (event: any) => {
 									await onChangeStatus(row.values['id'], event)
 								}}
 								defaultValue={value == true ? 'Open' : 'Close'}

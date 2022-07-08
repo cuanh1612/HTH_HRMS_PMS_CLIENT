@@ -25,8 +25,6 @@ const DetailJob: NextLayout | any = ({ jobIdProp, onOpenDl, onOpenUpdate }: IDet
 		jobIdProp || (jobIdRouter as string)
 	)
 
-	console.log(detailJob)
-
 	//User effect ---------------------------------------------------------------
 	//Handle check loged in
 	useEffect(() => {

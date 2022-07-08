@@ -744,3 +744,60 @@ export interface changeSkillsJobApplicationForm {
 	jobApplicationId: number
 }
 
+export interface createInterviewForm {
+	date: Date
+	candidate: number
+	interviewer: number[]
+	comment?: string
+	start_time: string
+	status: string
+	type: string
+	isSendReminder: boolean
+}
+
+export interface updateInterviewForm {
+	interviewId: number | string
+	date: Date
+	candidate: number
+	interviewer: number[]
+	comment?: string
+	start_time: string
+	status: string
+	type: string
+	isSendReminder: boolean
+}
+
+export interface deleteInterviewsForm {
+	interviews: number[]
+}
+
+export type createInterviewFileForm = {
+	files: {
+		name: string
+		public_id: string
+		url: string
+	}[]
+	interview: number
+}
+
+export interface createJobOfferLetterForm {
+	job: number
+	job_application: number
+	exprise_on: Date
+	expected_joining_date: Date
+	salary: number
+}
+
+export interface updateJobOfferLetterForm {
+	jobOfferLetterId: number
+	job: number
+	job_application: number
+	exprise_on: Date
+	expected_joining_date: Date
+	salary: number
+}
+
+
+export interface deleteJobOfferLettersForm {
+	jobOfferLetters: number[]
+}

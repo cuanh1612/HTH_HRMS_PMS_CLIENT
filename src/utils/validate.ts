@@ -306,3 +306,19 @@ export const UpdateJobApplicationValidate = yup.object({
 export const changeSkillsJobApplicationValidate = yup.object({
 	skills: yup.array().min(1).required('Please select skills for job application'),
 })
+
+export const CreateInterviewValidate = yup.object({
+	date: yup.date().required('Please select start date'),
+	candidate: yup.number().required('Please select candidate'),
+	interviewer: yup.array().min(1).required('Please select interviewer'),
+	start_time: yup.string().required('Please select start time'),
+	type: yup.string().required('Please select interview type'),
+})
+
+export const CreateJobOfferValidate = yup.object({
+	job:  yup.number().required('Please select job'),
+	job_application:  yup.number().required('Please select job application'),
+	exprise_on: yup.date().required('Please select job offer exprise on date'),
+	expected_joining_date: yup.date().required('Please select job offer expected joining date'),
+	salary: yup.number().min(1).required('Please enter job offer salary')
+})

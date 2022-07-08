@@ -6,7 +6,6 @@ import {
 	Grid,
 	GridItem,
 	HStack,
-	Image,
 	Text,
 	useDisclosure,
 } from '@chakra-ui/react'
@@ -15,7 +14,6 @@ import { Loading } from 'components/common'
 import { SelectMany } from 'components/form'
 import Modal from 'components/modal/Modal'
 import { AuthContext } from 'contexts/AuthContext'
-import { url } from 'inspector'
 import { changeSkillsobApplicationMutation } from 'mutations/jobApplication'
 import { useRouter } from 'next/router'
 import { detailJobApplicationQuery } from 'queries/jobApplication'

@@ -597,3 +597,33 @@ export interface jobApplicationType {
 	updatedAt: Date
 	skills?: skillType[]
 }
+
+export interface interviewType {
+	id: number
+	date: Date
+	candidate: jobApplicationType
+	interviewer: employeeType[]
+	comment?: string
+	start_time: string
+	type: string
+	status: string
+	createdAt: Date
+	updatedAt: Date
+}
+
+export interface interviewFileType {
+	id: number
+	url: string
+	name: string
+	public_id: string
+	createdAt: Date
+}
+
+export interface jobOfferLetterType {
+	id: number
+	job: jobType
+	job_application: jobApplicationType
+	exprire_on: Date
+	expected_joining_date: Date
+	salary: number
+}

@@ -9,7 +9,7 @@ import { RiSuitcaseLine } from 'react-icons/ri'
 import copy from 'copy-to-clipboard'
 import { NextLayout } from 'type/element/layout'
 import { RecruitLayout } from 'components/layouts'
-import { useRouter } from 'next/router'
+import Head from 'next/head'
 
 const index: NextLayout = () => {
 	const { handleLoading, setToast } = useContext(AuthContext)
@@ -18,6 +18,10 @@ const index: NextLayout = () => {
 	}, [])
 	return (
 		<>
+			<Head>
+				<title>Huprom - Recruit</title>
+				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
+			</Head>
 			<Box pos={'relative'} w={'full'}>
 				<Box w={'full'} maxW={'60%'} pos={'relative'} overflow={'hidden'}>
 					<CImage borderRadius={'20px'} src={'./assets/work.jpg'} />

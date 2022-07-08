@@ -51,7 +51,7 @@ export default function UpdateJobApplication({
 
 	// get all locations
 	const { data: allLocations } = allLocationsQuery(isAuthenticated)
-	const { data: allJobs } = allJobsQuery(isAuthenticated)
+	const { data: allJobs } = allJobsQuery()
 
 	//Get detail job application
 	const { data: dataDetailJobApplication } = detailJobApplicationQuery(

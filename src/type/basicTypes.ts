@@ -627,3 +627,11 @@ export interface jobOfferLetterType {
 	expected_joining_date: Date
 	salary: number
 }
+
+export interface jobApplicationFileType {
+	id: number
+	url: string
+	name: string
+	public_id: string
+	createdAt: Date
+}

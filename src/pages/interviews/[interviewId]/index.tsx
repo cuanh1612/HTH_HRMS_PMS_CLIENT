@@ -88,30 +88,32 @@ export default function DetailInterview({
 							  )
 							: '--'}
 					</GridItem>
-                    <GridItem w="100%" colSpan={[4, 1]} color={'gray.400'}>
+					<GridItem w="100%" colSpan={[4, 1]} color={'gray.400'}>
 						Start On Time:
 					</GridItem>
-                    <GridItem w="100%" colSpan={[4, 3]}>
+					<GridItem w="100%" colSpan={[4, 3]}>
 						{dataDetailinterview?.interview?.start_time || '--'}
 					</GridItem>
-                    <GridItem w="100%" colSpan={[4, 1]} color={'gray.400'}>
+					<GridItem w="100%" colSpan={[4, 1]} color={'gray.400'}>
 						Comment:
 					</GridItem>
-                    <GridItem w="100%" colSpan={[4, 3]}>
+					<GridItem w="100%" colSpan={[4, 3]}>
 						{dataDetailinterview?.interview?.comment || '--'}
 					</GridItem>
 				</Grid>
 
-                <Tabs variant="enclosed" mt={6}>
-				<TabList>
-					<Tab>Files</Tab>
-				</TabList>
-				<TabPanels>
-					<TabPanel>
-						<InterviewFile interviewIdProp={interviewIdProp || (interviewIdRouter as string)} />
-					</TabPanel>
-				</TabPanels>
-			</Tabs>
+				<Tabs variant="enclosed" mt={6}>
+					<TabList>
+						<Tab>Files</Tab>
+					</TabList>
+					<TabPanels>
+						<TabPanel>
+							<InterviewFile
+								interviewIdProp={interviewIdProp || (interviewIdRouter as string)}
+							/>
+						</TabPanel>
+					</TabPanels>
+				</Tabs>
 			</Box>
 		</>
 	)

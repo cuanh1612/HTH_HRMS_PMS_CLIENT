@@ -6,9 +6,14 @@ import {
 	GridItem,
 	HStack,
 	Image,
+	TabList,
+	TabPanel,
+	TabPanels,
+	Tabs,
 	Text,
-	useDisclosure,
+	useDisclosure
 } from '@chakra-ui/react'
+import { Tab } from '@headlessui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Loading } from 'components/common'
 import { SelectMany } from 'components/form'
@@ -25,6 +30,7 @@ import AddSkillModal from 'src/pages/skills/add-skills-modal'
 import { IOption } from 'type/basicTypes'
 import { changeSkillsJobApplicationForm } from 'type/form/basicFormType'
 import { changeSkillsJobApplicationValidate } from 'utils/validate'
+import JobApplicationFile from './files'
 
 export interface IDetailJobApplicationProps {
 	onCloseDrawer?: () => void
@@ -146,13 +152,7 @@ export default function DetailJobApplication({
 
 	return (
 		<>
-			<Box
-				pos="relative"
-				p={6}
-				as={'form'}
-				h="auto"
-				onSubmit={handleSubmit(onSubmit)}
-			>
+			<Box pos="relative" p={6} as={'form'} h="auto" onSubmit={handleSubmit(onSubmit)}>
 				<Grid templateColumns="repeat(4, 1fr)" gap={6}>
 					<GridItem colSpan={4}>
 						<Box boxSize="150">
@@ -229,6 +229,21 @@ export default function DetailJobApplication({
 						</HStack>
 					</GridItem>
 				</Grid>
+
+				<Tabs variant="enclosed" mt={6}>
+					<TabList>
+						<Tab>Files</Tab>
+					</TabList>
+					<TabPanels>
+						<TabPanel>
+							<JobApplicationFile
+								jobApplicationIdProp={
+									jobApplicationIdProp || (jobApplicationIdRouter as string)
+								}
+							/>
+						</TabPanel>
+					</TabPanels>
+				</Tabs>
 
 				<Divider marginY={6} />
 				<Text fontWeight={'semibold'}>Skill</Text>

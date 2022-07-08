@@ -801,3 +801,12 @@ export interface updateJobOfferLetterForm {
 export interface deleteJobOfferLettersForm {
 	jobOfferLetters: number[]
 }
+
+export type createJobApplicationFileForm = {
+	files: {
+		name: string
+		public_id: string
+		url: string
+	}[]
+	jobApplication: number
+}

@@ -97,7 +97,7 @@ export default function JobApplicationFile({ jobApplicationIdProp }: IJobApplica
 				refetchAllJobApplicationFiles()
 			})
 		}
-
+		
 		//Leave room
 		function leaveRoom() {
 			if (socket && (jobApplicationIdProp || jobApplicationIdRouter)) {
@@ -136,7 +136,7 @@ export default function JobApplicationFile({ jobApplicationIdProp }: IJobApplica
 
 			// Emit to other user join room
 			if (socket && (jobApplicationIdProp || jobApplicationIdRouter)) {
-				socket.emit('newInterviewFile', jobApplicationIdProp || jobApplicationIdRouter)
+				socket.emit('newJobApplicationFile', jobApplicationIdProp || jobApplicationIdRouter)
 			}
 		}
 	}, [statusCreJobApplicationFile])
@@ -153,7 +153,7 @@ export default function JobApplicationFile({ jobApplicationIdProp }: IJobApplica
 
 			// Emit to other user join room
 			if (socket && (jobApplicationIdProp || jobApplicationIdRouter)) {
-				socket.emit('newInterviewFile', jobApplicationIdProp || jobApplicationIdRouter)
+				socket.emit('newJobApplicationFile', jobApplicationIdProp || jobApplicationIdRouter)
 			}
 		}
 	}, [statusDeleteJobApplicationFile])

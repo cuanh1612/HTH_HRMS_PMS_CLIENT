@@ -42,7 +42,7 @@ export default function AddJobApplication({ onCloseDrawer, dataJob }: IAddJobApp
 
 	// get all locations
 	const { data: allLocations } = allLocationsQuery(isAuthenticated)
-	const { data: allJobs } = allJobsQuery(isAuthenticated)
+	const { data: allJobs } = allJobsQuery()
 
 		// refetch all job application
 		const { mutate: refetchJobApplications } = allJobApplicationsQuery(isAuthenticated)

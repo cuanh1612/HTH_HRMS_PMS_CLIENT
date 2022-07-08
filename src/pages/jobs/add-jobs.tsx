@@ -100,7 +100,7 @@ export default function AddJob({ onCloseDrawer }: IAddJobProps) {
 	// get all work experience
 	const { data: allWorkExperience } = allWorkExperiencesQuery(isAuthenticated)
 	// refetch when add new jobs
-	const { mutate: refetchAllJobs } = allJobsQuery(isAuthenticated)
+	const { mutate: refetchAllJobs } = allJobsQuery()
 
 	//mutation ----------------------------------------------------------------
 	const [mutateCreJob, { status: statusCreJob, data: dataCreJob }] = createJobMutation(setToast)

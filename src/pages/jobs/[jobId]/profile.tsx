@@ -1,10 +1,12 @@
 import { Avatar, Box, Button, Grid, GridItem, HStack, Text, VStack } from '@chakra-ui/react'
+import { JobLayout } from 'components/layouts'
 import { AuthContext } from 'contexts/AuthContext'
 import { useRouter } from 'next/router'
 import { detailJobQuery } from 'queries/job'
 import { useContext, useEffect } from 'react'
 import 'react-quill/dist/quill.bubble.css'
 import 'react-quill/dist/quill.snow.css'
+import { NextLayout } from 'type/element/layout'
 
 export interface IDetailJobProps {
 	jobIdProp: string | number | null
@@ -12,7 +14,7 @@ export interface IDetailJobProps {
 	onOpenUpdate?: any
 }
 
-export default function DetailJob({ jobIdProp, onOpenDl, onOpenUpdate }: IDetailJobProps) {
+const DetailJob: NextLayout | any = ({ jobIdProp, onOpenDl, onOpenUpdate }: IDetailJobProps)=> {
 	const { isAuthenticated, handleLoading, currentUser } = useContext(AuthContext)
 	const router = useRouter()
 	const { jobId: jobIdRouter } = router.query
@@ -36,7 +38,7 @@ export default function DetailJob({ jobIdProp, onOpenDl, onOpenUpdate }: IDetail
 	}, [isAuthenticated])
 
 	return (
-		<>
+		<Box pb={8}>
 			<Box pos="relative" p={6}>
 				<Grid templateColumns="repeat(2, 1fr)" gap={6} mt={2}>
 					<GridItem w="100%" colSpan={[2, 1]}>
@@ -69,7 +71,7 @@ export default function DetailJob({ jobIdProp, onOpenDl, onOpenUpdate }: IDetail
 								End Date:
 							</GridItem>
 							<GridItem w="100%" colSpan={[2, 1]}>
-								{detailJob?.job?.ends_on_date ? detailJob?.job?.ends_on_date : '--'}
+								{detailJob?.job?.ends_on_date ?  new Date(detailJob?.job?.ends_on_date).toLocaleDateString('en-GB') : '--'}
 							</GridItem>
 							<GridItem w="100%" colSpan={[2, 1]} color={'gray.400'}>
 								Status:
@@ -115,7 +117,7 @@ export default function DetailJob({ jobIdProp, onOpenDl, onOpenUpdate }: IDetail
 								Recruiter:
 							</GridItem>
 							<GridItem w="100%" colSpan={[2, 1]}>
-								<HStack justify={'start'}>
+								<HStack spacing={5} justify={'start'}>
 									<Avatar
 										size="md"
 										name={detailJob?.job?.recruiter.name}
@@ -125,8 +127,8 @@ export default function DetailJob({ jobIdProp, onOpenDl, onOpenUpdate }: IDetail
 										<Text fontWeight={'semibold'}>
 											{detailJob?.job?.recruiter.name}
 										</Text>
-										<Text>
-											{detailJob?.job?.recruiter.designation?.name || '--'}
+										<Text fontSize={'14px'} color={'gray'}>
+											{detailJob?.job?.recruiter.department?.name || '--'}
 										</Text>
 									</VStack>
 								</HStack>
@@ -178,6 +180,10 @@ export default function DetailJob({ jobIdProp, onOpenDl, onOpenUpdate }: IDetail
 					<Button onClick={onOpenUpdate}>update</Button>
 				)}
 			</Box>
-		</>
+		</Box>
 	)
 }
+
+DetailJob.getLayout = JobLayout
+
+export default DetailJob

@@ -15,6 +15,7 @@ import React, { useState, useEffect, useContext } from 'react'
 import {
 	AiOutlineFile,
 	AiOutlineHome,
+	AiOutlineMail,
 	AiOutlineProject,
 	AiOutlineUsergroupAdd,
 } from 'react-icons/ai'
@@ -29,6 +30,7 @@ import {
 	MdOutlineDashboardCustomize,
 	MdOutlineEditNote,
 	MdOutlineEvent,
+	MdOutlinePreview,
 } from 'react-icons/md'
 import LinkGroup from './LinkGroup'
 import LinkItem from './LinkItem'
@@ -36,7 +38,6 @@ import { companyInfoQuery } from 'queries/companyInfo'
 import Image from 'next/image'
 import { GiSkills } from 'react-icons/gi'
 import { RiSuitcaseLine } from 'react-icons/ri'
-import { GrDocumentText } from 'react-icons/gr'
 
 const LinkItems = () => {
 	const { currentUser } = useContext(AuthContext)
@@ -157,6 +158,11 @@ const LinkItems = () => {
 					<LinkGroup
 						data={[
 							{
+								icon: <MdOutlineDashboard fontSize={20} />,
+								link: '/ddd',
+								title: 'Dashboard',
+							},
+							{
 								icon: <GiSkills fontSize={20} />,
 								link: '/skills',
 								title: 'Skills',
@@ -170,6 +176,21 @@ const LinkItems = () => {
 								icon: <IoDocumentTextOutline fontSize={20} />,
 								link: '/job-applications',
 								title: 'Job applications',
+							},
+							{
+								icon: <AiOutlineMail fontSize={20} />,
+								link: '/ddd',
+								title: 'Offer letters',
+							},
+							{
+								icon: <MdOutlineEvent fontSize={20} />,
+								link: '/interviews',
+								title: 'Interview schedule',
+							},
+							{
+								icon: <MdOutlinePreview fontSize={20} />,
+								link: '/recruit',
+								title: 'Front website',
 							},
 						]}
 						title="Recruit"

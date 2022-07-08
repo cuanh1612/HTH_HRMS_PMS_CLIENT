@@ -31,7 +31,7 @@ export default function AddOfferLetter({ onCloseDrawer }: IAddJobOfferLettersPro
 
 	//Query -------------------------------------------------------------------
 	// get all jobs
-	const { data: allJobs } = allJobsQuery(isAuthenticated)
+	const { data: allJobs } = allJobsQuery()
 	// get all job applications
 	const { data: allJobApplications } = allJobApplicationsQuery(isAuthenticated)
 	//refetch all job offer

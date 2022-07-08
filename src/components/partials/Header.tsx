@@ -18,12 +18,14 @@ import { Drawer } from 'components/Drawer'
 import NotificationItem from 'components/NotificationItem'
 import { AuthContext } from 'contexts/AuthContext'
 import { logoutServerMutation } from 'mutations'
+import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { NotificationByCurrentUserQuery } from 'queries/notification'
 import { useContext, useEffect, useState } from 'react'
 import { AiOutlineBell } from 'react-icons/ai'
 import { BsFillBellSlashFill, BsMoon, BsPerson, BsSun } from 'react-icons/bs'
-import { IoExitOutline } from 'react-icons/io5'
+import { GrConfigure } from 'react-icons/gr'
+import { IoExitOutline, IoSettingsOutline } from 'react-icons/io5'
 import { MdOutlineEditNote } from 'react-icons/md'
 import UpdateClient from 'src/pages/clients/update-clients'
 import UpdateEmployees from 'src/pages/employees/update-employees'
@@ -51,11 +53,7 @@ export const Header = () => {
 		onClose: onCloseUpdateProfile,
 	} = useDisclosure()
 
-	const {
-		isOpen: isOpenNote,
-		onOpen: onOpenNote,
-		onClose: onCloseNote,
-	} = useDisclosure()
+	const { isOpen: isOpenNote, onOpen: onOpenNote, onClose: onCloseNote } = useDisclosure()
 
 	//Query -------------------------------------------------
 	const { data: dataNotification, mutate: refetchNotifications } =
@@ -201,7 +199,21 @@ export const Header = () => {
 						>
 							Profile
 						</MenuItem>
-						<MenuItem onClick={onOpenNote} icon={<MdOutlineEditNote fontSize={'15px'} />}>Notice</MenuItem>
+						<MenuItem
+							onClick={onOpenNote}
+							icon={<MdOutlineEditNote fontSize={'15px'} />}
+						>
+							Notice
+						</MenuItem>
+						{currentUser?.role == 'Admin' && (
+							<Link passHref href={'/config-company-info'}>
+								<MenuItem
+									icon={<IoSettingsOutline fontSize={'15px'} />}
+								>
+									Config website
+								</MenuItem>
+							</Link>
+						)}
 						<MenuItem
 							onClick={logout}
 							color={'red.500'}
@@ -235,12 +247,7 @@ export const Header = () => {
 				</Drawer>
 			)}
 
-			<Drawer
-				size="full"
-				title="Notes"
-				onClose={onCloseNote}
-				isOpen={isOpenNote}
-			>
+			<Drawer size="full" title="Notes" onClose={onCloseNote} isOpen={isOpenNote}>
 				<StickysNote />
 			</Drawer>
 		</HStack>

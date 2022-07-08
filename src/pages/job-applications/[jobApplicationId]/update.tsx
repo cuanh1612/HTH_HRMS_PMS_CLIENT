@@ -3,7 +3,10 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { Loading } from 'components/common'
 import { Input, SelectCustom, Textarea, UploadAvatar } from 'components/form'
 import { AuthContext } from 'contexts/AuthContext'
-import { updateJobApplicationMutation } from 'mutations/jobApplication'
+import {
+	createJobApplicationMutation,
+	updateJobApplicationMutation,
+} from 'mutations/jobApplication'
 import { useRouter } from 'next/router'
 import { allJobsQuery } from 'queries/job'
 import { allJobApplicationsQuery, detailJobApplicationQuery } from 'queries/jobApplication'
@@ -48,7 +51,7 @@ export default function UpdateJobApplication({
 
 	// get all locations
 	const { data: allLocations } = allLocationsQuery(isAuthenticated)
-	const { data: allJobs } = allJobsQuery(isAuthenticated)
+	const { data: allJobs } = allJobsQuery()
 
 	//Get detail job application
 	const { data: dataDetailJobApplication } = detailJobApplicationQuery(
@@ -73,7 +76,7 @@ export default function UpdateJobApplication({
 				raw: false,
 				tags: ['avatar'],
 				options: infoImg.options,
-				upload_preset: 'huprom-avatar',
+				upload_preset: 'job-applications',
 			})
 
 			setLoadingImg(false)

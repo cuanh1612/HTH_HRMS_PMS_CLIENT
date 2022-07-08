@@ -19,6 +19,7 @@ export function middleware(req: NextRequest) {
 			case 'dashboard':
 			case 'clients':
 			case 'employees':
+			case 'config-company-info':
 				if (roleCurrentUser != 'Admin') {
 					return redirect403()
 				}

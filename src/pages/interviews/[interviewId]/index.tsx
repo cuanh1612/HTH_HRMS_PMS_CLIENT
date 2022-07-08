@@ -7,7 +7,7 @@ import InterviewFile from './files'
 
 export interface IDetailInterviewProps {
 	onCloseDrawer?: () => void
-	interviewId?: string | number
+	interviewId?: string | number | null
 }
 
 export default function DetailInterview({

@@ -60,7 +60,7 @@ const Job: NextLayout = () => {
 	} = useDisclosure()
 
 	//Query ---------------------------------------------------------------------
-	const { data: dataAllJobs, mutate: refetchAllJobs } = allJobsQuery(isAuthenticated)
+	const { data: dataAllJobs, mutate: refetchAllJobs } = allJobsQuery()
 
 	// mutate
 	const [deleteOne, { status: statusDlOne, data: dataDlOne }] = deleteJobMutation(setToast)

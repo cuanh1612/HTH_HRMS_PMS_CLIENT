@@ -1,12 +1,6 @@
 import {
 	Box,
 	Button,
-	Menu,
-	MenuButton,
-	MenuItem,
-	MenuList,
-	Select,
-	Text,
 	useDisclosure,
 	VStack,
 } from '@chakra-ui/react'
@@ -28,13 +22,11 @@ import { allLocationsQuery } from 'queries/location'
 import { useContext, useEffect, useState } from 'react'
 import { AiOutlineDelete, AiOutlineSearch } from 'react-icons/ai'
 import { IoAdd } from 'react-icons/io5'
-import { MdOutlineDeleteOutline, MdOutlineMoreVert } from 'react-icons/md'
-import { RiPencilLine } from 'react-icons/ri'
 import { VscFilter } from 'react-icons/vsc'
 import { NextLayout } from 'type/element/layout'
 import { IFilter, TColumn } from 'type/tableTypes'
 import { dataJobApplicationStatus } from 'utils/basicData'
-import { dateFilter, selectFilter, textFilter } from 'utils/tableFilters'
+import { jobApplicationColumn } from 'utils/columns'
 import AddJobApplications from './add-job-applications'
 import DetailJobApplication from './[jobApplicationId]'
 import UpdateJobApplication from './[jobApplicationId]/update'
@@ -74,13 +66,14 @@ const jobApplications: NextLayout = () => {
 		onOpen: onOpenDlMany,
 		onClose: onCloseDlMany,
 	} = useDisclosure()
+	const { isOpen: isOpenDetail, onOpen: onOpenDetail, onClose: onCloseDetail } = useDisclosure()
 
 	//Query ---------------------------------------------------------------------
 	const { data: dataAllJobApplications, mutate: refetchAllData } =
 		allJobApplicationsQuery(isAuthenticated)
 
 	const { data: dataAllLocations } = allLocationsQuery(isAuthenticated)
-	const { data: dataAllJobs } = allJobsQuery(isAuthenticated)
+	const { data: dataAllJobs } = allJobsQuery()
 
 	// mutate
 	const [updateStatus, { status: statusUpdate, data: dataUpdate }] =
@@ -139,131 +132,33 @@ const jobApplications: NextLayout = () => {
 		}
 	}, [dataAllJobApplications])
 
-	const columns: TColumn[] = [
-		{
-			Header: 'Job applications',
-			columns: [
-				{
-					Header: 'Id',
-					accessor: 'id',
-					width: 80,
-					minWidth: 80,
-					disableResizing: true,
-					Cell: ({ value }) => {
-						return value
-					},
-				},
-				{
-					Header: 'Name',
-					accessor: 'name',
-					filter: textFilter(['title']),
-					minWidth: 80,
-					Cell: ({ value }) => {
-						return <Text isTruncated>{value}</Text>
-					},
-				},
-				{
-					Header: 'Job',
-					accessor: 'jobs',
-					filter: textFilter(['jobs', 'id']),
-					minWidth: 80,
-					Cell: ({ value }) => {
-						return <Text isTruncated>{value.title}</Text>
-					},
-				},
-				{
-					Header: 'Location',
-					accessor: 'location',
-					filter: selectFilter(['location', 'name']),
-					minWidth: 80,
-					Cell: ({ value }) => {
-						return <Text isTruncated>{value.name}</Text>
-					},
-				},
-				{
-					Header: 'Date',
-					accessor: 'createdAt',
-					filter: dateFilter(['createdAt']),
-					minWidth: 80,
-					Cell: ({ value }) => {
-						return (
-							<Text isTruncated>{new Date(value).toLocaleDateString('es-CL')}</Text>
-						)
-					},
-				},
-				{
-					Header: 'Status',
-					accessor: 'status',
-					filter: selectFilter(['status']),
-
-					minWidth: 160,
-					Cell: ({ value, row }) => {
-						return (
-							<Select
-								onChange={async (event: any) => {
-									setIsloading(true)
-									await updateStatus({
-										id: row.values['id'],
-										status: event.target.value,
-									})
-								}}
-								defaultValue={value}
-							>
-								{dataJobApplicationStatus.map((e) => (
-									<option value={e.value}>{e.label}</option>
-								))}
-							</Select>
-						)
-					},
-				},
-				{
-					Header: 'Action',
-					accessor: 'action',
-					disableResizing: true,
-					width: 120,
-					minWidth: 120,
-					disableSortBy: true,
-					Cell: ({ row }) => (
-						<Menu>
-							<MenuButton as={Button} paddingInline={3}>
-								<MdOutlineMoreVert />
-							</MenuButton>
-							<MenuList>
-								{currentUser?.role === 'Admin' && (
-									<>
-										<MenuItem
-											onClick={() => {
-												setIdJobApplication(row.values['id'])
-												onOpenUpdate()
-											}}
-											icon={<RiPencilLine fontSize={'15px'} />}
-										>
-											Edit
-										</MenuItem>
-
-										<MenuItem
-											onClick={() => {
-												setIdJobApplication(row.values['id'])
-												onOpenDl()
-											}}
-											icon={<MdOutlineDeleteOutline fontSize={'15px'} />}
-										>
-											Delete
-										</MenuItem>
-									</>
-								)}
-							</MenuList>
-						</Menu>
-					),
-				},
-			],
+	const columns: TColumn[] = jobApplicationColumn({
+		currentUser,
+		onChangeStatus: async (id: number, event: any) => {
+			setIsloading(true)
+			await updateStatus({
+				id,
+				status: event.target.value,
+			})
 		},
-	]
+		onDelete: (id: number) => {
+			setIdJobApplication(id)
+			onOpenDl()
+		},
+		onDetail: (id: number) => {
+			setIdJobApplication(id)
+			onOpenDetail()
+		},
+		onUpdate: (id: number) => {
+			setIdJobApplication(id)
+			onOpenUpdate()
+		},
+	})
 
 	return (
 		<Box pb={8}>
 			<Head>
-				<title>Huprom - Jobs</title>
+				<title>Huprom - Job applications</title>
 				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
 			</Head>
 			<FuncCollapse>
@@ -309,6 +204,17 @@ const jobApplications: NextLayout = () => {
 			<Drawer size="xl" title="Update Jobs" onClose={onCloseUpdate} isOpen={isOpenUpdate}>
 				<UpdateJobApplication
 					onCloseDrawer={onCloseUpdate}
+					jobApplicationId={idJobApplication}
+				/>
+			</Drawer>
+			<Drawer
+				size="xl"
+				title="Detail Jobs Application"
+				onClose={onCloseDetail}
+				isOpen={isOpenDetail}
+			>
+				<DetailJobApplication
+					onCloseDrawer={onCloseDetail}
 					jobApplicationId={idJobApplication}
 				/>
 			</Drawer>

@@ -1,19 +1,19 @@
 import {
+	Avatar,
 	Box,
 	Button,
 	Divider,
 	Grid,
 	GridItem,
 	HStack,
-	Image,
+	Tab,
 	TabList,
 	TabPanel,
 	TabPanels,
 	Tabs,
 	Text,
-	useDisclosure
+	useDisclosure,
 } from '@chakra-ui/react'
-import { Tab } from '@headlessui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Loading } from 'components/common'
 import { SelectMany } from 'components/form'
@@ -34,11 +34,10 @@ import JobApplicationFile from './files'
 
 export interface IDetailJobApplicationProps {
 	onCloseDrawer?: () => void
-	jobApplicationId?: string | number
+	jobApplicationId: string | number | null
 }
 
 export default function DetailJobApplication({
-	onCloseDrawer,
 	jobApplicationId: jobApplicationIdProp,
 }: IDetailJobApplicationProps) {
 	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
@@ -64,10 +63,8 @@ export default function DetailJobApplication({
 	const { data: allSkills } = allSkillsQuery(isAuthenticated)
 
 	//mutation ----------------------------------------------------------------
-	const [
-		mutateChangeSkillsJobApplication,
-		{ status: statusChangeSkillsJobApplication, data: dataChangeSkillsJobApplication },
-	] = changeSkillsobApplicationMutation(setToast)
+	const [mutateChangeSkillsJobApplication, { status: statusChangeSkillsJobApplication }] =
+		changeSkillsobApplicationMutation(setToast)
 
 	//Funcion -----------------------------------------------------------------
 
@@ -85,7 +82,7 @@ export default function DetailJobApplication({
 	const onSubmit = async (values: changeSkillsJobApplicationForm) => {
 		values.jobApplicationId =
 			Number(jobApplicationIdProp) || Number(jobApplicationIdRouter as string)
-		mutateChangeSkillsJobApplication(values)
+		await mutateChangeSkillsJobApplication(values)
 	}
 	//User effect ---------------------------------------------------------------
 
@@ -103,7 +100,7 @@ export default function DetailJobApplication({
 	//Set data option skills state
 	useEffect(() => {
 		if (allSkills && allSkills.skills) {
-			let newOptionSkills: IOption[] = []
+			const newOptionSkills: IOption[] = []
 
 			allSkills.skills.map((skill) => {
 				newOptionSkills.push({
@@ -125,7 +122,7 @@ export default function DetailJobApplication({
 		if (dataDetailJobApplication && dataDetailJobApplication.jobApplication) {
 			//Set data selected option skills
 			if (dataDetailJobApplication.jobApplication.skills) {
-				let newSelectedOptionSkils: IOption[] = []
+				const newSelectedOptionSkils: IOption[] = []
 
 				dataDetailJobApplication.jobApplication.skills.map((skill) => {
 					newSelectedOptionSkils.push({
@@ -156,10 +153,10 @@ export default function DetailJobApplication({
 				<Grid templateColumns="repeat(4, 1fr)" gap={6}>
 					<GridItem colSpan={4}>
 						<Box boxSize="150">
-							<Image
-								borderRadius={'100%'}
-								src={dataDetailJobApplication?.jobApplication?.picture.url}
-								alt={dataDetailJobApplication?.jobApplication?.name}
+							<Avatar
+								size="2xl"
+								name={dataDetailJobApplication?.jobApplication?.name}
+								src={dataDetailJobApplication?.jobApplication?.picture?.url}
 							/>
 						</Box>
 					</GridItem>
@@ -230,21 +227,6 @@ export default function DetailJobApplication({
 					</GridItem>
 				</Grid>
 
-				<Tabs variant="enclosed" mt={6}>
-					<TabList>
-						<Tab>Files</Tab>
-					</TabList>
-					<TabPanels>
-						<TabPanel>
-							<JobApplicationFile
-								jobApplicationIdProp={
-									jobApplicationIdProp || (jobApplicationIdRouter as string)
-								}
-							/>
-						</TabPanel>
-					</TabPanels>
-				</Tabs>
-
 				<Divider marginY={6} />
 				<Text fontWeight={'semibold'}>Skill</Text>
 
@@ -279,6 +261,22 @@ export default function DetailJobApplication({
 				>
 					Save
 				</Button>
+
+				<Tabs variant="enclosed" mt={6}>
+					<TabList>
+						<Tab>Files</Tab>
+					</TabList>
+					<TabPanels>
+						<TabPanel>
+							<JobApplicationFile
+								jobApplicationIdProp={
+									jobApplicationIdProp || (jobApplicationIdRouter as string)
+								}
+							/>
+						</TabPanel>
+					</TabPanels>
+				</Tabs>
+
 				{statusChangeSkillsJobApplication === 'running' && <Loading />}
 			</Box>
 

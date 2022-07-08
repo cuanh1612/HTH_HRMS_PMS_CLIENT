@@ -618,3 +618,12 @@ export interface interviewFileType {
 	public_id: string
 	createdAt: Date
 }
+
+export interface jobOfferLetterType {
+	id: number
+	job: jobType
+	job_application: jobApplicationType
+	exprire_on: Date
+	expected_joining_date: Date
+	salary: number
+}

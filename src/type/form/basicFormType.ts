@@ -779,3 +779,25 @@ export type createInterviewFileForm = {
 	}[]
 	interview: number
 }
+
+export interface createJobOfferLetterForm {
+	job: number
+	job_application: number
+	exprise_on: Date
+	expected_joining_date: Date
+	salary: number
+}
+
+export interface updateJobOfferLetterForm {
+	jobOfferLetterId: number
+	job: number
+	job_application: number
+	exprise_on: Date
+	expected_joining_date: Date
+	salary: number
+}
+
+
+export interface deleteJobOfferLettersForm {
+	jobOfferLetters: number[]
+}

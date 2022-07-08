@@ -314,3 +314,11 @@ export const CreateInterviewValidate = yup.object({
 	start_time: yup.string().required('Please select start time'),
 	type: yup.string().required('Please select interview type'),
 })
+
+export const CreateJobOfferValidate = yup.object({
+	job:  yup.number().required('Please select job'),
+	job_application:  yup.number().required('Please select job application'),
+	exprise_on: yup.date().required('Please select job offer exprise on date'),
+	expected_joining_date: yup.date().required('Please select job offer expected joining date'),
+	salary: yup.number().min(1).required('Please enter job offer salary')
+})

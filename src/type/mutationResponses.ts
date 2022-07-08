@@ -18,6 +18,7 @@ import {
 	interviewFileType,
 	interviewType,
 	jobApplicationType,
+	jobOfferLetterType,
 	jobType,
 	jobTypeType,
 	leaveType,
@@ -359,4 +360,9 @@ export interface interviewMutationResponse extends commonResponse {
 export interface interviewFileMutaionResponse extends commonResponse {
 	interviewFile?: interviewFileType
 	interviewFiles?: interviewFileType[]
+}
+
+export interface jobOfferLetterMutationResponse extends commonResponse {
+	jobOfferLetter?: jobOfferLetterType
+	jobOfferLetters?: jobOfferLetterType[]
 }

@@ -782,21 +782,24 @@ export type createInterviewFileForm = {
 
 export interface createJobOfferLetterForm {
 	job: number
-	job_application: number
+	job_application?: number
 	exprise_on: Date
 	expected_joining_date: Date
 	salary: number
+	rate?: string
 }
 
 export interface updateJobOfferLetterForm {
-	jobOfferLetterId: number
+	jobOfferLetterId: number | string
 	job: number
-	job_application: number
+	job_application?: number
 	exprise_on: Date
 	expected_joining_date: Date
 	salary: number
-}
+	status: string
+	rate?: string
 
+}
 
 export interface deleteJobOfferLettersForm {
 	jobOfferLetters: number[]

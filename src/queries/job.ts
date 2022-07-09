@@ -10,7 +10,7 @@ export const allJobsQuery = () => {
 	})
 }
 
-export const detailJobQuery = ( jobId: string | number | null) => {
+export const detailJobQuery = ( jobId?: string | number | null) => {
 	return useSWR<jobMutationResponse, AxiosError>( jobId ? `jobs/${jobId}` : null, getJobRequest, {
 		errorRetryCount: 2,
 		revalidateOnFocus: false,

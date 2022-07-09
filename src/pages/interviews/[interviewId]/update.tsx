@@ -74,8 +74,15 @@ export default function UpdateInterview({
 
 	//Handle crete job
 	const onSubmit = async (values: updateInterviewForm) => {
-		values.interviewId = interviewIdProp || interviewIdRouter as string
-		mutateUpInterview(values)
+		if (!interviewIdProp && !interviewIdRouter) {
+			setToast({
+				msg: 'Not found interview to update',
+				type: 'error',
+			})
+		} else {
+			values.interviewId = interviewIdProp || (interviewIdRouter as string)
+			mutateUpInterview(values)
+		}
 	}
 
 	//User effect ---------------------------------------------------------------

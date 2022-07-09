@@ -1,16 +1,15 @@
 import {
-	createJobsRequest,
-	deleteJobRequest,
-	deleteManyJobsRequest,
-	updateJoblRequest,
-	updateJobStatusRequest,
-} from 'requests/job'
+	createJobOfferLetterRequest,
+	deleteJobOfferRequest,
+	deleteManyJobOffersRequest,
+	updateJobOfferRequest,
+} from 'requests/jobOfferLetter'
 import { TToast } from 'type/basicTypes'
 import useMutation from 'use-mutation'
 
 //create
 export const createJobOfferLetterMutation = (setToast: TToast) => {
-	return useMutation(createJobsRequest, {
+	return useMutation(createJobOfferLetterRequest, {
 		onFailure({ error }) {
 			setToast({
 				msg: error.message,
@@ -21,8 +20,8 @@ export const createJobOfferLetterMutation = (setToast: TToast) => {
 }
 
 //update
-export const updateJobMutation = (setToast: TToast) => {
-	return useMutation(updateJoblRequest, {
+export const updateJobOfferLetterMutation = (setToast: TToast) => {
+	return useMutation(updateJobOfferRequest, {
 		onFailure({ error }) {
 			setToast({
 				msg: error.message,
@@ -31,24 +30,10 @@ export const updateJobMutation = (setToast: TToast) => {
 		},
 	})
 }
-
-//update job's status
-export const updateJobStatusMutation = (setToast: TToast) => {
-	return useMutation(updateJobStatusRequest, {
-		onFailure({ error }) {
-			setToast({
-				msg: error.message,
-				type: 'error',
-			})
-		},
-	})
-}
-
-
 
 // delete one
-export const deleteJobMutation = (setToast: TToast) => {
-	return useMutation(deleteJobRequest, {
+export const deleteJobOfferLetterMutation = (setToast: TToast) => {
+	return useMutation(deleteJobOfferRequest, {
 		onFailure({ error }) {
 			setToast({
 				msg: error.message,
@@ -59,8 +44,8 @@ export const deleteJobMutation = (setToast: TToast) => {
 }
 
 // delete many
-export const deleteJobsMutation = (setToast: TToast) => {
-	return useMutation(deleteManyJobsRequest, {
+export const deleteJobOfferLettersMutation = (setToast: TToast) => {
+	return useMutation(deleteManyJobOffersRequest, {
 		onFailure({ error }) {
 			setToast({
 				msg: error.message,

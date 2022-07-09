@@ -3,32 +3,40 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { Loading } from 'components/common'
 import { Input, InputNumber, SelectCustom } from 'components/form'
 import { AuthContext } from 'contexts/AuthContext'
-import { createJobOfferLetterMutation } from 'mutations/jobOfferLetter'
+import { setSeconds } from 'date-fns/esm'
+import { updateJobOfferLetterMutation } from 'mutations/jobOfferLetter'
 import { useRouter } from 'next/router'
 import { allJobsQuery, detailJobQuery } from 'queries/job'
 import { applicationsByJobQuery } from 'queries/jobApplication'
-import { allJobOffersQuery } from 'queries/jobOfferLetter'
+import { allJobOffersQuery, detailJobOfferQuery } from 'queries/jobOfferLetter'
 import { useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { AiOutlineCheck } from 'react-icons/ai'
 import { BsCalendarDate } from 'react-icons/bs'
 import { IOption } from 'type/basicTypes'
-import { createJobOfferLetterForm } from 'type/form/basicFormType'
-import { dataJobRate } from 'utils/basicData'
-import { CreateJobOfferValidate } from 'utils/validate'
+import { updateJobOfferLetterForm } from 'type/form/basicFormType'
+import { dataJobOfferStatus, dataJobRate } from 'utils/basicData'
+import { UpdateJobOfferValidate } from 'utils/validate'
 
-export interface IAddJobOfferLettersProps {
+export interface IUpdateJobOfferLettersProps {
 	onCloseDrawer?: () => void
+	jobOfferLetterId: number | null
 }
 
-export default function AddOfferLetter({ onCloseDrawer }: IAddJobOfferLettersProps) {
+export default function UpdateOfferLetter({
+	onCloseDrawer,
+	jobOfferLetterId: jobOfferLetterIdProp,
+}: IUpdateJobOfferLettersProps) {
 	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
 	const router = useRouter()
+	const { jobOFferLetterId: jobOFferLetterIdRouter } = router.query
 
 	//State -------------------------------------------------------------------
 	const [optionJobs, setOptionJobs] = useState<IOption[]>([])
 	const [optionJobApplications, setOptionJobApplications] = useState<IOption[]>([])
-	const [optionSelectedJob, setOptionSelectedJob] = useState<number | string>()
+
+	const [optionSelectedJobId, setOptionSelectedJobId] = useState<number | string>()
+	const [optionSelectedJob, setOptionSelectedJob] = useState<IOption>()
 	const [optionSelectedJobApplication, setOptionSelectedJobApplication] = useState<IOption>({
 		label: (
 			<>
@@ -49,24 +57,31 @@ export default function AddOfferLetter({ onCloseDrawer }: IAddJobOfferLettersPro
 	//Setup modal -------------------------------------------------------
 
 	//Query -------------------------------------------------------------------
+	//Get detail job offer letter
+	const { data: dataDetailJobOfferLetter } = detailJobOfferQuery(
+		isAuthenticated,
+		jobOfferLetterIdProp || (jobOFferLetterIdRouter as string)
+	)
+	console.log(dataDetailJobOfferLetter)
+
 	// get all jobs
 	const { data: allJobs } = allJobsQuery()
 	// get all job applications
 	const { data: allJobApplicationsByJob } = applicationsByJobQuery(
 		isAuthenticated,
-		optionSelectedJob
+		optionSelectedJobId
 	)
 	//refetch all job offer
 	const { mutate: refetchAllJobOfferLetters } = allJobOffersQuery(isAuthenticated)
 	//get detail job
-	const { data: dataDetailJob } = detailJobQuery(optionSelectedJob)
+	const { data: dataDetailJob } = detailJobQuery(optionSelectedJobId)
 
 	//mutation ----------------------------------------------------------------
-	const [mutateCreJobOffer, { status: statusCreJobOffer, data: dataCreJobOffer }] =
-		createJobOfferLetterMutation(setToast)
+	const [mutateUpJobOffer, { status: statusUpJobOffer, data: dataUpJobOffer }] =
+		updateJobOfferLetterMutation(setToast)
 
-	// setForm and submit form create new job offer ----------------------------
-	const formSetting = useForm<createJobOfferLetterForm>({
+	// setForm and submit form update job offer ----------------------------
+	const formSetting = useForm<updateJobOfferLetterForm>({
 		defaultValues: {
 			job: undefined,
 			job_application: undefined,
@@ -74,20 +89,29 @@ export default function AddOfferLetter({ onCloseDrawer }: IAddJobOfferLettersPro
 			expected_joining_date: undefined,
 			salary: 1,
 			rate: undefined,
+			status: undefined,
 		},
-		resolver: yupResolver(CreateJobOfferValidate),
+		resolver: yupResolver(UpdateJobOfferValidate),
 	})
 
 	const { handleSubmit } = formSetting
 
 	//Handle crete job offer
-	const onSubmit = async (values: createJobOfferLetterForm) => {
-		mutateCreJobOffer(values)
+	const onSubmit = async (values: updateJobOfferLetterForm) => {
+		if (!jobOfferLetterIdProp && !jobOFferLetterIdRouter) {
+			setToast({
+				msg: 'Not found job offer letter to update',
+				type: 'error',
+			})
+		} else {
+			values.jobOfferLetterId = jobOfferLetterIdProp || jobOFferLetterIdRouter as string
+			mutateUpJobOffer(values)
+		}
 	}
 
 	//Handle change job select
 	const onChangeJob = (jobId: string | number) => {
-		setOptionSelectedJob(jobId)
+		setOptionSelectedJobId(jobId)
 
 		//Clear data when change job
 		setOptionSelectedJobApplication({
@@ -115,6 +139,53 @@ export default function AddOfferLetter({ onCloseDrawer }: IAddJobOfferLettersPro
 			}
 		}
 	}, [isAuthenticated])
+
+	//Set data form when have data detail job offer letter
+	useEffect(() => {
+		if (dataDetailJobOfferLetter && dataDetailJobOfferLetter.jobOfferLetter) {
+			//Set data selected option job
+			if (dataDetailJobOfferLetter.jobOfferLetter.job) {
+				const newSelectedJob: IOption = {
+					label: (
+						<>
+							<Text>{dataDetailJobOfferLetter.jobOfferLetter.job.title}</Text>
+						</>
+					),
+					value: dataDetailJobOfferLetter.jobOfferLetter.job.id,
+				}
+				setOptionSelectedJob(newSelectedJob)
+				setOptionSelectedJobId(dataDetailJobOfferLetter.jobOfferLetter.job.id)
+			}
+
+			//Set data selected option job_application
+			if (dataDetailJobOfferLetter.jobOfferLetter.job_application) {
+				const newSelectedJobApplication: IOption = {
+					label: (
+						<>
+							<Text>
+								{dataDetailJobOfferLetter.jobOfferLetter.job_application.name}
+							</Text>
+						</>
+					),
+					value: dataDetailJobOfferLetter.jobOfferLetter.job_application.id,
+				}
+				setOptionSelectedJobApplication(newSelectedJobApplication)
+			}
+
+			//set data form
+			formSetting.reset({
+				job: dataDetailJobOfferLetter.jobOfferLetter.job.id || undefined,
+				job_application:
+					dataDetailJobOfferLetter.jobOfferLetter.job_application.id || undefined,
+				exprise_on: dataDetailJobOfferLetter.jobOfferLetter.exprise_on || undefined,
+				expected_joining_date:
+					dataDetailJobOfferLetter.jobOfferLetter.expected_joining_date || undefined,
+				salary: dataDetailJobOfferLetter.jobOfferLetter.salary || 1,
+				rate: dataDetailJobOfferLetter.jobOfferLetter.rate || undefined,
+				status: dataDetailJobOfferLetter.jobOfferLetter.status || undefined,
+			})
+		}
+	}, [dataDetailJobOfferLetter])
 
 	//Set data option rate when have data detail job
 	useEffect(() => {
@@ -175,12 +246,12 @@ export default function AddOfferLetter({ onCloseDrawer }: IAddJobOfferLettersPro
 
 	//Note when request success
 	useEffect(() => {
-		if (statusCreJobOffer === 'success') {
+		if (statusUpJobOffer === 'success') {
 			//Inform notice success
-			if (dataCreJobOffer) {
+			if (dataUpJobOffer) {
 				setToast({
 					type: 'success',
-					msg: dataCreJobOffer?.message,
+					msg: dataUpJobOffer?.message,
 				})
 			}
 
@@ -200,7 +271,7 @@ export default function AddOfferLetter({ onCloseDrawer }: IAddJobOfferLettersPro
 
 			refetchAllJobOfferLetters()
 		}
-	}, [statusCreJobOffer])
+	}, [statusUpJobOffer])
 
 	return (
 		<>
@@ -214,6 +285,7 @@ export default function AddOfferLetter({ onCloseDrawer }: IAddJobOfferLettersPro
 							required={true}
 							options={optionJobs}
 							onChangeValue={onChangeJob}
+							selectedOption={optionSelectedJob}
 						/>
 					</GridItem>
 
@@ -253,6 +325,16 @@ export default function AddOfferLetter({ onCloseDrawer }: IAddJobOfferLettersPro
 					</GridItem>
 
 					<GridItem w="100%" colSpan={[2, 1]}>
+						<InputNumber
+							name="salary"
+							label="salary"
+							form={formSetting}
+							required
+							min={1}
+						/>
+					</GridItem>
+
+					<GridItem w="100%" colSpan={[2, 1]}>
 						<SelectCustom
 							name="rate"
 							label="Rate"
@@ -265,12 +347,12 @@ export default function AddOfferLetter({ onCloseDrawer }: IAddJobOfferLettersPro
 					</GridItem>
 
 					<GridItem w="100%" colSpan={[2, 1]}>
-						<InputNumber
-							name="salary"
-							label="salary"
+						<SelectCustom
+							name="status"
+							label="Status"
+							required={true}
 							form={formSetting}
-							required
-							min={1}
+							options={dataJobOfferStatus}
 						/>
 					</GridItem>
 				</Grid>
@@ -290,7 +372,7 @@ export default function AddOfferLetter({ onCloseDrawer }: IAddJobOfferLettersPro
 				>
 					Save
 				</Button>
-				{statusCreJobOffer === 'running' && <Loading />}
+				{statusUpJobOffer === 'running' && <Loading />}
 			</Box>
 		</>
 	)

@@ -106,22 +106,29 @@ export default function UpdateJobApplication({
 
 	//Handle update job application
 	const onSubmit = async (values: updateJobApplicationForm) => {
-		//Upload avatar
-		const dataUploadAvattar: ICloudinaryImg | null = await handleUploadAvatar()
+		if (!jobApplicationIdProp && !jobApplicationIdRouter) {
+			setToast({
+				msg: 'Not found job application to update',
+				type: 'error',
+			})
+		} else {
+			//Upload avatar
+			const dataUploadAvattar: ICloudinaryImg | null = await handleUploadAvatar()
 
-		//Check upload avatar success
-		if (dataUploadAvattar) {
-			values.picture = {
-				name: dataUploadAvattar.name,
-				url: dataUploadAvattar.url,
-				public_id: dataUploadAvattar.public_id,
+			//Check upload avatar success
+			if (dataUploadAvattar) {
+				values.picture = {
+					name: dataUploadAvattar.name,
+					url: dataUploadAvattar.url,
+					public_id: dataUploadAvattar.public_id,
+				}
 			}
+
+			values.jobApplicationId = jobApplicationIdProp || (jobApplicationIdRouter as string)
+
+			//updat
+			mutateUpJobApplication(values)
 		}
-
-		values.jobApplicationId = jobApplicationIdProp || (jobApplicationIdRouter as string)
-
-		//updat
-		mutateUpJobApplication(values)
 	}
 
 	//User effect ---------------------------------------------------------------

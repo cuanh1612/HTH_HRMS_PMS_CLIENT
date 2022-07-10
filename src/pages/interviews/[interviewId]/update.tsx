@@ -6,7 +6,7 @@ import { AuthContext } from 'contexts/AuthContext'
 import { updateInterviewMutation } from 'mutations/interview'
 import { useRouter } from 'next/router'
 import { allEmployeesQuery } from 'queries'
-import { allInterviewsQuery, detailInterviewQuery } from 'queries/interview'
+import { allInterviewsNewQuery, allInterviewsQuery, detailInterviewQuery } from 'queries/interview'
 import { allJobApplicationsQuery } from 'queries/jobApplication'
 import { useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -43,6 +43,7 @@ export default function UpdateInterview({
 	const { data: allCandidates } = allJobApplicationsQuery(isAuthenticated)
 	const { mutate: refetchAllInterviews } = allInterviewsQuery(isAuthenticated)
 	const { data: allEmployees } = allEmployeesQuery(isAuthenticated)
+	const { mutate: refetchAllInterviewsNew } = allInterviewsNewQuery(isAuthenticated)
 
 	//Get detail interview
 	const { data: dataDetailInterview } = detailInterviewQuery(
@@ -75,7 +76,7 @@ export default function UpdateInterview({
 	//Handle crete job
 	const onSubmit = async (values: updateInterviewForm) => {
 		values.interviewId = interviewIdProp || interviewIdRouter as string
-		mutateUpInterview(values)
+		await mutateUpInterview(values)
 	}
 
 	//User effect ---------------------------------------------------------------
@@ -94,7 +95,7 @@ export default function UpdateInterview({
 	//Set data option candidate
 	useEffect(() => {
 		if (allCandidates && allCandidates.jobApplications) {
-			let newOptionCandidates: IOption[] = []
+			const newOptionCandidates: IOption[] = []
 
 			allCandidates.jobApplications.map((candidate) => {
 				newOptionCandidates.push({
@@ -121,7 +122,7 @@ export default function UpdateInterview({
 	//Set data option interviewers
 	useEffect(() => {
 		if (allEmployees && allEmployees.employees) {
-			let newOptionsInterviewer: IOption[] = []
+			const newOptionsInterviewer: IOption[] = []
 
 			allEmployees.employees.map((employee) => {
 				newOptionsInterviewer.push({
@@ -162,6 +163,7 @@ export default function UpdateInterview({
 			}
 
 			refetchAllInterviews()
+			refetchAllInterviewsNew()
 		}
 	}, [statusUpInterview])
 

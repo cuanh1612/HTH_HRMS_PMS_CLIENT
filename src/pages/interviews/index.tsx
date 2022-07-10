@@ -1,13 +1,18 @@
 import {
+	Avatar,
+	AvatarGroup,
 	Box,
 	Button,
+	HStack,
 	Menu,
 	MenuButton,
 	MenuItem,
 	MenuList,
 	Select,
 	Text,
+	useColorMode,
 	useDisclosure,
+	VStack,
 } from '@chakra-ui/react'
 import { AlertDialog, Func, FuncCollapse, Table } from 'components/common'
 import { Drawer } from 'components/Drawer'
@@ -17,7 +22,7 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 // import { allJobsQuery } from 'queries/job'
 import { useContext, useEffect, useState } from 'react'
-import { AiOutlineDelete } from 'react-icons/ai'
+import { AiOutlineDelete, AiOutlineSearch } from 'react-icons/ai'
 import { IoAdd, IoEyeOutline } from 'react-icons/io5'
 import { VscFilter } from 'react-icons/vsc'
 import { NextLayout } from 'type/element/layout'
@@ -26,16 +31,25 @@ import DetailInterview from './[interviewId]'
 import UpdateInterview from './[interviewId]/update'
 import { allInterviewsQuery } from 'queries/interview'
 import { IFilter, TColumn } from 'type/tableTypes'
-import { selectFilter, textFilter } from 'utils/tableFilters'
+import { arrayFilter, dateFilter, selectFilter, textFilter } from 'utils/tableFilters'
 import { dataInterviewStatus } from 'utils/basicData'
-import { MdOutlineDeleteOutline, MdOutlineMoreVert } from 'react-icons/md'
+import { MdOutlineDeleteOutline, MdOutlineEvent, MdOutlineMoreVert } from 'react-icons/md'
 import { RiPencilLine } from 'react-icons/ri'
-import { deleteInterviewMutation } from 'mutations/interview'
+import {
+	deleteInterviewMutation,
+	deleteInterviewsMutation,
+	updateInterviewStatusMutation,
+} from 'mutations/interview'
+import { DateRange, Input, Select as FSelect, SelectCustom } from 'components/filter'
+import { employeeType, IOption } from 'type/basicTypes'
+import { allEmployeesNormalQuery } from 'queries'
+import { interviewScheduleColumn } from 'utils/columns'
 // import UpdateJob from './[jobId]/update'
 
 const interviews: NextLayout = () => {
 	const { currentUser, isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
 	const router = useRouter()
+	const { colorMode } = useColorMode()
 
 	// set filter
 	const [filter, setFilter] = useState<IFilter>({
@@ -49,12 +63,15 @@ const interviews: NextLayout = () => {
 	// is reset table
 	const [isResetFilter, setIsReset] = useState(false)
 	const [interviewId, setInterviewId] = useState<number | null>(null)
+	// get employee to select to filter
+	const [employeesFilter, setEmployeesFilter] = useState<IOption[]>([])
 
 	//Setup drawer --------------------------------------------------------------
 	const { isOpen: isOpenAdd, onOpen: onOpenAdd, onClose: onCloseAdd } = useDisclosure()
 	const { isOpen: isOpenUpdate, onOpen: onOpenUpdate, onClose: onCloseUpdate } = useDisclosure()
 	const { isOpen: isOpenDetail, onOpen: onOpenDetail, onClose: onCloseDetail } = useDisclosure()
-
+	// set isOpen of drawer to filters
+	const { isOpen: isOpenFilter, onOpen: onOpenFilter, onClose: onCloseFilter } = useDisclosure()
 	// set isOpen of dialog to delete one
 	const { isOpen: isOpenDialogDl, onOpen: onOpenDl, onClose: onCloseDl } = useDisclosure()
 
@@ -67,10 +84,16 @@ const interviews: NextLayout = () => {
 
 	//Query ---------------------------------------------------------------------
 	// const { data: dataAllJobs } = allJobsQuery(isAuthenticated)
-	const { data: allInterviewSchedule } = allInterviewsQuery(isAuthenticated)
+	const { data: allInterviewSchedule, mutate: refetchAllInterview } =
+		allInterviewsQuery(isAuthenticated)
+	const { data: allEmployees } = allEmployeesNormalQuery(isAuthenticated)
 
 	// mutate
-	const [deleteOne, {}] = deleteInterviewMutation(setToast)
+	const [deleteOne, { data: dataDlOne, status: statusDlOne }] = deleteInterviewMutation(setToast)
+	const [deleteMany, { data: dataDlMany, status: statusDlMany }] =
+		deleteInterviewsMutation(setToast)
+	const [updateStatus, { data: dataUpdateStatus, status: statusUpdate }] =
+		updateInterviewStatusMutation(setToast)
 
 	//User effect ---------------------------------------------------------------
 	//Handle check loged in
@@ -84,6 +107,43 @@ const interviews: NextLayout = () => {
 		}
 	}, [isAuthenticated])
 
+	// check is successfully delete one
+	useEffect(() => {
+		if (statusDlOne == 'success' && dataDlOne) {
+			setToast({
+				msg: dataDlOne.message,
+				type: statusDlOne,
+			})
+			refetchAllInterview()
+			setIsloading(false)
+		}
+	}, [statusDlOne])
+
+	// check is successfully update status
+	useEffect(() => {
+		if (statusUpdate == 'success' && dataUpdateStatus) {
+			setToast({
+				msg: dataUpdateStatus.message,
+				type: statusUpdate,
+			})
+			refetchAllInterview()
+			setIsloading(false)
+		}
+	}, [statusUpdate])
+
+	// check is successfully delete many
+	useEffect(() => {
+		if (statusDlMany == 'success' && dataDlMany) {
+			setToast({
+				msg: dataDlMany.message,
+				type: 'success',
+			})
+			setDataSl(null)
+			refetchAllInterview()
+			setIsloading(false)
+		}
+	}, [statusDlMany])
+
 	useEffect(() => {
 		if (allInterviewSchedule) {
 			console.log(allInterviewSchedule)
@@ -91,119 +151,54 @@ const interviews: NextLayout = () => {
 		}
 	}, [allInterviewSchedule])
 
-	const columns: TColumn[] = [
-		{
-			Header: 'Interview schedules',
-			columns: [
-				{
-					Header: 'Id',
-					accessor: 'id',
-					width: 80,
-					minWidth: 80,
-					disableResizing: true,
-					Cell: ({ value }) => {
-						return value
-					},
-				},
-				{
-					Header: 'Candidate',
-					accessor: 'candidate',
-					filter: textFilter(['candidate', 'name']),
-					minWidth: 80,
-					Cell: ({ value }) => {
-						return <Text isTruncated>{value.name}</Text>
-					},
-				},
-				{
-					Header: 'Schedule date and time',
-					accessor: 'date',
-					filter: textFilter(['date']),
-					minWidth: 80,
-					Cell: ({ value, row }) => {
-						return (
-							<Text isTruncated>{`${new Date(value).toLocaleDateString('es-CL')} ${
-								row.original.start_time
-							}`}</Text>
-						)
-					},
-				},
-				{
-					Header: 'Status',
-					accessor: 'status',
-					filter: selectFilter(['status']),
-					minWidth: 160,
-					width: 160,
-					Cell: ({ value, row }) => {
-						return (
-							<Select
-								onChange={async (event) => {
-									// await onChangeStatus(row.values['id'], event)
-								}}
-								defaultValue={value}
-							>
-								{dataInterviewStatus.map((e, key) => (
-									<option key={key} value={e.value}>
-										{e.label}
-									</option>
-								))}
-							</Select>
-						)
-					},
-				},
-
-				{
-					Header: 'Action',
-					accessor: 'action',
-					disableResizing: true,
-					width: 120,
-					minWidth: 120,
-					disableSortBy: true,
-					Cell: ({ row }) => (
-						<Menu>
-							<MenuButton as={Button} paddingInline={3}>
-								<MdOutlineMoreVert />
-							</MenuButton>
-							<MenuList>
-								<MenuItem
-									onClick={() => {
-										setInterviewId(row.values['id'])
-										onOpenDetail()
-									}}
-									icon={<IoEyeOutline fontSize={'15px'} />}
-								>
-									View
-								</MenuItem>
-
-								{currentUser?.role === 'Admin' && (
-									<>
-										<MenuItem
-											onClick={() => {
-												setInterviewId(row.values['id'])
-												onOpenUpdate()
-											}}
-											icon={<RiPencilLine fontSize={'15px'} />}
-										>
-											Edit
-										</MenuItem>
-
-										<MenuItem
-											onClick={() => {
-												setInterviewId(row.values['id'])
-												// onDelete(row.values['id'])
-											}}
-											icon={<MdOutlineDeleteOutline fontSize={'15px'} />}
-										>
-											Delete
-										</MenuItem>
-									</>
-								)}
-							</MenuList>
-						</Menu>
+	// set employee to filter
+	useEffect(() => {
+		if (allEmployees?.employees) {
+			const valuesFilter = allEmployees.employees.map(
+				(employee): IOption => ({
+					label: (
+						<>
+							<HStack>
+								<Avatar
+									size={'xs'}
+									name={employee.name}
+									src={employee.avatar?.url}
+								/>
+								<Text color={colorMode == 'dark' ? 'white' : 'black'}>
+									{employee.name}
+								</Text>
+							</HStack>
+						</>
 					),
-				},
-			],
+					value: String(employee.id),
+				})
+			)
+			setEmployeesFilter(valuesFilter)
+		}
+	}, [allEmployees, colorMode])
+
+	const columns: TColumn[] = interviewScheduleColumn({
+		currentUser,
+		onChangeStatus: async (id: number, event: any) => {
+			setIsloading(true)
+			await updateStatus({
+				id,
+				status: event.target.value,
+			})
 		},
-	]
+		onDelete: (id: number) => {
+			setInterviewId(id)
+			onOpenDl()
+		},
+		onUpdate: (id: number) => {
+			setInterviewId(id)
+			onOpenUpdate()
+		},
+		onDetail: (id: number) => {
+			setInterviewId(id)
+			onOpenDetail()
+		},
+	})
 
 	return (
 		<Box pb={8}>
@@ -223,19 +218,27 @@ const interviews: NextLayout = () => {
 						/>
 					</>
 				)}
-				{/* <Func
+				<Func
 					icon={<VscFilter />}
 					description={'Open draw to filter'}
 					title={'filter'}
 					action={onOpenFilter}
-				/> */}
-				{/* <Func
+				/>
+				<Func
 					icon={<AiOutlineDelete />}
 					title={'Delete all'}
-					description={'Delete all employees you selected'}
+					description={'Delete all interview schedules'}
 					action={onOpenDlMany}
 					disabled={!dataSl || dataSl.length == 0 ? true : false}
-				/> */}
+				/>
+				<Func
+					icon={<MdOutlineEvent />}
+					title={'Calendar'}
+					description={'show interview schedule as calendar'}
+					action={() => {
+						router.push('/interviews/calendar')
+					}}
+				/>
 			</FuncCollapse>
 
 			<Table
@@ -252,7 +255,7 @@ const interviews: NextLayout = () => {
 			<AlertDialog
 				handleDelete={() => {
 					setIsloading(true)
-					// mutateDeleteEmpl(String(employeeId))
+					deleteOne(interviewId)
 				}}
 				title="Are you sure?"
 				content="You will not be able to recover the deleted record!"
@@ -265,7 +268,9 @@ const interviews: NextLayout = () => {
 				handleDelete={() => {
 					if (dataSl) {
 						setIsloading(true)
-						// mutateDeleteEmpls(dataSl)
+						deleteMany({
+							interviews: dataSl,
+						})
 					}
 				}}
 				title="Are you sure to delete all?"
@@ -291,6 +296,94 @@ const interviews: NextLayout = () => {
 				isOpen={isOpenDetail}
 			>
 				<DetailInterview onCloseDrawer={onCloseDetail} interviewId={interviewId} />
+			</Drawer>
+
+			<Drawer
+				size="xs"
+				title="Filter"
+				onClose={onCloseFilter}
+				isOpen={isOpenFilter}
+				footer={
+					<Button
+						onClick={() => {
+							setIsReset(true)
+							setTimeout(() => {
+								setIsReset(false)
+							}, 1000)
+						}}
+					>
+						reset
+					</Button>
+				}
+			>
+				<VStack p={6} spacing={5}>
+					<Input
+						handleSearch={(data: IFilter) => {
+							setFilter(data)
+						}}
+						columnId={'candidate'}
+						label="Candidate"
+						placeholder="Enter name"
+						icon={<AiOutlineSearch fontSize={'20px'} color="gray" opacity={0.6} />}
+						type={'text'}
+					/>
+
+					<FSelect
+						options={dataInterviewStatus}
+						handleSearch={(data: IFilter) => {
+							if (data.filterValue == 'Open') {
+								setFilter({
+									...data,
+									filterValue: true,
+								})
+							} else {
+								setFilter({
+									...data,
+									filterValue: false,
+								})
+							}
+						}}
+						columnId={'status'}
+						label="Status"
+						placeholder="Select status"
+						required={false}
+					/>
+
+					<DateRange
+						handleSelect={(date: { from: Date; to: Date }) => {
+							setFilter({
+								columnId: 'date',
+								filterValue: date,
+							})
+						}}
+						label="Select date"
+					/>
+					{employeesFilter && (
+						<SelectCustom
+							handleSearch={(field: any) => {
+								setFilter({
+									columnId: 'interviewer',
+									filterValue: field.value,
+								})
+							}}
+							label={'Interviewers'}
+							name={'interviewer'}
+							options={[
+								{
+									label: (
+										<Text color={colorMode == 'light' ? 'black' : 'white'}>
+											all
+										</Text>
+									),
+									value: '',
+								},
+
+								...employeesFilter,
+							]}
+							required={false}
+						/>
+					)}
+				</VStack>
 			</Drawer>
 		</Box>
 	)

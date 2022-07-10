@@ -1,4 +1,14 @@
-import { Box, Grid, GridItem, Tab, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/react'
+import {
+	Box,
+	Button,
+	Grid,
+	GridItem,
+	Tab,
+	TabList,
+	TabPanel,
+	TabPanels,
+	Tabs,
+} from '@chakra-ui/react'
 import { AuthContext } from 'contexts/AuthContext'
 import { useRouter } from 'next/router'
 import { detailInterviewQuery } from 'queries/interview'
@@ -6,13 +16,17 @@ import { useContext, useEffect } from 'react'
 import InterviewFile from './files'
 
 export interface IDetailInterviewProps {
-	onCloseDrawer?: () => void
+	onCloseDrawer?: any
 	interviewId?: string | number | null
+	onUpdate?: any
+	onDelete?: any
 }
 
 export default function DetailInterview({
 	onCloseDrawer,
 	interviewId: interviewIdProp,
+	onUpdate,
+	onDelete,
 }: IDetailInterviewProps) {
 	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
 	const router = useRouter()
@@ -115,6 +129,25 @@ export default function DetailInterview({
 					</TabPanels>
 				</Tabs>
 			</Box>
+			{onUpdate && (
+				<Button
+					onClick={() => {
+						onUpdate()
+						onCloseDrawer()
+					}}
+				>
+					Update
+				</Button>
+			)}
+			{onDelete && (
+				<Button
+					onClick={() => {
+						onDelete()
+					}}
+				>
+					Delete
+				</Button>
+			)}
 		</>
 	)
 }

@@ -193,7 +193,7 @@ const calendar: NextLayout = () => {
 	}, [allEmployees, colorMode])
 
 	return (
-		<Box>
+		<Box pb={8}>
 			<Head>
 				<title>Huprom - Leaves calendar</title>
 				<meta name="viewport" content="initial-scale=1.0, width=device-width" />

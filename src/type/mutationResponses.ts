@@ -17,6 +17,7 @@ import {
 	Hourly_rate_project,
 	interviewFileType,
 	interviewType,
+	jobApplicationFileType,
 	jobApplicationType,
 	jobOfferLetterType,
 	jobType,
@@ -365,4 +366,9 @@ export interface interviewFileMutaionResponse extends commonResponse {
 export interface jobOfferLetterMutationResponse extends commonResponse {
 	jobOfferLetter?: jobOfferLetterType
 	jobOfferLetters?: jobOfferLetterType[]
+}
+
+export interface jobApplicationFileMutaionResponse extends commonResponse {
+	jobApplicationFile?: jobApplicationFileType
+	jobApplicationFiles?: jobApplicationFileType[]
 }

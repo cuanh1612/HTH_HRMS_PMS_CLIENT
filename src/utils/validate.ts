@@ -320,5 +320,16 @@ export const CreateJobOfferValidate = yup.object({
 	job_application:  yup.number().required('Please select job application'),
 	exprise_on: yup.date().required('Please select job offer exprise on date'),
 	expected_joining_date: yup.date().required('Please select job offer expected joining date'),
-	salary: yup.number().min(1).required('Please enter job offer salary')
+	salary: yup.number().min(1).required('Please enter job offer salary'),
+	rate: yup.string().required('Please select rate')
+})
+
+export const UpdateJobOfferValidate = yup.object({
+	job:  yup.number().required('Please select job'),
+	job_application:  yup.number().required('Please select job application'),
+	exprise_on: yup.date().required('Please select job offer exprise on date'),
+	expected_joining_date: yup.date().required('Please select job offer expected joining date'),
+	salary: yup.number().min(1).required('Please enter job offer salary'),
+	rate: yup.string().required('Please select rate'),
+	status: yup.string().required('Please select job offer status')
 })

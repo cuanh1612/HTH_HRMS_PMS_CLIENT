@@ -6,6 +6,11 @@ import {
 	Grid,
 	GridItem,
 	HStack,
+	Tab,
+	TabList,
+	TabPanel,
+	TabPanels,
+	Tabs,
 	Text,
 	useDisclosure,
 } from '@chakra-ui/react'
@@ -25,6 +30,7 @@ import AddSkillModal from 'src/pages/skills/add-skills-modal'
 import { IOption } from 'type/basicTypes'
 import { changeSkillsJobApplicationForm } from 'type/form/basicFormType'
 import { changeSkillsJobApplicationValidate } from 'utils/validate'
+import JobApplicationFile from './files'
 
 export interface IDetailJobApplicationProps {
 	onCloseDrawer?: () => void
@@ -255,6 +261,22 @@ export default function DetailJobApplication({
 				>
 					Save
 				</Button>
+
+				<Tabs variant="enclosed" mt={6}>
+					<TabList>
+						<Tab>Files</Tab>
+					</TabList>
+					<TabPanels>
+						<TabPanel>
+							<JobApplicationFile
+								jobApplicationIdProp={
+									jobApplicationIdProp || (jobApplicationIdRouter as string)
+								}
+							/>
+						</TabPanel>
+					</TabPanels>
+				</Tabs>
+
 				{statusChangeSkillsJobApplication === 'running' && <Loading />}
 			</Box>
 

@@ -623,7 +623,17 @@ export interface jobOfferLetterType {
 	id: number
 	job: jobType
 	job_application: jobApplicationType
-	exprire_on: Date
+	exprise_on: Date
 	expected_joining_date: Date
 	salary: number
+	status: string
+	rate: string
+}
+
+export interface jobApplicationFileType {
+	id: number
+	url: string
+	name: string
+	public_id: string
+	createdAt: Date
 }

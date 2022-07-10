@@ -30,7 +30,7 @@ export const detailJobApplicationQuery = (
 
 export const applicationsByJobQuery = (
 	isAuthenticated: boolean | null,
-	jobId: string | number | null
+	jobId?: string | number | null
 ) => {
 	return useSWR<jobApplicationMutationResponse, AxiosError>(
 		isAuthenticated && jobId ? `job-applications/job/${jobId}` : null,

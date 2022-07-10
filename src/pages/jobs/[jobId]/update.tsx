@@ -95,13 +95,10 @@ export default function UpdateJob({ onCloseDrawer, JobIdProp }: IUpdateJobProps)
 
 	//query ----------------------------------------------------------------------
 	// get detail job Id
-	const { data: dataDetailJob } = detailJobQuery(
-		isAuthenticated,
-		JobIdProp || (jobIdRouter as string)
-	)
+	const { data: dataDetailJob } = detailJobQuery(JobIdProp || (jobIdRouter as string))
 
 	// refetch all jobs
-	const { mutate: refetchJobs } = allJobsQuery(isAuthenticated)
+	const { mutate: refetchJobs } = allJobsQuery()
 
 	// get all department
 	const { data: dataDepartments, error: errorDepartments } = allDepartmentsQuery(isAuthenticated)
@@ -143,24 +140,31 @@ export default function UpdateJob({ onCloseDrawer, JobIdProp }: IUpdateJobProps)
 
 	//Handle crete job
 	const onSubmit = async (values: updateJobForm) => {
-		//Check time valid
-		if (new Date(values.starts_on_date) > new Date(values.ends_on_date)) {
+		if (!jobIdRouter && !JobIdProp) {
 			setToast({
-				msg: 'Ends on time cannot be less than starts on time',
-				type: 'warning',
+				msg: 'Not found job to update',
+				type: 'error',
 			})
 		} else {
-			//Set value submit
-			values.job_description = jobDescription
-			values.status = values.status === 'Open' ? true : false
+			//Check time valid
+			if (new Date(values.starts_on_date) > new Date(values.ends_on_date)) {
+				setToast({
+					msg: 'Ends on time cannot be less than starts on time',
+					type: 'warning',
+				})
+			} else {
+				//Set value submit
+				values.job_description = jobDescription
+				values.status = values.status === 'Open' ? true : false
 
-			console.log(values)
+				console.log(values)
 
-			//create new job
-			await mutateUpJob({
-				...values,
-				jobId: JobIdProp || jobIdRouter as string
-			})
+				//create new job
+				await mutateUpJob({
+					...values,
+					jobId: JobIdProp || (jobIdRouter as string),
+				})
+			}
 		}
 	}
 

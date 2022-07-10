@@ -5,7 +5,7 @@ import { jobOfferLetterMutationResponse } from 'type/mutationResponses'
 
 export const allJobOffersQuery = (isAuthenticated: boolean | null) => {
 	return useSWR<jobOfferLetterMutationResponse, AxiosError>(
-		isAuthenticated ? 'job-offer-letter' : null,
+		isAuthenticated ? 'job-offer-letters' : null,
 		getJobOfferRequest,
 		{
 			errorRetryCount: 2,

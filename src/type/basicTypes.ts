@@ -628,6 +628,13 @@ export interface jobOfferLetterType {
 	salary: number
 	status: string
 	rate: string
+	sign?: {
+		id: number
+		url: string
+		first_name: string
+		last_name: string
+		public_id: string
+	}
 }
 
 export interface jobApplicationFileType {

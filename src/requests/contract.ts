@@ -84,8 +84,8 @@ export async function  publicLinkRequest(idContract: string | number) {
 }
 
 //get public contract
-export async function  publicContractRequest(token: string | number) {
 
+export async function  publicContractRequest(token: string | number) {
 	const resultFetch = await getData<contractMutaionResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/contracts/public/${token}`,
 	})

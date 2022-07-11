@@ -6,6 +6,7 @@ import { useRouter } from 'next/router'
 import { useContext, useEffect } from 'react'
 import { NextLayout } from 'type/element/layout'
 import AddOfferLetter from './add-job-offer-letters'
+import DetailJobOfferLetter from './[jobOfferLetterId]'
 import UpdateOfferLetter from './[jobOfferLetterId]/update'
 
 const Job: NextLayout = () => {
@@ -15,6 +16,7 @@ const Job: NextLayout = () => {
 	//Setup drawer --------------------------------------------------------------
 	const { isOpen: isOpenAdd, onOpen: onOpenAdd, onClose: onCloseAdd } = useDisclosure()
 	const { isOpen: isOpenUpdate, onOpen: onOpenUpdate, onClose: onCloseUpdate } = useDisclosure()
+	const { isOpen: isOpenDetail, onOpen: onOpenDetail, onClose: onCloseDetail } = useDisclosure()
 
 	//Query ---------------------------------------------------------------------
 
@@ -34,11 +36,15 @@ const Job: NextLayout = () => {
 		<Box pb={8}>
 			<Button onClick={onOpenAdd}> Open add </Button>
 			<Button onClick={onOpenUpdate}> Open update </Button>
+			<Button onClick={onOpenDetail}> Open Detail </Button>
 			<Drawer size="xl" title="Add Job Offer Letter" onClose={onCloseAdd} isOpen={isOpenAdd}>
 				<AddOfferLetter onCloseDrawer={onCloseAdd} />
 			</Drawer>
-			<Drawer size="xl" title="Add Job Offer Letter" onClose={onCloseUpdate} isOpen={isOpenUpdate}>
+			<Drawer size="xl" title="Update Job Offer Letter" onClose={onCloseUpdate} isOpen={isOpenUpdate}>
 				<UpdateOfferLetter onCloseDrawer={onCloseUpdate} jobOfferLetterId={1} />
+			</Drawer>
+			<Drawer size="xl" title="Detail Job Offer Letter" onClose={onCloseDetail} isOpen={isOpenDetail}>
+				<DetailJobOfferLetter onCloseDrawer={onCloseUpdate} jobOfferLetterId={1} />
 			</Drawer>
 		</Box>
 	)

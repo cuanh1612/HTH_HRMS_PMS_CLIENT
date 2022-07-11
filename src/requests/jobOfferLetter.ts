@@ -50,3 +50,15 @@ export async function deleteManyJobOffersRequest(inputDelete: deleteJobOfferLett
 
 	return resultFetch
 }
+
+//get public job offer letter to sign
+export async function  publicJobOfferLetterRequest(token: string | number) {
+
+	const resultFetch = await getData<jobOfferLetterMutationResponse>({
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/job-offer-letters/public/${token}`,
+	})
+
+	return resultFetch
+}
+
+

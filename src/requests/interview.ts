@@ -33,8 +33,15 @@ export const getInterviewRequest = async (url: string) => {
 	})
 }
 
+//Function handle get all or detail interview
+export const getInterviewNewRequest = async (url: string) => {
+	return await getData<interviewMutationResponse>({
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/${url}`,
+	})
+}
+
 //Function handle delete interview
-export async function deleteInterviewRequest(interviewId: string | number) {
+export async function deleteInterviewRequest(interviewId: string | number | null) {
 	const resultFetch = await deleteData<interviewMutationResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/interviews/${interviewId}`,
 	})
@@ -44,9 +51,20 @@ export async function deleteInterviewRequest(interviewId: string | number) {
 
 //Function handle delete many intervew
 export async function deleteManyInterviewsRequest(inputDelete: deleteInterviewsForm) {
-	const resultFetch = await putData<interviewMutationResponse>({
+	const resultFetch = await postData<interviewMutationResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/interviews/delete-many`,
 		body: inputDelete,
+	})
+	return resultFetch
+}
+
+//Function handle update interview's status
+export async function updateInterviewStatusRequest({id, status}: {id: number | null, status: string}) {
+	const resultFetch = await putData<interviewMutationResponse>({
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/interviews/status/${id}`,
+		body: {
+			status
+		},
 	})
 
 	return resultFetch

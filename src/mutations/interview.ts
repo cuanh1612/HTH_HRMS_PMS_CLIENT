@@ -3,6 +3,7 @@ import {
 	deleteInterviewRequest,
 	deleteManyInterviewsRequest,
 	updateInterviewlRequest,
+	updateInterviewStatusRequest,
 } from 'requests/interview'
 import { TToast } from 'type/basicTypes'
 import useMutation from 'use-mutation'
@@ -54,3 +55,16 @@ export const deleteInterviewsMutation = (setToast: TToast) => {
 		},
 	})
 }
+
+//update interview's status
+export const updateInterviewStatusMutation = (setToast: TToast) => {
+	return useMutation(updateInterviewStatusRequest, {
+		onFailure({ error }) {
+			setToast({
+				msg: error.message,
+				type: 'error',
+			})
+		},
+	})
+}
+

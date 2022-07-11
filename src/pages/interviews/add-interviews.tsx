@@ -16,7 +16,7 @@ import { AuthContext } from 'contexts/AuthContext'
 import { createInterviewMutation } from 'mutations/interview'
 import { useRouter } from 'next/router'
 import { allEmployeesQuery } from 'queries'
-import { allInterviewsQuery } from 'queries/interview'
+import { allInterviewsNewQuery, allInterviewsQuery } from 'queries/interview'
 import { allJobApplicationsQuery } from 'queries/jobApplication'
 import { ChangeEvent, useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -46,6 +46,7 @@ export default function AddJob({ onCloseDrawer }: IAddJobProps) {
 	const { data: allCandidates } = allJobApplicationsQuery(isAuthenticated)
 	const { mutate: refetchAllInterviews } = allInterviewsQuery(isAuthenticated)
 	const { data: allEmployees } = allEmployeesQuery(isAuthenticated)
+	const { mutate: refetchAllInterviewsNew } = allInterviewsNewQuery(isAuthenticated)
 
 	//mutation ----------------------------------------------------------------
 	const [mutateCreInterview, { status: statusCreInterview, data: dataCreInterview }] =
@@ -71,7 +72,7 @@ export default function AddJob({ onCloseDrawer }: IAddJobProps) {
 	//Handle crete job
 	const onSubmit = async (values: createInterviewForm) => {
 		values.isSendReminder = isSendReminder
-		mutateCreInterview(values)
+		await mutateCreInterview(values)
 	}
 
 	//User effect ---------------------------------------------------------------
@@ -90,7 +91,7 @@ export default function AddJob({ onCloseDrawer }: IAddJobProps) {
 	//Set data option candidate
 	useEffect(() => {
 		if (allCandidates && allCandidates.jobApplications) {
-			let newOptionCandidates: IOption[] = []
+			const newOptionCandidates: IOption[] = []
 
 			allCandidates.jobApplications.map((candidate) => {
 				newOptionCandidates.push({
@@ -117,7 +118,7 @@ export default function AddJob({ onCloseDrawer }: IAddJobProps) {
 	//Set data option interviewers
 	useEffect(() => {
 		if (allEmployees && allEmployees.employees) {
-			let newOptionsInterviewer: IOption[] = []
+			const newOptionsInterviewer: IOption[] = []
 
 			allEmployees.employees.map((employee) => {
 				newOptionsInterviewer.push({
@@ -168,6 +169,7 @@ export default function AddJob({ onCloseDrawer }: IAddJobProps) {
 			})
 
 			refetchAllInterviews()
+			refetchAllInterviewsNew()
 		}
 	}, [statusCreInterview])
 

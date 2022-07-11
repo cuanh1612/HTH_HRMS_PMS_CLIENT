@@ -319,13 +319,6 @@ const calendar: NextLayout = () => {
 					>
 						filter
 					</Button>
-					<Button
-						onClick={() => {
-							setFilter(undefined)
-						}}
-					>
-						reset filter
-					</Button>
 				</ButtonGroup>
 
 				<ButtonGroup spacing={4}>
@@ -399,84 +392,88 @@ const calendar: NextLayout = () => {
 				onClose={onCloseDl}
 			/>
 
-			<CDrawer isOpen={isOpenFilter} placement="right" onClose={onCloseFilter}>
-				<DrawerOverlay />
-				<DrawerContent>
-					<DrawerCloseButton />
-					<DrawerHeader>Filters</DrawerHeader>
+			<Drawer
+				footer={
+					<Button
+						onClick={() => {
+							setFilter(undefined)
+						}}
+					>
+						Reset
+					</Button>
+				}
+				isOpen={isOpenFilter}
+				size={'xs'}
+				title={'Filter'}
+				onClose={onCloseFilter}
+			>
+				<VStack p={6} spacing={5}>
+					<Select
+						options={dataAllProjects?.projects?.map((project) => ({
+							label: project.name,
+							value: project.id,
+						}))}
+						handleSearch={(data: IFilter) => {
+							setFilter((state) => ({
+								...state,
+								project: data.filterValue,
+							}))
+						}}
+						columnId={'project'}
+						label="Project"
+						placeholder="Select project"
+					/>
 
-					<DrawerBody>
-						<VStack spacing={5}>
-							<Select
-								options={dataAllProjects?.projects?.map((project) => ({
-									label: project.name,
-									value: project.id,
-								}))}
-								handleSearch={(data: IFilter) => {
-									setFilter((state) => ({
-										...state,
-										project: data.filterValue,
-									}))
-								}}
-								columnId={'project'}
-								label="Project"
-								placeholder="Select project"
-							/>
+					{currentUser?.role === 'Admin' && (
+						<SelectCustom
+							handleSearch={(field: any) => {
+								setFilter((state) => ({
+									...state,
+									employee: Number(field.value),
+								}))
+							}}
+							label={'Employee'}
+							name={'employee'}
+							options={[
+								{
+									label: (
+										<Text color={colorMode == 'light' ? 'black' : 'white'}>
+											all
+										</Text>
+									),
+									value: '',
+								},
 
-							{currentUser?.role === 'Admin' && (
-								<SelectCustom
-									handleSearch={(field: any) => {
-										setFilter((state) => ({
-											...state,
-											employee: Number(field.value),
-										}))
-									}}
-									label={'Employee'}
-									name={'employee'}
-									options={[
-										{
-											label: (
-												<Text
-													color={colorMode == 'light' ? 'black' : 'white'}
-												>
-													all
-												</Text>
-											),
-											value: '',
-										},
+								...employeesFilter,
+							]}
+							required={false}
+						/>
+					)}
+					<SelectCustom
+						handleSearch={(field: any) => {
+							setFilter((state) => ({
+								...state,
+								client: Number(field.value),
+							}))
+						}}
+						label={'Client'}
+						name={'client'}
+						options={[
+							{
+								label: (
+									<Text color={colorMode == 'light' ? 'black' : 'white'}>
+										all
+									</Text>
+								),
+								value: '',
+							},
 
-										...employeesFilter,
-									]}
-									required={false}
-								/>
-							)}
-							<SelectCustom
-								handleSearch={(field: any) => {
-									setFilter((state) => ({
-										...state,
-										client: Number(field.value),
-									}))
-								}}
-								label={'Client'}
-								name={'client'}
-								options={[
-									{
-										label: (
-											<Text color={colorMode == 'light' ? 'black' : 'white'}>
-												all
-											</Text>
-										),
-										value: '',
-									},
-
-									...clientsFilter,
-								]}
-								required={false}
-							/>
-						</VStack>
-					</DrawerBody>
-				</DrawerContent>
-			</CDrawer>
+							...clientsFilter,
+						]}
+						required={false}
+					/>
+				</VStack>
+			</Drawer>
 		</Box>
 	)
 }

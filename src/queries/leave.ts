@@ -26,7 +26,7 @@ export const allLeaveQuery = (input: {
 	input.employee && fieldUrl.push(`employee=${input.employee}`)
 	input.leaveType && fieldUrl.push(`leaveType=${input.leaveType}`)
 	input.status && fieldUrl.push(`status=${input.status}`)
-	input.date && fieldUrl.push(`date=${new Date(input.date).toLocaleDateString()}`)
+	input.date && fieldUrl.push(`date=${new Date(input.date)}`)
 
 	var url = ''
 

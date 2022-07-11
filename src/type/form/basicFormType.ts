@@ -769,7 +769,7 @@ export interface updateInterviewForm {
 }
 
 export interface deleteInterviewsForm {
-	interviews: number[]
+	interviews?: number[] | null
 }
 
 export type createInterviewFileForm = {

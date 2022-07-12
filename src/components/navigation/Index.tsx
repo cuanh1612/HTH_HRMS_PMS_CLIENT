@@ -159,7 +159,7 @@ const LinkItems = () => {
 						data={[
 							{
 								icon: <MdOutlineDashboard fontSize={20} />,
-								link: '/ddd',
+								link: '/dashboard-jobs',
 								title: 'Dashboard',
 							},
 							{

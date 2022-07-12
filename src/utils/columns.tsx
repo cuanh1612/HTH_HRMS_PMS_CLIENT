@@ -3701,7 +3701,6 @@ export const jobApplicationColumn = ({
 						return (
 							<Select
 								onChange={async (event) => {
-									alert('fff')
 									await onChangeStatus(row.values['id'], event)
 								}}
 								defaultValue={value}

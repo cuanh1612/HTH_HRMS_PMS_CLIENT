@@ -6,6 +6,11 @@ import { AuthContext } from 'contexts/AuthContext'
 import { updateInterviewMutation } from 'mutations/interview'
 import { useRouter } from 'next/router'
 import { allEmployeesQuery } from 'queries'
+import {
+	newInterviewQuery,
+	todayInterviewCalendarQuery,
+	todayInterviewQuery,
+} from 'queries/dashboardJobs'
 import { allInterviewsNewQuery, allInterviewsQuery, detailInterviewQuery } from 'queries/interview'
 import { allJobApplicationsQuery } from 'queries/jobApplication'
 import { useContext, useEffect, useState } from 'react'
@@ -44,6 +49,12 @@ export default function UpdateInterview({
 	const { mutate: refetchAllInterviews } = allInterviewsQuery(isAuthenticated)
 	const { data: allEmployees } = allEmployeesQuery(isAuthenticated)
 	const { mutate: refetchAllInterviewsNew } = allInterviewsNewQuery(isAuthenticated)
+	const { data: dataNewInterview, mutate: refetchNewInterview } =
+		newInterviewQuery(isAuthenticated)
+	const { data: dataTodayInterview, mutate: refetchTodayInterview } =
+		todayInterviewQuery(isAuthenticated)
+	const { data: dataTodayInterviewCalendar, mutate: refetchTodayInterviewCalendar } =
+		todayInterviewCalendarQuery(isAuthenticated)
 
 	//Get detail interview
 	const { data: dataDetailInterview } = detailInterviewQuery(
@@ -75,10 +86,8 @@ export default function UpdateInterview({
 
 	//Handle crete job
 	const onSubmit = async (values: updateInterviewForm) => {
-<<<<<<< HEAD
-		values.interviewId = interviewIdProp || interviewIdRouter as string
+		values.interviewId = interviewIdProp || (interviewIdRouter as string)
 		await mutateUpInterview(values)
-=======
 		if (!interviewIdProp && !interviewIdRouter) {
 			setToast({
 				msg: 'Not found interview to update',
@@ -88,7 +97,6 @@ export default function UpdateInterview({
 			values.interviewId = interviewIdProp || (interviewIdRouter as string)
 			mutateUpInterview(values)
 		}
->>>>>>> 5064778cdda3b4dbb4ccf68423b08a8bf84d808b
 	}
 
 	//User effect ---------------------------------------------------------------
@@ -176,6 +184,9 @@ export default function UpdateInterview({
 
 			refetchAllInterviews()
 			refetchAllInterviewsNew()
+			refetchNewInterview()
+			refetchTodayInterview()
+			refetchTodayInterviewCalendar()
 		}
 	}, [statusUpInterview])
 

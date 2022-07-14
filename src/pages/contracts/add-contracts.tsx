@@ -151,7 +151,7 @@ export default function AddContract({ onCloseDrawer }: IAddContractProps) {
 			}
 
 			setToast({
-				type: 'success',
+				type: statusCreContract,
 				msg: dataCreContract?.message as string,
 			})
 			refetchAllContracts()

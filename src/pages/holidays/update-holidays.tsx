@@ -88,7 +88,7 @@ export default function UpdateHoliday({ onCloseDrawer, holidayId }: IUpdateHolid
 			}
 
 			setToast({
-				type: 'success',
+				type: statusUpHoliday,
 				msg: dataUpHoliday?.message as string,
 			})
 

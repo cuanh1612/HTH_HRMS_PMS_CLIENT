@@ -143,7 +143,7 @@ const Employees: NextLayout = () => {
 	//State ---------------------------------------------------------------------
 
 	// set loading table
-	const [isLoading, setIsloading] = useState(true)
+	const [isLoading, setIsLoading] = useState(true)
 
 	// data select to delete all
 	const [dataSl, setDataSl] = useState<Array<number> | null>()
@@ -177,13 +177,13 @@ const Employees: NextLayout = () => {
 		importCSVEmployeesMutation(setToast)
 
 	// delete employee
-	const [mutateDeleteEmpl, { status: statusDl }] = deleteEmployeeMutation(setToast)
+	const [mutateDeleteEmpl, { status: statusDl, data: dataDl }] = deleteEmployeeMutation(setToast)
 
 	// delete all employees
-	const [mutateDeleteEmpls, { status: statusDlMany }] = deleteEmployeesMutation(setToast)
+	const [mutateDeleteEmpls, { status: statusDlMany, data: dataDlMany}] = deleteEmployeesMutation(setToast)
 
 	// change role
-	const [mutateChangeRole, { status: statusChangeRole }] = changeRoleMutation(setToast)
+	const [mutateChangeRole, { status: statusChangeRole, data: dataChangeRole }] = changeRoleMutation(setToast)
 
 	//User effect ---------------------------------------------------------------
 	// check authenticate in
@@ -199,35 +199,35 @@ const Employees: NextLayout = () => {
 
 	// check is successfully delete one
 	useEffect(() => {
-		if (statusDl == 'success') {
+		if (statusDl == 'success' && dataDl) {
 			setToast({
-				msg: 'Delete employee successfully',
-				type: 'success',
+				msg: dataDl.message,
+				type: statusDl,
 			})
 			refetchAllEmpl()
-			setIsloading(false)
+			setIsLoading(false)
 		}
 	}, [statusDl])
 
 	// check is successfully delete many
 	useEffect(() => {
-		if (statusDlMany == 'success') {
+		if (statusDlMany == 'success' && dataDlMany) {
 			setToast({
-				msg: 'Delete employees successfully',
-				type: 'success',
+				msg: dataDlMany.message,
+				type: statusDlMany,
 			})
 			setDataSl(null)
 			refetchAllEmpl()
-			setIsloading(false)
+			setIsLoading(false)
 		}
 	}, [statusDlMany])
 
 	// check is successfully when change role
 	useEffect(() => {
-		if (statusChangeRole == 'success') {
+		if (statusChangeRole == 'success' && dataChangeRole) {
 			setToast({
-				msg: 'Change role success',
-				type: 'success',
+				msg: dataChangeRole.message,
+				type: statusChangeRole,
 			})
 			refetchAllEmpl()
 		}
@@ -238,10 +238,10 @@ const Employees: NextLayout = () => {
 		if (statusImportCSV == 'success' && dataImportCSV?.message) {
 			setToast({
 				msg: dataImportCSV.message,
-				type: 'success',
+				type: statusImportCSV,
 			})
 			refetchAllEmpl()
-			setIsloading(false)
+			setIsLoading(false)
 		}
 	}, [statusImportCSV])
 
@@ -256,7 +256,7 @@ const Employees: NextLayout = () => {
 				}
 			})
 			setAllusersSl(users || [])
-			setIsloading(false)
+			setIsLoading(false)
 
 			//Set data csv
 			const dataCSV: any[] = allEmployees.employees.map((employee) => ({
@@ -333,7 +333,7 @@ const Employees: NextLayout = () => {
 		},
 		dataRoleEmployee,
 		onChangeRole: (id: number, event: any) => {
-			setIsloading(true)
+			setIsLoading(true)
 			mutateChangeRole({
 				employeeId: id,
 				role: event.target.value,
@@ -437,7 +437,7 @@ const Employees: NextLayout = () => {
 			{/* alert dialog when delete one */}
 			<AlertDialog
 				handleDelete={() => {
-					setIsloading(true)
+					setIsLoading(true)
 					mutateDeleteEmpl(String(employeeId))
 				}}
 				title="Are you sure?"
@@ -450,7 +450,7 @@ const Employees: NextLayout = () => {
 			<AlertDialog
 				handleDelete={() => {
 					if (dataSl) {
-						setIsloading(true)
+						setIsLoading(true)
 						mutateDeleteEmpls(dataSl)
 					}
 				}}

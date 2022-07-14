@@ -31,7 +31,7 @@ const Job: NextLayout = () => {
 	// state
 	const [idJob, setIdJob] = useState<number | null>(null)
 	// set loading table
-	const [isLoading, setIsloading] = useState(true)
+	const [isLoading, setIsLoading] = useState(true)
 
 	// data select to delete all
 	const [dataSl, setDataSl] = useState<Array<number> | null>()
@@ -82,14 +82,14 @@ const Job: NextLayout = () => {
 
 	useEffect(() => {
 		if (dataAllJobs) {
-			setIsloading(false)
+			setIsLoading(false)
 		}
 	}, [dataAllJobs])
 
 	useEffect(() => {
 		if (statusDlOne == 'success' && dataDlOne) {
 			setToast({
-				type: 'success',
+				type: statusDlOne,
 				msg: dataDlOne.message,
 			})
 			refetchAllJobs()
@@ -99,7 +99,7 @@ const Job: NextLayout = () => {
 	useEffect(() => {
 		if (statusUpdate == 'success' && dataUpdate) {
 			setToast({
-				type: 'success',
+				type: statusUpdate,
 				msg: dataUpdate.message,
 			})
 			refetchAllJobs()
@@ -109,7 +109,7 @@ const Job: NextLayout = () => {
 	useEffect(() => {
 		if (statusDlMany == 'success' && dataDlMany) {
 			setToast({
-				type: 'success',
+				type: statusDlMany,
 				msg: dataDlMany.message,
 			})
 			setDataSl([])
@@ -128,7 +128,7 @@ const Job: NextLayout = () => {
 			onOpenUpdate()
 		},
 		onChangeStatus: async (id: number, event: any) => {
-			setIsloading(true)
+			setIsLoading(true)
 			await updateStatus({
 				id,
 				status: event.target.value == 'Open' ? true : false,
@@ -189,7 +189,7 @@ const Job: NextLayout = () => {
 			{/* alert dialog when delete one */}
 			<AlertDialog
 				handleDelete={() => {
-					setIsloading(true)
+					setIsLoading(true)
 					deleteOne(String(idJob))
 				}}
 				title="Are you sure?"
@@ -202,7 +202,7 @@ const Job: NextLayout = () => {
 			<AlertDialog
 				handleDelete={() => {
 					if (dataSl) {
-						setIsloading(true)
+						setIsLoading(true)
 						deleteMany({
 							jobs: dataSl,
 						})

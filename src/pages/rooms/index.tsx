@@ -59,7 +59,7 @@ const zoom: NextLayout = () => {
 		if (statusDl == 'success' && dataDl) {
 			setToast({
 				msg: dataDl.message,
-				type: 'success',
+				type: statusDl,
 			})
 			refetchAllRooms()
 		}

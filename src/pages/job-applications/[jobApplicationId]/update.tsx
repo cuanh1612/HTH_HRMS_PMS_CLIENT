@@ -4,7 +4,6 @@ import { Loading } from 'components/common'
 import { Input, SelectCustom, Textarea, UploadAvatar } from 'components/form'
 import { AuthContext } from 'contexts/AuthContext'
 import {
-	createJobApplicationMutation,
 	updateJobApplicationMutation,
 } from 'mutations/jobApplication'
 import { useRouter } from 'next/router'
@@ -190,7 +189,7 @@ export default function UpdateJobApplication({
 			//Inform notice success
 			if (dataUpJobApplication) {
 				setToast({
-					type: 'success',
+					type: statusUpJobApplication,
 					msg: dataUpJobApplication?.message,
 				})
 			}

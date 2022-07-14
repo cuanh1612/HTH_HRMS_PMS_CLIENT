@@ -81,7 +81,7 @@ const Leaves: NextLayout = () => {
 	const [dataCSV, setDataCSV] = useState<any[]>([])
 
 	// set loading table
-	const [isLoading, setIsloading] = useState(true)
+	const [isLoading, setIsLoading] = useState(true)
 
 	// data select to delete all
 	const [dataSl, setDataSl] = useState<Array<number> | null>()
@@ -108,13 +108,15 @@ const Leaves: NextLayout = () => {
 	const { data: allLeaveType } = allLeaveTypesQuery()
 
 	// update status of leave
-	const [mutateUpdateStatus, { status: statusUpStatus }] = updateStatusMutation(setToast)
+	const [mutateUpdateStatus, { status: statusUpStatus, data: dataUpdate }] =
+		updateStatusMutation(setToast)
 
 	// delete leave
-	const [mutateDeleteLeave, { status: statusDl }] = deleteLeaveMutation(setToast)
+	const [mutateDeleteLeave, { status: statusDl, data: dataDl }] = deleteLeaveMutation(setToast)
 
 	// delete all leaves
-	const [mutateDeleteLeaves, { status: statusDlMany }] = deleteLeavesMutation(setToast)
+	const [mutateDeleteLeaves, { status: statusDlMany, data: dataDlMany }] =
+		deleteLeavesMutation(setToast)
 
 	//Setup download csv --------------------------------------------------------
 	const headersCSV = [
@@ -143,10 +145,10 @@ const Leaves: NextLayout = () => {
 
 	// check is successfully delete one
 	useEffect(() => {
-		if (statusDl == 'success') {
+		if (statusDl == 'success' && dataDl) {
 			setToast({
-				msg: 'Delete leave successfully',
-				type: 'success',
+				msg: dataDl.message,
+				type: statusDl,
 			})
 			refetchAllLeaves()
 		}
@@ -154,10 +156,10 @@ const Leaves: NextLayout = () => {
 
 	// check is successfully delete many
 	useEffect(() => {
-		if (statusDlMany == 'success') {
+		if (statusDlMany == 'success' && dataDlMany) {
 			setToast({
-				msg: 'Delete leaves successfully',
-				type: 'success',
+				msg: dataDlMany.message,
+				type: statusDlMany,
 			})
 			setDataSl(null)
 			refetchAllLeaves()
@@ -175,7 +177,7 @@ const Leaves: NextLayout = () => {
 				}
 			})
 			setAllusersSl(users || [])
-			setIsloading(false)
+			setIsLoading(false)
 
 			//Set data csv
 			const dataCSV: any[] = allLeaves.leaves.map((leave) => ({
@@ -209,13 +211,13 @@ const Leaves: NextLayout = () => {
 
 	// alert when update status success
 	useEffect(() => {
-		if (statusUpStatus == 'success') {
+		if (statusUpStatus == 'success' && dataUpdate) {
 			setToast({
-				type: 'success',
-				msg: 'Update status successfully',
+				type: statusUpStatus,
+				msg: dataUpdate.message,
 			})
 			refetchAllLeaves()
-			setIsloading(false)
+			setIsLoading(false)
 		}
 	}, [statusUpStatus])
 
@@ -224,14 +226,14 @@ const Leaves: NextLayout = () => {
 	const columns: TColumn[] = leaveColumn({
 		currentUser,
 		onRejected: (id: number) => {
-			setIsloading(true)
+			setIsLoading(true)
 			mutateUpdateStatus({
 				status: 'Rejected',
 				leaveId: id,
 			})
 		},
 		onApproved: (id: number) => {
-			setIsloading(true)
+			setIsLoading(true)
 			mutateUpdateStatus({
 				status: 'Approved',
 				leaveId: id,
@@ -317,7 +319,7 @@ const Leaves: NextLayout = () => {
 			{/* alert dialog when delete one */}
 			<AlertDialog
 				handleDelete={() => {
-					setIsloading(true)
+					setIsLoading(true)
 					mutateDeleteLeave(String(leaveId))
 				}}
 				title="Are you sure?"
@@ -330,7 +332,7 @@ const Leaves: NextLayout = () => {
 			<AlertDialog
 				handleDelete={() => {
 					if (dataSl) {
-						setIsloading(true)
+						setIsLoading(true)
 						mutateDeleteLeaves(dataSl)
 					}
 				}}

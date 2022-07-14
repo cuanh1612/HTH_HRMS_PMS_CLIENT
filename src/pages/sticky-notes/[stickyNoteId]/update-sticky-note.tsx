@@ -65,7 +65,7 @@ export default function UpdateStickyNote({
 			})
 		} else {
 			values.note = note
-			mutateUpdateStickyNote({
+			await mutateUpdateStickyNote({
 				stickyNoteId: stickyNoteIdProp || (stickyNoteRouter as string),
 				inputUpdate: values,
 			})
@@ -99,7 +99,7 @@ export default function UpdateStickyNote({
 			refetchAllStickyNote()
 
 			setToast({
-				type: 'success',
+				type: statusUpdateStickyNote,
 				msg: dataUpdateStickyNote?.message as string,
 			})
 		}

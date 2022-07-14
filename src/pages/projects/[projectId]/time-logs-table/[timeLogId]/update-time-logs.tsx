@@ -109,7 +109,7 @@ export default function UpdateTimeLog({ onCloseDrawer, timeLogIdProp }: IUpdateT
 					type: 'error',
 				})
 			}
-			mutateUpdateTimeLog({
+			await mutateUpdateTimeLog({
 				inputUpdate: values,
 				timeLogId: timeLogIdProp || (timeLogIdRouter as string),
 			})
@@ -137,7 +137,7 @@ export default function UpdateTimeLog({ onCloseDrawer, timeLogIdProp }: IUpdateT
 	//Set data option tasks state
 	useEffect(() => {
 		if (allTasksProject && allTasksProject.tasks) {
-			let newOptionTasks: IOption[] = []
+			const newOptionTasks: IOption[] = []
 
 			allTasksProject.tasks.map((task) => {
 				newOptionTasks.push({
@@ -153,7 +153,7 @@ export default function UpdateTimeLog({ onCloseDrawer, timeLogIdProp }: IUpdateT
 	//Set data option employees state
 	useEffect(() => {
 		if (detailTaskSelected && detailTaskSelected.task?.employees) {
-			let newOptionEmployees: IOption[] = []
+			const newOptionEmployees: IOption[] = []
 
 			detailTaskSelected.task.employees.map((employee) => {
 				newOptionEmployees.push({
@@ -192,7 +192,7 @@ export default function UpdateTimeLog({ onCloseDrawer, timeLogIdProp }: IUpdateT
 			}
 
 			setToast({
-				type: 'success',
+				type: statusUpdateTimeLog,
 				msg: dataUpdateTimeLog?.message as string,
 			})
 			refetchTimeLogs()

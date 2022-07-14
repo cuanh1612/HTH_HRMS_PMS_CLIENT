@@ -123,7 +123,7 @@ export default function TaskFiles({taskIdProp}: ITaskFilesProps) {
 	useEffect(() => {
 		if (statusCreTaskFile === 'success') {
 			setToast({
-				type: 'success',
+				type: statusCreTaskFile,
 				msg: dataCreTaskFile?.message as string,
 			})
 
@@ -142,7 +142,7 @@ export default function TaskFiles({taskIdProp}: ITaskFilesProps) {
 	useEffect(() => {
 		if (statusDeleteTaskFile === 'success') {
 			setToast({
-				type: 'success',
+				type: statusDeleteTaskFile,
 				msg: dataDeleteTaskFile?.message as string,
 			})
 

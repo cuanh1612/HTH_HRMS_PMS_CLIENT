@@ -30,9 +30,7 @@ import { ChangeEvent, ChangeEventHandler, useContext, useEffect, useState } from
 import { AiOutlineCheck } from 'react-icons/ai'
 import { MdDeleteOutline } from 'react-icons/md'
 
-export interface ILocationsProps {}
-
-export default function Locations({}: ILocationsProps) {
+export default function Locations() {
 	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
 	const router = useRouter()
 
@@ -69,7 +67,7 @@ export default function Locations({}: ILocationsProps) {
 				refetchLocations()
 				if (dataCreLocation) {
 					setToast({
-						type: 'success',
+						type: statusCreLocation,
 						msg: dataCreLocation?.message,
 					})
 				}
@@ -87,7 +85,7 @@ export default function Locations({}: ILocationsProps) {
 				refetchLocations()
 				if (dataDeleLocation) {
 					setToast({
-						type: 'success',
+						type: statusDeleLocation,
 						msg: dataDeleLocation?.message,
 					})
 				}
@@ -105,7 +103,7 @@ export default function Locations({}: ILocationsProps) {
 				refetchLocations()
 				if (dataUpLocation) {
 					setToast({
-						type: 'success',
+						type: statusUpLocation,
 						msg: dataUpLocation?.message,
 					})
 				}

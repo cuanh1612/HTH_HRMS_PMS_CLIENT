@@ -58,7 +58,7 @@ const Holiday: NextLayout = () => {
 	const [holidayIdDetail, setHolidayIdDetail] = useState<number | null>(null)
 
 	// set loading table
-	const [isLoading, setIsloading] = useState(true)
+	const [isLoading, setIsLoading] = useState(true)
 
 	// data select to delete all
 	const [dataSl, setDataSl] = useState<Array<number> | null>()
@@ -80,10 +80,10 @@ const Holiday: NextLayout = () => {
 
 	// mutation
 	// delete holidays
-	const [mutateDeleteHolidays, { status: statusDlHolidays }] = deleteHolidaysMutation(setToast)
+	const [mutateDeleteHolidays, { status: statusDlHolidays, data: dataDlMany }] = deleteHolidaysMutation(setToast)
 
 	// delete holiday
-	const [mutateDeleteHoliday, { status: statusDl }] = deleteHolidayMutation(setToast)
+	const [mutateDeleteHoliday, { status: statusDl, data: dataDl }] = deleteHolidayMutation(setToast)
 
 	const [mutateCreHolidays, { status: statusCreHolidays, data: dataCreHolidays }] =
 		createHolidaysMutation(setToast)
@@ -131,10 +131,10 @@ const Holiday: NextLayout = () => {
 
 	// check is successfully delete many
 	useEffect(() => {
-		if (statusDlHolidays == 'success') {
+		if (statusDlHolidays == 'success' && dataDlMany) {
 			setToast({
-				msg: 'Delete holidays successfully',
-				type: 'success',
+				msg: dataDlMany.message,
+				type: statusDlHolidays,
 			})
 			setDataSl(null)
 			refetchAllHolidays()
@@ -143,10 +143,10 @@ const Holiday: NextLayout = () => {
 
 	// check is successfully delete one
 	useEffect(() => {
-		if (statusDl == 'success') {
+		if (statusDl == 'success' && dataDl) {
 			setToast({
-				msg: 'Delete holiday successfully',
-				type: 'success',
+				msg: dataDl.message,
+				type: statusDl,
 			})
 			refetchAllHolidays()
 		}
@@ -157,7 +157,7 @@ const Holiday: NextLayout = () => {
 		if (statusCreHolidays === 'success') {
 			//Close drawer when using drawer
 			setToast({
-				type: 'success',
+				type: statusCreHolidays,
 				msg: dataCreHolidays?.message as string,
 			})
 
@@ -194,7 +194,7 @@ const Holiday: NextLayout = () => {
 	// set loading == false when get all holidays successfully
 	useEffect(() => {
 		if (allHolidays) {
-			setIsloading(false)
+			setIsLoading(false)
 
 			if (allHolidays.holidays) {
 				//Set data csv
@@ -296,7 +296,7 @@ const Holiday: NextLayout = () => {
 			<AlertDialog
 				handleDelete={() => {
 					if (dataSl) {
-						setIsloading(true)
+						setIsLoading(true)
 						mutateDeleteHolidays(dataSl)
 					}
 				}}
@@ -309,7 +309,7 @@ const Holiday: NextLayout = () => {
 			{/* alert dialog when delete one */}
 			<AlertDialog
 				handleDelete={() => {
-					setIsloading(true)
+					setIsLoading(true)
 					mutateDeleteHoliday(String(idHoliday))
 				}}
 				title="Are you sure?"

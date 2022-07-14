@@ -30,7 +30,7 @@ import { BsCalendarDate } from 'react-icons/bs'
 import { MdDriveFileRenameOutline } from 'react-icons/md'
 import 'react-quill/dist/quill.bubble.css'
 import 'react-quill/dist/quill.snow.css'
-import { IOption, jobType } from 'type/basicTypes'
+import { IOption } from 'type/basicTypes'
 import { createJobForm } from 'type/form/basicFormType'
 import { dataJobRate, dataJobStatus } from 'utils/basicData'
 import { CreateJobValidate } from 'utils/validate'
@@ -166,7 +166,7 @@ export default function AddJob({ onCloseDrawer }: IAddJobProps) {
 	//Set data option employees state
 	useEffect(() => {
 		if (allEmployees && allEmployees.employees) {
-			let newOptionEmployees: IOption[] = []
+			const newOptionEmployees: IOption[] = []
 
 			allEmployees.employees.map((employee) => {
 				newOptionEmployees.push({
@@ -193,7 +193,7 @@ export default function AddJob({ onCloseDrawer }: IAddJobProps) {
 	//Set data option job type state
 	useEffect(() => {
 		if (allJobType && allJobType.jobTypes) {
-			let newOptionJobTypes: IOption[] = []
+			const newOptionJobTypes: IOption[] = []
 
 			allJobType.jobTypes.map((jobType) => {
 				newOptionJobTypes.push({
@@ -213,7 +213,7 @@ export default function AddJob({ onCloseDrawer }: IAddJobProps) {
 	//Set data option work experience state
 	useEffect(() => {
 		if (allWorkExperience && allWorkExperience.workExperiences) {
-			let newOptionWorkExperiences: IOption[] = []
+			const newOptionWorkExperiences: IOption[] = []
 
 			allWorkExperience.workExperiences.map((workExperience) => {
 				newOptionWorkExperiences.push({
@@ -233,7 +233,7 @@ export default function AddJob({ onCloseDrawer }: IAddJobProps) {
 	//Set data option skills state
 	useEffect(() => {
 		if (allSkills && allSkills.skills) {
-			let newOptionSkills: IOption[] = []
+			const newOptionSkills: IOption[] = []
 
 			allSkills.skills.map((skill) => {
 				newOptionSkills.push({
@@ -253,7 +253,7 @@ export default function AddJob({ onCloseDrawer }: IAddJobProps) {
 	//Set data option locations state
 	useEffect(() => {
 		if (allLocations && allLocations.locations) {
-			let newOptionLocations: IOption[] = []
+			const newOptionLocations: IOption[] = []
 
 			allLocations.locations.map((location) => {
 				newOptionLocations.push({
@@ -302,7 +302,7 @@ export default function AddJob({ onCloseDrawer }: IAddJobProps) {
 			//Inform notice success
 			if (dataCreJob) {
 				setToast({
-					type: 'success',
+					type: statusCreJob,
 					msg: dataCreJob?.message,
 				})
 			}

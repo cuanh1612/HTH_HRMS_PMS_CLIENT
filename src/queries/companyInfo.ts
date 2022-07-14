@@ -3,9 +3,9 @@ import { contractInfoRequest } from 'requests/companyInfo'
 import useSWR from 'swr'
 import { companyInfoMutationResponse } from 'type/mutationResponses'
 
-export const companyInfoQuery = (isAuthenticated: boolean | null) => {
+export const companyInfoQuery = () => {
 	return useSWR<companyInfoMutationResponse, AxiosError>(
-		isAuthenticated ? `company-info` : null,
+		`company-info`,
 		contractInfoRequest,
 		{
 			errorRetryCount: 2,

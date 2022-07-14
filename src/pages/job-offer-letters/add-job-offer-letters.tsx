@@ -82,7 +82,7 @@ export default function AddOfferLetter({ onCloseDrawer }: IAddJobOfferLettersPro
 
 	//Handle crete job offer
 	const onSubmit = async (values: createJobOfferLetterForm) => {
-		mutateCreJobOffer(values)
+		await mutateCreJobOffer(values)
 	}
 
 	//Handle change job select
@@ -136,7 +136,7 @@ export default function AddOfferLetter({ onCloseDrawer }: IAddJobOfferLettersPro
 	//Set data option job type state
 	useEffect(() => {
 		if (allJobs && allJobs.jobs) {
-			let newOptionJobs: IOption[] = []
+			const newOptionJobs: IOption[] = []
 
 			allJobs.jobs.map((job) => {
 				newOptionJobs.push({
@@ -156,7 +156,7 @@ export default function AddOfferLetter({ onCloseDrawer }: IAddJobOfferLettersPro
 	//Set data option job application
 	useEffect(() => {
 		if (allJobApplicationsByJob && allJobApplicationsByJob.jobApplications) {
-			let newOptionJobs: IOption[] = []
+			const newOptionJobs: IOption[] = []
 
 			allJobApplicationsByJob.jobApplications.map((jobApplication) => {
 				newOptionJobs.push({
@@ -179,7 +179,7 @@ export default function AddOfferLetter({ onCloseDrawer }: IAddJobOfferLettersPro
 			//Inform notice success
 			if (dataCreJobOffer) {
 				setToast({
-					type: 'success',
+					type: statusCreJobOffer,
 					msg: dataCreJobOffer?.message,
 				})
 			}

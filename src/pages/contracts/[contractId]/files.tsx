@@ -115,7 +115,7 @@ const Files: NextLayout = () => {
 	useEffect(() => {
 		if (statusCreContractFile === 'success') {
 			setToast({
-				type: 'success',
+				type: statusCreContractFile,
 				msg: dataCreContractFile?.message as string,
 			})
 
@@ -134,7 +134,7 @@ const Files: NextLayout = () => {
 	useEffect(() => {
 		if (statusDeleteContractFile === 'success') {
 			setToast({
-				type: 'success',
+				type: statusDeleteContractFile,
 				msg: dataDeleteContractFile?.message as string,
 			})
 

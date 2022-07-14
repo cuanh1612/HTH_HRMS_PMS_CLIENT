@@ -75,7 +75,7 @@ export default function AddNote({ onCloseDrawer }: IAddNoteProps) {
 	//Set data option employees state
 	useEffect(() => {
 		if (dataDetailProject && dataDetailProject.project?.employees) {
-			let newOptionEmployees: IOption[] = []
+			const newOptionEmployees: IOption[] = []
 
 			dataDetailProject.project.employees.map((employee) => {
 				newOptionEmployees.push({
@@ -114,7 +114,7 @@ export default function AddNote({ onCloseDrawer }: IAddNoteProps) {
 			}
 
 			setToast({
-				type: 'success',
+				type: statusCreProjectNote,
 				msg: dataCreProjectNote?.message as string,
 			})
 		}
@@ -144,7 +144,7 @@ export default function AddNote({ onCloseDrawer }: IAddNoteProps) {
 			values.ask_re_password = askRePassword
 			values.note_type = noteType
 			values.project = Number(projectId)
-			mutateCreProjectNote(values)
+			await mutateCreProjectNote(values)
 		}
 	}
 

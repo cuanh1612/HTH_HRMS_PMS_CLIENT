@@ -182,7 +182,7 @@ export default function AddJobApplication({ onCloseDrawer, dataJob }: IAddJobApp
 			//Inform notice success
 			if (dataCreJobApplication) {
 				setToast({
-					type: 'success',
+					type: statusCreJobApplication,
 					msg: dataCreJobApplication?.message,
 				})
 			}

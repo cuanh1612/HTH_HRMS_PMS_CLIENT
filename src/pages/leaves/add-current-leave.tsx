@@ -112,7 +112,7 @@ export default function AddCurrentLeave({ onCloseDrawer }: IAddCurrentLeaveProps
 			}
 
 			setToast({
-				type: 'success',
+				type: statusLeave,
 				msg: dataLeave?.message as string,
 			})
 		}

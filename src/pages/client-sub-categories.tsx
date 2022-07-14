@@ -32,9 +32,7 @@ import { ChangeEventHandler, useContext, useEffect, useState } from 'react'
 import { AiOutlineCheck } from 'react-icons/ai'
 import { MdDeleteOutline } from 'react-icons/md'
 
-export interface IClientCategoryProps {}
-
-export default function ClientSubCategory({}: IClientCategoryProps) {
+export default function ClientSubCategory() {
 	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
 	const router = useRouter()
 
@@ -74,7 +72,7 @@ export default function ClientSubCategory({}: IClientCategoryProps) {
 				refetchClientSubCategories()
 				if (dataCreSubCategory) {
 					setToast({
-						type: 'success',
+						type: statusCreSubCategory,
 						msg: dataCreSubCategory?.message,
 					})
 				}
@@ -92,7 +90,7 @@ export default function ClientSubCategory({}: IClientCategoryProps) {
 				refetchClientSubCategories()
 				if (dataDeleSubCategory) {
 					setToast({
-						type: 'success',
+						type: statusDeleSubCategory,
 						msg: dataDeleSubCategory?.message,
 					})
 				}
@@ -110,7 +108,7 @@ export default function ClientSubCategory({}: IClientCategoryProps) {
 				refetchClientSubCategories()
 				if (dataUpSubCategory) {
 					setToast({
-						type: 'success',
+						type: statusUpSubCategory,
 						msg: dataUpSubCategory?.message,
 					})
 				}

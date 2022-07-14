@@ -67,7 +67,7 @@ export default function AddRooms({ onCloseDrawer }: IAddRoomsProps) {
 			}
 
 			setToast({
-				type: 'success',
+				type: statusCreRoom,
 				msg: dataCreRoom?.message as string,
 			})
 
@@ -78,7 +78,7 @@ export default function AddRooms({ onCloseDrawer }: IAddRoomsProps) {
 	//Set data option employees state
 	useEffect(() => {
 		if (allEmployees && allEmployees.employees && currentUser) {
-			let newOptionEmployees: IOption[] = []
+			const newOptionEmployees: IOption[] = []
 
 			allEmployees.employees.map((employee) => {
 				if (currentUser.id != employee.id) {
@@ -107,7 +107,7 @@ export default function AddRooms({ onCloseDrawer }: IAddRoomsProps) {
 	//Set data option clients state
 	useEffect(() => {
 		if (allClients && allClients.clients) {
-			let newOptionClients: IOption[] = []
+			const newOptionClients: IOption[] = []
 
 			allClients.clients.map((client) => {
 				newOptionClients.push({
@@ -150,7 +150,7 @@ export default function AddRooms({ onCloseDrawer }: IAddRoomsProps) {
 			})
 		} else {
 			values.empl_create = currentUser.id
-			mutateCreRoom(values)
+			await mutateCreRoom(values)
 		}
 	}
 

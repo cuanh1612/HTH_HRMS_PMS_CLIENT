@@ -208,7 +208,7 @@ export default function Employees({ onCloseDrawer }: IEmployeesProps) {
 			// refetch all employees
 			mutate('employees')
 			setToast({
-				type: 'success',
+				type: statusEmployee,
 				msg: dataEmployee?.message as string,
 			})
 

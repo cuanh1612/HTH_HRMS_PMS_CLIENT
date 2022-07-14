@@ -44,7 +44,7 @@ const TasksEmployee: NextLayout = () => {
 	const [taskId, setTaskId] = useState<string | number>()
 
 	// set loading table
-	const [isLoading, setIsloading] = useState(true)
+	const [isLoading, setIsLoading] = useState(true)
 
 	// data select to delete all
 	const [dataSl, setDataSl] = useState<Array<number> | null>()
@@ -82,9 +82,9 @@ const TasksEmployee: NextLayout = () => {
 
 	// mutation----------------------------------------------------------
 	// delete one
-	const [deleteOne, { data: dataDlOne, status: statusDlOne }] = deleteTaskMutation(setToast)
+	const [deleteOne, { status: statusDlOne, data: dataDl}] = deleteTaskMutation(setToast)
 	// delete many
-	const [deleteMany, { data: dataDlMany, status: statusDlMany }] = deleteTasksMutation(setToast)
+	const [deleteMany, { status: statusDlMany, data: dataDlMany}] = deleteTasksMutation(setToast)
 
 	//Modal -------------------------------------------------------------
 
@@ -129,18 +129,18 @@ const TasksEmployee: NextLayout = () => {
 
 	useEffect(() => {
 		if (allTasks) {
-			setIsloading(false)
+			setIsLoading(false)
 		}
 	}, [allTasks])
 
 	useEffect(() => {
-		if (statusDlOne == 'success' && dataDlOne) {
+		if (statusDlOne == 'success' && dataDl) {
 			setToast({
-				type: 'success',
-				msg: dataDlOne.message,
+				type: statusDlOne,
+				msg: dataDl.message,
 			})
 			refetchTasks()
-			setIsloading(false)
+			setIsLoading(false)
 
 			if (socket) {
 				socket.emit('newTask')
@@ -151,12 +151,12 @@ const TasksEmployee: NextLayout = () => {
 	useEffect(() => {
 		if (statusDlMany == 'success' && dataDlMany) {
 			setToast({
-				type: 'success',
+				type: statusDlMany,
 				msg: dataDlMany.message,
 			})
 			refetchTasks()
 			setDataSl([])
-			setIsloading(false)
+			setIsLoading(false)
 
 			if (socket) {
 				socket.emit('newTask')
@@ -290,7 +290,7 @@ const TasksEmployee: NextLayout = () => {
 			{/* alert dialog when delete one */}
 			<AlertDialog
 				handleDelete={() => {
-					setIsloading(true)
+					setIsLoading(true)
 					deleteOne(String(taskId))
 				}}
 				title="Are you sure?"
@@ -303,7 +303,7 @@ const TasksEmployee: NextLayout = () => {
 			<AlertDialog
 				handleDelete={() => {
 					if (dataSl) {
-						setIsloading(true)
+						setIsLoading(true)
 						deleteMany(dataSl)
 					}
 				}}

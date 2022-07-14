@@ -44,8 +44,6 @@ export const updateJobStatusMutation = (setToast: TToast) => {
 	})
 }
 
-
-
 // delete one
 export const deleteJobMutation = (setToast: TToast) => {
 	return useMutation(deleteJobRequest, {

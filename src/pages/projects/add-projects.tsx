@@ -208,7 +208,7 @@ export default function AddProject({ onCloseDrawer }: IAddProjectProps) {
 			setFilesUpload([])
 
 			setToast({
-				type: 'success',
+				type: statusCreProject,
 				msg: dataCreProject.message as string,
 			})
 			refetchAllProjects()

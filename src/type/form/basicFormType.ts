@@ -309,7 +309,8 @@ export interface createSignatureForm {
 	email: string
 	url: string
 	public_id: string
-	contract: number
+	contract?: number
+	jobOfferLetter?: number
 }
 
 export interface ITimePicker {

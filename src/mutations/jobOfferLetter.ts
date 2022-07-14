@@ -3,6 +3,7 @@ import {
 	deleteJobOfferRequest,
 	deleteManyJobOffersRequest,
 	updateJobOfferRequest,
+	updateOfferLetterStatusRequest,
 } from 'requests/jobOfferLetter'
 import { TToast } from 'type/basicTypes'
 import useMutation from 'use-mutation'
@@ -54,3 +55,16 @@ export const deleteJobOfferLettersMutation = (setToast: TToast) => {
 		},
 	})
 }
+
+//update job offer letter status
+export const updateOfferLetterStatusMutation = (setToast: TToast) => {
+	return useMutation(updateOfferLetterStatusRequest, {
+		onFailure({ error }) {
+			setToast({
+				msg: error.message,
+				type: 'error',
+			})
+		},
+	})
+}
+

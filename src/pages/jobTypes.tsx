@@ -63,7 +63,7 @@ export default function JobTypes() {
 				refetchJobTypes()
 				if (dataCreJobType) {
 					setToast({
-						type: 'success',
+						type: statusCreJobType,
 						msg: dataCreJobType?.message,
 					})
 				}
@@ -81,7 +81,7 @@ export default function JobTypes() {
 				refetchJobTypes()
 				if (dataDeleJobType) {
 					setToast({
-						type: 'success',
+						type: statusDeleJobType,
 						msg: dataDeleJobType?.message,
 					})
 				}
@@ -99,7 +99,7 @@ export default function JobTypes() {
 				refetchJobTypes()
 				if (dataUpJobType) {
 					setToast({
-						type: 'success',
+						type: statusUpJobType,
 						msg: dataUpJobType?.message,
 					})
 				}

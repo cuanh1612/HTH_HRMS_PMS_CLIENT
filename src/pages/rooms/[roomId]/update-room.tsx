@@ -67,7 +67,7 @@ export default function UpdateRoom({ roomId: RoomIdProp, onCloseDrawer }: IUpdat
 	const { handleSubmit } = formSetting
 
 	const onSubmit = async (values: updateRoomForm) => {
-		mutateUpdateRoom({
+		await mutateUpdateRoom({
 			inputUpdate: values,
 			roomId: RoomIdProp || (roomIdRouter as string),
 		})
@@ -93,7 +93,7 @@ export default function UpdateRoom({ roomId: RoomIdProp, onCloseDrawer }: IUpdat
 			}
 
 			setToast({
-				type: 'success',
+				type: statusUpdateRoom,
 				msg: dataUpdateRoom?.message as string,
 			})
 		}
@@ -102,7 +102,7 @@ export default function UpdateRoom({ roomId: RoomIdProp, onCloseDrawer }: IUpdat
 	//Set data option employees state
 	useEffect(() => {
 		if (allEmployees && allEmployees.employees && currentUser) {
-			let newOptionEmployees: IOption[] = []
+			const newOptionEmployees: IOption[] = []
 
 			allEmployees.employees.map((employee) => {
 				if (currentUser.id != employee.id) {
@@ -131,7 +131,7 @@ export default function UpdateRoom({ roomId: RoomIdProp, onCloseDrawer }: IUpdat
 	//Set data option clients state
 	useEffect(() => {
 		if (allClients && allClients.clients) {
-			let newOptionClients: IOption[] = []
+			const newOptionClients: IOption[] = []
 
 			allClients.clients.map((client) => {
 				newOptionClients.push({
@@ -156,7 +156,7 @@ export default function UpdateRoom({ roomId: RoomIdProp, onCloseDrawer }: IUpdat
 		if (dataDetailRoom && dataDetailRoom.room) {
 			//Set data selected option employee
 			if (dataDetailRoom.room.employees) {
-				let newSelectedOptionEmployees: IOption[] = []
+				const newSelectedOptionEmployees: IOption[] = []
 
 				dataDetailRoom.room.employees.map((employee) => {
 					newSelectedOptionEmployees.push({
@@ -181,7 +181,7 @@ export default function UpdateRoom({ roomId: RoomIdProp, onCloseDrawer }: IUpdat
 
 			//Set data selected option clients
 			if (dataDetailRoom.room.clients) {
-				let newSelectedOptionClients: IOption[] = []
+				const newSelectedOptionClients: IOption[] = []
 
 				dataDetailRoom.room.clients.map((client) => {
 					newSelectedOptionClients.push({
@@ -205,7 +205,7 @@ export default function UpdateRoom({ roomId: RoomIdProp, onCloseDrawer }: IUpdat
 			}
 
 			if (allClients && allClients.clients) {
-				let newOptionClients: IOption[] = []
+				const newOptionClients: IOption[] = []
 
 				allClients.clients.map((client) => {
 					newOptionClients.push({

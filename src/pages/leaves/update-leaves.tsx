@@ -156,7 +156,7 @@ export default function UpdateLeaves({ onCloseDrawer, leaveId }: IUpdateLeavesPr
 			}
 
 			setToast({
-				type: 'success',
+				type: statusUpLeave,
 				msg: dataUpLeave?.message as string,
 			})
 		}

@@ -68,7 +68,7 @@ export default function AddConversations() {
 	//Set data option employees state
 	useEffect(() => {
 		if (dataEmployees && dataEmployees.employees) {
-			let newOptionEmployees: IOption[] = []
+			const newOptionEmployees: IOption[] = []
 
 			dataEmployees.employees.map((employee) => {
 				newOptionEmployees.push({
@@ -98,7 +98,7 @@ export default function AddConversations() {
 			mutate(`conversations/user/${currentUser?.id}`)
 
 			setToast({
-				type: 'success',
+				type: statusCreConversation,
 				msg: dataCreConversation?.message as string,
 			})
 		}

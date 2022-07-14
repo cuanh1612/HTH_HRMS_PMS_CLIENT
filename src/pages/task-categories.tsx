@@ -30,9 +30,7 @@ import { ChangeEventHandler, useContext, useEffect, useState } from 'react'
 import { AiOutlineCheck } from 'react-icons/ai'
 import { MdDeleteOutline } from 'react-icons/md'
 
-export interface ITaskCategoryProps {}
-
-export default function TaskCategory({}: ITaskCategoryProps) {
+export default function TaskCategory() {
 	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
 	const router = useRouter()
 
@@ -71,7 +69,7 @@ export default function TaskCategory({}: ITaskCategoryProps) {
 				refetchTaskCategories()
 				if (dataCreTaskCategory) {
 					setToast({
-						type: 'success',
+						type: statusCreTaskCategory,
 						msg: dataCreTaskCategory?.message,
 					})
 				}
@@ -89,7 +87,7 @@ export default function TaskCategory({}: ITaskCategoryProps) {
 				refetchTaskCategories()
 				if (dataDeleTaskCategory) {
 					setToast({
-						type: 'success',
+						type: statusDeleTaskCategory,
 						msg: dataDeleTaskCategory?.message,
 					})
 				}
@@ -107,7 +105,7 @@ export default function TaskCategory({}: ITaskCategoryProps) {
 				refetchTaskCategories()
 				if (dataUpTaskCategory) {
 					setToast({
-						type: 'success',
+						type: statusUpTaskCategory,
 						msg: dataUpTaskCategory?.message,
 					})
 				}

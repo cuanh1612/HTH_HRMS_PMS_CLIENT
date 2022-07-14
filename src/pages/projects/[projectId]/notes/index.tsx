@@ -35,9 +35,7 @@ import AddNote from './add-notes'
 import DetailProjectNote from './[noteId]'
 import UpdateNote from './[noteId]/update-note'
 
-export interface INotesProps {}
-
-const Notes: NextLayout = ({}: INotesProps) => {
+const Notes: NextLayout = () => {
 	const { isAuthenticated, handleLoading, currentUser, setToast, socket } =
 		useContext(AuthContext)
 	const router = useRouter()
@@ -49,7 +47,7 @@ const Notes: NextLayout = ({}: INotesProps) => {
 	const [isResetFilter, setIsReset] = useState(false)
 	const [password, setPassword] = useState<string>('')
 	// set loading table
-	const [isLoading, setIsloading] = useState(true)
+	const [isLoading, setIsLoading] = useState(true)
 	// data select to delete all
 	const [dataSl, setDataSl] = useState<Array<number> | null>()
 	// set filter
@@ -82,8 +80,8 @@ const Notes: NextLayout = ({}: INotesProps) => {
 	const [mutateReEnterPassword, { status: statusReEnterPassword }] =
 		reEnterPasswordMutation(setToast)
 
-	const [deleteOne, { status: statusDeleteOne }] = deleteProjectNoteMutation(setToast)
-	const [deleteMany, { status: statusDeleteMany }] = deleteProjectNotesMutation(setToast)
+	const [deleteOne, { status: statusDeleteOne, data: dataDl }] = deleteProjectNoteMutation(setToast)
+	const [deleteMany, { status: statusDeleteMany, data: dataDlMany}] = deleteProjectNotesMutation(setToast)
 
 	//Modal -------------------------------------------------------------
 	// set open add notes
@@ -141,20 +139,20 @@ const Notes: NextLayout = ({}: INotesProps) => {
 	}, [statusReEnterPassword])
 
 	useEffect(() => {
-		if (statusDeleteOne == 'success') {
+		if (statusDeleteOne == 'success' && dataDl) {
 			setToast({
-				msg: 'Delete note successfully',
-				type: 'success',
+				msg: dataDl.message,
+				type: statusDeleteOne,
 			})
 			refetchAllNotes()
 		}
 	}, [statusDeleteOne])
 
 	useEffect(() => {
-		if (statusDeleteMany == 'success') {
+		if (statusDeleteMany == 'success' && dataDlMany) {
 			setToast({
-				msg: 'Delete notes successfully',
-				type: 'success',
+				msg: dataDlMany.message,
+				type: statusDeleteMany,
 			})
 			refetchAllNotes()
 		}
@@ -162,7 +160,7 @@ const Notes: NextLayout = ({}: INotesProps) => {
 
 	useEffect(() => {
 		if (dataAllNotes) {
-			setIsloading(false)
+			setIsLoading(false)
 		}
 	}, [dataAllNotes])
 
@@ -366,7 +364,7 @@ const Notes: NextLayout = ({}: INotesProps) => {
 			{/* alert dialog when delete one */}
 			<AlertDialog
 				handleDelete={() => {
-					setIsloading(true)
+					setIsLoading(true)
 					deleteOne(String(projectNoteId))
 				}}
 				title="Are you sure?"
@@ -379,7 +377,7 @@ const Notes: NextLayout = ({}: INotesProps) => {
 			<AlertDialog
 				handleDelete={() => {
 					if (dataSl) {
-						setIsloading(true)
+						setIsLoading(true)
 						deleteMany(dataSl)
 					}
 				}}

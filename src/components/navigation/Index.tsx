@@ -179,7 +179,7 @@ const LinkItems = () => {
 							},
 							{
 								icon: <AiOutlineMail fontSize={20} />,
-								link: '/ddd',
+								link: '/job-offer-letters',
 								title: 'Offer letters',
 							},
 							{
@@ -207,10 +207,9 @@ const LinkItems = () => {
 }
 
 const SideLeft = () => {
-	const { isAuthenticated } = useContext(AuthContext)
 
 	//Get info company
-	const { data: dataCompanyInfo } = companyInfoQuery(isAuthenticated)
+	const { data: dataCompanyInfo } = companyInfoQuery()
 
 	return (
 		<Box
@@ -245,10 +244,9 @@ const SideLeft = () => {
 }
 
 const SideLeftInDrawer = ({ onClose, isOpen }: { isOpen: boolean; onClose: any }) => {
-	const { isAuthenticated } = useContext(AuthContext)
 
 	//Get info company
-	const { data: dataCompanyInfo } = companyInfoQuery(isAuthenticated)
+	const { data: dataCompanyInfo } = companyInfoQuery()
 
 	return (
 		<Drawer isOpen={isOpen} placement="left" onClose={onClose}>

@@ -85,7 +85,7 @@ export default function UpdateSkill({ onCloseDrawer, skillId }: IUpdateSkillProp
 			}
 
 			setToast({
-				type: 'success',
+				type: statusUpSkill,
 				msg: dataUpSkill?.message as string,
 			})
 

@@ -30,8 +30,6 @@ import { AiOutlineCaretDown, AiOutlineCaretUp } from 'react-icons/ai'
 import { VscTasklist } from 'react-icons/vsc'
 import { NextLayout } from 'type/element/layout'
 
-export interface ITaskCategoryProps {}
-
 const privateDashboard: NextLayout = () => {
 	const { isAuthenticated, handleLoading, currentUser } = useContext(AuthContext)
 	const router = useRouter()

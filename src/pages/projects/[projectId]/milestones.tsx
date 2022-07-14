@@ -46,7 +46,7 @@ const milestones: NextLayout = () => {
 	const { projectId } = router.query
 
 	// set loading table
-	const [isLoading, setIsloading] = useState(true)
+	const [isLoading, setIsLoading] = useState(true)
 	const [idMilestone, setIdMilestone] = useState<string | number>()
 	const [isUpdate, setIsUpdate] = useState(false)
 
@@ -137,12 +137,12 @@ const milestones: NextLayout = () => {
 		}
 
 		if (isUpdate) {
-			updateMilestone({
+			await updateMilestone({
 				inputUpdate: data,
 				milestoneId: idMilestone,
 			})
 		} else {
-			createMilestone(data)
+			await createMilestone(data)
 		}
 	}
 
@@ -173,7 +173,7 @@ const milestones: NextLayout = () => {
 	useEffect(() => {
 		if (statusCreate == 'success' && dataCreate) {
 			setToast({
-				type: 'success',
+				type: statusCreate,
 				msg: dataCreate.message,
 			})
 			onCloseModal()
@@ -184,7 +184,7 @@ const milestones: NextLayout = () => {
 	useEffect(() => {
 		if (statusUpdate == 'success' && dataUpdate) {
 			setToast({
-				type: 'success',
+				type: statusUpdate,
 				msg: dataUpdate.message,
 			})
 			onCloseModal()
@@ -195,7 +195,7 @@ const milestones: NextLayout = () => {
 	useEffect(() => {
 		if (statusDelete == 'success' && dataDelete) {
 			setToast({
-				type: 'success',
+				type: statusDelete,
 				msg: dataDelete.message,
 			})
 			refetchAllMilestones()
@@ -204,7 +204,7 @@ const milestones: NextLayout = () => {
 
 	useEffect(() => {
 		if (allMilestone) {
-			setIsloading(false)
+			setIsLoading(false)
 		}
 	}, [allMilestone])
 
@@ -329,7 +329,7 @@ const milestones: NextLayout = () => {
 			{/* alert dialog when delete one */}
 			<AlertDialog
 				handleDelete={() => {
-					setIsloading(true)
+					setIsLoading(true)
 					deleteMilestone(String(idMilestone))
 				}}
 				title="Are you sure?"

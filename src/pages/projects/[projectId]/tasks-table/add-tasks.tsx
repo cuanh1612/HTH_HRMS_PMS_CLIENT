@@ -166,7 +166,7 @@ export default function AddTask({ onCloseDrawer, statusId }: IAddTaskProps) {
 
 		if (dataAllStatus?.statuses) {
 			//Set data option satuses state
-			let newOptionStatus: IOption[] = []
+			const newOptionStatus: IOption[] = []
 
 			dataAllStatus.statuses.map((status) => {
 				newOptionStatus.push({
@@ -183,7 +183,7 @@ export default function AddTask({ onCloseDrawer, statusId }: IAddTaskProps) {
 	useEffect(() => {
 		if (dataAllMilestones?.milestones) {
 			//Set data option milestones state
-			let newOptionMilestones: IOption[] = []
+			const newOptionMilestones: IOption[] = []
 
 			dataAllMilestones.milestones.map((milestone) => {
 				newOptionMilestones.push({
@@ -205,7 +205,7 @@ export default function AddTask({ onCloseDrawer, statusId }: IAddTaskProps) {
 			}
 
 			setToast({
-				type: 'success',
+				type: statusCreTask,
 				msg: dataCreTask.message as string,
 			})
 			refetchStatusTasks()
@@ -224,7 +224,7 @@ export default function AddTask({ onCloseDrawer, statusId }: IAddTaskProps) {
 	//Set data option employees state
 	useEffect(() => {
 		if (dataDetailProject?.project && dataDetailProject.project.employees) {
-			let newOptionEmployees: IOption[] = []
+			const newOptionEmployees: IOption[] = []
 
 			dataDetailProject.project.employees.map((employee) => {
 				newOptionEmployees.push({

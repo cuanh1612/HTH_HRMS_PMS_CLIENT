@@ -64,7 +64,7 @@ export default function WorkExperiences() {
 				refetchWorkExperience()
 				if (dataCreWorkExperience) {
 					setToast({
-						type: 'success',
+						type: statusCreWorkExperience,
 						msg: dataCreWorkExperience?.message,
 					})
 				}
@@ -82,7 +82,7 @@ export default function WorkExperiences() {
 				refetchWorkExperience()
 				if (dataDeleWorkExperience) {
 					setToast({
-						type: 'success',
+						type: statusDeleWorkExperience,
 						msg: dataDeleWorkExperience?.message,
 					})
 				}
@@ -100,7 +100,7 @@ export default function WorkExperiences() {
 				refetchWorkExperience()
 				if (dataUpWorkExperience) {
 					setToast({
-						type: 'success',
+						type: statusUpWorkExperience,
 						msg: dataUpWorkExperience?.message,
 					})
 				}

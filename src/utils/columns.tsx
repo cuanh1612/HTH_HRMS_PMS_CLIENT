@@ -877,7 +877,7 @@ export const contractColumn = ({
 							<MenuList>
 								<Link
 									key={row.values['id']}
-									href={`/contracts/${row.values['id']}`}
+									href={`/contracts/${row.values['id']}/detail`}
 								>
 									<MenuItem icon={<IoEyeOutline fontSize={'15px'} />}>
 										view
@@ -3577,7 +3577,9 @@ export const jobColumn = ({
 								defaultValue={value == true ? 'Open' : 'Close'}
 							>
 								{dataJobStatus.map((e, key) => (
-									<option  key={key}  value={e.value}>{e.label}</option>
+									<option key={key} value={e.value}>
+										{e.label}
+									</option>
 								))}
 							</Select>
 						)
@@ -3706,7 +3708,9 @@ export const jobApplicationColumn = ({
 								defaultValue={value}
 							>
 								{dataJobApplicationStatus.map((e, key) => (
-									<option key={key} value={e.value}>{e.label}</option>
+									<option key={key} value={e.value}>
+										{e.label}
+									</option>
 								))}
 							</Select>
 						)
@@ -3816,7 +3820,7 @@ export const interviewScheduleColumn = ({
 						return (
 							<Select
 								onChange={async (event) => {
-									await onChangeStatus(row.values['id'], event);
+									await onChangeStatus(row.values['id'], event)
 								}}
 								defaultValue={value}
 							>
@@ -3878,6 +3882,168 @@ export const interviewScheduleColumn = ({
 										<MenuItem
 											onClick={() => {
 												onUpdate(row.values['id'])
+											}}
+											icon={<RiPencilLine fontSize={'15px'} />}
+										>
+											Edit
+										</MenuItem>
+
+										<MenuItem
+											onClick={() => {
+												onDelete(row.values['id'])
+											}}
+											icon={<MdOutlineDeleteOutline fontSize={'15px'} />}
+										>
+											Delete
+										</MenuItem>
+									</>
+								)}
+							</MenuList>
+						</Menu>
+					),
+				},
+			],
+		},
+	]
+}
+
+export const offerLettersColumn = ({
+	onDelete,
+	onUpdate,
+	currentUser,
+}: IOptionColumn): TColumn[] => {
+	return [
+		{
+			Header: 'Offer letters',
+			columns: [
+				{
+					Header: 'Id',
+					accessor: 'id',
+					width: 80,
+					minWidth: 80,
+					disableResizing: true,
+					Cell: ({ value }) => {
+						return value
+					},
+				},
+				{
+					Header: 'Job',
+					accessor: 'job',
+					filter: selectFilter(['job', 'id']),
+					minWidth: 80,
+					Cell: ({ value }) => {
+						return <Text isTruncated>{value.title}</Text>
+					},
+				},
+				{
+					Header: 'Job applicant',
+					accessor: 'job_application',
+					minWidth: 80,
+					Cell: ({ value }) => {
+						return <Text isTruncated>{value.name}</Text>
+					},
+				},
+
+				{
+					Header: 'Expected joining date',
+					accessor: 'expected_joining_date',
+					filter: dateFilter(['date']),
+					minWidth: 80,
+					Cell: ({ value }) => {
+						return (
+							<Text
+								color={
+									new Date(value).getTime() < new Date().getTime()
+										? 'red'
+										: undefined
+								}
+								isTruncated
+							>
+								{new Date(value).toLocaleDateString('es-CL')}
+							</Text>
+						)
+					},
+				},
+
+				{
+					Header: 'Offer expire on',
+					accessor: 'exprise_on',
+					filter: dateFilter(['date']),
+					minWidth: 80,
+					Cell: ({ value }) => {
+						return (
+							<Text
+								color={
+									new Date(value).getTime() < new Date().getTime()
+										? 'red'
+										: undefined
+								}
+								isTruncated
+							>
+								{new Date(value).toLocaleDateString('es-CL')}
+							</Text>
+						)
+					},
+				},
+
+				{
+					Header: 'Status',
+					accessor: 'status',
+					filter: selectFilter(['status']),
+					minWidth: 80,
+					Cell: ({ value }) => {
+						return (
+							<HStack spacing={3}>
+								<Box
+									w={'10px'}
+									h={'10px'}
+									borderRadius={'full'}
+									bg={
+										value == 'Pending'
+											? 'yellow'
+											: value == 'Rejected'
+											? 'red'
+											: 'Green'
+									}
+								/>
+								<Text isTruncated>{value}</Text>
+							</HStack>
+						)
+					},
+				},
+
+				{
+					Header: 'Action',
+					accessor: 'action',
+					disableResizing: true,
+					width: 120,
+					minWidth: 120,
+					disableSortBy: true,
+					Cell: ({ row }) => (
+						<Menu>
+							<MenuButton as={Button} paddingInline={3}>
+								<MdOutlineMoreVert />
+							</MenuButton>
+							<MenuList>
+								<Link href={`/job-offer-letters/${row.values['id']}`}>
+									<MenuItem icon={<IoEyeOutline fontSize={'15px'} />}>
+										View
+									</MenuItem>
+								</Link>
+
+								{currentUser?.role === 'Admin' && (
+									<>
+										<Link
+											href={`/job-offer-letters/public/${row.original['token']}`}
+										>
+											<MenuItem icon={<BiLinkAlt fontSize={'15px'} />}>
+												Public Link
+											</MenuItem>
+										</Link>
+										<MenuItem
+											onClick={() => {
+												onUpdate(row.values['id'])
+
 											}}
 											icon={<RiPencilLine fontSize={'15px'} />}
 										>

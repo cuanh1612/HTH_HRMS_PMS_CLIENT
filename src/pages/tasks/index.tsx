@@ -51,7 +51,7 @@ const tasks: NextLayout = () => {
 	const [dataCSV, setDataCSV] = useState<any[]>([])
 
 	// set loading table
-	const [isLoading, setIsloading] = useState(true)
+	const [isLoading, setIsLoading] = useState(true)
 
 	// data select to delete all
 	const [dataSl, setDataSl] = useState<Array<number> | null>()
@@ -160,7 +160,7 @@ const tasks: NextLayout = () => {
 	useEffect(() => {
 		if (allTasks) {
 			console.log(allTasks)
-			setIsloading(false)
+			setIsLoading(false)
 
 			if (allTasks.tasks) {
 				//Set data csv
@@ -188,11 +188,11 @@ const tasks: NextLayout = () => {
 	useEffect(() => {
 		if (statusDlOne == 'success' && dataDlOne) {
 			setToast({
-				type: 'success',
+				type: statusDlOne,
 				msg: dataDlOne.message,
 			})
 			refetchTasks()
-			setIsloading(false)
+			setIsLoading(false)
 
 			if (socket) {
 				socket.emit('newTask')
@@ -203,12 +203,12 @@ const tasks: NextLayout = () => {
 	useEffect(() => {
 		if (statusDlMany == 'success' && dataDlMany) {
 			setToast({
-				type: 'success',
+				type: statusDlMany,
 				msg: dataDlMany.message,
 			})
 			refetchTasks()
 			setDataSl([])
-			setIsloading(false)
+			setIsLoading(false)
 
 			if (socket) {
 				socket.emit('newTask')
@@ -365,7 +365,7 @@ const tasks: NextLayout = () => {
 			{/* alert dialog when delete one */}
 			<AlertDialog
 				handleDelete={() => {
-					setIsloading(true)
+					setIsLoading(true)
 					deleteOne(String(taskId))
 				}}
 				title="Are you sure?"
@@ -378,7 +378,7 @@ const tasks: NextLayout = () => {
 			<AlertDialog
 				handleDelete={() => {
 					if (dataSl) {
-						setIsloading(true)
+						setIsLoading(true)
 						deleteMany(dataSl)
 					}
 				}}

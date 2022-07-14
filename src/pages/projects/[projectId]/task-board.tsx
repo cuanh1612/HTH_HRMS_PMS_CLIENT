@@ -139,12 +139,12 @@ const taskBoard: NextLayout = () => {
 	//Handle crete user
 	const onSubmit = async (values: statusForm) => {
 		if (isUpdate) {
-			updateColumn({
+			await updateColumn({
 				inputUpdate: values,
 				columnId: String(statusId),
 			})
 		} else {
-			createColumn({
+			await createColumn({
 				...values,
 				projectId: query.projectId,
 			})
@@ -215,7 +215,7 @@ const taskBoard: NextLayout = () => {
 	useEffect(() => {
 		if (createColumnStatus == 'success' && dataCreateColumn) {
 			setToast({
-				type: 'success',
+				type: createColumnStatus,
 				msg: dataCreateColumn.message,
 			})
 			refetchStatusTasks()
@@ -233,7 +233,7 @@ const taskBoard: NextLayout = () => {
 	useEffect(() => {
 		if (deleteColumnStatus == 'success' && dataDeleteColumn) {
 			setToast({
-				type: 'success',
+				type: deleteColumnStatus,
 				msg: dataDeleteColumn.message,
 			})
 			refetchStatusTasks()
@@ -247,7 +247,7 @@ const taskBoard: NextLayout = () => {
 	useEffect(() => {
 		if (statusUpdateColumn == 'success' && dataUpdateColumn) {
 			setToast({
-				type: 'success',
+				type: statusUpdateColumn,
 				msg: dataUpdateColumn.message,
 			})
 			refetchStatusTasks()
@@ -267,7 +267,7 @@ const taskBoard: NextLayout = () => {
 	useEffect(() => {
 		if (deleteTaskStatus == 'success' && dataDeleteTask) {
 			setToast({
-				type: 'success',
+				type: deleteTaskStatus,
 				msg: dataDeleteTask.message,
 			})
 			refetchStatusTasks()

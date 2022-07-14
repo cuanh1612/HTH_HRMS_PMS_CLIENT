@@ -167,7 +167,7 @@ export default function UpdateContract({ onCloseDrawer, contractIdUpdate }: IUpd
 			}
 
 			setToast({
-				type: 'success',
+				type: statusUpContract,
 				msg: dataUpContract?.message as string,
 			})
 			refetchAllContracts()

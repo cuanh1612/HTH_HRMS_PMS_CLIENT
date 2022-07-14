@@ -226,7 +226,7 @@ export default function UpdateClient({ onCloseDrawer, clientUpdateId }: IAddClie
 				dataDetailClient.client.client_category &&
 				dataDetailClient.client.client_sub_category
 			) {
-				let newOptionSubCategories: IOption[] = []
+				const newOptionSubCategories: IOption[] = []
 
 				//Check if client category is exist
 				if (dataSubCategories?.clientSubCategories) {
@@ -268,12 +268,12 @@ export default function UpdateClient({ onCloseDrawer, clientUpdateId }: IAddClie
 
 	//Note when request success
 	useEffect(() => {
-		if (statusUpClient === 'success') {
+		if (statusUpClient === 'success' && dataUpClient) {
 			mutate('clients')
 			//Inform notice success
 			if (dataUpClient) {
 				setToast({
-					type: 'success',
+					type: statusUpClient,
 					msg: dataUpClient?.message,
 				})
 			}
@@ -292,7 +292,7 @@ export default function UpdateClient({ onCloseDrawer, clientUpdateId }: IAddClie
 			if (name === 'client_category') {
 				//Set data option sub category
 				if (dataSubCategories?.clientSubCategories) {
-					let newOptionSubCategories: IOption[] = []
+					const newOptionSubCategories: IOption[] = []
 
 					//Check if client category is exist
 					if (value.client_category) {

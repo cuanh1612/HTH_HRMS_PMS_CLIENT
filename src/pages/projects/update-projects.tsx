@@ -173,7 +173,7 @@ export default function UpdateProject({ onCloseDrawer, projectIdUpdate }: IUpdat
 			}
 
 			setToast({
-				type: 'success',
+				type: statusUpProject,
 				msg: dataUpProject?.message as string,
 			})
 
@@ -240,7 +240,7 @@ export default function UpdateProject({ onCloseDrawer, projectIdUpdate }: IUpdat
 			values.notes = notes
 			values.send_task_noti = isSendTaskNoti
 
-			mutateUpProject({
+			await mutateUpProject({
 				inputUpdate: values,
 				projectId: projectIdUpdate,
 			})

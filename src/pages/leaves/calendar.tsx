@@ -91,7 +91,7 @@ const calendar: NextLayout = () => {
 	useEffect(() => {
 		if (statusDl == 'success') {
 			setToast({
-				msg: 'Delete leave successfully',
+				msg: statusDl,
 				type: 'success',
 			})
 			refetchAllLeaves()

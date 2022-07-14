@@ -325,7 +325,7 @@ export default function UpdateJob({ onCloseDrawer, JobIdProp }: IUpdateJobProps)
 			//Inform notice success
 			if (dataUpJob) {
 				setToast({
-					type: 'success',
+					type: statusUpJob,
 					msg: dataUpJob?.message,
 				})
 			}

@@ -89,7 +89,7 @@ export default function UpdateNote({ onCloseDrawer, noteIdProp }: IUpdateNotePro
 			values.ask_re_password = askRePassword
 			values.note_type = noteType
 			values.project = Number(projectId)
-			mutateUpProjectNote({
+			await mutateUpProjectNote({
 				inputCreate: values,
 				projectNoteId: noteIdProp || (noteIdRouter as string),
 			})
@@ -128,7 +128,7 @@ export default function UpdateNote({ onCloseDrawer, noteIdProp }: IUpdateNotePro
 			})
 
 			if (dataDetailNote.projectNote.employees) {
-				let newSelectedOptionEmployees: IOption[] = []
+				const newSelectedOptionEmployees: IOption[] = []
 
 				dataDetailNote.projectNote.employees.map((employee) => {
 					newSelectedOptionEmployees.push({
@@ -156,7 +156,7 @@ export default function UpdateNote({ onCloseDrawer, noteIdProp }: IUpdateNotePro
 	//Set data option employees state
 	useEffect(() => {
 		if (dataDetailProject && dataDetailProject.project?.employees) {
-			let newOptionEmployees: IOption[] = []
+			const newOptionEmployees: IOption[] = []
 
 			dataDetailProject.project.employees.map((employee) => {
 				newOptionEmployees.push({
@@ -195,7 +195,7 @@ export default function UpdateNote({ onCloseDrawer, noteIdProp }: IUpdateNotePro
 			}
 
 			setToast({
-				type: 'success',
+				type: statusUpProjectNote,
 				msg: dataUpProjectNote?.message as string,
 			})
 		}

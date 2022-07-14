@@ -277,7 +277,7 @@ export default function UpdateEmployees({ onCloseDrawer, employeeId }: IUpdateEm
 			mutate('employees')
 
 			setToast({
-				type: 'success',
+				type: statusUpdateEmployee,
 				msg: dataUpdateEmployee?.message as string,
 			})
 		}

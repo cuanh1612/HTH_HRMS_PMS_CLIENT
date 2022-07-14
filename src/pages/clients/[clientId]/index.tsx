@@ -56,7 +56,7 @@ const DetailClient: NextLayout | any = ({
 	// get id to delete project
 	const [projectId, setProjectId] = useState<number>()
 	// set loading table
-	const [isLoading, setIsloading] = useState(true)
+	const [isLoading, setIsLoading] = useState(true)
 
 	//Query -------------------------------------------------------------------
 	const { data: dataDetailClient } = detailClientQuery(isAuthenticated, clientId as string)
@@ -74,7 +74,7 @@ const DetailClient: NextLayout | any = ({
 
 	// mutation ----------------------------
 	// delete project
-	const [mutateDeletePj, { status: statusDl }] = deleteProjectMutation(setToast)
+	const [mutateDeletePj, { status: statusDl, data: dataDl }] = deleteProjectMutation(setToast)
 
 	// set isOpen of dialog or drawer
 	const { isOpen: isOpenDialogDl, onOpen: onOpenDl, onClose: onCloseDl } = useDisclosure()
@@ -97,7 +97,7 @@ const DetailClient: NextLayout | any = ({
 	useEffect(() => {
 		if (allProjects) {
 			console.log(allProjects.projects)
-			setIsloading(false)
+			setIsLoading(false)
 		}
 	}, [allProjects])
 
@@ -127,10 +127,10 @@ const DetailClient: NextLayout | any = ({
 
 	// check is successfully delete one
 	useEffect(() => {
-		if (statusDl == 'success') {
+		if (statusDl == 'success' && dataDl) {
 			setToast({
-				msg: 'Delete project successfully',
-				type: 'success',
+				msg: dataDl.message,
+				type: statusDl,
 			})
 			refetchAllProjects()
 		}
@@ -371,7 +371,7 @@ const DetailClient: NextLayout | any = ({
 					{/* alert dialog when delete one */}
 					<AlertDialog
 						handleDelete={() => {
-							setIsloading(true)
+							setIsLoading(true)
 							mutateDeletePj(String(projectId))
 						}}
 						title="Are you sure?"

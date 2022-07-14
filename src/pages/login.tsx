@@ -85,7 +85,7 @@ const Login: NextLayout = () => {
 	useEffect(() => {
 		if (status == 'success') {
 			setToast({
-				type: 'success',
+				type: status,
 				msg: data?.message as string,
 			})
 			JWTManager.setToken(data?.accessToken as string)

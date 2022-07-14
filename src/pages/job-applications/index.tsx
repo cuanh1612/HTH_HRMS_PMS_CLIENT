@@ -39,7 +39,7 @@ const jobApplications: NextLayout = () => {
 	// state
 	const [idJobApplication, setIdJobApplication] = useState<number | null>(null)
 	// set loading table
-	const [isLoading, setIsloading] = useState(true)
+	const [isLoading, setIsLoading] = useState(true)
 
 	// data select to delete all
 	const [dataSl, setDataSl] = useState<Array<number> | null>()
@@ -128,14 +128,14 @@ const jobApplications: NextLayout = () => {
 
 	useEffect(() => {
 		if (dataAllJobApplications) {
-			setIsloading(false)
+			setIsLoading(false)
 		}
 	}, [dataAllJobApplications])
 
 	const columns: TColumn[] = jobApplicationColumn({
 		currentUser,
 		onChangeStatus: async (id: number, event: any) => {
-			setIsloading(true)
+			setIsLoading(true)
 			await updateStatus({
 				id,
 				status: event.target.value,
@@ -222,7 +222,7 @@ const jobApplications: NextLayout = () => {
 			{/* alert dialog when delete one */}
 			<AlertDialog
 				handleDelete={() => {
-					setIsloading(true)
+					setIsLoading(true)
 					deleteOne(String(idJobApplication))
 				}}
 				title="Are you sure?"
@@ -235,7 +235,7 @@ const jobApplications: NextLayout = () => {
 			<AlertDialog
 				handleDelete={() => {
 					if (dataSl) {
-						setIsloading(true)
+						setIsLoading(true)
 						deleteMany({
 							jobApplications: dataSl,
 						})

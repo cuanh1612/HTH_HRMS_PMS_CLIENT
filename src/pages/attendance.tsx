@@ -214,7 +214,7 @@ const attendance: NextLayout = () => {
 	useEffect(() => {
 		if (status == 'success') {
 			setToast({
-				type: 'success',
+				type: status,
 				msg: String(dataAttendance?.message),
 			})
 			refetchAttendances()

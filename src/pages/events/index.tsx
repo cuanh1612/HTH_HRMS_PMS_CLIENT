@@ -102,7 +102,7 @@ const Event: NextLayout = () => {
 	)
 
 	// delete
-	const [mutateDlEvent, { status: statusDl }] = deleteEventMutation(setToast)
+	const [mutateDlEvent, { status: statusDl, data: dataDl }] = deleteEventMutation(setToast)
 
 	const { data: allEmployees } = allEmployeesNormalQuery(isAuthenticated)
 	const { data: allClients } = allClientsQuery(isAuthenticated)
@@ -110,10 +110,10 @@ const Event: NextLayout = () => {
 	//User effect ---------------------------------------------------------------
 	// check is successfully delete one
 	useEffect(() => {
-		if (statusDl == 'success') {
+		if (statusDl == 'success' && dataDl) {
 			setToast({
-				msg: 'Delete employee successfully',
-				type: 'success',
+				msg: dataDl?.message,
+				type: statusDl,
 			})
 			refetchEvents()
 			onCloseDetail()

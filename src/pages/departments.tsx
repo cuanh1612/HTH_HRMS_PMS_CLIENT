@@ -30,9 +30,7 @@ import { ChangeEvent, ChangeEventHandler, useContext, useEffect, useState } from
 import { AiOutlineCheck } from 'react-icons/ai'
 import { MdDeleteOutline } from 'react-icons/md'
 
-export interface IDepartmentProps {}
-
-export default function Department({}: IDepartmentProps) {
+export default function Department() {
 	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
 	const router = useRouter()
 
@@ -70,7 +68,7 @@ export default function Department({}: IDepartmentProps) {
 				refetchDepartments()
 				if (dataCreDepartment) {
 					setToast({
-						type: 'success',
+						type: statusCreDepartment,
 						msg: dataCreDepartment?.message,
 					})
 				}
@@ -88,7 +86,7 @@ export default function Department({}: IDepartmentProps) {
 				refetchDepartments()
 				if (dataDeleDepartment) {
 					setToast({
-						type: 'success',
+						type: statusDeleDepartment,
 						msg: dataDeleDepartment?.message,
 					})
 				}
@@ -106,7 +104,7 @@ export default function Department({}: IDepartmentProps) {
 				refetchDepartments()
 				if (dataUpDepartment) {
 					setToast({
-						type: 'success',
+						type: statusUpDepartment,
 						msg: dataUpDepartment?.message,
 					})
 				}

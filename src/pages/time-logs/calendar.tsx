@@ -2,16 +2,10 @@ import {
 	Box,
 	Button,
 	ButtonGroup,
-	DrawerBody,
-	DrawerCloseButton,
-	DrawerContent,
-	DrawerHeader,
-	DrawerOverlay,
 	HStack,
 	useColorMode,
 	useColorModeValue,
 	useDisclosure,
-	Drawer as CDrawer,
 	VStack,
 	Avatar,
 	Text,
@@ -214,7 +208,7 @@ const calendar: NextLayout = () => {
 		if (statusDlOne == 'success' && dataDlOne) {
 			setToast({
 				msg: dataDlOne.message,
-				type: 'success',
+				type: statusDlOne,
 			})
 			refetchTimeLogs()
 		}

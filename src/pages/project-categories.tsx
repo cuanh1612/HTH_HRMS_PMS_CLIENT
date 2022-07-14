@@ -30,9 +30,7 @@ import { ChangeEvent, ChangeEventHandler, useContext, useEffect, useState } from
 import { AiOutlineCheck } from 'react-icons/ai'
 import { MdDeleteOutline } from 'react-icons/md'
 
-export interface IProjectCategoryProps {}
-
-export default function ProjectCategory({}: IProjectCategoryProps) {
+export default function ProjectCategory() {
 	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
 	const router = useRouter()
 
@@ -76,7 +74,7 @@ export default function ProjectCategory({}: IProjectCategoryProps) {
 				refetchProjectCategories()
 				if (dataCreProjectCategory) {
 					setToast({
-						type: 'success',
+						type: statusCreProjectCategory,
 						msg: dataCreProjectCategory?.message,
 					})
 				}
@@ -94,7 +92,7 @@ export default function ProjectCategory({}: IProjectCategoryProps) {
 				refetchProjectCategories()
 				if (dataDeleProjectCategory) {
 					setToast({
-						type: 'success',
+						type: statusDeleProjectCategory,
 						msg: dataDeleProjectCategory?.message,
 					})
 				}
@@ -112,7 +110,7 @@ export default function ProjectCategory({}: IProjectCategoryProps) {
 				refetchProjectCategories()
 				if (dataUpProjectCategory) {
 					setToast({
-						type: 'success',
+						type: statusUpProjectCategory,
 						msg: dataUpProjectCategory?.message,
 					})
 				}

@@ -161,7 +161,7 @@ const Messages: NextLayout = () => {
 			if (dataDeleteConversation) {
 				setToast({
 					msg: dataDeleteConversation?.message,
-					type: 'success',
+					type: statusDeleteConversation,
 				})
 			}
 

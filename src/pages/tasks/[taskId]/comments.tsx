@@ -103,7 +103,7 @@ export default function TaskComments({ taskIdProp }: ITaskCommentsProps) {
 	useEffect(() => {
 		if (statusCreTaskComment === 'success') {
 			setToast({
-				type: 'success',
+				type: statusCreTaskComment,
 				msg: dataCreTaskComment?.message as string,
 			})
 
@@ -122,7 +122,7 @@ export default function TaskComments({ taskIdProp }: ITaskCommentsProps) {
 	useEffect(() => {
 		if (statusDeleteTaskComment === 'success') {
 			setToast({
-				type: 'success',
+				type: statusDeleteTaskComment,
 				msg: dataDeleteTaskComment?.message as string,
 			})
 
@@ -139,7 +139,7 @@ export default function TaskComments({ taskIdProp }: ITaskCommentsProps) {
 	useEffect(() => {
 		if (statusUpTaskComment === 'success') {
 			setToast({
-				type: 'success',
+				type: statusUpTaskComment,
 				msg: dataUpTaskComment?.message as string,
 			})
 

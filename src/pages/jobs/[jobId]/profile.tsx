@@ -14,16 +14,13 @@ export interface IDetailJobProps {
 	onOpenUpdate?: any
 }
 
-const DetailJob: NextLayout | any = ({ jobIdProp, onOpenDl, onOpenUpdate }: IDetailJobProps)=> {
+const DetailJob: NextLayout | any = ({ jobIdProp, onOpenDl, onOpenUpdate }: IDetailJobProps) => {
 	const { isAuthenticated, handleLoading, currentUser } = useContext(AuthContext)
 	const router = useRouter()
 	const { jobId: jobIdRouter } = router.query
 
 	//Query -------------------------------------------------------------
-	const { data: detailJob } = detailJobQuery(
-		isAuthenticated,
-		jobIdProp || (jobIdRouter as string)
-	)
+	const { data: detailJob } = detailJobQuery(jobIdProp || (jobIdRouter as string))
 
 	//User effect ---------------------------------------------------------------
 	//Handle check loged in
@@ -71,7 +68,11 @@ const DetailJob: NextLayout | any = ({ jobIdProp, onOpenDl, onOpenUpdate }: IDet
 								End Date:
 							</GridItem>
 							<GridItem w="100%" colSpan={[2, 1]}>
-								{detailJob?.job?.ends_on_date ?  new Date(detailJob?.job?.ends_on_date).toLocaleDateString('en-GB') : '--'}
+								{detailJob?.job?.ends_on_date
+									? new Date(detailJob?.job?.ends_on_date).toLocaleDateString(
+											'en-GB'
+									  )
+									: '--'}
 							</GridItem>
 							<GridItem w="100%" colSpan={[2, 1]} color={'gray.400'}>
 								Status:

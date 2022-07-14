@@ -60,7 +60,7 @@ export default function AddStickyNotes({ onCloseDrawer }: IAddStickyNotesProps) 
 			refetchAllStickyNote()
 
 			setToast({
-				type: 'success',
+				type: statusCreStickyNote,
 				msg: dataCreStickyNote?.message as string,
 			})
 		}
@@ -84,7 +84,7 @@ export default function AddStickyNotes({ onCloseDrawer }: IAddStickyNotesProps) 
 			})
 		} else {
 			values.note = note
-			mutateCreStickyNote(values)
+			await mutateCreStickyNote(values)
 		}
 	}
 

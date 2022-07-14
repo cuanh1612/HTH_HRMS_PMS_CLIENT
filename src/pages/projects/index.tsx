@@ -50,7 +50,7 @@ const Projects: NextLayout = () => {
 	const [dataSl, setDataSl] = useState<Array<number> | null>()
 
 	// set loading table
-	const [isLoading, setIsloading] = useState(true)
+	const [isLoading, setIsLoading] = useState(true)
 
 	// set filter
 	const [filter, setFilter] = useState<IFilter>({
@@ -113,10 +113,10 @@ const Projects: NextLayout = () => {
 	const { data: allEmployees } = allEmployeesNormalQuery(isAuthenticated)
 
 	// delete project
-	const [mutateDeletePj, { status: statusDl }] = deleteProjectMutation(setToast)
+	const [mutateDeletePj, { status: statusDl, data: dataDl }] = deleteProjectMutation(setToast)
 
 	// delete all projects
-	const [mutateDeletePjs, { status: statusDlMany }] = deleteProjectsMutation(setToast)
+	const [mutateDeletePjs, { status: statusDlMany, data: dataDlMany }] = deleteProjectsMutation(setToast)
 
 	// header ----------------------------------------
 	const columns: TColumn[] = projectColumn({
@@ -147,7 +147,7 @@ const Projects: NextLayout = () => {
 	// set loading == false when get all holidays successfully
 	useEffect(() => {
 		if (allProjects) {
-			setIsloading(false)
+			setIsLoading(false)
 
 			if (allProjects.projects) {
 				//Set data csv
@@ -175,10 +175,10 @@ const Projects: NextLayout = () => {
 
 	// check is successfully delete one
 	useEffect(() => {
-		if (statusDl == 'success') {
+		if (statusDl == 'success' && dataDl) {
 			setToast({
-				msg: 'Delete project successfully',
-				type: 'success',
+				msg: dataDl.message,
+				type: statusDl,
 			})
 			refetchAllProjects()
 		}
@@ -186,10 +186,10 @@ const Projects: NextLayout = () => {
 
 	// check is successfully delete many
 	useEffect(() => {
-		if (statusDlMany == 'success') {
+		if (statusDlMany == 'success' && dataDlMany) {
 			setToast({
-				msg: 'Delete projects successfully',
-				type: 'success',
+				msg: dataDlMany.message,
+				type: statusDlMany,
 			})
 			setDataSl(null)
 			refetchAllProjects()
@@ -305,7 +305,7 @@ const Projects: NextLayout = () => {
 			{/* alert dialog when delete one */}
 			<AlertDialog
 				handleDelete={() => {
-					setIsloading(true)
+					setIsLoading(true)
 					mutateDeletePj(String(projectId))
 				}}
 				title="Are you sure?"
@@ -318,7 +318,7 @@ const Projects: NextLayout = () => {
 			<AlertDialog
 				handleDelete={() => {
 					if (dataSl) {
-						setIsloading(true)
+						setIsLoading(true)
 						mutateDeletePjs(dataSl)
 					}
 				}}

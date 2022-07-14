@@ -32,9 +32,8 @@ import { ChangeEventHandler, useContext, useEffect, useState } from 'react'
 import { AiOutlineCheck } from 'react-icons/ai'
 import { MdDeleteOutline } from 'react-icons/md'
 
-export interface IProjectDiscussionCategoryProps {}
 
-export default function ProjectDiscussionCategory({}: IProjectDiscussionCategoryProps) {
+export default function ProjectDiscussionCategory() {
 	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
 	const router = useRouter()
 
@@ -80,7 +79,7 @@ export default function ProjectDiscussionCategory({}: IProjectDiscussionCategory
 					refetchDiscussionCategories()
 
 					setToast({
-						type: 'success',
+						type: statusCreDiscussionCategory,
 						msg: dataCreDiscussionCategory?.message,
 					})
 				}
@@ -99,7 +98,7 @@ export default function ProjectDiscussionCategory({}: IProjectDiscussionCategory
 					refetchDiscussionCategories()
 
 					setToast({
-						type: 'success',
+						type: statusDeleDiscussionCategory,
 						msg: dataDeleDiscussionCategory?.message,
 					})
 				}
@@ -118,7 +117,7 @@ export default function ProjectDiscussionCategory({}: IProjectDiscussionCategory
 					refetchDiscussionCategories()
 
 					setToast({
-						type: 'success',
+						type: statusUpDiscussionCategory,
 						msg: dataUpDiscussionCategory?.message,
 					})
 				}

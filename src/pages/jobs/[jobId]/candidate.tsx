@@ -26,10 +26,7 @@ export default function Candidate({ jobIdProp }: ICandidateProps) {
 		jobIdProp || (jobIdRouter as string)
 	)
 
-	const { data: detailJob } = detailJobQuery(
-		isAuthenticated,
-		jobIdProp || (jobIdRouter as string)
-	)
+	const { data: detailJob } = detailJobQuery(jobIdProp || (jobIdRouter as string))
 
 	//User effect ---------------------------------------------------------------
 	//Handle check loged in

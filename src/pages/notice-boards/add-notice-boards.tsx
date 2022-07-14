@@ -72,7 +72,7 @@ export default function AddNoticeBoard({ onCloseDrawer }: IAddNoticeBoardProps) 
 			}
 
 			setToast({
-				type: 'success',
+				type: statusCreNoticeBoard,
 				msg: dataCreNoticeBoard?.message as string,
 			})
 
@@ -101,7 +101,7 @@ export default function AddNoticeBoard({ onCloseDrawer }: IAddNoticeBoardProps) 
 			//Create project
 			values.details = detailNotice
 			values.notice_to = noticeTo
-			mutateCreNoticeBoard(values)
+			await mutateCreNoticeBoard(values)
 		}
 	}
 

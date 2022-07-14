@@ -86,7 +86,7 @@ export default function UpdateNoticeBoard({
 			//Create project
 			values.details = detailNotice
 			values.notice_to = noticeTo
-			mutateUpNoticeBoard({
+			await mutateUpNoticeBoard({
 				inputUpdate: values,
 				noticeBoardId: noticeBoardIdProp || (noticeBoardIdRouter as string),
 			})
@@ -127,7 +127,7 @@ export default function UpdateNoticeBoard({
 			}
 
 			setToast({
-				type: 'success',
+				type: statusUpNoticeBoard,
 				msg: dataUpNoticeBoard?.message as string,
 			})
 

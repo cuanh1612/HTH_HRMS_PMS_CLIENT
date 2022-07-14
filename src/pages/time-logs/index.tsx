@@ -43,7 +43,7 @@ const TimeLogs: NextLayout = () => {
 	})
 
 	// set loading table
-	const [isLoading, setIsloading] = useState(true)
+	const [isLoading, setIsLoading] = useState(true)
 
 	// is reset table
 	const [isResetFilter, setIsReset] = useState(false)
@@ -132,8 +132,7 @@ const TimeLogs: NextLayout = () => {
 	// when get all data success
 	useEffect(() => {
 		if (allTimeLogs) {
-			console.log(allTimeLogs)
-			setIsloading(false)
+			setIsLoading(false)
 
 			if (allTimeLogs.timeLogs) {
 				//Set data csv
@@ -163,10 +162,10 @@ const TimeLogs: NextLayout = () => {
 		if (statusDlOne == 'success' && dataDlOne) {
 			setToast({
 				msg: dataDlOne.message,
-				type: 'success',
+				type: statusDlOne,
 			})
 			refetchTimeLogs()
-			setIsloading(false)
+			setIsLoading(false)
 
 			if (socket) {
 				socket.emit('newTimeLog')
@@ -179,11 +178,11 @@ const TimeLogs: NextLayout = () => {
 		if (statusDlMany == 'success' && dataDlMany) {
 			setToast({
 				msg: dataDlMany.message,
-				type: 'success',
+				type: statusDlMany,
 			})
 			setDataSl(null)
 			refetchTimeLogs()
-			setIsloading(false)
+			setIsLoading(false)
 
 			if (socket) {
 				socket.emit('newTimeLog')
@@ -322,7 +321,7 @@ const TimeLogs: NextLayout = () => {
 			{/* alert dialog when delete one */}
 			<AlertDialog
 				handleDelete={() => {
-					setIsloading(true)
+					setIsLoading(true)
 					deleteOne(String(idTimeLog))
 				}}
 				title="Are you sure?"
@@ -335,7 +334,7 @@ const TimeLogs: NextLayout = () => {
 			<AlertDialog
 				handleDelete={() => {
 					if (dataSl) {
-						setIsloading(true)
+						setIsLoading(true)
 						deleteMany(dataSl)
 					}
 				}}

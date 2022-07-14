@@ -41,7 +41,7 @@ const NoticeBoard: NextLayout = () => {
 	const [dataSl, setDataSl] = useState<Array<number> | null>()
 
 	// set loading table
-	const [isLoading, setIsloading] = useState(true)
+	const [isLoading, setIsLoading] = useState(true)
 
 	// is reset table
 	const [isResetFilter, setIsReset] = useState(false)
@@ -111,7 +111,7 @@ const NoticeBoard: NextLayout = () => {
 	useEffect(() => {
 		if (allNotices) {
 			console.log(allNotices)
-			setIsloading(false)
+			setIsLoading(false)
 
 			if (allNotices.noticeBoards) {
 				//Set data csv
@@ -144,11 +144,11 @@ const NoticeBoard: NextLayout = () => {
 	useEffect(() => {
 		if (statusDlOne == 'success' && dataDlOne) {
 			setToast({
-				type: 'success',
+				type: statusDlOne,
 				msg: dataDlOne.message,
 			})
 			refetchNotices()
-			setIsloading(false)
+			setIsLoading(false)
 			if (socket) {
 				socket.emit('newNoticeBoard')
 			}
@@ -159,12 +159,12 @@ const NoticeBoard: NextLayout = () => {
 	useEffect(() => {
 		if (statusDlMany == 'success' && dataDlMany) {
 			setToast({
-				type: 'success',
+				type: statusDlMany,
 				msg: dataDlMany.message,
 			})
 			setDataSl([])
 			refetchNotices()
-			setIsloading(false)
+			setIsLoading(false)
 
 			if (socket) {
 				socket.emit('newNoticeBoard')
@@ -247,7 +247,7 @@ const NoticeBoard: NextLayout = () => {
 			{/* alert dialog when delete one */}
 			<AlertDialog
 				handleDelete={() => {
-					setIsloading(true)
+					setIsLoading(true)
 					deleteNotice(noticeId)
 				}}
 				title="Are you sure?"
@@ -260,7 +260,7 @@ const NoticeBoard: NextLayout = () => {
 			<AlertDialog
 				handleDelete={() => {
 					if (dataSl) {
-						setIsloading(true)
+						setIsLoading(true)
 						deleteMany(dataSl)
 					}
 				}}

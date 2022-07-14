@@ -44,7 +44,7 @@ const recoverPassword: NextLayout = () => {
     if(statusRecover == 'success' && dataRecover) {
       setToast({
         msg: dataRecover.message,
-        type: 'success'
+        type: statusRecover
       })
     }
   }, [statusRecover])

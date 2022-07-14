@@ -24,14 +24,14 @@ import {
 	VStack
 } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { Loading } from 'components/common'
 import { Input } from 'components/form'
-import {Loading} from 'components/common'
 import Modal from 'components/modal/Modal'
 import { AuthContext } from 'contexts/AuthContext'
 import { convert } from 'html-to-text'
 import jsPDF from 'jspdf'
-import { createSignMutation } from 'mutations'
-import { GetServerSideProps  } from 'next'
+import { createSignContractMutation } from 'mutations'
+import { GetServerSideProps } from 'next'
 import Link from 'next/link'
 import { publicContractQuery } from 'queries'
 import { useContext, useEffect, useRef, useState } from 'react'
@@ -46,7 +46,13 @@ import { signBase64Empaty } from 'utils/basicData'
 import { getDataBlob, uploadBase64 } from 'utils/uploadFile'
 import { CreateSignatureValidate } from 'utils/validate'
 
-export default function PublickContract({result, token}: {result: contractMutaionResponse, token: string }) {
+export default function PublickContract({
+	result,
+	token,
+}: {
+	result: contractMutaionResponse
+	token: string
+}) {
 	const { handleLoading, setToast } = useContext(AuthContext)
 
 	//state ------------------------------------------------------------
@@ -64,7 +70,7 @@ export default function PublickContract({result, token}: {result: contractMutaio
 
 	//mutation ---------------------------------------------------------
 	const [mutateCreSign, { status: statusCreSign, data: dataCreSign }] =
-		createSignMutation(setToast)
+		createSignContractMutation(setToast)
 
 	//Query ------------------------------------------------------------
 	const { data: dataDetailContract, mutate: refetchDetailContract } = publicContractQuery(token)
@@ -136,7 +142,7 @@ export default function PublickContract({result, token}: {result: contractMutaio
 		if (statusCreSign === 'success' && dataCreSign) {
 			setToast({
 				msg: dataCreSign.message,
-				type: 'success',
+				type: statusCreSign,
 			})
 
 			refetchDetailContract()
@@ -223,7 +229,7 @@ export default function PublickContract({result, token}: {result: contractMutaio
 		<SWRConfig
 			value={{
 				fallback: {
-					[token]: result
+					[token]: result,
 				},
 			}}
 		>
@@ -388,7 +394,7 @@ export default function PublickContract({result, token}: {result: contractMutaio
 					isOpen={isOpenSignature}
 					onOpen={onOpenSignature}
 					onClose={onCloseSignature}
-					title="Contract Type"
+					title="Contract Sign"
 				>
 					<Box
 						pos="relative"
@@ -489,26 +495,27 @@ export default function PublickContract({result, token}: {result: contractMutaio
 	)
 }
 
-
 export const getServerSideProps: GetServerSideProps = async (context) => {
-	const getAccessToken: contractMutaionResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/contracts/public/${context.query.token}`, {
-		method: 'GET',
-		headers: {
-			cookie: context.req.headers.cookie,
-		} as HeadersInit,
-	}).then((e) => e.json())
+	const getAccessToken: contractMutaionResponse = await fetch(
+		`${process.env.NEXT_PUBLIC_API_URL}/api/contracts/public/${context.query.token}`,
+		{
+			method: 'GET',
+			headers: {
+				cookie: context.req.headers.cookie,
+			} as HeadersInit,
+		}
+	).then((e) => e.json())
 
-	if(!getAccessToken.success) {
+	if (!getAccessToken.success) {
 		return {
-			notFound: true
+			notFound: true,
 		}
 	}
 
 	return {
 		props: {
 			result: getAccessToken,
-			token:  context.query.token
+			token: context.query.token,
 		},
 	}
 }
-

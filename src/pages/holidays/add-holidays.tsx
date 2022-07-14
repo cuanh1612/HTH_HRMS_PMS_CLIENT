@@ -112,7 +112,7 @@ export default function AddHoliday({ onCloseDrawer }: IAddHolidayProps) {
 			}
 
 			setToast({
-				type: 'success',
+				type: statusCreHolidays,
 				msg: dataCreHolidays?.message as string,
 			})
 

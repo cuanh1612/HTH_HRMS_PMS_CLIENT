@@ -126,7 +126,7 @@ export default function JobApplicationFile({ jobApplicationIdProp }: IJobApplica
 	useEffect(() => {
 		if (statusCreJobApplicationFile === 'success') {
 			setToast({
-				type: 'success',
+				type: statusCreJobApplicationFile,
 				msg: dataCreJobApplicationFile?.message as string,
 			})
 
@@ -145,7 +145,7 @@ export default function JobApplicationFile({ jobApplicationIdProp }: IJobApplica
 	useEffect(() => {
 		if (statusDeleteJobApplicationFile === 'success') {
 			setToast({
-				type: 'success',
+				type: statusDeleteJobApplicationFile,
 				msg: dataDeleteJobApplicationFile?.message as string,
 			})
 

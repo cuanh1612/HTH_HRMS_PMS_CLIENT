@@ -50,7 +50,7 @@ const Contracts: NextLayout = () => {
 	const [dataCSV, setDataCSV] = useState<any[]>([])
 
 	// set loading table
-	const [isLoading, setIsloading] = useState(true)
+	const [isLoading, setIsLoading] = useState(true)
 
 	// data select to delete all
 	const [dataSl, setDataSl] = useState<Array<number> | null>()
@@ -213,10 +213,10 @@ const Contracts: NextLayout = () => {
 
 	// mutation -------------------------------------------------------------------
 	// delete holidays
-	const [mutateDeleteContracts, { status: statusDlContracts }] = deleteContractsMutation(setToast)
+	const [mutateDeleteContracts, { status: statusDlContracts, data: dataDlMany }] = deleteContractsMutation(setToast)
 
 	// delete holiday
-	const [mutateDeleteContract, { status: statusDl }] = deleteContractMutation(setToast)
+	const [mutateDeleteContract, { status: statusDl, data: dataDl }] = deleteContractMutation(setToast)
 
 	// get public link
 	const [mutateGetPublic, { data: contractToken, status: statusToken }] =
@@ -286,7 +286,7 @@ const Contracts: NextLayout = () => {
 		if (statusImportCSV == 'success' && dataImportCSV?.message) {
 			setToast({
 				msg: dataImportCSV?.message,
-				type: 'success',
+				type: statusImportCSV,
 			})
 			setDataSl(null)
 			refetchAllContracts()
@@ -296,7 +296,7 @@ const Contracts: NextLayout = () => {
 	useEffect(() => {
 		if (allContracts) {
 			console.log(allContracts)
-			setIsloading(false)
+			setIsLoading(false)
 
 			if (allContracts.contracts) {
 				//Set data csv
@@ -331,10 +331,10 @@ const Contracts: NextLayout = () => {
 
 	// check is successfully delete many
 	useEffect(() => {
-		if (statusDlContracts == 'success') {
+		if (statusDlContracts == 'success' && dataDlMany) {
 			setToast({
-				msg: 'Delete employees successfully',
-				type: 'success',
+				msg: dataDlMany.message,
+				type: statusDlContracts,
 			})
 			setDataSl(null)
 			refetchAllContracts()
@@ -343,10 +343,10 @@ const Contracts: NextLayout = () => {
 
 	// check is successfully delete one
 	useEffect(() => {
-		if (statusDl == 'success') {
+		if (statusDl == 'success' && dataDl) {
 			setToast({
-				msg: 'Delete employee successfully',
-				type: 'success',
+				msg: dataDl.message,
+				type: statusDl,
 			})
 			refetchAllContracts()
 		}
@@ -483,7 +483,7 @@ const Contracts: NextLayout = () => {
 			<AlertDialog
 				handleDelete={() => {
 					if (dataSl) {
-						setIsloading(true)
+						setIsLoading(true)
 						mutateDeleteContracts(dataSl)
 					}
 				}}
@@ -496,7 +496,7 @@ const Contracts: NextLayout = () => {
 			{/* alert dialog when delete one */}
 			<AlertDialog
 				handleDelete={() => {
-					setIsloading(true)
+					setIsLoading(true)
 					mutateDeleteContract(String(idDlContract))
 				}}
 				title="Are you sure?"

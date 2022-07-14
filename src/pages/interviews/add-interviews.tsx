@@ -148,7 +148,7 @@ export default function AddJob({ onCloseDrawer }: IAddJobProps) {
 			//Inform notice success
 			if (dataCreInterview) {
 				setToast({
-					type: 'success',
+					type: statusCreInterview,
 					msg: dataCreInterview?.message,
 				})
 			}

@@ -59,7 +59,7 @@ const members: NextLayout = () => {
 	const { isOpen: isOpenAdd, onOpen: onOpenAdd, onClose: onCloseAdd } = useDisclosure()
 
 	// set loading table
-	const [isLoading, setIsloading] = useState(true)
+	const [isLoading, setIsLoading] = useState(true)
 
 	// set radio to add employee by id or department
 	const [radioFormVl, setRadioFormVl] = useState(1)
@@ -119,7 +119,7 @@ const members: NextLayout = () => {
 			})
 		}
 
-		assignEmployee({
+		await assignEmployee({
 			inputUpdate: values,
 			projectId,
 		})
@@ -140,7 +140,7 @@ const members: NextLayout = () => {
 			})
 		}
 
-		assignEmplByDepartment({
+		await assignEmplByDepartment({
 			inputUpdate: values,
 			projectId,
 		})
@@ -170,7 +170,7 @@ const members: NextLayout = () => {
 	useEffect(() => {
 		if (statusSetAdmin == 'success' && dataProjectAdmin) {
 			setToast({
-				type: 'success',
+				type: statusSetAdmin,
 				msg: dataProjectAdmin.message,
 			})
 
@@ -186,12 +186,12 @@ const members: NextLayout = () => {
 	useEffect(() => {
 		if (statusDelete == 'success' && dataDeleteEmpl) {
 			setToast({
-				type: 'success',
+				type: statusDelete,
 				msg: dataDeleteEmpl.message,
 			})
 			refetchMember()
 			refetchEmplNotIn()
-			setIsloading(false)
+			setIsLoading(false)
 			// Emit to other user join room
 			if (socket && projectId) {
 				socket.emit('newMemberProject', projectId)
@@ -202,11 +202,11 @@ const members: NextLayout = () => {
 	useEffect(() => {
 		if (statusHourlyRate == 'success' && dataHourlyRate) {
 			setToast({
-				type: 'success',
+				type: statusHourlyRate,
 				msg: dataHourlyRate.message,
 			})
 			refetchMember()
-			setIsloading(false)
+			setIsLoading(false)
 			// Emit to other user join room
 			if (socket && projectId) {
 				socket.emit('newMemberProject', projectId)
@@ -217,12 +217,12 @@ const members: NextLayout = () => {
 	useEffect(() => {
 		if (statusAssign == 'success' && dataAssign) {
 			setToast({
-				type: 'success',
+				type: statusAssign,
 				msg: dataAssign.message,
 			})
 			refetchMember()
 			refetchEmplNotIn()
-			setIsloading(false)
+			setIsLoading(false)
 			onCloseAdd()
 			formSetting.reset({
 				employees: [],
@@ -238,12 +238,12 @@ const members: NextLayout = () => {
 	useEffect(() => {
 		if (statusAssignByDepartment == 'success' && dataAssignByDepartment) {
 			setToast({
-				type: 'success',
+				type: statusAssignByDepartment,
 				msg: dataAssignByDepartment.message,
 			})
 			refetchMember()
 			refetchEmplNotIn()
-			setIsloading(false)
+			setIsLoading(false)
 			onCloseAdd()
 			formSetting2.reset({
 				departments: [],
@@ -259,7 +259,7 @@ const members: NextLayout = () => {
 	//Set data option employees state
 	useEffect(() => {
 		if (allEmployeesNotIn && allEmployeesNotIn.employees) {
-			let newOptionEmployees: IOption[] = []
+			const newOptionEmployees: IOption[] = []
 
 			allEmployeesNotIn.employees.map((employee) => {
 				newOptionEmployees.push({
@@ -286,7 +286,7 @@ const members: NextLayout = () => {
 	//Set data option employees state
 	useEffect(() => {
 		if (allDepartments && allDepartments.departments) {
-			let newOptionDepartments: IOption[] = []
+			const newOptionDepartments: IOption[] = []
 
 			allDepartments.departments.map((department) => {
 				newOptionDepartments.push({
@@ -326,7 +326,7 @@ const members: NextLayout = () => {
 
 	useEffect(() => {
 		if (projectResponse) {
-			setIsloading(false)
+			setIsLoading(false)
 		}
 	}, [projectResponse])
 
@@ -352,7 +352,7 @@ const members: NextLayout = () => {
 					idEmployee: Number(idMember),
 					idProject: projectResponse?.project?.id,
 				})
-				setIsloading(true)
+				setIsLoading(true)
 			}, 500)
 		},
 	})
@@ -391,7 +391,7 @@ const members: NextLayout = () => {
 			{/* alert dialog when delete one */}
 			<AlertDialog
 				handleDelete={() => {
-					setIsloading(true)
+					setIsLoading(true)
 					deleteEmployee({
 						employeeId,
 						projectId,

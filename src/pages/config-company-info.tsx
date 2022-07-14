@@ -19,7 +19,7 @@ const ConfigCompany: NextLayout = () => {
 	const [website, setWebsite] = useState<string>('')
 
 	//Query ----------------------------------------------------------------------
-	const { data: dataCompanyInfo, mutate: refetchCompanyInfo } = companyInfoQuery(isAuthenticated)
+	const { data: dataCompanyInfo, mutate: refetchCompanyInfo } = companyInfoQuery()
 
 	//mutation -------------------------------------------------------------------
 	const [mutateUpCompanyInfo, { status: statusUpCompanyInfo, data: dataUpCompanyInfo }] =
@@ -41,7 +41,7 @@ const ConfigCompany: NextLayout = () => {
 	useEffect(() => {
 		if (statusUpCompanyInfo === 'success' && dataUpCompanyInfo?.message) {
 			setToast({
-				type: 'success',
+				type: statusUpCompanyInfo,
 				msg: dataUpCompanyInfo.message,
 			})
 

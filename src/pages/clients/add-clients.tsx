@@ -182,7 +182,7 @@ export default function AddClient({ onCloseDrawer }: IAddClientProps) {
 			//Inform notice success
 			if (dataCreClient) {
 				setToast({
-					type: 'success',
+					type: statusCreClient,
 					msg: dataCreClient?.message,
 				})
 			}

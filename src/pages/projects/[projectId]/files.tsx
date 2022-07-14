@@ -117,7 +117,7 @@ const Files: NextLayout = () => {
 	useEffect(() => {
 		if (statusCreProjectFile === 'success') {
 			setToast({
-				type: 'success',
+				type: statusCreProjectFile,
 				msg: dataCreProjectFile?.message as string,
 			})
 
@@ -136,7 +136,7 @@ const Files: NextLayout = () => {
 	useEffect(() => {
 		if (statusDeleteProjectFile === 'success') {
 			setToast({
-				type: 'success',
+				type: statusDeleteProjectFile,
 				msg: dataDeleteProjectFile?.message as string,
 			})
 

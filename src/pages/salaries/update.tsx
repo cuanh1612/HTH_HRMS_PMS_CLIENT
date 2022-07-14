@@ -52,7 +52,7 @@ export default function UpdateSalary({ employeeId = 6 }: IUpdateSalaryProps) {
 			})
 		} else {
 			values.employee = Number(employeeId)
-			mutateUpSalary(values)
+			await mutateUpSalary(values)
 		}
 	}
 
@@ -80,7 +80,7 @@ export default function UpdateSalary({ employeeId = 6 }: IUpdateSalaryProps) {
 
 				if (dataUpSalary) {
 					setToast({
-						type: 'success',
+						type: statusUpSalary,
 						msg: dataUpSalary?.message,
 					})
 				}

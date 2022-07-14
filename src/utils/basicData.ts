@@ -355,11 +355,11 @@ export const dataJobOfferStatus: IOption[] = [
 		label: 'Pending',
 	},
 	{
-		value: 'Draft',
-		label: 'Draft',
+		value: 'Accepted',
+		label: 'Accepted',
 	},
 	{
-		value: 'Withdraw',
-		label: 'Withdraw',
+		value: 'Rejected',
+		label: 'Rejected',
 	},
 ]

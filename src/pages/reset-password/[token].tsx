@@ -59,7 +59,7 @@ const resetPass: NextLayout = () => {
 		if(statusReset == 'success' && dataReset) {
 			setToast({
 				msg: dataReset.message,
-				type: 'success'
+				type: statusReset
 			})
 			router.push('/login')
 		}

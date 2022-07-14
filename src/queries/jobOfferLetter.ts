@@ -1,5 +1,5 @@
 import { AxiosError } from 'axios'
-import { getJobOfferRequest } from 'requests/jobOfferLetter'
+import { getJobOfferRequest, publicJobOfferLetterRequest } from 'requests/jobOfferLetter'
 import useSWR from 'swr'
 import { jobOfferLetterMutationResponse } from 'type/mutationResponses'
 
@@ -26,4 +26,11 @@ export const detailJobOfferQuery = (
 			revalidateOnFocus: false,
 		}
 	)
+}
+
+export const publicJobOfferLetterQuery = (token: string) => {
+	return useSWR<jobOfferLetterMutationResponse, AxiosError>(token, publicJobOfferLetterRequest, {
+		errorRetryCount: 2,
+		revalidateOnFocus: false,
+	})
 }

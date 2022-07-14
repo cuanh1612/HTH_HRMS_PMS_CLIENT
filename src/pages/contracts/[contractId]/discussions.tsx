@@ -87,7 +87,7 @@ const Discussion: NextLayout = () => {
 	useEffect(() => {
 		if (statusCreDiscussion === 'success') {
 			setToast({
-				type: 'success',
+				type: statusCreDiscussion,
 				msg: dataCreDiscussion?.message as string,
 			})
 
@@ -106,7 +106,7 @@ const Discussion: NextLayout = () => {
 	useEffect(() => {
 		if (statusDeleteDiscussion === 'success') {
 			setToast({
-				type: 'success',
+				type: statusDeleteDiscussion,
 				msg: dataDeleteDiscussion?.message as string,
 			})
 
@@ -123,7 +123,7 @@ const Discussion: NextLayout = () => {
 	useEffect(() => {
 		if (statusUpDiscussion === 'success') {
 			setToast({
-				type: 'success',
+				type: statusUpDiscussion,
 				msg: dataUpDiscussion?.message as string,
 			})
 

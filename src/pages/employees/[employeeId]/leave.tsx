@@ -50,7 +50,7 @@ const LeavesEmployee: NextLayout = () => {
 
 	//State ---------------------------------------------------------------------
 	// set loading table
-	const [isLoading, setIsloading] = useState(true)
+	const [isLoading, setIsLoading] = useState(true)
 
 	// data select to delete all
 	const [dataSl, setDataSl] = useState<Array<number> | null>()
@@ -74,13 +74,14 @@ const LeavesEmployee: NextLayout = () => {
 	const { data: allLeaveType } = allLeaveTypesQuery()
 
 	// update status of leave
-	const [mutateUpdateStatus, { status: statusUpStatus }] = updateStatusMutation(setToast)
+	const [mutateUpdateStatus, { status: statusUpStatus, data: dataUpdate }] =
+		updateStatusMutation(setToast)
 
 	// delete leave
-	const [mutateDeleteLeave, { status: statusDl }] = deleteLeaveMutation(setToast)
+	const [mutateDeleteLeave, { status: statusDl, data: dataDl }] = deleteLeaveMutation(setToast)
 
 	// delete all leaves
-	const [mutateDeleteLeaves, { status: statusDlMany }] = deleteLeavesMutation(setToast)
+	const [mutateDeleteLeaves, { status: statusDlMany, data: dataDlMany }] = deleteLeavesMutation(setToast)
 
 	//User effect ---------------------------------------------------------------
 	// check authenticate in
@@ -96,10 +97,10 @@ const LeavesEmployee: NextLayout = () => {
 
 	// check is successfully delete one
 	useEffect(() => {
-		if (statusDl == 'success') {
+		if (statusDl == 'success' && dataDl) {
 			setToast({
-				msg: 'Delete leave successfully',
-				type: 'success',
+				msg: dataDl.message,
+				type: statusDl,
 			})
 			refetchAllLeaves()
 		}
@@ -107,10 +108,10 @@ const LeavesEmployee: NextLayout = () => {
 
 	// check is successfully delete many
 	useEffect(() => {
-		if (statusDlMany == 'success') {
+		if (statusDlMany == 'success' && dataDlMany) {
 			setToast({
-				msg: 'Delete leaves successfully',
-				type: 'success',
+				msg: dataDlMany.message,
+				type: statusDlMany,
 			})
 			setDataSl(null)
 			refetchAllLeaves()
@@ -120,7 +121,7 @@ const LeavesEmployee: NextLayout = () => {
 	// set loading == false when get all leaves successfully
 	useEffect(() => {
 		if (allLeaves && allLeaves.leaves) {
-			setIsloading(false)
+			setIsLoading(false)
 		}
 	}, [allLeaves])
 
@@ -139,13 +140,13 @@ const LeavesEmployee: NextLayout = () => {
 
 	// alert when update status success
 	useEffect(() => {
-		if (statusUpStatus == 'success') {
+		if (statusUpStatus == 'success' && dataUpdate) {
 			setToast({
-				type: 'success',
-				msg: 'Update status successfully',
+				type: statusUpStatus,
+				msg: dataUpdate.message,
 			})
 			refetchAllLeaves()
-			setIsloading(false)
+			setIsLoading(false)
 		}
 	}, [statusUpStatus])
 
@@ -159,14 +160,14 @@ const LeavesEmployee: NextLayout = () => {
 	const columns: TColumn[] = employeeLeavesColumn({
 		currentUser,
 		onApproved: (id: number) => {
-			setIsloading(true)
+			setIsLoading(true)
 			mutateUpdateStatus({
 				status: 'Approved',
 				leaveId: id,
 			})
 		},
 		onRejected: (id: number) => {
-			setIsloading(true)
+			setIsLoading(true)
 			mutateUpdateStatus({
 				status: 'Rejected',
 				leaveId: id,
@@ -225,7 +226,7 @@ const LeavesEmployee: NextLayout = () => {
 			{/* alert dialog when delete one */}
 			<AlertDialog
 				handleDelete={() => {
-					setIsloading(true)
+					setIsLoading(true)
 					mutateDeleteLeave(String(leaveId))
 				}}
 				title="Are you sure?"
@@ -238,7 +239,7 @@ const LeavesEmployee: NextLayout = () => {
 			<AlertDialog
 				handleDelete={() => {
 					if (dataSl) {
-						setIsloading(true)
+						setIsLoading(true)
 						mutateDeleteLeaves(dataSl)
 					}
 				}}

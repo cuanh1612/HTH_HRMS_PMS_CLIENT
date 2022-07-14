@@ -54,7 +54,7 @@ export default function AddSkill({ onCloseDrawer }: IAddSkillProps) {
 
 	//Handle change name
 	const onChangeName = (name: string, index: number) => {
-		let newSkills = skills
+		const newSkills = skills
 		newSkills[index] = name
 		setSkills(newSkills)
 	}
@@ -95,7 +95,7 @@ export default function AddSkill({ onCloseDrawer }: IAddSkillProps) {
 			}
 
 			setToast({
-				type: 'success',
+				type: statusCreSkills,
 				msg: dataCreSkills?.message as string,
 			})
 

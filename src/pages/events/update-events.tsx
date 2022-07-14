@@ -78,7 +78,7 @@ export default function UpdateEvent({ onCloseDrawer, eventIdUpdate }: IUpdateEve
 			})
 		} else {
 			if (eventIdUpdate) {
-				mutateUpEvent({
+				await mutateUpEvent({
 					eventId: eventIdUpdate,
 					inputUpdate: {
 						...values
@@ -96,7 +96,7 @@ export default function UpdateEvent({ onCloseDrawer, eventIdUpdate }: IUpdateEve
 	//Set data option employees state
 	useEffect(() => {
 		if (allEmployees && allEmployees.employees) {
-			let newOptionEmployees: IOption[] = []
+			const newOptionEmployees: IOption[] = []
 
 			allEmployees.employees.map((employee) => {
 				newOptionEmployees.push({
@@ -123,7 +123,7 @@ export default function UpdateEvent({ onCloseDrawer, eventIdUpdate }: IUpdateEve
 	//Set data option clients state
 	useEffect(() => {
 		if (allClients && allClients.clients) {
-			let newOptionClients: IOption[] = []
+			const newOptionClients: IOption[] = []
 
 			allClients.clients.map((client) => {
 				newOptionClients.push({
@@ -152,7 +152,7 @@ export default function UpdateEvent({ onCloseDrawer, eventIdUpdate }: IUpdateEve
 			}
 
 			setToast({
-				type: 'success',
+				type: statusUpEvent,
 				msg: dataUpEvent?.message as string,
 			})
 			refetchAllEvents()
@@ -168,7 +168,7 @@ export default function UpdateEvent({ onCloseDrawer, eventIdUpdate }: IUpdateEve
 		if (dataDetailEvent && dataDetailEvent.event) {
 			//Set data selected option employee
 			if (dataDetailEvent.event.employees) {
-				let newSelectedOptionEmployees: IOption[] = []
+				const newSelectedOptionEmployees: IOption[] = []
 
 				dataDetailEvent.event.employees.map((employee) => {
 					newSelectedOptionEmployees.push({
@@ -193,7 +193,7 @@ export default function UpdateEvent({ onCloseDrawer, eventIdUpdate }: IUpdateEve
 
 			//Set data selected option clients
 			if (dataDetailEvent.event.clients) {
-				let newSelectedOptionClients: IOption[] = []
+				const newSelectedOptionClients: IOption[] = []
 
 				dataDetailEvent.event.clients.map((client) => {
 					newSelectedOptionClients.push({
@@ -217,7 +217,7 @@ export default function UpdateEvent({ onCloseDrawer, eventIdUpdate }: IUpdateEve
 			}
 
 			if (allClients && allClients.clients) {
-				let newOptionClients: IOption[] = []
+				const newOptionClients: IOption[] = []
 
 				allClients.clients.map((client) => {
 					newOptionClients.push({

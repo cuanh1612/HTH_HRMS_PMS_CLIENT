@@ -37,7 +37,7 @@ const Salaries: NextLayout = () => {
 	//State -------------------------------------------------------------
 	const [employeeId, setEmployeeId] = useState<string | number | null>(14)
 	// set loading table
-	const [isLoading, setIsloading] = useState(true)
+	const [isLoading, setIsLoading] = useState(true)
 	// is reset table
 	const [isResetFilter, setIsReset] = useState(false)
 	// set filter
@@ -86,7 +86,7 @@ const Salaries: NextLayout = () => {
 
 	useEffect(() => {
 		if (dataSalaries) {
-			setIsloading(false)
+			setIsLoading(false)
 
 			console.log(dataSalaries)
 

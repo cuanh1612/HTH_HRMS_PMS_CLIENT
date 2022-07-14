@@ -148,7 +148,7 @@ export default function join() {
 				isField,
 				peerId,
 			}
-			sendAppMessage(data, '*')
+			await sendAppMessage(data, '*')
 			if (!field) {
 				setMsgs((state) => [...state, data])
 			}

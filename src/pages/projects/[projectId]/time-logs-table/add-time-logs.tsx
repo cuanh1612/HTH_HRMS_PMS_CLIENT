@@ -101,7 +101,7 @@ export default function AddTimeLog({ onCloseDrawer }: IAddTimeLogProps) {
 					type: 'error',
 				})
 			} else {
-				mutateCreTimeLog(values)
+				await mutateCreTimeLog(values)
 			}
 		}
 	}
@@ -127,7 +127,7 @@ export default function AddTimeLog({ onCloseDrawer }: IAddTimeLogProps) {
 	//Set data option tasks state
 	useEffect(() => {
 		if (allTasksProject && allTasksProject.tasks) {
-			let newOptionTasks: IOption[] = []
+			const newOptionTasks: IOption[] = []
 
 			allTasksProject.tasks.map((task) => {
 				newOptionTasks.push({
@@ -143,7 +143,7 @@ export default function AddTimeLog({ onCloseDrawer }: IAddTimeLogProps) {
 	//Set data option employees state
 	useEffect(() => {
 		if (detailTaskSelected && detailTaskSelected.task?.employees) {
-			let newOptionEmployees: IOption[] = []
+			const newOptionEmployees: IOption[] = []
 
 			detailTaskSelected.task.employees.map((employee) => {
 				newOptionEmployees.push({
@@ -182,7 +182,7 @@ export default function AddTimeLog({ onCloseDrawer }: IAddTimeLogProps) {
 			}
 
 			setToast({
-				type: 'success',
+				type: statusCreTimeLog,
 				msg: dataCreTimeLog?.message as string,
 			})
 

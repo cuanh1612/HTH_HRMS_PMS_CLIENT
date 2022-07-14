@@ -127,7 +127,7 @@ export default function AddLeaves({ onCloseDrawer }: IAddLeavesProps) {
 			}
 
 			setToast({
-				type: 'success',
+				type: statusLeave,
 				msg: dataLeave?.message as string,
 			})
 		}

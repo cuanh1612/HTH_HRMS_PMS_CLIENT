@@ -45,7 +45,7 @@ const DetailContract: NextLayout = () => {
 
 	//Query ------------------------------------------------------------
 	const { data: dataDetailContract } = detailContractQuery(isAuthenticated, Number(contractId))
-	const { data: dataCompanyInfo } = companyInfoQuery(isAuthenticated)
+	const { data: dataCompanyInfo } = companyInfoQuery()
 
 	//Useeffect --------------------------------------------------------
 	//Handle loading page
@@ -135,15 +135,18 @@ const DetailContract: NextLayout = () => {
 				20,
 				510
 			)
-			doc.text('Signature', 20, 550)
-			dataDetailContract?.contract?.sign?.url &&
-				doc.addImage((await parser64IMGSign()) as string, 'png', 0, 570, 300, 150)
-			doc.setFontSize(12)
-			doc.text(
-				`(${dataDetailContract?.contract?.sign?.first_name} ${dataDetailContract?.contract?.sign?.last_name})`,
-				20,
-				740
-			)
+
+			if (dataDetailContract?.contract?.sign) {
+				doc.text('Signature', 20, 550)
+				dataDetailContract?.contract?.sign?.url &&
+					doc.addImage((await parser64IMGSign()) as string, 'png', 0, 570, 300, 150)
+				doc.setFontSize(12)
+				doc.text(
+					`(${dataDetailContract?.contract?.sign?.first_name} ${dataDetailContract?.contract?.sign?.last_name})`,
+					20,
+					740
+				)
+			}
 
 			doc.save('demo.pdf')
 		}

@@ -30,9 +30,7 @@ import { ChangeEvent, ChangeEventHandler, useContext, useEffect, useState } from
 import { AiOutlineCheck } from 'react-icons/ai'
 import { MdDeleteOutline } from 'react-icons/md'
 
-export interface IDepartmentProps {}
-
-export default function ContractTypes({}: IDepartmentProps) {
+export default function ContractTypes() {
 	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
 	const router = useRouter()
 
@@ -70,7 +68,7 @@ export default function ContractTypes({}: IDepartmentProps) {
 				refetchContractTypes()
 				if (dataCreContractType) {
 					setToast({
-						type: 'success',
+						type: statusCreContractType,
 						msg: dataCreContractType?.message,
 					})
 				}
@@ -88,7 +86,7 @@ export default function ContractTypes({}: IDepartmentProps) {
 				refetchContractTypes()
 				if (dataDeleContractType) {
 					setToast({
-						type: 'success',
+						type: statusDeleContractType,
 						msg: dataDeleContractType?.message,
 					})
 				}
@@ -106,7 +104,7 @@ export default function ContractTypes({}: IDepartmentProps) {
 				refetchContractTypes()
 				if (dataUpContractType) {
 					setToast({
-						type: 'success',
+						type: statusUpContractType,
 						msg: dataUpContractType?.message,
 					})
 				}

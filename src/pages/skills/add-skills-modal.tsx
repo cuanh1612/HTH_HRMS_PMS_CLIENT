@@ -32,9 +32,7 @@ import { ChangeEvent, ChangeEventHandler, useContext, useEffect, useState } from
 import { AiOutlineCheck } from 'react-icons/ai'
 import { MdDeleteOutline } from 'react-icons/md'
 
-export interface IAddSkillModalProps {}
-
-export default function AddSkillModal({}: IAddSkillModalProps) {
+export default function AddSkillModal() {
 	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
 	const router = useRouter()
 
@@ -71,7 +69,7 @@ export default function AddSkillModal({}: IAddSkillModalProps) {
 				refetchSkills()
 				if (dataCreSkill) {
 					setToast({
-						type: 'success',
+						type: statusCreSkill,
 						msg: dataCreSkill?.message,
 					})
 				}
@@ -89,7 +87,7 @@ export default function AddSkillModal({}: IAddSkillModalProps) {
 				refetchSkills()
 				if (dataDeleSkill) {
 					setToast({
-						type: 'success',
+						type: statusDeleSkill,
 						msg: dataDeleSkill?.message,
 					})
 				}
@@ -107,7 +105,7 @@ export default function AddSkillModal({}: IAddSkillModalProps) {
 				refetchSkills()
 				if (dataUpSkill) {
 					setToast({
-						type: 'success',
+						type: statusUpSkill,
 						msg: dataUpSkill?.message,
 					})
 				}

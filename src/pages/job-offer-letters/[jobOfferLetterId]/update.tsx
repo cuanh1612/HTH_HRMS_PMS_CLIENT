@@ -3,7 +3,6 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { Loading } from 'components/common'
 import { Input, InputNumber, SelectCustom } from 'components/form'
 import { AuthContext } from 'contexts/AuthContext'
-import { setSeconds } from 'date-fns/esm'
 import { updateJobOfferLetterMutation } from 'mutations/jobOfferLetter'
 import { useRouter } from 'next/router'
 import { allJobsQuery, detailJobQuery } from 'queries/job'
@@ -105,7 +104,7 @@ export default function UpdateOfferLetter({
 			})
 		} else {
 			values.jobOfferLetterId = jobOfferLetterIdProp || jobOFferLetterIdRouter as string
-			mutateUpJobOffer(values)
+			await mutateUpJobOffer(values)
 		}
 	}
 
@@ -207,7 +206,7 @@ export default function UpdateOfferLetter({
 	//Set data option job type state
 	useEffect(() => {
 		if (allJobs && allJobs.jobs) {
-			let newOptionJobs: IOption[] = []
+			const newOptionJobs: IOption[] = []
 
 			allJobs.jobs.map((job) => {
 				newOptionJobs.push({
@@ -227,7 +226,7 @@ export default function UpdateOfferLetter({
 	//Set data option job application
 	useEffect(() => {
 		if (allJobApplicationsByJob && allJobApplicationsByJob.jobApplications) {
-			let newOptionJobs: IOption[] = []
+			const newOptionJobs: IOption[] = []
 
 			allJobApplicationsByJob.jobApplications.map((jobApplication) => {
 				newOptionJobs.push({
@@ -250,7 +249,7 @@ export default function UpdateOfferLetter({
 			//Inform notice success
 			if (dataUpJobOffer) {
 				setToast({
-					type: 'success',
+					type: statusUpJobOffer,
 					msg: dataUpJobOffer?.message,
 				})
 			}

@@ -112,7 +112,7 @@ export default function InterviewFile({ interviewIdProp }: IInterviewFileProps) 
 	useEffect(() => {
 		if (statusCreInterviewFile === 'success') {
 			setToast({
-				type: 'success',
+				type: statusCreInterviewFile,
 				msg: dataCreInterviewFile?.message as string,
 			})
 
@@ -131,7 +131,7 @@ export default function InterviewFile({ interviewIdProp }: IInterviewFileProps) 
 	useEffect(() => {
 		if (statusDeleteInterviewFile === 'success') {
 			setToast({
-				type: 'success',
+				type: statusDeleteInterviewFile,
 				msg: dataDeleteInterviewFile?.message as string,
 			})
 

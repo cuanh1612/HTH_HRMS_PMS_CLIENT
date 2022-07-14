@@ -117,7 +117,7 @@ const dashboard: NextLayout = () => {
 
 	// mutation ----------------------------------------
 	// update status of leave
-	const [mutateUpdateStatus, { status: statusUpStatus }] = updateStatusMutation(setToast)
+	const [mutateUpdateStatus, { status: statusUpStatus, data: dataUpdate }] = updateStatusMutation(setToast)
 
 	//Useeffect ---------------------------------------------------------
 	//Handle check loged in
@@ -133,10 +133,10 @@ const dashboard: NextLayout = () => {
 
 	// alert when update status success
 	useEffect(() => {
-		if (statusUpStatus == 'success') {
+		if (statusUpStatus == 'success' && dataUpdate) {
 			setToast({
-				type: 'success',
-				msg: 'Update leave successfully',
+				type: statusUpStatus,
+				msg: dataUpdate.message,
 			})
 			refetchDataPendingLeavesRaw()
 		}

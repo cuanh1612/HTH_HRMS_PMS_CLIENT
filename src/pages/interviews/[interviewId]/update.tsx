@@ -172,7 +172,7 @@ export default function UpdateInterview({
 			//Inform notice success
 			if (dataUpInterview) {
 				setToast({
-					type: 'success',
+					type: statusUpInterview,
 					msg: dataUpInterview?.message,
 				})
 			}

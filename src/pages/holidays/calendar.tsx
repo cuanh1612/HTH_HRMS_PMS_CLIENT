@@ -41,8 +41,7 @@ const calendar: NextLayout = () => {
 	const [calendar, setCalendar] = useState<Calendar>()
 	const [data, setData] = useState<EventInput[]>([])
 	const [holidayId, setHolidayId] = useState<number>(0)
-	// set loading table
-	const [_, setIsloading] = useState(true)
+
 	const [filter, setFilter] = useState<{
 		month?: number | string
 		year?: number | string
@@ -62,7 +61,8 @@ const calendar: NextLayout = () => {
 
 	// mutation
 	// delete holiday
-	const [mutateDeleteHoliday, { status: statusDl }] = deleteHolidayMutation(setToast)
+	const [mutateDeleteHoliday, { status: statusDl, data: dataDl }] =
+		deleteHolidayMutation(setToast)
 
 	//User effect ---------------------------------------------------------------
 	//Handle check loged in
@@ -127,7 +127,7 @@ const calendar: NextLayout = () => {
 	useEffect(() => {
 		if (calendar) {
 			if (filter) {
-				var date = new Date()
+				let date = new Date()
 				if (filter.month) {
 					date = new Date(date.setMonth(Number(filter.month) - 1))
 				}
@@ -158,9 +158,9 @@ const calendar: NextLayout = () => {
 
 	// check is successfully delete one
 	useEffect(() => {
-		if (statusDl == 'success') {
+		if (statusDl == 'success' && dataDl) {
 			setToast({
-				msg: 'Delete employee successfully',
+				msg: dataDl.message,
 				type: 'success',
 			})
 			refetchAllHolidays()
@@ -266,7 +266,6 @@ const calendar: NextLayout = () => {
 			{/* alert dialog when delete one */}
 			<AlertDialog
 				handleDelete={() => {
-					setIsloading(true)
 					mutateDeleteHoliday(String(holidayId))
 				}}
 				title="Are you sure?"

@@ -211,7 +211,7 @@ const calendar: NextLayout = () => {
 	useEffect(() => {
 		if (statusDlOne == 'success' && dataDlOne) {
 			setToast({
-				type: 'success',
+				type: statusDlOne,
 				msg: dataDlOne.message,
 			})
 			onCloseDetailTask()

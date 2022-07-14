@@ -75,7 +75,7 @@ export default function AddEvent({ onCloseDrawer }: IAddEventProps) {
 	//Set data option employees state
 	useEffect(() => {
 		if (allEmployees && allEmployees.employees) {
-			let newOptionEmployees: IOption[] = []
+			const newOptionEmployees: IOption[] = []
 
 			allEmployees.employees.map((employee) => {
 				newOptionEmployees.push({
@@ -102,7 +102,7 @@ export default function AddEvent({ onCloseDrawer }: IAddEventProps) {
 	//Set data option clients state
 	useEffect(() => {
 		if (allClients && allClients.clients) {
-			let newOptionClients: IOption[] = []
+			const newOptionClients: IOption[] = []
 
 			allClients.clients.map((client) => {
 				newOptionClients.push({
@@ -135,7 +135,7 @@ export default function AddEvent({ onCloseDrawer }: IAddEventProps) {
 			}
 
 			setToast({
-				type: 'success',
+				type: statusCreEvent,
 				msg: dataCreEvent?.message as string,
 			})
 
@@ -199,7 +199,7 @@ export default function AddEvent({ onCloseDrawer }: IAddEventProps) {
 					values.repeatEvery = Number(values.repeatEvery)
 					values.cycles = Number(values.cycles)
 				}
-				mutateCreEvent({
+				await mutateCreEvent({
 					...values,
 				})
 			}

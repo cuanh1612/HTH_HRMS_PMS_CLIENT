@@ -1,11 +1,6 @@
 import {
 	Box,
 	Button,
-	Menu,
-	MenuButton,
-	MenuItem,
-	MenuList,
-	Text,
 	useDisclosure,
 	VStack,
 } from '@chakra-ui/react'
@@ -21,13 +16,10 @@ import { allSkillsQuery } from 'queries/skill'
 import { useContext, useEffect, useState } from 'react'
 import { AiOutlineDelete, AiOutlineSearch } from 'react-icons/ai'
 import { IoAdd } from 'react-icons/io5'
-import { MdOutlineDeleteOutline, MdOutlineMoreVert } from 'react-icons/md'
-import { RiPencilLine } from 'react-icons/ri'
 import { VscFilter } from 'react-icons/vsc'
 import { NextLayout } from 'type/element/layout'
 import { IFilter, TColumn } from 'type/tableTypes'
 import { SkillsColumn } from 'utils/columns'
-import { textFilter } from 'utils/tableFilters'
 import AddSkill from './add-skills'
 import UpdateSkill from './update-skills'
 
@@ -36,7 +28,7 @@ const Skill: NextLayout = () => {
 	const router = useRouter()
 
 	// set loading table
-	const [isLoading, setIsloading] = useState(true)
+	const [isLoading, setIsLoading] = useState(true)
 	// set filter
 	const [filter, setFilter] = useState<IFilter>({
 		columnId: '',
@@ -66,8 +58,8 @@ const Skill: NextLayout = () => {
 	const { data: dataAllSkills, mutate: refetchAllSkills } = allSkillsQuery(isAuthenticated)
 
 	// mutate
-	const [deleteOne, { status: statusDlOne }] = deleteSkillMutation(setToast)
-	const [deleteMany, { status: statusDlMany }] = deleteManySkillMutation(setToast)
+	const [deleteOne, { status: statusDlOne, data: dataDl }] = deleteSkillMutation(setToast)
+	const [deleteMany, { status: statusDlMany, data: dataDlMany }] = deleteManySkillMutation(setToast)
 
 	//User effect ---------------------------------------------------------------
 	//Handle check loged in
@@ -83,25 +75,25 @@ const Skill: NextLayout = () => {
 
 	useEffect(() => {
 		if (dataAllSkills) {
-			setIsloading(false)
+			setIsLoading(false)
 		}
 	}, [dataAllSkills])
 
 	useEffect(() => {
-		if (statusDlOne == 'success') {
+		if (statusDlOne == 'success' && dataDl) {
 			setToast({
-				type: 'success',
-				msg: 'Delete skill successfully',
+				type: statusDlOne,
+				msg: dataDl.message,
 			})
 			refetchAllSkills()
 		}
 	}, [statusDlOne])
 
 	useEffect(() => {
-		if (statusDlMany == 'success') {
+		if (statusDlMany == 'success' && dataDlMany) {
 			setToast({
-				type: 'success',
-				msg: 'Delete many successfully',
+				type: statusDlMany,
+				msg: dataDlMany.message,
 			})
 			setDataSl([])
 			refetchAllSkills()
@@ -171,7 +163,7 @@ const Skill: NextLayout = () => {
 			{/* alert dialog when delete one */}
 			<AlertDialog
 				handleDelete={() => {
-					setIsloading(true)
+					setIsLoading(true)
 					deleteOne(idSkill)
 				}}
 				title="Are you sure?"
@@ -184,7 +176,7 @@ const Skill: NextLayout = () => {
 			<AlertDialog
 				handleDelete={() => {
 					if (dataSl) {
-						setIsloading(true)
+						setIsLoading(true)
 						deleteMany({
 							skills: dataSl,
 						})

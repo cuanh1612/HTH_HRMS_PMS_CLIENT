@@ -155,7 +155,7 @@ const Clients: NextLayout = () => {
 	const [idClient, setIdClient] = useState<number | null>(null)
 
 	// set loading table
-	const [isLoading, setIsloading] = useState(true)
+	const [isLoading, setIsLoading] = useState(true)
 
 	// data select to delete all
 	const [dataSl, setDataSl] = useState<Array<number> | null>()
@@ -183,10 +183,10 @@ const Clients: NextLayout = () => {
 	const { data: allSubCategories } = allClientSubCategoriesQuery()
 
 	// delete client
-	const [mutateDeleteClient, { status: statusDl }] = deleteClientMutation(setToast)
+	const [mutateDeleteClient, { status: statusDl, data: dataDl}] = deleteClientMutation(setToast)
 
 	// delete all clients
-	const [mutateDeleteClients, { status: statusDlMany }] = deleteClientsMutation(setToast)
+	const [mutateDeleteClients, { status: statusDlMany, data: dataDlMany }] = deleteClientsMutation(setToast)
 
 	//mutation ------------------------------------------------------------------
 	const [mutateImportCSV, { status: statusImportCSV, data: dataImportCSV }] =
@@ -206,10 +206,10 @@ const Clients: NextLayout = () => {
 
 	// check is successfully delete one
 	useEffect(() => {
-		if (statusDl == 'success') {
+		if (statusDl == 'success' && dataDl) {
 			setToast({
-				msg: 'Delete client successfully',
-				type: 'success',
+				msg: dataDl.message,
+				type: statusDl,
 			})
 			refetchAllClients()
 		}
@@ -217,10 +217,10 @@ const Clients: NextLayout = () => {
 
 	// check is successfully delete many
 	useEffect(() => {
-		if (statusDlMany == 'success') {
+		if (statusDlMany == 'success' && dataDlMany) {
 			setToast({
-				msg: 'Delete clients successfully',
-				type: 'success',
+				msg: dataDlMany.message,
+				type: statusDlMany,
 			})
 			setDataSl(null)
 			refetchAllClients()
@@ -232,7 +232,7 @@ const Clients: NextLayout = () => {
 		if (statusImportCSV == 'success' && dataImportCSV?.message) {
 			setToast({
 				msg: dataImportCSV?.message,
-				type: 'success',
+				type: statusImportCSV,
 			})
 			setDataSl(null)
 			refetchAllClients()
@@ -250,7 +250,7 @@ const Clients: NextLayout = () => {
 				}
 			})
 			setAllusersSl(users || [])
-			setIsloading(false)
+			setIsLoading(false)
 
 			//Set data csv
 			const dataCSV: any[] = allClients.clients.map((client) => ({
@@ -431,7 +431,7 @@ const Clients: NextLayout = () => {
 			{/* alert dialog when delete one */}
 			<AlertDialog
 				handleDelete={() => {
-					setIsloading(true)
+					setIsLoading(true)
 					mutateDeleteClient(String(idClient))
 				}}
 				title="Are you sure?"
@@ -444,7 +444,7 @@ const Clients: NextLayout = () => {
 			<AlertDialog
 				handleDelete={() => {
 					if (dataSl) {
-						setIsloading(true)
+						setIsLoading(true)
 						mutateDeleteClients(dataSl)
 					}
 				}}

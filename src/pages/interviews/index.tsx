@@ -51,7 +51,7 @@ const interviews: NextLayout = () => {
 		filterValue: '',
 	})
 	// set loading table
-	const [isLoading, setIsloading] = useState(true)
+	const [isLoading, setIsLoading] = useState(true)
 	// data select to delete all
 	const [dataSl, setDataSl] = useState<Array<number> | null>()
 	// is reset table
@@ -109,7 +109,7 @@ const interviews: NextLayout = () => {
 				type: statusDlOne,
 			})
 			refetchAllInterview()
-			setIsloading(false)
+			setIsLoading(false)
 		}
 	}, [statusDlOne])
 
@@ -121,7 +121,7 @@ const interviews: NextLayout = () => {
 				type: statusUpdate,
 			})
 			refetchAllInterview()
-			setIsloading(false)
+			setIsLoading(false)
 		}
 	}, [statusUpdate])
 
@@ -134,14 +134,14 @@ const interviews: NextLayout = () => {
 			})
 			setDataSl(null)
 			refetchAllInterview()
-			setIsloading(false)
+			setIsLoading(false)
 		}
 	}, [statusDlMany])
 
 	useEffect(() => {
 		if (allInterviewSchedule) {
 			console.log(allInterviewSchedule)
-			setIsloading(false)
+			setIsLoading(false)
 		}
 	}, [allInterviewSchedule])
 
@@ -174,7 +174,7 @@ const interviews: NextLayout = () => {
 	const columns: TColumn[] = interviewScheduleColumn({
 		currentUser,
 		onChangeStatus: async (id: number, event: any) => {
-			setIsloading(true)
+			setIsLoading(true)
 			await updateStatus({
 				id,
 				status: event.target.value,
@@ -248,7 +248,7 @@ const interviews: NextLayout = () => {
 			{/* alert dialog when delete one */}
 			<AlertDialog
 				handleDelete={() => {
-					setIsloading(true)
+					setIsLoading(true)
 					deleteOne(interviewId)
 				}}
 				title="Are you sure?"
@@ -261,7 +261,7 @@ const interviews: NextLayout = () => {
 			<AlertDialog
 				handleDelete={() => {
 					if (dataSl) {
-						setIsloading(true)
+						setIsLoading(true)
 						deleteMany({
 							interviews: dataSl,
 						})

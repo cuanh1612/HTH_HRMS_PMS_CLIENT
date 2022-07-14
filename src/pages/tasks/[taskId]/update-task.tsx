@@ -158,7 +158,7 @@ export default function UpdateTask({ onCloseDrawer, taskIdProp }: IUpdateTaskPro
 	useEffect(() => {
 		if (dataAllMilestones?.milestones) {
 			//Set data option milestones state
-			let newOptionMilestones: IOption[] = []
+			const newOptionMilestones: IOption[] = []
 
 			dataAllMilestones.milestones.map((milestone) => {
 				newOptionMilestones.push({
@@ -203,7 +203,7 @@ export default function UpdateTask({ onCloseDrawer, taskIdProp }: IUpdateTaskPro
 
 		//Set data option employees state
 		if (dataDetailTask?.task?.project && dataDetailTask.task.project.employees) {
-			let newOptionEmployees: IOption[] = []
+			const newOptionEmployees: IOption[] = []
 
 			dataDetailTask.task.project.employees.map((employee) => {
 				newOptionEmployees.push({
@@ -228,7 +228,7 @@ export default function UpdateTask({ onCloseDrawer, taskIdProp }: IUpdateTaskPro
 
 		//Set data option employees selected state
 		if (dataDetailTask?.task?.employees) {
-			let newOptionSelectedEmployees: IOption[] = []
+			const newOptionSelectedEmployees: IOption[] = []
 
 			dataDetailTask.task.employees.map((employee) => {
 				newOptionSelectedEmployees.push({
@@ -256,7 +256,7 @@ export default function UpdateTask({ onCloseDrawer, taskIdProp }: IUpdateTaskPro
 	useEffect(() => {
 		if (dataAllStatus?.statuses) {
 			//Set data option satuses state
-			let newOptionStatus: IOption[] = []
+			const newOptionStatus: IOption[] = []
 
 			dataAllStatus.statuses.map((status) => {
 				newOptionStatus.push({
@@ -278,7 +278,7 @@ export default function UpdateTask({ onCloseDrawer, taskIdProp }: IUpdateTaskPro
 			}
 
 			setToast({
-				type: 'success',
+				type: statusUpTask,
 				msg: dataUpTask?.message as string,
 			})
 

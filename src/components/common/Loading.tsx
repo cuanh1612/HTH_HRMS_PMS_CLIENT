@@ -2,6 +2,7 @@
 import ClipLoader from 'react-spinners/BarLoader'
 import { css } from '@emotion/react'
 import { Center } from '@chakra-ui/layout'
+import { useColorMode } from '@chakra-ui/react'
 
 const override = css`
 	display: block;
@@ -10,9 +11,10 @@ const override = css`
 `
 
 export const Loading = ()=> {
+	const {colorMode} = useColorMode()
 	return (
 		<Center
-			bg={'#FFFFFF95'}
+			bg={colorMode == 'dark' ? '#1a202c95': '#FFFFFF95'}
 			w={'full'}
 			height={'full'}
 			pos={'absolute'}

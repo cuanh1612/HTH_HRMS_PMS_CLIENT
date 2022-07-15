@@ -9,6 +9,7 @@ import {
 	DrawerContent,
 	DrawerBody,
 	CloseButton,
+	useColorMode,
 } from '@chakra-ui/react'
 import { AuthContext } from 'contexts/AuthContext'
 import React, { useState, useEffect, useContext } from 'react'
@@ -23,7 +24,12 @@ import { BiMessageDots, BiTime } from 'react-icons/bi'
 import { BsCheck2, BsPerson, BsPersonBadge } from 'react-icons/bs'
 import { VscTasklist } from 'react-icons/vsc'
 import { IoIosGitNetwork } from 'react-icons/io'
-import { IoAirplaneOutline, IoDocumentTextOutline, IoExitOutline, IoVideocamOutline } from 'react-icons/io5'
+import {
+	IoAirplaneOutline,
+	IoDocumentTextOutline,
+	IoExitOutline,
+	IoVideocamOutline,
+} from 'react-icons/io5'
 import {
 	MdOutlineAttachMoney,
 	MdOutlineDashboard,
@@ -207,16 +213,16 @@ const LinkItems = () => {
 }
 
 const SideLeft = () => {
-
 	//Get info company
 	const { data: dataCompanyInfo } = companyInfoQuery()
-
+	const { colorMode } = useColorMode()
 	return (
 		<Box
 			minW={300}
 			zIndex={10}
 			h={'100vh'}
-			borderRight={'1px solid gray'}
+			bg={colorMode == 'dark' ? '#181c24' : '#fafafa'}
+			borderRight={`1px solid ${colorMode == 'dark' ? '#2e2e2e' : '#f1f1f1'}`}
 			style={{
 				top: '0px',
 				position: 'sticky',
@@ -244,14 +250,16 @@ const SideLeft = () => {
 }
 
 const SideLeftInDrawer = ({ onClose, isOpen }: { isOpen: boolean; onClose: any }) => {
-
 	//Get info company
 	const { data: dataCompanyInfo } = companyInfoQuery()
-
+	const { colorMode } = useColorMode()
 	return (
 		<Drawer isOpen={isOpen} placement="left" onClose={onClose}>
 			<DrawerOverlay />
-			<DrawerContent>
+			<DrawerContent
+				bg={colorMode == 'dark' ? '#181c24' : '#fafafa'}
+				borderRight={`1px solid ${colorMode == 'dark' ? '#2e2e2e' : '#f1f1f1'}`}
+			>
 				<DrawerBody padding={4}>
 					<HStack
 						zIndex={10}

@@ -24,7 +24,6 @@ import { NotificationByCurrentUserQuery } from 'queries/notification'
 import { useContext, useEffect, useState } from 'react'
 import { AiOutlineBell } from 'react-icons/ai'
 import { BsFillBellSlashFill, BsMoon, BsPerson, BsSun } from 'react-icons/bs'
-import { GrConfigure } from 'react-icons/gr'
 import { IoExitOutline, IoSettingsOutline } from 'react-icons/io5'
 import { MdOutlineEditNote } from 'react-icons/md'
 import UpdateClient from 'src/pages/clients/update-clients'
@@ -94,7 +93,6 @@ export const Header = () => {
 			bg={colorMode == 'light' ? 'white' : '#1a202c'}
 			marginBottom={'30px'}
 			paddingInline={10}
-			borderBottom={'1px solid gray'}
 			zIndex={10}
 			top={0}
 			position={'sticky'}

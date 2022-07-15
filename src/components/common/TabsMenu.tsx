@@ -9,6 +9,7 @@ import {
 	Tabs,
 	Text,
 	useBreakpoint,
+	useColorMode,
 } from '@chakra-ui/react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
@@ -17,6 +18,7 @@ import { BsArrowDown } from 'react-icons/bs'
 import { ITab } from 'type/element/commom'
 
 export const TabsMenu = ({ tabs }: { tabs: ITab[] }) => {
+	const {colorMode} = useColorMode()
 	// please, set tabs.length more than 7
 	const { pathname } = useRouter()
 	const breakpoint = useBreakpoint()
@@ -113,9 +115,16 @@ export const TabsMenu = ({ tabs }: { tabs: ITab[] }) => {
 							key={key}
 						>
 							<Link href={tab.link} passHref>
-								<Text w={'full'} h={'full'}>
-									{tab.title}
-								</Text>
+								<HStack
+									color={colorMode == 'dark' ? 'white': 'black'}
+									justifyContent={'center'}
+									spacing={4}
+									w={'full'}
+									h={'full'}
+								>
+									{tab.icon}
+									<Text>{tab.title}</Text>
+								</HStack>
 							</Link>
 						</Tab>
 					))}

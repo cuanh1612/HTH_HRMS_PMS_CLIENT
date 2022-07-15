@@ -1,28 +1,40 @@
+import { useColorMode } from '@chakra-ui/react'
 import dynamic from 'next/dynamic'
 const Chart = dynamic(() => import('react-apexcharts'), { ssr: false })
 
 interface IChart {
-    labels: string[],
-    colors?: string[],
-    data: number[]
-    height: number
+	labels: string[]
+	colors?: string[]
+	data: number[]
+	height: number
 	distributed?: boolean
 	isMoney?: boolean
 	isShowLabel?: boolean
 }
 
-export const Bar = ({labels, colors, data, height, distributed = true, isMoney = false, isShowLabel= false}: IChart) => {
+export const Bar = ({
+	labels,
+	colors,
+	data,
+	height,
+	distributed = true,
+	isMoney = false,
+	isShowLabel = false,
+}: IChart) => {
+	const { colorMode } = useColorMode()
 	return (
 		<Chart
 			options={{
 				dataLabels: {
 					enabled: true,
-					formatter:  (val): any=> {
-						return isMoney ? Intl.NumberFormat('en-US', {
-								style: 'currency',
-								currency: 'USD',
-								useGrouping: false,
-							}).format(Number(val)) : val
+					formatter: (val): any => {
+						return isMoney
+							? Intl.NumberFormat('en-US', {
+									style: 'currency',
+									currency: 'USD',
+									useGrouping: false,
+							  }).format(Number(val))
+							: val
 					},
 					offsetY: -20,
 					style: {
@@ -40,6 +52,9 @@ export const Bar = ({labels, colors, data, height, distributed = true, isMoney =
 				},
 				legend: {
 					show: !isShowLabel,
+					labels: {
+						colors: colorMode == 'dark' ? ['white'] : ['black'],
+					},
 				},
 				xaxis: {
 					categories: labels,
@@ -47,17 +62,18 @@ export const Bar = ({labels, colors, data, height, distributed = true, isMoney =
 						show: isShowLabel,
 					},
 				},
-                grid: {
-                    yaxis: {
-                        lines: {
-                            show: false
-                        }
-                    }
-                },
+				grid: {
+					yaxis: {
+						lines: {
+							show: false,
+						},
+					},
+				},
 				yaxis: {
 					labels: {
 						style: {
 							fontSize: '12px',
+							colors: colorMode == 'dark' ? ['white'] : ['black'],
 						},
 					},
 				},
@@ -87,7 +103,7 @@ export const Bar = ({labels, colors, data, height, distributed = true, isMoney =
 			series={[
 				{
 					name: '',
-					data
+					data,
 				},
 			]}
 			type="bar"

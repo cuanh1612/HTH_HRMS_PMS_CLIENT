@@ -1,4 +1,4 @@
-import { HStack, Text, VStack } from '@chakra-ui/react'
+import { HStack, Text, useColorMode, VStack } from '@chakra-ui/react'
 import React from 'react'
 
 interface Ifunc {
@@ -10,17 +10,20 @@ interface Ifunc {
 }
 
 export const Func = ({ icon, title, description, action, disabled = false }: Ifunc) => {
+	const {colorMode} = useColorMode()
 	return (
 		<HStack
 			transition={'0.2s'}
 			_hover={{
 				bg: disabled ? '' : 'hu-Green.light',
+				color: 'black'
 			}}
 			borderRadius={10}
 			spacing={5}
 			p={4}
 			height="auto"
 			bg={disabled ? 'gray.300' : ''}
+			color={colorMode == 'dark' && disabled ? 'black' : undefined}
 			onClick={() => {
 				if (!disabled) {
 					action()

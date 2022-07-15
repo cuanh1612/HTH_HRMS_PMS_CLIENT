@@ -1,3 +1,4 @@
+import { useColorMode } from '@chakra-ui/react'
 import dynamic from 'next/dynamic'
 const Chart = dynamic(() => import('react-apexcharts'), { ssr: false })
 
@@ -10,6 +11,7 @@ interface IChart {
 }
 
 export const Line = ({title, data, labels, colors, height}: IChart) => {
+	const {colorMode} = useColorMode()
 	return (
 		<Chart
 			width={'100%'}
@@ -47,7 +49,18 @@ export const Line = ({title, data, labels, colors, height}: IChart) => {
 				xaxis: {
 					categories: labels,
 				},
+				yaxis: {
+					labels: {
+						style: {
+							fontSize: '12px',
+							colors: colorMode == 'dark' ? ['white'] : ['black'],
+						},
+					},
+				},
 				legend: {
+					labels: {
+						colors: colorMode == 'dark' ? ['white'] : ['black'],
+					},
 					show: false,
 				},
 			}}

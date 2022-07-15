@@ -1,14 +1,16 @@
+import { useColorMode } from '@chakra-ui/react'
 import dynamic from 'next/dynamic'
 const Chart = dynamic(() => import('react-apexcharts'), { ssr: false })
 
 interface IDonut {
-    labels: string[],
-    colors: string[],
-    data: number[]
-    height: number
+	labels: string[]
+	colors: string[]
+	data: number[]
+	height: number
 }
 
-export const Donut = ({labels, colors, data, height}: IDonut) => {
+export const Donut = ({ labels, colors, data, height }: IDonut) => {
+	const { colorMode } = useColorMode()
 	return (
 		<Chart
 			options={{
@@ -20,8 +22,10 @@ export const Donut = ({labels, colors, data, height}: IDonut) => {
 				legend: {
 					position: 'bottom',
 					fontSize: '12px',
+					labels: {
+						colors: colorMode == 'dark' ? ['white'] : ['black'],
+					},
 				},
-
 				chart: {
 					zoom: {
 						enabled: true,

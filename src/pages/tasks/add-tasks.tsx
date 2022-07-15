@@ -29,6 +29,7 @@ import {
 	detailProjectQuery,
 	milestonesByProjectNormalQuery,
 } from 'queries'
+import { allActivitiesByProjectQuery } from 'queries/ProjectActivity'
 import { useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { AiFillCaretDown, AiFillCaretUp, AiOutlineCheck } from 'react-icons/ai'
@@ -96,6 +97,8 @@ export default function AddTask({ onCloseDrawer }: IAddTaskProps) {
 	const { mutate: refetchStatusTasks } = allStatusTasksQuery(isAuthenticated, selectProjectId)
 	// refetch task in calendar
 	const { mutate: refetchTasksCalendar } = allTasksCalendarQuery({ isAuthenticated })
+	// refetch all activities for project
+	const {mutate: refetchActivitiesProject}  = allActivitiesByProjectQuery(isAuthenticated, selectProjectId)
 
 	//mutation -----------------------------------------------------------
 	const [mutateCreTask, { status: statusCreTask, data: dataCreTask }] =
@@ -218,6 +221,7 @@ export default function AddTask({ onCloseDrawer }: IAddTaskProps) {
 			refetchTasks()
 			refetchStatusTasks()
 			refetchTasksCalendar()
+			refetchActivitiesProject()
 
 			if (socket) {
 				socket.emit('newTask')

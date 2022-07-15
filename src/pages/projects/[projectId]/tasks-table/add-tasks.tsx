@@ -9,7 +9,7 @@ import {
 	Input as InputChakra,
 	Text,
 	useDisclosure,
-	VStack
+	VStack,
 } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Loading } from 'components/common'
@@ -22,8 +22,13 @@ import { useRouter } from 'next/router'
 import {
 	allStatusQuery,
 	allStatusTasksQuery,
-	allTaskCategoriesQuery, allTasksByProjectQuery, detailProjectQuery, detailStatusQuery, milestonesByProjectNormalQuery
+	allTaskCategoriesQuery,
+	allTasksByProjectQuery,
+	detailProjectQuery,
+	detailStatusQuery,
+	milestonesByProjectNormalQuery,
 } from 'queries'
+import { allActivitiesByProjectQuery } from 'queries/ProjectActivity'
 import { useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { AiFillCaretDown, AiFillCaretUp, AiOutlineCheck } from 'react-icons/ai'
@@ -84,6 +89,11 @@ export default function AddTask({ onCloseDrawer, statusId }: IAddTaskProps) {
 	const { mutate: refetchStatusTasks } = allStatusTasksQuery(isAuthenticated, projectId)
 	// refetch all task
 	const { mutate: refetchTasks } = allTasksByProjectQuery(isAuthenticated, projectId)
+	// refetch all activities for project
+	const { mutate: refetchActivitiesProject } = allActivitiesByProjectQuery(
+		isAuthenticated,
+		projectId
+	)
 
 	//mutation -----------------------------------------------------------
 	const [mutateCreTask, { status: statusCreTask, data: dataCreTask }] =
@@ -210,6 +220,7 @@ export default function AddTask({ onCloseDrawer, statusId }: IAddTaskProps) {
 			})
 			refetchStatusTasks()
 			refetchTasks()
+			refetchActivitiesProject()
 
 			if (socket && projectId) {
 				socket.emit('newProjectTask', projectId)

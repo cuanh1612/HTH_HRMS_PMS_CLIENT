@@ -5,7 +5,7 @@ import { Header } from 'components/partials'
 import { AuthContext } from 'contexts/AuthContext'
 import { useRouter } from 'next/router'
 import { useContext, useEffect, useState } from 'react'
-import { BsPerson } from 'react-icons/bs'
+import { AiOutlineFileText, AiOutlineProfile } from 'react-icons/ai'
 import { ITab } from 'type/element/commom'
 
 export const JobLayout = ({ children }: { children: JSX.Element }) => {
@@ -18,12 +18,12 @@ export const JobLayout = ({ children }: { children: JSX.Element }) => {
 		if (jobId) {
 			const data = [
 				{
-					icon: <BsPerson fontSize={'15'} />,
+					icon: <AiOutlineProfile fontSize={'15'} />,
 					link: `/jobs/${jobId}/profile`,
 					title: 'Profile',
 				},
 				{
-					icon: <BsPerson fontSize={'15'} />,
+					icon: <AiOutlineFileText fontSize={'15'} />,
 					link: `/employees/${jobId}/detail`,
 					title: 'Detail',
 				},

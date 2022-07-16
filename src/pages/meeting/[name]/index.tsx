@@ -49,8 +49,8 @@ export default function index() {
 	// get image
 	const [backgrounds, setBackgrounds] = useState<string[] | undefined>([])
 	const [query, setQuery] = useState('room')
-	const pexel = createClient('563492ad6f91700001000001b7637a3e86ad4b63a805ed7d7d7be975')
-	const [isLoadding, setIsLoadding] = useState(true)
+	const pexel = createClient(`${process.env.NEXT_PUBLIC_KEY_PEXELS}`)
+	const [isLoading, setIsLoading] = useState(true)
 	const { search } = pexel.photos
 
 	useEffect(() => {
@@ -74,7 +74,7 @@ export default function index() {
 				}
 			)
 			setBackgrounds(data)
-			setIsLoadding(false)
+			setIsLoading(false)
 		})
 	}, [])
 
@@ -86,7 +86,7 @@ export default function index() {
 			})
 			return
 		}
-		setIsLoadding(true)
+		setIsLoading(true)
 		const result = (await search({
 			page: 1,
 			query,
@@ -97,7 +97,7 @@ export default function index() {
 			return e.src.original
 		})
 		setBackgrounds(data)
-		setIsLoadding(false)
+		setIsLoading(false)
 	}
 
 	const co = useDaily()
@@ -454,7 +454,7 @@ export default function index() {
 														/>
 													</Box>
 												))}
-											{isLoadding && <Loading />}
+											{isLoading && <Loading />}
 										</VStack>
 									</VStack>
 								</VStack>

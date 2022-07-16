@@ -5,14 +5,17 @@ import { Header } from 'components/partials'
 import { AuthContext } from 'contexts/AuthContext'
 import { useRouter } from 'next/router'
 import { useContext, useEffect, useState } from 'react'
-import {
-	AiOutlineProject,
-} from 'react-icons/ai'
+import { AiOutlineFileAdd, AiOutlineFileImage, AiOutlineFileText, AiOutlineProject } from 'react-icons/ai'
 import { BsPerson } from 'react-icons/bs'
+import { GrDocumentText } from 'react-icons/gr'
+import { RiDiscussLine } from 'react-icons/ri'
+import { VscCommentDiscussion } from 'react-icons/vsc'
 import { ITab } from 'type/element/commom'
-{/* <Tab>Summary</Tab>
+{
+	/* <Tab>Summary</Tab>
 					<Tab>Discussion</Tab>
-					<Tab isSelected={true}>Contract Files</Tab> */}
+					<Tab isSelected={true}>Contract Files</Tab> */
+}
 export const ContractLayout = ({ children }: { children: JSX.Element }) => {
 	const { currentUser } = useContext(AuthContext)
 	const {
@@ -23,17 +26,17 @@ export const ContractLayout = ({ children }: { children: JSX.Element }) => {
 		if (contractId) {
 			const data = [
 				{
-					icon: <BsPerson fontSize={'15'} />,
+					icon: <AiOutlineFileText fontSize={'15'} />,
 					link: `/contracts/${contractId}/detail`,
 					title: 'Detail',
 				},
 				{
-					icon: <AiOutlineProject fontSize={'15'} />,
+					icon: <VscCommentDiscussion fontSize={'15'} />,
 					link: `/contracts/${contractId}/discussions`,
 					title: 'Discussions',
 				},
 				{
-					icon: <AiOutlineProject fontSize={'15'} />,
+					icon: <AiOutlineFileAdd fontSize={'15'} />,
 					link: `/contracts/${contractId}/files`,
 					title: 'Files',
 				},
@@ -52,9 +55,9 @@ export const ContractLayout = ({ children }: { children: JSX.Element }) => {
 			overflow={'auto'}
 		>
 			<Navigation />
-			<Box  w={'full'}>
+			<Box w={'full'}>
 				<Header />
-				<Box  w={'full'} h={'auto'} paddingInline={10}>
+				<Box w={'full'} h={'auto'} paddingInline={10}>
 					<TabsMenu tabs={tabs} />
 					{children}
 				</Box>

@@ -33,10 +33,10 @@ import { RiPencilLine } from 'react-icons/ri'
 import {
 	clientType,
 	employeeType,
-	IOption,
 	projectCategoryType,
 	timeLogType,
 } from 'type/basicTypes'
+import { IContractColumn, IEmployeeColumn, IJobColumn, ILeaveColumn, IOptionColumn, IProjectMemberColumn, IProjectTimeLogsColumn } from 'type/columnType'
 import { TColumn } from 'type/tableTypes'
 import { dataInterviewStatus, dataJobApplicationStatus, dataJobStatus } from './basicData'
 import {
@@ -47,41 +47,6 @@ import {
 	textFilter,
 	yearFilter,
 } from './tableFilters'
-
-interface IOptionColumn {
-	currentUser: employeeType | null
-	onUpdate?: any
-	onDelete?: any
-	onDetail?: any
-}
-
-interface IEmployeeColumn extends IOptionColumn {
-	onChangeRole: any
-	dataRoleEmployee: IOption[]
-}
-
-interface IJobColumn extends IOptionColumn {
-	onChangeStatus: any
-}
-
-interface ILeaveColumn extends IOptionColumn {
-	onRejected: any
-	onApproved: any
-}
-
-interface IContractColumn extends IOptionColumn {
-	onPublic: any
-}
-
-interface IProjectMemberColumn extends IOptionColumn {
-	project_Admin?: employeeType
-	setAdmin: any
-	setHourlyRate: any
-}
-
-interface IProjectTimeLogsColumn extends IOptionColumn {
-	project_Admin?: employeeType
-}
 
 export const clientColumn = ({ currentUser, onDelete, onUpdate }: IOptionColumn): TColumn[] => {
 	return [
@@ -317,7 +282,7 @@ export const employeeColumn = ({
 									</Link>
 
 									<Text isTruncated w={'full'} fontSize={'sm'} color={'gray.400'}>
-										{row.values['role']}
+										{row.original['department'].name || '--'}
 									</Text>
 								</VStack>
 							</HStack>
@@ -1365,7 +1330,7 @@ export const timeLogsColumn = ({
 					Header: 'Employee',
 					accessor: 'employee',
 					minWidth: 250,
-					Cell: ({ value }) => {
+					Cell: ({ value, row }) => {
 						return (
 							<>
 								{value ? (
@@ -1395,7 +1360,7 @@ export const timeLogsColumn = ({
 												fontSize={'sm'}
 												color={'gray.400'}
 											>
-												{value.role}
+												{row.original['department'].name || '--'}
 											</Text>
 										</VStack>
 									</HStack>
@@ -1657,7 +1622,7 @@ export const salariesColumn = ({ currentUser, onDetail, onUpdate }: IOptionColum
 										)}
 									</Text>
 									<Text isTruncated w={'full'} fontSize={'sm'} color={'gray.400'}>
-										{row.original['role']}
+										{row.original['department'].name || '--'}
 									</Text>
 								</VStack>
 							</HStack>
@@ -1781,7 +1746,7 @@ export const projectMembersColumn = ({
 										)}
 									</Text>
 									<Text isTruncated w={'full'} fontSize={'sm'} color={'gray.400'}>
-										{row.values['role']}
+										{row.original['department'].name || '--'}
 									</Text>
 								</VStack>
 							</HStack>
@@ -2056,7 +2021,7 @@ export const projectTimeLogsColumn = ({
 					Header: 'Employee',
 					accessor: 'employee',
 					minWidth: 250,
-					Cell: ({ value }) => {
+					Cell: ({ value, row }) => {
 						return (
 							<>
 								{value ? (
@@ -2086,7 +2051,7 @@ export const projectTimeLogsColumn = ({
 												fontSize={'sm'}
 												color={'gray.400'}
 											>
-												{value.role}
+												{row.original['department'].name || '--'}
 											</Text>
 										</VStack>
 									</HStack>
@@ -2867,7 +2832,7 @@ export const employeeTimeLogsColumn = ({
 					Header: 'Employee',
 					accessor: 'employee',
 					minWidth: 250,
-					Cell: ({ value }) => {
+					Cell: ({ value, row}) => {
 						return (
 							<>
 								{value ? (
@@ -2897,7 +2862,7 @@ export const employeeTimeLogsColumn = ({
 												fontSize={'sm'}
 												color={'gray.400'}
 											>
-												{value.role}
+												{row.original['department'].name || '--'}
 											</Text>
 										</VStack>
 									</HStack>
@@ -4043,7 +4008,6 @@ export const offerLettersColumn = ({
 										<MenuItem
 											onClick={() => {
 												onUpdate(row.values['id'])
-
 											}}
 											icon={<RiPencilLine fontSize={'15px'} />}
 										>

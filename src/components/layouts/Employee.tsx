@@ -6,11 +6,13 @@ import { AuthContext } from 'contexts/AuthContext'
 import { useRouter } from 'next/router'
 import { useContext, useEffect, useState } from 'react'
 import {
+	AiOutlineFileText,
 	AiOutlineProject,
 } from 'react-icons/ai'
 import { BiTimeFive } from 'react-icons/bi'
 import { BsPerson } from 'react-icons/bs'
 import { IoExitOutline } from 'react-icons/io5'
+import { VscTasklist } from 'react-icons/vsc'
 import { ITab } from 'type/element/commom'
 
 export const EmployeeLayout = ({ children }: { children: JSX.Element }) => {
@@ -23,7 +25,7 @@ export const EmployeeLayout = ({ children }: { children: JSX.Element }) => {
 		if (employeeId) {
 			const data = [
 				{
-					icon: <BsPerson fontSize={'15'} />,
+					icon: <AiOutlineFileText fontSize={'15'} />,
 					link: `/employees/${employeeId}/detail`,
 					title: 'Detail',
 				},
@@ -33,7 +35,7 @@ export const EmployeeLayout = ({ children }: { children: JSX.Element }) => {
 					title: 'Projects',
 				},
 				{
-					icon: <AiOutlineProject fontSize={'15'} />,
+					icon: <VscTasklist fontSize={'15'} />,
 					link: `/employees/${employeeId}/task`,
 					title: 'Tasks',
 				},

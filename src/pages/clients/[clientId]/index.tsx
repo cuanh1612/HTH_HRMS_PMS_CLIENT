@@ -163,7 +163,7 @@ const DetailClient: NextLayout | any = ({
 					<title>Huprom - Detail client {clientId}</title>
 					<meta name="viewport" content="initial-scale=1.0, width=device-width" />
 				</Head>
-				<Box w="full">
+				<Box w="full" pb={8}>
 					<VStack spacing={5} alignItems={'start'} w={'full'}>
 						<HStack spacing={5} h={'full'} w={'full'}>
 							<Avatar

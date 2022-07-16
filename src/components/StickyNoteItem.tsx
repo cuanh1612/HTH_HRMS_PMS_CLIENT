@@ -74,7 +74,7 @@ export default function StickyNoteItem({ stickyNote, onView, onEdit }: IStickyNo
 				</Menu>
 			</HStack>
 			<HStack width={'full'} justify="space-between" mt={5}>
-				<Text color={'gray.400'}>04-06-2022</Text>
+				<Text color={'gray.400'}>{new Date(stickyNote.createdAt).toLocaleDateString('es-CL')}</Text>
 				<Box bgColor={stickyNote.color} w={4} h={4} borderRadius={'50%'}></Box>
 			</HStack>
 		</>

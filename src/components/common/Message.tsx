@@ -10,7 +10,7 @@ export interface IMessageProps {
 	placement: 'left' | 'right'
 }
 
-export const Message = ({ name, avatarUrl, text, placement, createAt }: IMessageProps)=> {
+export const Message = ({ name, avatarUrl, text, placement, createAt }: IMessageProps) => {
 	return (
 		<Box
 			w={'full'}
@@ -19,17 +19,19 @@ export const Message = ({ name, avatarUrl, text, placement, createAt }: IMessage
 		>
 			<HStack align={'start'} justify={placement === 'right' ? 'end' : undefined} spacing={4}>
 				{placement === 'left' && <Avatar name={name} src={avatarUrl} />}
-				<VStack align={placement === 'left' ? 'start' : 'end'}>
-					<Text fontWeight={'semibold'}>{name}</Text>
-					<Text fontSize={12} color={'gray.400'}>
-						{moment(createAt).fromNow()}
-					</Text>
+				<VStack spacing={1} align={placement === 'left' ? 'start' : 'end'}>
+					<Text fontWeight='semibold'>{name}</Text>
+					<Box>
+						<Text mb={'20px'} fontSize={'14px '} color={'gray.400'}>
+							{moment(createAt).fromNow()}
+						</Text>
+					</Box>
 					<Box
-						p={2}
+						p={3}
 						borderRadius={
 							placement === 'left' ? '0px 10px 10px 10px' : '10px 0px 10px 10px'
 						}
-						bgColor={'#e8eef3'}
+						bgColor={placement == 'left' ? 'hu-Green.lightH' : '#e8eef3'}
 						maxW={'800px'}
 					>
 						{text}

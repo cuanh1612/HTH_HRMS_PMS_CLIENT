@@ -487,6 +487,7 @@ export interface stickyNoteType {
 	color: string
 	note: string
 	employee?: employeeType
+	createdAt: Date
 }
 
 export interface notificationType {

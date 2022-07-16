@@ -39,6 +39,7 @@ import { milestoneType } from 'type/basicTypes'
 import { IoAdd } from 'react-icons/io5'
 import { projecMilestonesColumn } from 'utils/columns'
 import Head from 'next/head'
+import { allActivitiesByProjectQuery } from 'queries/ProjectActivity'
 
 const milestones: NextLayout = () => {
 	const { isAuthenticated, handleLoading, setToast, currentUser } = useContext(AuthContext)
@@ -69,7 +70,11 @@ const milestones: NextLayout = () => {
 		projectId
 	)
 
-	console.log(dataDetail)
+	// refetch all activities for project
+	const { mutate: refetchActivitiesProject } = allActivitiesByProjectQuery(
+		isAuthenticated,
+		projectId
+	)
 
 	// get detail milestone
 	const { data: detailMilestone } = detailMilestoneQuery(isAuthenticated, idDetail)
@@ -178,6 +183,7 @@ const milestones: NextLayout = () => {
 			})
 			onCloseModal()
 			refetchAllMilestones()
+			refetchActivitiesProject()
 		}
 	}, [statusCreate])
 

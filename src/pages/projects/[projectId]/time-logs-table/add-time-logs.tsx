@@ -7,7 +7,7 @@ import {
 	HStack,
 	Input as ChakraInput,
 	Text,
-	VStack
+	VStack,
 } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Loading } from 'components/common'
@@ -20,8 +20,9 @@ import {
 	allTasksByProjectQuery,
 	detailProjectQuery,
 	detailTaskQuery,
-	timeLogsByProjectQuery
+	timeLogsByProjectQuery,
 } from 'queries'
+import { allActivitiesByProjectQuery } from 'queries/ProjectActivity'
 import { useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { AiOutlineCheck } from 'react-icons/ai'
@@ -60,6 +61,11 @@ export default function AddTimeLog({ onCloseDrawer }: IAddTimeLogProps) {
 
 	// refetch all time log by project
 	const { mutate: refetchTimeLogs } = timeLogsByProjectQuery(isAuthenticated, projectId)
+	// refetch all activities for project
+	const { mutate: refetchActivitiesProject } = allActivitiesByProjectQuery(
+		isAuthenticated,
+		projectId
+	)
 
 	//mutation -----------------------------------------------------------
 	const [mutateCreTimeLog, { status: statusCreTimeLog, data: dataCreTimeLog }] =
@@ -187,6 +193,7 @@ export default function AddTimeLog({ onCloseDrawer }: IAddTimeLogProps) {
 			})
 
 			refetchTimeLogs()
+			refetchActivitiesProject()
 
 			if (socket && projectId) {
 				socket.emit('newProjectTimeLog', projectId)

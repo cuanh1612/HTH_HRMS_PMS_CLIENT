@@ -646,3 +646,14 @@ export interface jobApplicationFileType {
 	public_id: string
 	createdAt: Date
 }
+
+export interface projectActivityType {
+	id: number
+	project: projectType
+	time: string
+	status: statusType
+	createdAt: Date
+	updatedAt: Date
+	[index: string]: any
+}
+

@@ -28,6 +28,7 @@ import {
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { allStatusTasksQuery, detailProjectQuery } from 'queries'
+import { allActivitiesByProjectQuery } from 'queries/ProjectActivity'
 import { useContext, useEffect, useState } from 'react'
 import { DragDropContext, Droppable, DropResult } from 'react-beautiful-dnd'
 import { useForm } from 'react-hook-form'
@@ -80,6 +81,12 @@ const taskBoard: NextLayout = () => {
 	const { data: allStatusTasks, mutate: refetchStatusTasks } = allStatusTasksQuery(
 		isAuthenticated,
 		query.projectId
+	)
+
+	// refetch all activities for project
+	const { mutate: refetchActivitiesProject } = allActivitiesByProjectQuery(
+		isAuthenticated,
+		projectId
 	)
 
 	// get detail project
@@ -219,6 +226,7 @@ const taskBoard: NextLayout = () => {
 				msg: dataCreateColumn.message,
 			})
 			refetchStatusTasks()
+			refetchActivitiesProject()
 			onClose()
 			formSetting.reset({
 				color: '',
@@ -410,7 +418,7 @@ const taskBoard: NextLayout = () => {
 
 	return (
 		<Box pb={8}>
-			<Head> 
+			<Head>
 				<title>Huprom - Task board of project {projectId}</title>
 				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
 			</Head>

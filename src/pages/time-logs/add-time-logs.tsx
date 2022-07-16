@@ -1,11 +1,4 @@
-import {
-	Avatar,
-	Box,
-	Button,
-	Grid,
-	GridItem,
-	HStack, Text
-} from '@chakra-ui/react'
+import { Avatar, Box, Button, Grid, GridItem, HStack, Text } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Loading } from 'components/common'
 import { Input, SelectCustom, TimePicker } from 'components/form'
@@ -17,8 +10,9 @@ import {
 	allTasksByProjectQuery,
 	detailTaskQuery,
 	timeLogsCalendarQuery,
-	timeLogsQuery
+	timeLogsQuery,
 } from 'queries'
+import { allActivitiesByProjectQuery } from 'queries/ProjectActivity'
 import { useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { AiOutlineCheck } from 'react-icons/ai'
@@ -62,7 +56,13 @@ export default function AddTimeLog({ onCloseDrawer }: IAddTimeLogProps) {
 	const { mutate: refetchTimeLogs } = timeLogsQuery(isAuthenticated)
 
 	// refetch time logs in calendar
-	const { mutate: refetchTimeLogsCalendar } = timeLogsCalendarQuery({isAuthenticated})
+	const { mutate: refetchTimeLogsCalendar } = timeLogsCalendarQuery({ isAuthenticated })
+
+	// refetch all activities for project
+	const { mutate: refetchActivitiesProject } = allActivitiesByProjectQuery(
+		isAuthenticated,
+		selectProjectId
+	)
 
 	//mutation -----------------------------------------------------------
 	const [mutateCreTimeLog, { status: statusCreTimeLog, data: dataCreTimeLog }] =
@@ -216,6 +216,8 @@ export default function AddTimeLog({ onCloseDrawer }: IAddTimeLogProps) {
 
 			refetchTimeLogs()
 			refetchTimeLogsCalendar()
+			refetchActivitiesProject()
+			
 			if (socket) {
 				socket.emit('newTimeLog')
 				socket.emit('newTimeLogNotification', dataCreTimeLog?.timeLog?.employee?.id)

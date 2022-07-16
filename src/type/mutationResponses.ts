@@ -28,6 +28,7 @@ import {
 	milestoneType,
 	noticeBoardType,
 	notificationType,
+	projectActivityType,
 	projectCategoryType,
 	projectDiscussionCategoryType,
 	projectDiscussionReplyType,
@@ -371,4 +372,9 @@ export interface jobOfferLetterMutationResponse extends commonResponse {
 export interface jobApplicationFileMutaionResponse extends commonResponse {
 	jobApplicationFile?: jobApplicationFileType
 	jobApplicationFiles?: jobApplicationFileType[]
+}
+
+export interface projectActivityMutaionResponse extends commonResponse {
+	task?: projectActivityType
+	tasks?: projectActivityType[]
 }

@@ -1,19 +1,7 @@
-import {
-	Box,
-	Button,
-	GridItem,
-	HStack,
-	Text,
-	useDisclosure,
-	VStack,
-	Input as InputChakra,
-	InputLeftElement,
-	InputGroup,
-	InputRightElement,
-} from '@chakra-ui/react'
+import { Box, Button, Grid, GridItem, HStack, Text, useDisclosure, VStack } from '@chakra-ui/react'
 import { Input } from 'components/form'
 import Modal from 'components/modal/Modal'
-import { Receiver, Loading, Message, MenuIcons } from 'components/common'
+import { Receiver, Loading, Message } from 'components/common'
 import { AuthContext } from 'contexts/AuthContext'
 import { createConversationReplyMutation, deleteConversationMutation } from 'mutations'
 import { useRouter } from 'next/router'
@@ -24,7 +12,7 @@ import { mutate } from 'swr'
 import { conversationType, employeeType } from 'type/basicTypes'
 import { createConversationReplyForm } from 'type/form/basicFormType'
 import AddConversations from './add-conversations'
-import { AiOutlineMenu, AiOutlineSearch, AiOutlineSend } from 'react-icons/ai'
+import { AiOutlineMenu, AiOutlineSend } from 'react-icons/ai'
 import { Drawer } from 'components/Drawer'
 import { NextLayout } from 'type/element/layout'
 import { ClientLayout } from 'components/layouts'
@@ -121,7 +109,7 @@ const Messages: NextLayout = () => {
 		onCloseManageMessages()
 	}
 
-	//Handle delete conversation
+	//Handle delet conversation
 	const onDeleteConversation = (conversationId: number) => {
 		if (!currentUser?.id) {
 			setToast({
@@ -133,8 +121,8 @@ const Messages: NextLayout = () => {
 		}
 	}
 
-	//UseEffect ---------------------------------------------------------
-	//Handle check logged in
+	//Useeffect ---------------------------------------------------------
+	//Handle check loged in
 	useEffect(() => {
 		if (isAuthenticated) {
 			handleLoading(false)
@@ -213,63 +201,50 @@ const Messages: NextLayout = () => {
 				<title>Huprom - Messages</title>
 				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
 			</Head>
-			<HStack spacing={8} height={'100%'}>
-				<VStack
-					w="350px"
-					minW={'350px'}
-					borderRadius={'20px'}
+			<Grid templateColumns="repeat(6, 1fr)" gap={0} height={'100%'}>
+				<GridItem
+					w="100%"
+					colSpan={[0, 2, 2, 2, 1]}
+					border={'1px'}
+					borderColor={'gray.200'}
+					display={['none', 'none', 'none', 'block']}
+					minHeight={'80%'}
 					overflow={'auto'}
-					h={'100%'}
-					bg={'#f4f6f8'}
-					spacing={5}
 				>
-					<Box p={'20px'} w={'full'} borderBottom={'1px solid'} borderColor={'#e5e8ee'}>
-						<InputGroup>
-							<InputChakra bg={'#e5e8ee'} placeholder="Search" />
-							<InputRightElement children={<AiOutlineSearch color="green.500" />} />
-						</InputGroup>
-					</Box>
+					{dataConversations?.conversations &&
+						dataConversations.conversations.map((conversation) => (
+							<Box key={conversation.id}>
+								{conversation.employees.map((employee) => {
+									if (employee.email !== currentUser?.email) {
+										return (
+											<Receiver
+												key={employee.email}
+												employee={employee}
+												conversation={conversation}
+												onChangeReceiver={onChangeReceiver}
+												isActive={currentReceiver?.email === employee.email}
+												onDeleteConversation={onDeleteConversation}
+											/>
+										)
+									} else {
+										return
+									}
+								})}
+							</Box>
+						))}
+				</GridItem>
 
-					<VStack overflow={'auto'} maxH={'calc( 100% - 130px )'} w={'full'} spacing={3}>
-						{dataConversations?.conversations &&
-							dataConversations.conversations.map((conversation) => (
-								<Box
-									h={'77px'}
-									minH={'77px'}
-									w={'full'}
-									overflow={'hidden'}
-									pl={'20px'}
-									key={conversation.id}
-								>
-									{conversation.employees.map((employee) => {
-										if (employee.email !== currentUser?.email) {
-											return (
-												<Receiver
-													key={employee.email}
-													employee={employee}
-													conversation={conversation}
-													onChangeReceiver={onChangeReceiver}
-													isActive={
-														currentReceiver?.email === employee.email
-													}
-													onDeleteConversation={onDeleteConversation}
-												/>
-											)
-										} else {
-											return
-										}
-									})}
-								</Box>
-							))}
-					</VStack>
-				</VStack>
-
-				<VStack w="100%" height={'100%'} position={'relative'}>
-					<Box h={'83px'} w={'full'} borderBottom={'1px'} borderColor={'#e5e8ee'} p={4}>
+				<GridItem
+					w="100%"
+					height={'100%'}
+					colSpan={[6, 6, 6, 4, 5]}
+					border={'1px'}
+					borderColor={'gray.200'}
+					position={'relative'}
+				>
+					<Box w={'full'} borderBottom={'1px'} borderColor={'gray.200'} p={4}>
 						<HStack justify={'space-between'}>
-							<Text fontSize={'24px'} fontWeight={'semibold'}>
-								{currentReceiver?.name}
-							</Text>
+							<Text fontWeight={'semibold'}>{currentReceiver?.name}</Text>
 							<Button
 								onClick={onOpenCreConversation}
 								display={['none', 'none', 'none', 'block']}
@@ -316,20 +291,16 @@ const Messages: NextLayout = () => {
 							})}
 					</VStack>
 
-					<HStack
-						spacing={3}
+					<Box
 						w={'full'}
 						p={4}
 						borderTop={'1px'}
-						borderColor={'#e5e8ee'}
+						borderColor={'gray.200'}
+						as={'form'}
+						onSubmit={handleSubmit(onSubmit)}
 						position={'relative'}
 					>
-						<HStack
-							w={'full'}
-							spacing={3}
-							as={'form'}
-							onSubmit={handleSubmit(onSubmit)}
-						>
+						<HStack>
 							<Input
 								form={formSetting}
 								name={'reply'}
@@ -345,19 +316,11 @@ const Messages: NextLayout = () => {
 								send
 							</Button>
 						</HStack>
-						<MenuIcons
-							isDisable={currentReceiver ? false : true}
-							handle={(icon: string) => {
-								formSetting.reset({
-									reply: `${formSetting.getValues('reply')} ${icon}`,
-								})
-							}}
-						/>
 
 						{statusCreConversationReply === 'running' && <Loading />}
-					</HStack>
-				</VStack>
-			</HStack>
+					</Box>
+				</GridItem>
+			</Grid>
 
 			{/* Modal department and designation */}
 			<Modal

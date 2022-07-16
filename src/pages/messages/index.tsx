@@ -194,6 +194,8 @@ const Messages: NextLayout = () => {
 			socket.on('getNewReply', (conversation: number) => {
 				//Refetch messages of conversation
 				mutate(`conversation-replies/conversation/${conversation}`)
+				//refetch all list conversations to get update count conversation replies not already read
+				refetchConversations()
 			})
 		}
 	}, [socket])

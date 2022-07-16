@@ -1,4 +1,4 @@
-import { Box, Button, Grid, GridItem, useDisclosure, VStack } from '@chakra-ui/react'
+import { Box, Button, Grid, GridItem, useColorMode, useDisclosure, VStack } from '@chakra-ui/react'
 import { Drawer } from 'components/Drawer'
 import StickyNoteItem from 'components/StickyNoteItem'
 import { AuthContext } from 'contexts/AuthContext'
@@ -13,6 +13,7 @@ import UpdateStickyNote from './[stickyNoteId]/update-sticky-note'
 export default function StickysNote() {
 	const { isAuthenticated, handleLoading } = useContext(AuthContext)
 	const router = useRouter()
+	const { colorMode } = useColorMode()
 
 	//State --------------------------------------------------------------------
 	const [stickyNoteShow, setStickyNoteShow] = useState<string | number>()
@@ -56,7 +57,7 @@ export default function StickysNote() {
 	}
 
 	//User effect ---------------------------------------------------------------
-	//Handle check loged in
+	//Handle check logged in
 	useEffect(() => {
 		if (isAuthenticated) {
 			handleLoading(false)
@@ -68,7 +69,7 @@ export default function StickysNote() {
 	}, [isAuthenticated])
 
 	return (
-		<Box p={10} bgColor={'#f2f4f7'} minHeight={'100vh'}>
+		<Box p={10} bgColor={colorMode == 'dark' ? undefined : '#f2f4f7'} minHeight={'100vh'}>
 			<VStack spacing={6} align={'start'}>
 				<Button
 					colorScheme="blue"
@@ -83,12 +84,16 @@ export default function StickysNote() {
 						<GridItem
 							key={stickyNote.id}
 							colSpan={[4, 2, 2, 2, 1]}
-							bgColor={'white'}
+							bgColor={colorMode == 'dark' ? '#00000045' : 'white'}
 							width={'full'}
 							p={5}
 							borderRadius={5}
 						>
-							<StickyNoteItem stickyNote={stickyNote} onView={openDetailNote} onEdit={openUpdateNote} />
+							<StickyNoteItem
+								stickyNote={stickyNote}
+								onView={openDetailNote}
+								onEdit={openUpdateNote}
+							/>
 						</GridItem>
 					))}
 				</Grid>

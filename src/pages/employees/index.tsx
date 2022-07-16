@@ -30,7 +30,7 @@ import { IoAdd } from 'react-icons/io5'
 
 import { NextLayout } from 'type/element/layout'
 
-// fucs, component to setup table
+// funcs, component to setup table
 import { IFilter, TColumn } from 'type/tableTypes'
 import { dataRoleEmployee } from 'utils/basicData'
 

@@ -25,6 +25,10 @@ import { ProjectLayout } from 'components/layouts'
 import { StatisticPrj } from 'components/common'
 import { Bar, Donut } from 'components/charts'
 import Head from 'next/head'
+import { allActivitiesByProjectQuery } from 'queries/ProjectActivity'
+import { MdCheckCircle } from 'react-icons/md'
+import { FaStarOfLife } from 'react-icons/fa'
+import { FiGitCommit } from 'react-icons/fi'
 
 const Overview: NextLayout = () => {
 	const { isAuthenticated, handleLoading } = useContext(AuthContext)
@@ -37,6 +41,13 @@ const Overview: NextLayout = () => {
 	const { data: dataEarning } = projectEarningsQuery(isAuthenticated, projectId as string)
 	const { data: dataHoursLogged } = projectHoursLoggedQuery(isAuthenticated, projectId as string)
 	const { data: dataCountStatus } = countStatusTasksQuery(isAuthenticated, projectId as string)
+	//all activities for project
+	const { data: allActs, mutate: allActivitiesProject } = allActivitiesByProjectQuery(
+		isAuthenticated,
+		projectId
+	)
+
+	console.log(allActs)
 
 	//User effect ---------------------------------------------------------------
 	//Handle check loged in
@@ -318,10 +329,32 @@ const Overview: NextLayout = () => {
 					<Text fontWeight={'semibold'} fontSize={'xl'}>
 						Active
 					</Text>
-					<VStack overflow={'auto'} h={'calc( 100vh - 245px )'} w={'full'}>
-					
-					
- 
+
+					<VStack overflow={'auto'} h={'calc( 100vh - 245px )'} w={'full'} spacing={5}>
+						{allActs?.projectActivity?.map((item, key) => (
+							<HStack
+								p={4}
+								borderRadius={'10px'}
+								spacing={3}
+								w={'full'}
+								alignItems={'start'}
+								key={key}
+								bg={'#f4f6f8'}
+								
+							>
+								<Box color={'hu-Green.normal'} pt={'4px'}>
+									<FiGitCommit fontSize={'16px'} />
+								</Box>
+
+								<VStack alignItems={'start'}>
+									<Text fontWeight={'semibold'}>{item.content}</Text>
+									<Text fontSize={'14px'} color={'gray.400'}>
+										{new Date(item.createdAt).toLocaleDateString('es-CL')},{' '}
+										{item.time}
+									</Text>
+								</VStack>
+							</HStack>
+						))}
 					</VStack>
 				</VStack>
 			</VStack>

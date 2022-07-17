@@ -8,7 +8,7 @@ export const allActivitiesByProjectQuery = (
 	projectId?: string | string[] | number
 ) => {
 	return useSWR<projectActivityMutaionResponse, AxiosError>(
-		isAuthenticated && projectId ? `project-activities/project/${projectId}` : null,
+		isAuthenticated && projectId ? `project-activities/${projectId}` : null,
 		allActivityByProjectRequest,
 		{
 			errorRetryCount: 2,

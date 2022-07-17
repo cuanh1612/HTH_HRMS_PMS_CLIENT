@@ -24,7 +24,7 @@ export const deleteCoversationRequest = async ({
 	conversationId,
 	userId,
 }: {
-	conversationId: number
+	conversationId: number | null
 	userId: number
 }) => {
 	return await deleteData<ConversationMutationResponse>({

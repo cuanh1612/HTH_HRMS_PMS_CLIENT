@@ -7,7 +7,6 @@ export interface IReceiverProps {
 	conversation: conversationType
 	onChangeReceiver: (conversation: conversationType, employee: employeeType) => void
 	isActive: boolean
-	onDeleteConversation: (conversationId: number) => void
 }
 
 export const Receiver = ({
@@ -15,8 +14,8 @@ export const Receiver = ({
 	onChangeReceiver,
 	isActive,
 	conversation,
-	onDeleteConversation,
 }: IReceiverProps) => {
+
 	return (
 		<HStack
 			justify={'space-between'}
@@ -29,6 +28,7 @@ export const Receiver = ({
 			transition={'0.2s'}
 	
 			bgColor={isActive ? 'hu-Green.lightA' : undefined}
+			color={isActive ? 'black': undefined}
 			_hover={{
 				bgColor: '#e8eef3',
 				color: 'black',
@@ -65,12 +65,6 @@ export const Receiver = ({
 					5
 				</Text>
 			</Box>
-			{/* <Box>
-				<MdOutlineRemoveCircleOutline
-					color="red"
-					onClick={() => onDeleteConversation(conversation.id)}
-				/>
-			</Box> */}
 		</HStack>
 	)
 }

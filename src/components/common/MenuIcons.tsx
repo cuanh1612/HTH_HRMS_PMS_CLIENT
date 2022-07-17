@@ -69,7 +69,7 @@ export const MenuIcons = ({handle, isDisable = false}: {handle: any, isDisable?:
 	return (
 		<Menu isOpen={isDisable ? false : isOpen} onOpen={onOpen} onClose={onClose}>
 			<MenuButton>
-				<IconButton disabled={isDisable ? false : isOpen} aria-label="send image" icon={<BsEmojiLaughing fontSize={'18px'} />} />
+				<IconButton disabled={isDisable} aria-label="send image" icon={<BsEmojiLaughing fontSize={'18px'} />} />
 			</MenuButton>
 			<Portal>
 				<MenuList w={'300px'}>

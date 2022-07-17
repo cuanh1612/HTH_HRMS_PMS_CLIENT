@@ -649,11 +649,9 @@ export interface jobApplicationFileType {
 
 export interface projectActivityType {
 	id: number
-	project: projectType
+	content: string
 	time: string
-	status: statusType
 	createdAt: Date
-	updatedAt: Date
 	[index: string]: any
 }
 

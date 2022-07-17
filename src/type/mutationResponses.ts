@@ -375,6 +375,5 @@ export interface jobApplicationFileMutaionResponse extends commonResponse {
 }
 
 export interface projectActivityMutaionResponse extends commonResponse {
-	task?: projectActivityType
-	tasks?: projectActivityType[]
+	projectActivity?: projectActivityType[]
 }

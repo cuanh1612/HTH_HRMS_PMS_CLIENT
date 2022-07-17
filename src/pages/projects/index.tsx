@@ -34,7 +34,6 @@ import { BiExport } from 'react-icons/bi'
 import { VscFilter } from 'react-icons/vsc'
 import { projectColumn } from 'utils/columns'
 import Head from 'next/head'
-import { allActivitiesByProjectQuery } from 'queries/ProjectActivity'
 
 const Projects: NextLayout = () => {
 	const { isAuthenticated, handleLoading, setToast, currentUser } = useContext(AuthContext)
@@ -112,12 +111,6 @@ const Projects: NextLayout = () => {
 	const { data: allClients } = allClientsQuery(isAuthenticated)
 
 	const { data: allEmployees } = allEmployeesNormalQuery(isAuthenticated)
-
-		//all activities for project
-		const { mutate: allActivitiesProject } = allActivitiesByProjectQuery(
-			isAuthenticated,
-			projectId
-		)
 
 	// delete project
 	const [mutateDeletePj, { status: statusDl, data: dataDl }] = deleteProjectMutation(setToast)

@@ -1,15 +1,14 @@
 import {
 	Box,
 	Button,
-	GridItem,
 	HStack,
 	Text,
 	useDisclosure,
 	VStack,
 	Input as InputChakra,
-	InputLeftElement,
 	InputGroup,
 	InputRightElement,
+	useColorMode,
 } from '@chakra-ui/react'
 import { Input } from 'components/form'
 import Modal from 'components/modal/Modal'
@@ -34,6 +33,7 @@ const Messages: NextLayout = () => {
 	const { isAuthenticated, handleLoading, setToast, currentUser, socket } =
 		useContext(AuthContext)
 	const router = useRouter()
+	const { colorMode } = useColorMode()
 
 	//Setup modal -------------------------------------------------------
 	const {
@@ -55,6 +55,8 @@ const Messages: NextLayout = () => {
 		email: string
 		name: string
 	} | null>(null)
+
+	const [conversationId, setConversationId] = useState<number | null>(null)
 
 	//Query -------------------------------------------------------------
 	const { data: dataConversations, mutate: refetchConversations } = allConversationsByUserQuery(
@@ -122,7 +124,7 @@ const Messages: NextLayout = () => {
 	}
 
 	//Handle delete conversation
-	const onDeleteConversation = (conversationId: number) => {
+	const onDeleteConversation = (conversationId: number | null) => {
 		if (!currentUser?.id) {
 			setToast({
 				type: 'warning',
@@ -220,26 +222,58 @@ const Messages: NextLayout = () => {
 					borderRadius={'20px'}
 					overflow={'auto'}
 					h={'100%'}
-					bg={'#f4f6f8'}
+					bg={colorMode == 'dark' ? '#1e2636' : '#f4f6f8'}
 					spacing={5}
 				>
-					<Box p={'20px'} w={'full'} borderBottom={'1px solid'} borderColor={'#e5e8ee'}>
+					<HStack
+						p={'20px'}
+						w={'full'}
+						borderBottom={'1px solid'}
+						borderColor={'#e5e8ee'}
+						spacing={4}
+					>
 						<InputGroup>
-							<InputChakra bg={'#e5e8ee'} placeholder="Search" />
-							<InputRightElement children={<AiOutlineSearch color="green.500" />} />
+							<InputChakra
+								bg={colorMode == 'dark' ? '#3a4453' : '#e5e8ee'}
+								color={colorMode == 'dark' ? 'white' : undefined}
+								placeholder="Search"
+							/>
+							<InputRightElement
+								color={colorMode == 'dark' ? 'gray' : undefined}
+								children={<AiOutlineSearch color="green.500" />}
+							/>
 						</InputGroup>
-					</Box>
+
+						<Button
+							bg={'#e5e8ee'}
+							color={'black'}
+							_hover={{
+								bg: 'hu-Green.normal',
+								color: 'white',
+							}}
+							_active={{
+								bg: 'hu-Green.lightA',
+								color: 'white',
+							}}
+							onClick={onOpenCreConversation}
+						>
+							Add
+						</Button>
+					</HStack>
 
 					<VStack overflow={'auto'} maxH={'calc( 100% - 130px )'} w={'full'} spacing={3}>
 						{dataConversations?.conversations &&
-							dataConversations.conversations.map((conversation) => (
+							dataConversations.conversations.map((conversation, key) => (
 								<Box
 									h={'77px'}
 									minH={'77px'}
 									w={'full'}
 									overflow={'hidden'}
 									pl={'20px'}
-									key={conversation.id}
+									key={key}
+									onClick={() => {
+										setConversationId(conversation.id)
+									}}
 								>
 									{conversation.employees.map((employee) => {
 										if (employee.email !== currentUser?.email) {
@@ -252,7 +286,6 @@ const Messages: NextLayout = () => {
 													isActive={
 														currentReceiver?.email === employee.email
 													}
-													onDeleteConversation={onDeleteConversation}
 												/>
 											)
 										} else {
@@ -271,10 +304,13 @@ const Messages: NextLayout = () => {
 								{currentReceiver?.name}
 							</Text>
 							<Button
-								onClick={onOpenCreConversation}
-								display={['none', 'none', 'none', 'block']}
+								disabled={currentReceiver ? false : true}
+								onClick={() => {
+									onDeleteConversation(conversationId)
+								}}
+								colorScheme={'red'}
 							>
-								New Conversation
+								remove
 							</Button>
 							<Box
 								display={['block', 'block', 'block', 'none']}
@@ -378,10 +414,6 @@ const Messages: NextLayout = () => {
 			>
 				<Box>
 					<Text p={6}>
-						<Button onClick={onOpenCreConversation} w={'full'}>
-							New Conversation
-						</Button>
-
 						<Box w={'full'} mt={2}>
 							{dataConversations?.conversations &&
 								dataConversations.conversations.map((conversation) => (
@@ -398,7 +430,6 @@ const Messages: NextLayout = () => {
 															currentReceiver?.email ===
 															employee.email
 														}
-														onDeleteConversation={onDeleteConversation}
 													/>
 												)
 											} else {

@@ -1,4 +1,4 @@
-import { Avatar, Box, HStack, Text, VStack } from '@chakra-ui/react'
+import { Avatar, Box, HStack, Text, useColorMode, VStack } from '@chakra-ui/react'
 import * as React from 'react'
 import moment from 'moment'
 
@@ -11,6 +11,7 @@ export interface IMessageProps {
 }
 
 export const Message = ({ name, avatarUrl, text, placement, createAt }: IMessageProps) => {
+	const {colorMode} = useColorMode()
 	return (
 		<Box
 			w={'full'}
@@ -31,7 +32,7 @@ export const Message = ({ name, avatarUrl, text, placement, createAt }: IMessage
 						borderRadius={
 							placement === 'left' ? '0px 10px 10px 10px' : '10px 0px 10px 10px'
 						}
-						bgColor={placement == 'left' ? 'hu-Green.lightH' : '#e8eef3'}
+						bgColor={colorMode == 'dark' ? (placement == 'left' ? 'hu-Green.normal' : 'gray.500'): (placement == 'left' ? 'hu-Green.lightH' : '#e8eef3')}
 						maxW={'800px'}
 					>
 						{text}

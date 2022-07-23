@@ -1,4 +1,4 @@
-import { HStack, IconButton } from '@chakra-ui/react'
+import { HStack, IconButton, useColorMode } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
 import { AiTwotoneStar } from 'react-icons/ai'
 import { BiCheck } from 'react-icons/bi'
@@ -23,6 +23,8 @@ interface ICheckAttendance {
 	holidays?: holidayType[]
 
 	isChange?: boolean
+
+	employeeId: number
 }
 
 export default function CheckAttendance({
@@ -33,7 +35,9 @@ export default function CheckAttendance({
 	dateFilter,
 	holidays,
 	isChange = true,
+	employeeId,
 }: ICheckAttendance) {
+	const { colorMode } = useColorMode()
 	const [dates, setDates] = useState<number[]>([])
 	const [now] = useState<Date>(new Date())
 
@@ -70,7 +74,9 @@ export default function CheckAttendance({
 						return (
 							date == leaveDate.getDate() &&
 							leaveDate.getMonth() == dateFilter.getMonth() &&
-							leaveDate.getFullYear() == dateFilter.getFullYear()
+							leaveDate.getFullYear() == dateFilter.getFullYear() &&
+							value.status == 'Approved' &&
+							employeeId == value.employee.id
 						)
 					})
 
@@ -89,12 +95,11 @@ export default function CheckAttendance({
 				if (checkLeave) {
 					return (
 						<HStack
-							key={date}
 							h={'30px'}
 							minW={'30px'}
-							bg={'hu-Pink.lightA'}
+							bg={colorMode == 'dark' ? 'hu-Pink.normalA' : 'hu-Pink.lightA'}
+							color={colorMode == 'dark' ? 'white' : 'hu-Pink.normalA'}
 							userSelect={'all'}
-							color={'hu-Pink.normalA'}
 							aria-label="Search database"
 							borderRadius={'5px'}
 							justifyContent={'center'}
@@ -111,9 +116,9 @@ export default function CheckAttendance({
 							key={date}
 							h={'30px'}
 							minW={'30px'}
-							bg={'yellow.200'}
+							bg={colorMode == 'dark' ? 'yellow.400' : 'yellow.200'}
+							color={colorMode == 'dark' ? 'white' : 'yellow.500'}
 							userSelect={'all'}
-							color={'yellow.500'}
 							aria-label="Search database"
 							borderRadius={'5px'}
 							justifyContent={'center'}
@@ -141,8 +146,8 @@ export default function CheckAttendance({
 							key={date}
 							h={'30px'}
 							minW={'30px'}
-							bg={'hu-Green.lightA'}
-							color={'hu-Green.normal'}
+							bg={colorMode == 'dark' ? 'hu-Green.normalA' : 'hu-Green.lightA'}
+							color={colorMode == 'dark' ? 'white' : 'hu-Green.normalA'}
 							icon={<BiCheck fontSize={20} />}
 							aria-label="Search database"
 						/>
@@ -170,8 +175,8 @@ export default function CheckAttendance({
 							}}
 							h={'30px'}
 							minW={'30px'}
-							bg={'gray.200'}
-							color={'gray.500'}
+							bg={colorMode == 'dark' ? 'gray' : 'gray.200'}
+							color={colorMode == 'dark' ? 'white' : 'gray.500'}
 							icon={<IoMdClose />}
 							aria-label="Search database"
 						/>
@@ -201,8 +206,8 @@ export default function CheckAttendance({
 							}}
 							h={'30px'}
 							minW={'30px'}
-							bg={'gray.200'}
-							color={'gray.500'}
+							bg={colorMode == 'dark' ? 'gray' : 'gray.200'}
+							color={colorMode == 'dark' ? 'white' : 'gray.500'}
 							icon={<IoMdClose />}
 							aria-label="Search database"
 						/>

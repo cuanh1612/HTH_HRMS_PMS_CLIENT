@@ -277,9 +277,9 @@ const attendance: NextLayout = () => {
 						<HStack
 							h={'30px'}
 							minW={'30px'}
-							bg={'hu-Pink.lightA'}
+							bg={colorMode == 'dark' ? 'hu-Pink.normalA': 'hu-Pink.lightA'}
+							color={colorMode == 'dark' ? 'white': 'hu-Pink.normalA'}
 							userSelect={'all'}
-							color={'hu-Pink.normalA'}
 							aria-label="Search database"
 							borderRadius={'5px'}
 							justifyContent={'center'}
@@ -292,9 +292,9 @@ const attendance: NextLayout = () => {
 						<HStack
 							h={'30px'}
 							minW={'30px'}
-							bg={'hu-Green.lightA'}
+							bg={colorMode == 'dark' ? 'hu-Green.normalA': 'hu-Green.lightA'}
+							color={colorMode == 'dark' ? 'white': 'hu-Green.normalA'}
 							userSelect={'all'}
-							color={'hu-Green.normal'}
 							aria-label="Search database"
 							borderRadius={'5px'}
 							justifyContent={'center'}
@@ -307,9 +307,9 @@ const attendance: NextLayout = () => {
 						<HStack
 							h={'30px'}
 							minW={'30px'}
-							bg={'gray.200'}
+							bg={ colorMode == 'dark' ? 'gray': 'gray.200'}
+							color={colorMode == 'dark'? 'white': 'gray.500'}
 							userSelect={'all'}
-							color={'gray.500'}
 							aria-label="Search database"
 							borderRadius={'5px'}
 							justifyContent={'center'}
@@ -322,9 +322,9 @@ const attendance: NextLayout = () => {
 						<HStack
 							h={'30px'}
 							minW={'30px'}
-							bg={'yellow.200'}
+							bg={colorMode == 'dark' ? 'yellow.400': 'yellow.200'}
+							color={colorMode == 'dark' ? 'white': 'yellow.500'}
 							userSelect={'all'}
-							color={'yellow.500'}
 							aria-label="Search database"
 							borderRadius={'5px'}
 							justifyContent={'center'}
@@ -334,7 +334,7 @@ const attendance: NextLayout = () => {
 						<Text color={'gray'}>Holiday</Text>
 					</HStack>
 				</HStack>
-				<VStack paddingBottom={'25px'} spacing={5} alignItems={'start'} overflow={'auto'}>
+				<VStack paddingBottom={'30px'} spacing={5} alignItems={'start'} overflow={'auto'}>
 					<HStack spacing={10} alignItems="center" justifyContent={'space-between'}>
 						<HStack spacing={10}>
 							<Text
@@ -412,6 +412,7 @@ const attendance: NextLayout = () => {
 													setUserHandle(date, employee)
 													onOpenInsert()
 												}}
+												employeeId={employee.id}
 												countDate={lastDate}
 												attendances={attendances}
 												leaveDates={allLeaves?.leaves}
@@ -434,7 +435,7 @@ const attendance: NextLayout = () => {
 										>
 											{attendances.length}
 										</Text>
-										<Text color={'gray.500'} as={'span'}>
+										<Text color={colorMode == 'dark'? 'gray.200': 'gray.500'} as={'span'}>
 											{' '}
 											/{lastDate}
 										</Text>

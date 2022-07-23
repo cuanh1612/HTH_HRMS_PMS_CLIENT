@@ -1,6 +1,7 @@
-import { Grid, GridItem, Skeleton, Text, useDisclosure, VStack } from '@chakra-ui/react'
+import { Button, Grid, GridItem, Skeleton, Text, useDisclosure, VStack } from '@chakra-ui/react'
 import { AlertDialog, Func, FuncCollapse } from 'components/common'
 import { Drawer } from 'components/Drawer'
+import { DateRange, Input, Select } from 'components/filter'
 import { ClientLayout } from 'components/layouts'
 import { Cards } from 'components/room'
 import { AuthContext } from 'contexts/AuthContext'
@@ -9,9 +10,13 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { allRoomsQuery } from 'queries'
 import React, { useCallback, useContext, useEffect, useState } from 'react'
+import { AiOutlineSearch } from 'react-icons/ai'
 import { IoAdd } from 'react-icons/io5'
+import { MdOutlineEvent } from 'react-icons/md'
+import { VscFilter } from 'react-icons/vsc'
 
 import { NextLayout } from 'type/element/layout'
+import { IFilter } from 'type/tableTypes'
 import AddRooms from './add-rooms'
 import UpdateRoom from './[roomId]/update-room'
 
@@ -20,7 +25,20 @@ const zoom: NextLayout = () => {
 	const router = useRouter()
 
 	//State ---------------------------------------------------------------------
-	const [roomId, setRoomId] = useState<string | number>(7)
+	const [roomId, setRoomId] = useState<string | number>()
+	const [filter, setFilter] = useState<{
+		date: {
+			from?: Date,
+			to?: Date
+		},
+		title: string
+	}>({
+		date: {
+			from: undefined,
+			to: undefined
+		},
+		title: ''
+	})
 
 	//Setup modal ----------------------------------------------------------------
 	const {
@@ -32,6 +50,8 @@ const zoom: NextLayout = () => {
 	// set isOpen of dialog to delete one
 	const { isOpen: isOpenDialogDl, onOpen: onOpenDl, onClose: onCloseDl } = useDisclosure()
 	const { isOpen: isOpenUpRoom, onOpen: onOpenUpRoom, onClose: onCloseUpRoom } = useDisclosure()
+	// set isOpen of drawer to filters
+	const { isOpen: isOpenFilter, onOpen: onOpenFilter, onClose: onCloseFilter } = useDisclosure()
 
 	// query
 	const { data: dataRooms, mutate: refetchAllRooms } = allRoomsQuery({
@@ -82,12 +102,27 @@ const zoom: NextLayout = () => {
 				<title>Huprom - Rooms</title>
 				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
 			</Head>
+
 			<FuncCollapse>
 				<Func
 					icon={<IoAdd />}
 					description={'Add new meeting by form'}
 					title={'Add new'}
 					action={onOpenCreRoom}
+				/>
+				<Func
+					icon={<VscFilter />}
+					description={'Open draw to filter'}
+					title={'filter'}
+					action={onOpenFilter}
+				/>
+				<Func
+					icon={<MdOutlineEvent />}
+					title={'Calendar'}
+					description={'show holidays as calendar'}
+					action={() => {
+						router.push('/rooms/calendar')
+					}}
 				/>
 			</FuncCollapse>
 
@@ -199,6 +234,52 @@ const zoom: NextLayout = () => {
 				isOpen={isOpenDialogDl}
 				onClose={onCloseDl}
 			/>
+			<Drawer
+				title="Filter"
+				size="xs"
+				footer={
+					<Button
+						onClick={() => {
+							
+
+
+
+
+						}}
+					>
+						reset
+					</Button>
+				}
+				isOpen={isOpenFilter}
+				onClose={onCloseFilter}
+			>
+				<VStack spacing={5} p={6}>
+					<Input
+						handleSearch={(data: IFilter) => {
+							setFilter(state => ({
+								...state,
+								title: data.filterValue
+							}))
+						}}
+						columnId={'name'}
+						label="Project name"
+						placeholder="Enter project name"
+						icon={<AiOutlineSearch fontSize={'20px'} color="gray" opacity={0.6} />}
+						type={'text'}
+					/>
+					<DateRange
+						handleSelect={(date: { from: Date; to: Date }) => {
+							setFilter(state => ({
+								...state,
+								date
+							}))
+						}}
+						label="Select date"
+					/>
+
+
+				</VStack>
+			</Drawer>
 		</VStack>
 	)
 }

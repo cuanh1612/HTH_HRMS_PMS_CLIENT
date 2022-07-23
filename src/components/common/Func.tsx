@@ -10,13 +10,13 @@ interface Ifunc {
 }
 
 export const Func = ({ icon, title, description, action, disabled = false }: Ifunc) => {
-	const {colorMode} = useColorMode()
+	const { colorMode } = useColorMode()
 	return (
 		<HStack
 			transition={'0.2s'}
 			_hover={{
 				bg: disabled ? '' : 'hu-Green.light',
-				color: 'black'
+				color: 'black',
 			}}
 			borderRadius={10}
 			spacing={5}
@@ -32,12 +32,20 @@ export const Func = ({ icon, title, description, action, disabled = false }: Ifu
 		>
 			<HStack
 				justifyContent={'center'}
-				color={disabled ? 'gray' : 'hu-Green.normal'}
+				color={
+					colorMode == 'dark'
+						? disabled
+							? 'gray'
+							: 'white'
+						: disabled
+						? 'gray'
+						: 'hu-Green.normal'
+				}
 				w={'50px'}
 				minW={'50px'}
 				h={'50px'}
 				borderRadius={'full'}
-				bg={disabled ? 'gray.200' : 'hu-Green.lightA'}
+				bg={colorMode == 'dark' ? disabled ? 'gray.200' : 'hu-Green.normalA' : disabled ? 'gray.200' : 'hu-Green.lightA'}
 			>
 				{icon}
 			</HStack>

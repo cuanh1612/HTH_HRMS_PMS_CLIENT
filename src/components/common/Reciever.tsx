@@ -1,4 +1,5 @@
 import { Avatar, Box, HStack, Text, VStack } from '@chakra-ui/react'
+import { AuthContext } from 'contexts/AuthContext'
 import * as React from 'react'
 import { conversationType, employeeType } from 'type/basicTypes'
 
@@ -15,20 +16,18 @@ export const Receiver = ({
 	isActive,
 	conversation,
 }: IReceiverProps) => {
-
+	const { currentUser } = React.useContext(AuthContext)
 	return (
 		<HStack
 			justify={'space-between'}
 			align={'start'}
-			borderTopLeftRadius={'20px'}
-			borderBottomLeftRadius={'20px'}
+			borderRadius={['10px', null, null, null, '20px 0px 0px 20px']}
 			onClick={() => onChangeReceiver(conversation, employee)}
 			p={4}
 			cursor={'pointer'}
 			transition={'0.2s'}
-	
 			bgColor={isActive ? 'hu-Green.lightA' : undefined}
-			color={isActive ? 'black': undefined}
+			color={isActive ? 'black' : undefined}
 			_hover={{
 				bgColor: '#e8eef3',
 				color: 'black',
@@ -41,30 +40,30 @@ export const Receiver = ({
 					<Text fontSize={'16px'} fontWeight={'semibold'}>
 						{employee.name}
 					</Text>
-					<Text isTruncated w={'50%'} color={'gray.400'} fontSize={14}>
-						nguyen quang hoang hdsf s df ff f nguyen quang hoang hdsf s df ff f
-					</Text>
+					{conversation.latest_messager.length > 0 && (
+						<Text isTruncated color={isActive ? 'gray.500': 'gray.400'} fontSize={14}>
+							{currentUser?.id == conversation.latest_messager[0].userId && 'You: '}
+							{conversation.latest_messager[0].reply}
+						</Text>
+					)}
 				</Box>
 			</HStack>
-			<Box
-				minW={'20px'}
-				w={'20px'}
-				h={'20px'}
-				borderRadius="full"
-				pos={'relative'}
-				border={'2px solid'}
-				borderColor={'hu-Green.normal'}
-				color={'hu-Green.normal'}
-			>
-				<Text
-					fontSize={'12px'}
-					pos={'absolute'}
-					top={'-1px'}
-					left={'5px'}
+			{conversation.messages_not_read != 0 && (
+				<Box
+					minW={'20px'}
+					w={'20px'}
+					h={'20px'}
+					borderRadius="full"
+					pos={'relative'}
+					border={'2px solid'}
+					borderColor={'hu-Green.normal'}
+					color={'hu-Green.normal'}
 				>
-					5
-				</Text>
-			</Box>
+					<Text fontSize={'12px'} pos={'absolute'} top={'-1px'} left={'5px'}>
+						{conversation.messages_not_read}
+					</Text>
+				</Box>
+			)}
 		</HStack>
 	)
 }

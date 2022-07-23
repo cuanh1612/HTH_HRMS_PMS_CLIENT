@@ -9,6 +9,7 @@ import {
 	InputGroup,
 	InputRightElement,
 	useColorMode,
+	IconButton,
 } from '@chakra-ui/react'
 import { Input } from 'components/form'
 import Modal from 'components/modal/Modal'
@@ -20,7 +21,7 @@ import { allConversationsByUserQuery, allConversationRepliesByConversationQuery 
 import { useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { mutate } from 'swr'
-import { conversationType, employeeType } from 'type/basicTypes'
+import { conversationReplyType, conversationType, employeeType } from 'type/basicTypes'
 import { createConversationReplyForm } from 'type/form/basicFormType'
 import AddConversations from './add-conversations'
 import { AiOutlineMenu, AiOutlineSearch, AiOutlineSend } from 'react-icons/ai'
@@ -54,9 +55,12 @@ const Messages: NextLayout = () => {
 		converstion: number
 		email: string
 		name: string
-	} | null>(null)
-
+	}>()
+	const [isLoading, setIsLoading] = useState<boolean>(false)
 	const [conversationId, setConversationId] = useState<number | null>(null)
+	const [replies, setReplies] = useState<conversationReplyType[]>([])
+	const [conversations, setConversations] = useState<conversationType[] | null>(null)
+	const [search, setSearch] = useState<string>('')
 
 	//Query -------------------------------------------------------------
 	const { data: dataConversations, mutate: refetchConversations } = allConversationsByUserQuery(
@@ -69,15 +73,17 @@ const Messages: NextLayout = () => {
 		allConversationRepliesByConversationQuery(isAuthenticated, currentReceiver?.converstion)
 
 	//mutation ----------------------------------------------------------
-	const [mutateCreConversationReply, { status: statusCreConversationReply }] =
-		createConversationReplyMutation(setToast)
+	const [
+		mutateCreConversationReply,
+		{ status: statusCreConversationReply, data: dataCreateReply },
+	] = createConversationReplyMutation(setToast)
 
 	const [
 		mutateDeleteConversation,
 		{ status: statusDeleteConversation, data: dataDeleteConversation },
 	] = deleteConversationMutation(setToast)
 
-	// setForm and submit form create repliy -----------------------------
+	// setForm and submit form create reply -----------------------------
 	const formSetting = useForm<createConversationReplyForm>({
 		defaultValues: {
 			reply: '',
@@ -120,6 +126,8 @@ const Messages: NextLayout = () => {
 			name: employee.name,
 		})
 
+		setIsLoading(true)
+
 		onCloseManageMessages()
 	}
 
@@ -147,9 +155,37 @@ const Messages: NextLayout = () => {
 		}
 	}, [isAuthenticated])
 
+	useEffect(() => {
+		if (conversationId) {
+			localStorage.setItem('conversationId', `${conversationId}`)
+		} else {
+			localStorage.setItem('conversationId', `${0}`)
+		}
+	}, [conversationId])
+
+	useEffect(() => {
+		if (dataConversations?.conversations) {
+			setConversations(dataConversations.conversations)
+		} else {
+			setConversations(null)
+		}
+	}, [dataConversations])
+
+	useEffect(() => {
+		if (dataConversationReplies) {
+			setReplies(dataConversationReplies.replies)
+			setTimeout(() => {
+				setIsLoading(false)
+			}, 200)
+
+			//refetch all list conversations to get update count conversation replies not already read
+			refetchConversations()
+		}
+	}, [dataConversationReplies])
+
 	//Note when request success
 	useEffect(() => {
-		if (statusCreConversationReply === 'success') {
+		if (statusCreConversationReply === 'success' && dataCreateReply?.reply) {
 			//Reset data form
 			formSetting.reset({
 				reply: '',
@@ -160,11 +196,14 @@ const Messages: NextLayout = () => {
 				socket.emit('newReply', {
 					email: currentReceiver?.email,
 					conversation: currentReceiver?.converstion,
+					newReplies: [...replies, dataCreateReply.reply],
 				})
 			}
+			setReplies([...replies, dataCreateReply.reply])
 
 			//Refetch replies of current conversation
 			refetchReplies()
+			refetchConversations()
 		}
 	}, [statusCreConversationReply])
 
@@ -180,7 +219,7 @@ const Messages: NextLayout = () => {
 			}
 
 			//Set current receiver
-			setCurrentReceiver(null)
+			setCurrentReceiver(undefined)
 
 			//Refetch all conversation by user
 			refetchConversations()
@@ -193,12 +232,51 @@ const Messages: NextLayout = () => {
 	useEffect(() => {
 		//Join room
 		if (socket) {
-			socket.on('getNewReply', (conversation: number) => {
-				//Refetch messages of conversation
-				mutate(`conversation-replies/conversation/${conversation}`)
-			})
+			socket.on(
+				'getNewReply',
+				(conversation: number, newReplies: conversationReplyType[]) => {
+					if (Number(localStorage.getItem('conversationId')) == conversation) {
+						setReplies(newReplies)
+					}
+
+					// //Refetch messages of conversation
+					mutate(`conversation-replies/conversation/${conversation}`)
+					//refetch all list conversations to get update count conversation replies not already read
+					refetchConversations()
+				}
+			)
 		}
 	}, [socket])
+
+	useEffect(() => {
+		const searchTimeout = setTimeout(() => {
+			if (search) {
+				if (
+					dataConversations?.conversations &&
+					dataConversations.conversations.length > 0
+				) {
+					const data = dataConversations.conversations.filter((conversation) => {
+						const employee = conversation.employees.find((e) => {
+							if (e.id == currentUser?.id) return false
+							return true
+						})
+						if (employee && employee.name.includes(search)) {
+							return true
+						}
+						return false
+					})
+					setConversations(data)
+				}
+			} else {
+				if (dataConversations?.conversations) {
+					setConversations(dataConversations?.conversations)
+				}
+			}
+		}, 200)
+		return ()=> {
+			clearTimeout(searchTimeout)
+		}
+	}, [search])
 
 	//Scroll to bottom message
 	useEffect(() => {
@@ -224,6 +302,7 @@ const Messages: NextLayout = () => {
 					h={'100%'}
 					bg={colorMode == 'dark' ? '#1e2636' : '#f4f6f8'}
 					spacing={5}
+					display={['none', null, null, null, 'flex']}
 				>
 					<HStack
 						p={'20px'}
@@ -234,6 +313,10 @@ const Messages: NextLayout = () => {
 					>
 						<InputGroup>
 							<InputChakra
+								value={search}
+								onChange={(e) => {
+									setSearch(e.target.value)
+								}}
 								bg={colorMode == 'dark' ? '#3a4453' : '#e5e8ee'}
 								color={colorMode == 'dark' ? 'white' : undefined}
 								placeholder="Search"
@@ -262,8 +345,8 @@ const Messages: NextLayout = () => {
 					</HStack>
 
 					<VStack overflow={'auto'} maxH={'calc( 100% - 130px )'} w={'full'} spacing={3}>
-						{dataConversations?.conversations &&
-							dataConversations.conversations.map((conversation, key) => (
+						{conversations &&
+							conversations.map((conversation, key) => (
 								<Box
 									h={'77px'}
 									minH={'77px'}
@@ -275,11 +358,11 @@ const Messages: NextLayout = () => {
 										setConversationId(conversation.id)
 									}}
 								>
-									{conversation.employees.map((employee) => {
+									{conversation.employees.map((employee, key) => {
 										if (employee.email !== currentUser?.email) {
 											return (
 												<Receiver
-													key={employee.email}
+													key={key}
 													employee={employee}
 													conversation={conversation}
 													onChangeReceiver={onChangeReceiver}
@@ -303,22 +386,23 @@ const Messages: NextLayout = () => {
 							<Text fontSize={'24px'} fontWeight={'semibold'}>
 								{currentReceiver?.name}
 							</Text>
-							<Button
-								disabled={currentReceiver ? false : true}
-								onClick={() => {
-									onDeleteConversation(conversationId)
-								}}
-								colorScheme={'red'}
-							>
-								remove
-							</Button>
-							<Box
-								display={['block', 'block', 'block', 'none']}
-								cursor={'pointer'}
-								onClick={onOpenManageMessages}
-							>
-								<AiOutlineMenu />
-							</Box>
+							<HStack spacing={5}>
+								<Button
+									disabled={currentReceiver ? false : true}
+									onClick={() => {
+										onDeleteConversation(conversationId)
+									}}
+									colorScheme={'red'}
+								>
+									remove
+								</Button>
+								<IconButton
+									display={['flex', null, null, null, 'none']}
+									aria-label={'menu'}
+									onClick={onOpenManageMessages}
+									icon={<AiOutlineMenu />}
+								/>
+							</HStack>
 						</HStack>
 					</Box>
 
@@ -333,8 +417,8 @@ const Messages: NextLayout = () => {
 						overflow={'auto'}
 						id={'messages'}
 					>
-						{dataConversationReplies?.replies &&
-							dataConversationReplies.replies.map((conversationReply) => {
+						{replies &&
+							replies.map((conversationReply, key) => {
 								return (
 									<Message
 										key={conversationReply.id}
@@ -351,11 +435,13 @@ const Messages: NextLayout = () => {
 								)
 							})}
 					</VStack>
+					{isLoading && <Loading />}
 
 					<HStack
 						spacing={3}
 						w={'full'}
-						p={4}
+						pt={4}
+						paddingInline={4}
 						borderTop={'1px'}
 						borderColor={'#e5e8ee'}
 						position={'relative'}
@@ -408,39 +494,72 @@ const Messages: NextLayout = () => {
 
 			<Drawer
 				size="sm"
-				title="Manage Messages"
+				title="Conversations"
 				onClose={onCloseManageMessages}
 				isOpen={isOpenManageMessages}
 			>
-				<Box>
-					<Text p={6}>
-						<Box w={'full'} mt={2}>
-							{dataConversations?.conversations &&
-								dataConversations.conversations.map((conversation) => (
-									<Box key={conversation.id}>
-										{conversation.employees.map((employee) => {
-											if (employee.email !== currentUser?.email) {
-												return (
-													<Receiver
-														key={employee.email}
-														employee={employee}
-														conversation={conversation}
-														onChangeReceiver={onChangeReceiver}
-														isActive={
-															currentReceiver?.email ===
-															employee.email
-														}
-													/>
-												)
-											} else {
-												return
-											}
-										})}
-									</Box>
-								))}
-						</Box>
-					</Text>
-				</Box>
+				<HStack p={'20px'} w={'full'} mt={2} spacing={4}>
+					<InputGroup>
+						<InputChakra
+							value={search}
+							onChange={(e) => {
+								setSearch(e.target.value)
+							}}
+							bg={colorMode == 'dark' ? '#3a4453' : '#e5e8ee'}
+							color={colorMode == 'dark' ? 'white' : undefined}
+							placeholder="Search"
+						/>
+						<InputRightElement
+							color={colorMode == 'dark' ? 'gray' : undefined}
+							children={<AiOutlineSearch color="green.500" />}
+						/>
+					</InputGroup>
+
+					<Button
+						bg={'#e5e8ee'}
+						color={'black'}
+						_hover={{
+							bg: 'hu-Green.normal',
+							color: 'white',
+						}}
+						_active={{
+							bg: 'hu-Green.lightA',
+							color: 'white',
+						}}
+						onClick={onOpenCreConversation}
+					>
+						Add
+					</Button>
+				</HStack>
+				<VStack
+					overflow={'auto'}
+					h={'calc( 100vh - 90px )'}
+					spacing={5}
+					paddingInline={6}
+					w={'full'}
+					mt={2}
+				>
+					{conversations &&
+						conversations.map((conversation, key) => (
+							<Box w={'full'} key={key}>
+								{conversation.employees.map((employee, key) => {
+									if (employee.email !== currentUser?.email) {
+										return (
+											<Receiver
+												key={key}
+												employee={employee}
+												conversation={conversation}
+												onChangeReceiver={onChangeReceiver}
+												isActive={currentReceiver?.email === employee.email}
+											/>
+										)
+									} else {
+										return
+									}
+								})}
+							</Box>
+						))}
+				</VStack>
 			</Drawer>
 		</Box>
 	)

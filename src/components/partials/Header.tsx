@@ -125,24 +125,26 @@ export const Header = () => {
 								h={'100%'}
 							>
 								<AiOutlineBell fontSize={20} />
-								<Box
-									bgColor={'red'}
-									color={'white'}
-									minH={5}
-									minW={5}
-									lineHeight={'18px'}
-									borderRadius={'50%'}
-									fontSize={12}
-									position={'absolute'}
-									right={'-4px'}
-									top={'-5px'}
-								>
-									{dataNotification?.notifications?.length
-										? dataNotification?.notifications?.length >= 99
-											? '+99'
-											: dataNotification?.notifications?.length
-										: '0'}
-								</Box>
+								{dataNotification?.notifications?.length ? (
+									dataNotification?.notifications?.length >= 99 ? (
+										'+99'
+									) : (
+										<Box
+											bgColor={'red'}
+											color={'white'}
+											minH={5}
+											minW={5}
+											lineHeight={'18px'}
+											borderRadius={'50%'}
+											fontSize={12}
+											position={'absolute'}
+											right={'-4px'}
+											top={'-5px'}
+										>
+											dataNotification?.notifications?.length
+										</Box>
+									)
+								) : null}
 							</HStack>
 						</MenuButton>
 						<MenuList padding={0} borderRadius={0}>
@@ -205,9 +207,7 @@ export const Header = () => {
 						</MenuItem>
 						{currentUser?.role == 'Admin' && (
 							<Link passHref href={'/config-company-info'}>
-								<MenuItem
-									icon={<IoSettingsOutline fontSize={'15px'} />}
-								>
+								<MenuItem icon={<IoSettingsOutline fontSize={'15px'} />}>
 									Config website
 								</MenuItem>
 							</Link>

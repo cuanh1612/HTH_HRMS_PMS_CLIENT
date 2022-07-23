@@ -3,12 +3,6 @@ import {
 	Box,
 	Button,
 	ButtonGroup,
-	Drawer as CDrawer,
-	DrawerBody,
-	DrawerCloseButton,
-	DrawerContent,
-	DrawerHeader,
-	DrawerOverlay,
 	HStack,
 	Text,
 	useColorMode,
@@ -22,7 +16,7 @@ import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import listPlugin from '@fullcalendar/list'
 import timeGridPlugin from '@fullcalendar/timegrid'
-import { AlertDialog, ButtonIcon } from 'components/common'
+import { AlertDialog, ButtonIcon, Func, FuncCollapse } from 'components/common'
 import { Drawer } from 'components/Drawer'
 import { Select, SelectCustom } from 'components/filter'
 import { ClientLayout } from 'components/layouts'
@@ -38,7 +32,10 @@ import {
 	allTasksCalendarQuery,
 } from 'queries'
 import { useContext, useEffect, useState } from 'react'
+import { BsCalendar2Day, BsCalendar2Month, BsCalendar2Week } from 'react-icons/bs'
+import { IoAdd } from 'react-icons/io5'
 import { MdOutlineNavigateBefore, MdOutlineNavigateNext } from 'react-icons/md'
+import { VscFilter } from 'react-icons/vsc'
 import { IOption } from 'type/basicTypes'
 import { NextLayout } from 'type/element/layout'
 import { IFilter } from 'type/tableTypes'
@@ -188,21 +185,9 @@ const calendar: NextLayout = () => {
 	useEffect(() => {
 		if (calendar) {
 			calendar.render()
-			calendar.on('dateClick', function (info) {
-				console.log(info)
-			})
-
-			calendar.on('select', function (info) {
-				console.log(info)
-			})
-
 			calendar.on('eventClick', (info) => {
 				setTaskId(Number(info.event.id))
 				onOpenDetailTask()
-			})
-
-			calendar.on('eventDragStop', (info) => {
-				console.log(info)
 			})
 		}
 	}, [calendar])
@@ -273,64 +258,48 @@ const calendar: NextLayout = () => {
 				<title>Huprom - Tasks calendar</title>
 				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
 			</Head>
-			<HStack paddingBlock={'5'} justifyContent={'space-between'}>
-				<ButtonGroup spacing={4}>
-					{currentUser?.role === 'Admin' && (
-						<Button
-							color={'white'}
-							bg={'hu-Green.normal'}
-							onClick={() => onOpenAddTask()}
-						>
-							Add new
-						</Button>
-					)}
-					<Button
-						color={'white'}
-						bg={'hu-Green.normal'}
-						onClick={() => calendar?.changeView('timeGridDay')}
-					>
-						Day
-					</Button>
-					<Button
-						color={'white'}
-						bg={'hu-Green.normal'}
-						onClick={() => calendar?.changeView('timeGridWeek')}
-					>
-						Week
-					</Button>
-
-					<Button
-						color={'white'}
-						bg={'hu-Green.normal'}
-						onClick={() => calendar?.changeView('listWeek')}
-					>
-						listWeek
-					</Button>
-					<Button
-						color={'white'}
-						bg={'hu-Green.normal'}
-						onClick={() => calendar?.changeView('dayGridMonth')}
-					>
-						Month
-					</Button>
-					<Button
-						color={'white'}
-						bg={'hu-Green.normal'}
-						onClick={() => {
-							onOpenFilter()
-						}}
-					>
-						filter
-					</Button>
-					<Button
-						onClick={() => {
-							setFilter(undefined)
-						}}
-					>
-						reset filter
-					</Button>
-				</ButtonGroup>
-
+			<FuncCollapse>
+				{currentUser && currentUser.role === 'Admin' && (
+					<>
+						<Func
+							icon={<IoAdd />}
+							description={'Add new job by form'}
+							title={'Add new'}
+							action={onOpenAddTask}
+						/>
+					</>
+				)}
+				<Func
+					icon={<VscFilter />}
+					description={'Open draw to filter'}
+					title={'filter'}
+					action={onOpenFilter}
+				/>
+				<Func
+					icon={<BsCalendar2Day />}
+					description={'Show calendar by day'}
+					title={'Day'}
+					action={() => {
+						calendar?.changeView('timeGridDay')
+					}}
+				/>
+				<Func
+					icon={<BsCalendar2Week />}
+					description={'Show calendar by week'}
+					title={'Week'}
+					action={() => calendar?.changeView('timeGridWeek')}
+				/>
+				<Func
+					icon={<BsCalendar2Month />}
+					description={'Show calendar by month'}
+					title={'Month'}
+					action={() => calendar?.changeView('dayGridMonth')}
+				/>
+			</FuncCollapse>
+			<HStack pb={4} justifyContent={'space-between'}>
+				<Text color={'gray.500'} fontWeight={'semibold'}>
+					Calendar
+				</Text>
 				<ButtonGroup spacing={4}>
 					<ButtonIcon
 						handle={() => calendar?.prev()}
@@ -395,84 +364,93 @@ const calendar: NextLayout = () => {
 				onClose={onCloseDl}
 			/>
 
-			<CDrawer isOpen={isOpenFilter} placement="right" onClose={onCloseFilter}>
-				<DrawerOverlay />
-				<DrawerContent>
-					<DrawerCloseButton />
-					<DrawerHeader>Filters</DrawerHeader>
+			<Drawer
+				footer={
+					<Button
+						onClick={() => {
+							setFilter({
+								name: undefined,
+								employee: undefined,
+								project: undefined,
+								client: undefined
+							})
+						}}
+					>
+						reset
+					</Button>
+				}
+				isOpen={isOpenFilter}
+				size={'xs'}
+				title={'Filter'}
+				onClose={onCloseFilter}
+			>
+				<VStack p={6} spacing={5}>
+					<Select
+						options={dataAllProjects?.projects?.map((project) => ({
+							label: project.name,
+							value: project.id,
+						}))}
+						handleSearch={(data: IFilter) => {
+							setFilter((state) => ({
+								...state,
+								project: data.filterValue,
+							}))
+						}}
+						columnId={'project'}
+						label="Project"
+						placeholder="Select project"
+					/>
 
-					<DrawerBody>
-						<VStack spacing={5}>
-							<Select
-								options={dataAllProjects?.projects?.map((project) => ({
-									label: project.name,
-									value: project.id,
-								}))}
-								handleSearch={(data: IFilter) => {
-									setFilter((state) => ({
-										...state,
-										project: data.filterValue,
-									}))
-								}}
-								columnId={'project'}
-								label="Project"
-								placeholder="Select project"
-							/>
+					{currentUser?.role === 'Admin' && (
+						<SelectCustom
+							handleSearch={(field: any) => {
+								setFilter((state) => ({
+									...state,
+									employee: Number(field.value),
+								}))
+							}}
+							label={'Employee'}
+							name={'employee'}
+							options={[
+								{
+									label: (
+										<Text color={colorMode == 'light' ? 'black' : 'white'}>
+											all
+										</Text>
+									),
+									value: '',
+								},
 
-							{currentUser?.role === 'Admin' && (
-								<SelectCustom
-									handleSearch={(field: any) => {
-										setFilter((state) => ({
-											...state,
-											employee: Number(field.value),
-										}))
-									}}
-									label={'Employee'}
-									name={'employee'}
-									options={[
-										{
-											label: (
-												<Text
-													color={colorMode == 'light' ? 'black' : 'white'}
-												>
-													all
-												</Text>
-											),
-											value: '',
-										},
+								...employeesFilter,
+							]}
+							required={false}
+						/>
+					)}
+					<SelectCustom
+						handleSearch={(field: any) => {
+							setFilter((state) => ({
+								...state,
+								client: Number(field.value),
+							}))
+						}}
+						label={'Client'}
+						name={'client'}
+						options={[
+							{
+								label: (
+									<Text color={colorMode == 'light' ? 'black' : 'white'}>
+										all
+									</Text>
+								),
+								value: '',
+							},
 
-										...employeesFilter,
-									]}
-									required={false}
-								/>
-							)}
-							<SelectCustom
-								handleSearch={(field: any) => {
-									setFilter((state) => ({
-										...state,
-										client: Number(field.value),
-									}))
-								}}
-								label={'Client'}
-								name={'client'}
-								options={[
-									{
-										label: (
-											<Text color={colorMode == 'light' ? 'black' : 'white'}>
-												all
-											</Text>
-										),
-										value: '',
-									},
-
-									...clientsFilter,
-								]}
-								required={false}
-							/>
-						</VStack>
-					</DrawerBody>
-				</DrawerContent>
-			</CDrawer>
+							...clientsFilter,
+						]}
+						required={false}
+					/>
+				</VStack>
+			</Drawer>
 		</Box>
 	)
 }

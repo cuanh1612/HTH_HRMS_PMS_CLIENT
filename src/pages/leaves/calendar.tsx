@@ -22,7 +22,7 @@ import {
 import { NextLayout } from 'type/element/layout'
 // use layout
 import { ClientLayout } from 'components/layouts'
-import { AlertDialog, ButtonIcon } from 'components/common'
+import { AlertDialog, ButtonIcon, Func, FuncCollapse } from 'components/common'
 import { MdOutlineNavigateBefore, MdOutlineNavigateNext } from 'react-icons/md'
 import { Drawer } from 'components/Drawer'
 import UpdateLeaves from './update-leaves'
@@ -35,6 +35,9 @@ import { IOption } from 'type/basicTypes'
 import DetailLeave from './[leaveId]'
 import { deleteLeaveMutation } from 'mutations'
 import Head from 'next/head'
+import { IoAdd } from 'react-icons/io5'
+import { VscFilter } from 'react-icons/vsc'
+import { BsCalendar2Day, BsCalendar2Month, BsCalendar2Week } from 'react-icons/bs'
 
 const calendar: NextLayout = () => {
 	const { colorMode } = useColorMode()
@@ -43,7 +46,7 @@ const calendar: NextLayout = () => {
 	// style
 	const dayHeader = useColorModeValue('dayHeader', 'dayHeader--dark')
 
-	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
+	const { isAuthenticated, handleLoading, setToast, currentUser } = useContext(AuthContext)
 	const [calendar, setCalendar] = useState<Calendar>()
 	const [data, setData] = useState<EventInput[]>([])
 	const [employeesFilter, setEmployeesFilter] = useState<IOption[]>([])
@@ -147,21 +150,9 @@ const calendar: NextLayout = () => {
 	useEffect(() => {
 		if (calendar) {
 			calendar.render()
-			calendar.on('dateClick', function (info) {
-				console.log(info)
-			})
-
-			calendar.on('select', function (info) {
-				console.log(info)
-			})
-
 			calendar.on('eventClick', (info) => {
 				setLeaveId(Number(info.event.id))
 				onOpenDetail()
-			})
-
-			calendar.on('eventDragStop', (info) => {
-				console.log(info)
 			})
 		}
 	}, [calendar])
@@ -198,51 +189,46 @@ const calendar: NextLayout = () => {
 				<title>Huprom - Leaves calendar</title>
 				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
 			</Head>
-			<HStack paddingBlock={'5'} justifyContent={'space-between'}>
-				<ButtonGroup spacing={4}>
-					<Button color={'white'} bg={'hu-Green.normal'} onClick={() => onOpenAdd()}>
-						Add leave
-					</Button>
-					<Button
-						color={'white'}
-						bg={'hu-Green.normal'}
-						onClick={() => calendar?.changeView('timeGridDay')}
-					>
-						Day
-					</Button>
-					<Button
-						color={'white'}
-						bg={'hu-Green.normal'}
-						onClick={() => calendar?.changeView('timeGridWeek')}
-					>
-						Week
-					</Button>
-
-					<Button
-						color={'white'}
-						bg={'hu-Green.normal'}
-						onClick={() => calendar?.changeView('listWeek')}
-					>
-						listWeek
-					</Button>
-					<Button
-						color={'white'}
-						bg={'hu-Green.normal'}
-						onClick={() => calendar?.changeView('dayGridMonth')}
-					>
-						Month
-					</Button>
-					<Button
-						color={'white'}
-						bg={'hu-Green.normal'}
-						onClick={() => {
-							onOpenFilter()
-						}}
-					>
-						filter
-					</Button>
-				</ButtonGroup>
-
+			<FuncCollapse>
+				{currentUser && currentUser.role === 'Admin' && (
+					<>
+						<Func
+							icon={<IoAdd />}
+							description={'Add new job by form'}
+							title={'Add new'}
+							action={onOpenAdd}
+						/>
+					</>
+				)}
+				<Func
+					icon={<VscFilter />}
+					description={'Open draw to filter'}
+					title={'filter'}
+					action={onOpenFilter}
+				/>
+				<Func
+					icon={<BsCalendar2Day />}
+					description={'Show calendar by day'}
+					title={'Day'}
+					action={() => {
+						calendar?.changeView('timeGridDay')
+					}}
+				/>
+				<Func
+					icon={<BsCalendar2Week />}
+					description={'Show calendar by week'}
+					title={'Week'}
+					action={() => calendar?.changeView('timeGridWeek')}
+				/>
+				<Func
+					icon={<BsCalendar2Month />}
+					description={'Show calendar by month'}
+					title={'Month'}
+					action={() => calendar?.changeView('dayGridMonth')}
+				/>
+			</FuncCollapse>
+			<HStack pb={4} justifyContent={'space-between'}>
+				<Text color={'gray.500'} fontWeight={'semibold'}>Calendar</Text>
 				<ButtonGroup spacing={4}>
 					<ButtonIcon
 						handle={() => calendar?.prev()}

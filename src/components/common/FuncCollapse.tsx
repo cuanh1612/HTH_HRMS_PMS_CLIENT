@@ -1,14 +1,15 @@
-import { Collapse, HStack, SimpleGrid, Text, useDisclosure } from '@chakra-ui/react'
+import { Box, Collapse, HStack, SimpleGrid, Text, useDisclosure } from '@chakra-ui/react'
 import React, { ReactNode } from 'react'
 import { AiOutlineCaretDown, AiOutlineCaretUp } from 'react-icons/ai'
 
-export const FuncCollapse = ({ children }: { children: ReactNode }) => {
+export const FuncCollapse = ({ children, min= false }: { children: ReactNode , min?: boolean}) => {
 	const { onToggle, isOpen } = useDisclosure({
 		defaultIsOpen: true,
 	})
 	return (
-		<>
+		<Box w={'full'}>
 			<HStack
+				
 				_hover={{
 					textDecoration: 'none',
 				}}
@@ -20,11 +21,11 @@ export const FuncCollapse = ({ children }: { children: ReactNode }) => {
 				<Text fontWeight={'semibold'}>Function</Text>
 				{isOpen ? <AiOutlineCaretDown /> : <AiOutlineCaretUp />}
 			</HStack>
-			<Collapse in={isOpen} animateOpacity>
+			<Collapse  in={isOpen} animateOpacity>
 				<SimpleGrid
 					w={'full'}
 					cursor={'pointer'}
-					columns={[1, 2, 2, 3, null, 4]}
+					columns={min ? [1, null, null, 2, null, 3]: [1, 2, 2, 3, null, 4]}
 					spacing={10}
 					pt={3}
 				>
@@ -32,6 +33,6 @@ export const FuncCollapse = ({ children }: { children: ReactNode }) => {
 				</SimpleGrid>
 			</Collapse>
             <br />
-		</>
+		</Box>
 	)
 }

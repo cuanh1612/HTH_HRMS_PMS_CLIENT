@@ -73,6 +73,12 @@ export interface departmentType {
 export interface conversationType {
 	id: number
 	employees: employeeType[]
+	messages_not_read: number
+	latest_messager: Array<{
+		id: number
+		reply: string
+		userId: number
+	}>
 	[index: string]: any
 }
 

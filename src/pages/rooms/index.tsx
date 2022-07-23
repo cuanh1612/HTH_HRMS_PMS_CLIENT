@@ -18,6 +18,7 @@ import { VscFilter } from 'react-icons/vsc'
 import { NextLayout } from 'type/element/layout'
 import { IFilter } from 'type/tableTypes'
 import AddRooms from './add-rooms'
+import DetailRoom from './[roomId]'
 import UpdateRoom from './[roomId]/update-room'
 
 const zoom: NextLayout = () => {
@@ -28,16 +29,16 @@ const zoom: NextLayout = () => {
 	const [roomId, setRoomId] = useState<string | number>()
 	const [filter, setFilter] = useState<{
 		date: {
-			from?: Date,
+			from?: Date
 			to?: Date
-		},
+		}
 		title: string
 	}>({
 		date: {
 			from: undefined,
-			to: undefined
+			to: undefined,
 		},
-		title: ''
+		title: '',
 	})
 
 	//Setup modal ----------------------------------------------------------------
@@ -45,6 +46,12 @@ const zoom: NextLayout = () => {
 		isOpen: isOpenCreRoom,
 		onOpen: onOpenCreRoom,
 		onClose: onCloseCreRoom,
+	} = useDisclosure()
+
+	const {
+		isOpen: isOpenDetailRoom,
+		onOpen: onOpenDetailRoom,
+		onClose: onCloseDetailRoom,
 	} = useDisclosure()
 
 	// set isOpen of dialog to delete one
@@ -130,6 +137,9 @@ const zoom: NextLayout = () => {
 				<Text w={'full'} fontWeight={'bold'} fontSize={'xl'}>
 					Your rooms:
 				</Text>
+				<Button onClick={onOpenDetailRoom}>
+					Open detail room
+				</Button>
 				{dataRooms?.rooms && dataRooms.rooms.length > 0 ? (
 					<Grid
 						w={'full'}
@@ -237,28 +247,16 @@ const zoom: NextLayout = () => {
 			<Drawer
 				title="Filter"
 				size="xs"
-				footer={
-					<Button
-						onClick={() => {
-							
-
-
-
-
-						}}
-					>
-						reset
-					</Button>
-				}
+				footer={<Button onClick={() => {}}>reset</Button>}
 				isOpen={isOpenFilter}
 				onClose={onCloseFilter}
 			>
 				<VStack spacing={5} p={6}>
 					<Input
 						handleSearch={(data: IFilter) => {
-							setFilter(state => ({
+							setFilter((state) => ({
 								...state,
-								title: data.filterValue
+								title: data.filterValue,
 							}))
 						}}
 						columnId={'name'}
@@ -269,16 +267,18 @@ const zoom: NextLayout = () => {
 					/>
 					<DateRange
 						handleSelect={(date: { from: Date; to: Date }) => {
-							setFilter(state => ({
+							setFilter((state) => ({
 								...state,
-								date
+								date,
 							}))
 						}}
 						label="Select date"
 					/>
-
-
 				</VStack>
+			</Drawer>
+
+			<Drawer size="md" title="Detail Room" onClose={onCloseDetailRoom} isOpen={isOpenDetailRoom}>
+				<DetailRoom roomIdProp={1} />
 			</Drawer>
 		</VStack>
 	)

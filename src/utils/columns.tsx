@@ -282,7 +282,7 @@ export const employeeColumn = ({
 									</Link>
 
 									<Text isTruncated w={'full'} fontSize={'sm'} color={'gray.400'}>
-										{row.original['department'].name || '--'}
+										{row.original['department']?.name || '--'}
 									</Text>
 								</VStack>
 							</HStack>

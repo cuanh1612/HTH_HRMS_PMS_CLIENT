@@ -17,6 +17,7 @@ import listPlugin from '@fullcalendar/list'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import { AlertDialog, ButtonIcon, Func, FuncCollapse } from 'components/common'
 import { Drawer } from 'components/Drawer'
+import { Select } from 'components/filter'
 import { ClientLayout } from 'components/layouts'
 import { AuthContext } from 'contexts/AuthContext'
 import { deleteRoomMutation } from 'mutations'
@@ -29,6 +30,7 @@ import { IoAdd } from 'react-icons/io5'
 import { MdOutlineNavigateBefore, MdOutlineNavigateNext } from 'react-icons/md'
 import { VscFilter } from 'react-icons/vsc'
 import { NextLayout } from 'type/element/layout'
+import { IFilter } from 'type/tableTypes'
 import AddRooms from './add-rooms'
 import UpdateRoom from './[roomId]/update-room'
 
@@ -42,6 +44,11 @@ const calendar: NextLayout = () => {
 	const [data, setData] = useState<EventInput[]>([])
 	const [calendar, setCalendar] = useState<Calendar>()
 	const [roomId, setRoomId] = useState<string | number>()
+
+	const [filter, setFilter] = useState<{
+		month?: number | string
+		year?: number | string
+	}>({})
 
 	// set isOpen of drawer to filters
 	const { isOpen: isOpenFilter, onOpen: onOpenFilter, onClose: onCloseFilter } = useDisclosure()
@@ -61,6 +68,7 @@ const calendar: NextLayout = () => {
 		isAuthenticated,
 		role: currentUser?.role,
 		id: currentUser?.id,
+		...filter
 	})
 
 	// mutation
@@ -125,13 +133,23 @@ const calendar: NextLayout = () => {
 
 	useEffect(() => {
 		if (calendar) {
+			if (filter) {
+				let date = new Date()
+				if (filter.month) {
+					date = new Date(date.setMonth(Number(filter.month) - 1))
+				}
+				if (filter.year) {
+					date = new Date(date.setFullYear(Number(filter.year)))
+				}
+				calendar.gotoDate(date)
+			}
 			calendar.render()
 			calendar.on('eventClick', (info) => {
-				// setTaskId(Number(info.event.id))
-				// onOpenDetailTask()
+				// setHolidayId(Number(info.event.id))
+				// onOpenDetail()
 			})
 		}
-	}, [calendar])
+	}, [calendar, filter])
 
 	useEffect(() => {
 		if (statusDl == 'success' && dataDl) {
@@ -231,14 +249,119 @@ const calendar: NextLayout = () => {
 				onClose={onCloseDl}
 			/>
 			<Drawer
+				footer={
+					<Button
+						onClick={() => {
+							setFilter({
+								month: undefined,
+								year: undefined,
+							})
+						}}
+					>
+						reset
+					</Button>
+				}
 				isOpen={isOpenFilter}
 				size={'xs'}
 				title={'Filter'}
 				onClose={onCloseFilter}
-				footer={<Button onClick={() => {}}>reset filter</Button>}
 			>
 				<VStack spacing={5} p={6}>
-					1
+					<Select
+						options={[
+							{
+								label: 'January',
+								value: 1,
+							},
+							{
+								label: 'February',
+								value: 2,
+							},
+							{
+								label: 'March',
+								value: 3,
+							},
+							{
+								label: 'April',
+								value: 4,
+							},
+							{
+								label: 'May',
+								value: 5,
+							},
+							{
+								label: 'June',
+								value: 6,
+							},
+							{
+								label: 'July',
+								value: 7,
+							},
+							{
+								label: 'August',
+								value: 8,
+							},
+							{
+								label: 'September',
+								value: 9,
+							},
+							{
+								label: 'October',
+								value: 10,
+							},
+							{
+								label: 'November',
+								value: 11,
+							},
+							{
+								label: 'December',
+								value: 12,
+							},
+						]}
+						handleSearch={(data: IFilter) => {
+							setFilter((state) => ({
+								...state,
+								month: data.filterValue,
+							}))
+						}}
+						columnId={'day'}
+						label="Month"
+						placeholder="Select month"
+					/>
+
+					<Select
+						options={[
+							{
+								label: `${new Date().getFullYear()}`,
+								value: `${new Date().getFullYear()}`,
+							},
+							{
+								label: `${new Date().getFullYear() - 1}`,
+								value: `${new Date().getFullYear() - 1}`,
+							},
+							{
+								label: `${new Date().getFullYear() - 2}`,
+								value: `${new Date().getFullYear() - 2}`,
+							},
+							{
+								label: `${new Date().getFullYear() - 3}`,
+								value: `${new Date().getFullYear() - 3}`,
+							},
+							{
+								label: `${new Date().getFullYear() - 4}`,
+								value: `${new Date().getFullYear() - 4}`,
+							},
+						]}
+						handleSearch={(data: IFilter) => {
+							setFilter((state) => ({
+								...state,
+								year: data.filterValue,
+							}))
+						}}
+						columnId={'holiday_date'}
+						label="Year"
+						placeholder="Select year"
+					/>
 				</VStack>
 			</Drawer>
 		</Box>

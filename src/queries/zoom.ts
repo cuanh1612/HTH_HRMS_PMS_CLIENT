@@ -3,31 +3,40 @@ import useSWR from 'swr'
 import { allUsersRequest } from 'requests/user'
 import { roomMutaionResponse } from 'type/mutationResponses'
 
-export const allRoomsQuery = ({
-	isAuthenticated,
-	role,
-	id,
-}: {
+export const allRoomsQuery = (input: {
 	isAuthenticated: boolean | null
 	role?: string
 	id?: number
+	month?: number| string
+	year?: number| string
 }) => {
-	var url = ''
-	if (isAuthenticated) {
-		url = 'rooms'
-	}
-	if (role && id) {
-		switch (role) {
+	const fieldUrl: string[] = []
+	input?.month && fieldUrl.push(`month=${input.month}`)
+	input?.year && fieldUrl.push(`year=${input.year}`)
+
+	var url = 'rooms'
+	if (input.role && input.id) {
+		switch (input.role) {
 			case 'Employee':
-                url += `?employee=${id}`
+				fieldUrl.push(`employee=${input.id}`)
+              
 				break
 			case 'Client':
-                url += `?client=${id}`
+				fieldUrl.push(`client=${input.id}`)
 				break
 		}
 	}
+
+	for (let index = 0; index < fieldUrl.length; index++) {
+		if (index == 0) {
+			url += `?${fieldUrl[index]}`
+		} else {
+			url += `&${fieldUrl[index]}`
+		}
+	}
+
 	return useSWR<roomMutaionResponse, AxiosError>(
-		(isAuthenticated && role && id) ? url : null,
+		input.isAuthenticated ? url : null,
 		allUsersRequest,
 		{
 			errorRetryCount: 2,

@@ -12,23 +12,30 @@ import { useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { AiOutlineCheck } from 'react-icons/ai'
 import { BsCalendarDate } from 'react-icons/bs'
-import { IOption } from 'type/basicTypes'
+import { IOption, jobType } from 'type/basicTypes'
 import { createJobOfferLetterForm } from 'type/form/basicFormType'
 import { dataJobRate } from 'utils/basicData'
 import { CreateJobOfferValidate } from 'utils/validate'
 
 export interface IAddJobOfferLettersProps {
 	onCloseDrawer?: () => void
+	job?: jobType
 }
 
-export default function AddOfferLetter({ onCloseDrawer }: IAddJobOfferLettersProps) {
+export default function AddOfferLetter({
+	onCloseDrawer,
+	job: jobProp,
+}: IAddJobOfferLettersProps) {
 	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
 	const router = useRouter()
 
 	//State -------------------------------------------------------------------
 	const [optionJobs, setOptionJobs] = useState<IOption[]>([])
 	const [optionJobApplications, setOptionJobApplications] = useState<IOption[]>([])
-	const [optionSelectedJob, setOptionSelectedJob] = useState<number | string>()
+	const [optionSelectedJob, setOptionSelectedJob] = useState<number | string | undefined>(
+		jobProp ? jobProp.id : undefined
+	)
+
 	const [optionSelectedJobApplication, setOptionSelectedJobApplication] = useState<IOption>({
 		label: (
 			<>
@@ -45,6 +52,16 @@ export default function AddOfferLetter({ onCloseDrawer }: IAddJobOfferLettersPro
 		),
 		value: undefined,
 	})
+
+	//State selected when have data detail job pass by prop
+	const [optionSelectedJobProp, _] = useState<IOption | undefined>(jobProp ? ({
+		label: (
+			<>
+				<Text>{jobProp.title}</Text>
+			</>
+		),
+		value: jobProp.id,
+	}) : undefined)
 
 	//Setup modal -------------------------------------------------------
 
@@ -68,7 +85,7 @@ export default function AddOfferLetter({ onCloseDrawer }: IAddJobOfferLettersPro
 	// setForm and submit form create new job offer ----------------------------
 	const formSetting = useForm<createJobOfferLetterForm>({
 		defaultValues: {
-			job: undefined,
+			job: jobProp ? jobProp.id : undefined,
 			job_application: undefined,
 			exprise_on: undefined,
 			expected_joining_date: undefined,
@@ -214,6 +231,8 @@ export default function AddOfferLetter({ onCloseDrawer }: IAddJobOfferLettersPro
 							required={true}
 							options={optionJobs}
 							onChangeValue={onChangeJob}
+							selectedOption={optionSelectedJobProp}
+							disabled={optionSelectedJobProp ? true : false}
 						/>
 					</GridItem>
 

@@ -1,4 +1,4 @@
-import { Avatar, Box, HStack, Text, VStack } from '@chakra-ui/react'
+import { Avatar, Box, HStack, Text } from '@chakra-ui/react'
 import { AuthContext } from 'contexts/AuthContext'
 import * as React from 'react'
 import { conversationType, employeeType } from 'type/basicTypes'

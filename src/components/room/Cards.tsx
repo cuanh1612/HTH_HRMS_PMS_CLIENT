@@ -23,12 +23,14 @@ export const Cards = ({
 	data,
 	showAlertDl,
 	showUpdate,
+	showDetail,
 	isEdit = true,
 }: {
 	data: roomType[]
 	showAlertDl?: any
 	showUpdate?: any
 	isEdit?: boolean
+	showDetail?: any
 }) => {
 	return (
 		<>
@@ -54,7 +56,9 @@ export const Cards = ({
 										<MdOutlineMoreVert />
 									</MenuButton>
 									<MenuList>
-										<MenuItem icon={<IoEyeOutline fontSize={'15px'} />}>
+										<MenuItem onClick={()=> {
+											showDetail(item.id)
+										}} icon={<IoEyeOutline fontSize={'15px'} />}>
 											View
 										</MenuItem>
 										<MenuItem
@@ -88,7 +92,7 @@ export const Cards = ({
 							{item.title.replace(/-/g, ' ')}
 						</Text>
 						<Text color={'white'} paddingInline={5} opacity={0.6}>
-							{item.date}
+							{new Date(item.date).toLocaleDateString('es-CL')}
 						</Text>
 						<Text
 							color={'white'}

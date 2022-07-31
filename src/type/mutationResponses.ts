@@ -304,7 +304,7 @@ export interface stickyNoteMutaionResponse extends commonResponse {
 export interface roomMutaionResponse extends commonResponse {
 	room?: roomType
 	rooms?: roomType[]
-	another_rooms?: roomType[]
+	other_rooms?: roomType[]
 }
 
 export interface NotificationMutaionResponse extends commonResponse {

@@ -29,9 +29,11 @@ import { BsCalendar2Day, BsCalendar2Month, BsCalendar2Week } from 'react-icons/b
 import { IoAdd } from 'react-icons/io5'
 import { MdOutlineNavigateBefore, MdOutlineNavigateNext } from 'react-icons/md'
 import { VscFilter } from 'react-icons/vsc'
+import { roomType } from 'type/basicTypes'
 import { NextLayout } from 'type/element/layout'
 import { IFilter } from 'type/tableTypes'
 import AddRooms from './add-rooms'
+import DetailRoom from './[roomId]'
 import UpdateRoom from './[roomId]/update-room'
 
 const calendar: NextLayout = () => {
@@ -62,13 +64,18 @@ const calendar: NextLayout = () => {
 	// set isOpen of dialog to delete one
 	const { isOpen: isOpenDialogDl, onOpen: onOpenDl, onClose: onCloseDl } = useDisclosure()
 	const { isOpen: isOpenUpRoom, onOpen: onOpenUpRoom, onClose: onCloseUpRoom } = useDisclosure()
+	const {
+		isOpen: isOpenDetailRoom,
+		onOpen: onOpenDetailRoom,
+		onClose: onCloseDetailRoom,
+	} = useDisclosure()
 
 	// query
 	const { data: dataRooms, mutate: refetchAllRooms } = allRoomsQuery({
 		isAuthenticated,
 		role: currentUser?.role,
 		id: currentUser?.id,
-		...filter
+		...filter,
 	})
 
 	// mutation
@@ -87,19 +94,25 @@ const calendar: NextLayout = () => {
 	}, [isAuthenticated])
 
 	useEffect(() => {
-		if (dataRooms) {
-			const newData = dataRooms.rooms?.map((item): EventInput => {
+		const handleData = (rooms: roomType[]): EventInput[] => {
+			return rooms.map((room): EventInput => {
 				return {
-					title: item.title,
-					id: `${item.id}`,
+					title: room.title,
+					id: `${room.id}`,
 					backgroundColor: `#B0E4DD`,
 					textColor: '#008774',
 					borderColor: `#008774`,
-					start: new Date(`${item.date} ${item.start_time}`),
-					end: new Date(`${item.date} 23:59:00`),
+					start: new Date(`${room.date} ${room.start_time}`),
+					end: new Date(`${room.date} 23:59:00`),
 				}
 			})
-			setData(newData || [])
+		}
+		if (dataRooms) {
+			const rooms = dataRooms.rooms && handleData(dataRooms.rooms)
+			const otherRooms = dataRooms.other_rooms && handleData(dataRooms.other_rooms)
+			if (otherRooms && rooms) {
+				setData([...otherRooms, ...rooms])
+			}
 		}
 	}, [dataRooms, colorMode])
 
@@ -145,8 +158,8 @@ const calendar: NextLayout = () => {
 			}
 			calendar.render()
 			calendar.on('eventClick', (info) => {
-				// setHolidayId(Number(info.event.id))
-				// onOpenDetail()
+				setRoomId(Number(info.event.id))
+				onOpenDetailRoom()
 			})
 		}
 	}, [calendar, filter])
@@ -363,6 +376,20 @@ const calendar: NextLayout = () => {
 						placeholder="Select year"
 					/>
 				</VStack>
+			</Drawer>
+			<Drawer
+				size="md"
+				title="Detail Room"
+				onClose={onCloseDetailRoom}
+				isOpen={isOpenDetailRoom}
+			>
+				<DetailRoom onOpenUpdate={() => {
+						onOpenUpRoom()
+					}}
+					onCloseDetailRoom={onCloseDetailRoom}
+					onOpenDl={() => {
+						onOpenDl()
+					}} roomIdProp={roomId} />
 			</Drawer>
 		</Box>
 	)

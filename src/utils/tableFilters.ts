@@ -2,6 +2,7 @@
 import { Row } from 'react-table'
 
 const getData = (columns: string[], row: Row) => {
+
 	let data = Object(row.original)
 	columns.map((item) => {
 		if (data[item]) {
@@ -37,6 +38,7 @@ export const selectFilter = (columns: string[]) => {
 }
 
 export const arrayFilter = (columns: string[], fieldColumn: string) => {
+
 	return (rows: Row[], _: string, filterValue: string | number) => {
 		if (!filterValue) {
 			return rows
@@ -44,6 +46,7 @@ export const arrayFilter = (columns: string[], fieldColumn: string) => {
 		return rows.filter((row) => {
 			const data = getData(columns, row)
 			return data.every((field: any) => {
+				console.log(field[fieldColumn], filterValue)
 				return field[fieldColumn] == filterValue
 			})
 		})

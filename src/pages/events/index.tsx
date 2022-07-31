@@ -33,8 +33,6 @@ import { IOption } from 'type/basicTypes'
 import { Input, SelectCustom } from 'components/filter'
 import { AiOutlineSearch } from 'react-icons/ai'
 import { IFilter } from 'type/tableTypes'
-import { CSVLink } from 'react-csv'
-import { FaFileCsv } from 'react-icons/fa'
 import DetailEvent from './[eventId]'
 import { deleteEventMutation } from 'mutations'
 import Head from 'next/head'
@@ -56,9 +54,6 @@ const Event: NextLayout = () => {
 	//State ---------------------------------------------------------------------
 	const [eventId, setEventId] = useState<number | null>(null)
 
-	//state csv
-	const [dataCSV, setDataCSV] = useState<any[]>([])
-
 	// set data to handle to calendar
 	const [data, setData] = useState<EventInput[]>([])
 	const [calendar, setCalendar] = useState<Calendar>()
@@ -71,20 +66,6 @@ const Event: NextLayout = () => {
 
 	const [name, setName] = useState<string>()
 
-	//Setup download csv --------------------------------------------------------
-	const headersCSV = [
-		{ label: 'id', key: 'id' },
-		{ label: 'name', key: 'name' },
-		{ label: 'color', key: 'color' },
-		{ label: 'description', key: 'description' },
-		{ label: 'where', key: 'where' },
-		{ label: 'starts_on_date', key: 'starts_on_date' },
-		{ label: 'starts_on_time', key: 'starts_on_time' },
-		{ label: 'ends_on_date', key: 'ends_on_date' },
-		{ label: 'ends_on_time', key: 'ends_on_time' },
-		{ label: 'createdAt', key: 'createdAt' },
-		{ label: 'updatedAt', key: 'updatedAt' },
-	]
 
 	//Setup drawer --------------------------------------------------------------
 	const { isOpen: isOpenAdd, onOpen: onOpenAdd, onClose: onCloseAdd } = useDisclosure()
@@ -138,25 +119,6 @@ const Event: NextLayout = () => {
 				}
 			})
 			setData(newData || [])
-
-			if (allEvents.Events) {
-				//Set data csv
-				const dataCSV: any[] = allEvents.Events.map((event) => ({
-					id: event.id,
-					name: event.name,
-					color: event.color,
-					description: event.description,
-					where: event.where,
-					starts_on_date: event.starts_on_date,
-					starts_on_time: event.starts_on_time,
-					ends_on_date: event.ends_on_date,
-					ends_on_time: event.ends_on_time,
-					createdAt: event.createdAt,
-					updatedAt: event.updatedAt,
-				}))
-
-				setDataCSV(dataCSV)
-			}
 		}
 	}, [allEvents, colorMode])
 

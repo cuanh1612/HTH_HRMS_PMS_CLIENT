@@ -1,4 +1,4 @@
-import { Box, Button, Divider, Grid, GridItem, HStack, Input, Text, VStack } from '@chakra-ui/react'
+import { Box, Button, Grid, GridItem, HStack, Input, Text, VStack } from '@chakra-ui/react'
 import { ClientLayout } from 'components/layouts'
 import { AuthContext } from 'contexts/AuthContext'
 import { updateCompanyInfoMutation } from 'mutations/companyInfo'

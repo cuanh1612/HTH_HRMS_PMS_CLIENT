@@ -1,6 +1,7 @@
 import { Avatar, Box, Button, Grid, GridItem, HStack, Text, VStack } from '@chakra-ui/react'
 import { JobLayout } from 'components/layouts'
 import { AuthContext } from 'contexts/AuthContext'
+import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { detailJobQuery } from 'queries/job'
 import { useContext, useEffect } from 'react'
@@ -36,6 +37,10 @@ const DetailJob: NextLayout | any = ({ jobIdProp, onOpenDl, onOpenUpdate }: IDet
 
 	return (
 		<Box pb={8}>
+			<Head>
+				<title>Huprom - Job profile</title>
+				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
+			</Head>
 			<Box pos="relative" p={6}>
 				<Grid templateColumns="repeat(2, 1fr)" gap={6} mt={2}>
 					<GridItem w="100%" colSpan={[2, 1]}>

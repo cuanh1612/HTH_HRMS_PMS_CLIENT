@@ -2,7 +2,7 @@ import {
 	Button,
 	Divider,
 	HStack,
-	Modal as ModalChkra,
+	Modal as CModal,
 	ModalCloseButton,
 	ModalContent,
 	ModalFooter,
@@ -36,7 +36,7 @@ export default function Modal({
 }: IModalProps) {
 	return (
 		<>
-			<ModalChkra size={size} isOpen={isOpen} onClose={onClose}>
+			<CModal size={size} isOpen={isOpen} onClose={onClose}>
 				<ModalOverlay />
 				<ModalContent borderRadius={10}>
 					<ModalHeader>{title}</ModalHeader>
@@ -71,7 +71,7 @@ export default function Modal({
 						</ModalFooter>
 					)}
 				</ModalContent>
-			</ModalChkra>
+			</CModal>
 		</>
 	)
 }

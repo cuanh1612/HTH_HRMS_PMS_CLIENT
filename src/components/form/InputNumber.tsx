@@ -1,7 +1,15 @@
 import {
-	FormControl, FormHelperText, FormLabel, NumberDecrementStepper, NumberIncrementStepper, NumberInput,
+	FormControl,
+	FormHelperText,
+	FormLabel,
+	NumberDecrementStepper,
+	NumberIncrementStepper,
+	NumberInput,
 	NumberInputField,
-	NumberInputStepper, useColorModeValue
+	NumberInputStepper,
+	Text,
+	useColorMode,
+	useColorModeValue,
 } from '@chakra-ui/react'
 import { Controller, UseFormReturn } from 'react-hook-form'
 import { IInputNumber } from 'type/element/commom'
@@ -11,8 +19,9 @@ export const InputNumber = ({
 	label,
 	form,
 	required = false,
-    min,
+	min,
 }: IInputNumber & { form: UseFormReturn<any, any> }) => {
+	const { colorMode } = useColorMode()
 	const errorColor = useColorModeValue('red.400', 'pink.400')
 
 	const {
@@ -25,11 +34,24 @@ export const InputNumber = ({
 			control={control}
 			name={name}
 			render={({ field }) => (
-				<FormControl isRequired={required}>
-					<FormLabel fontWeight={'normal'} htmlFor={name}>
-						{label}
-					</FormLabel>
-					<NumberInput background={'#ffffff10'} precision={2} id={name} {...field} min={min}>
+				<FormControl>
+					{label && (
+						<FormLabel color={'gray.400'} fontWeight={'normal'} htmlFor={name}>
+							{label}{' '}
+							{required && (
+								<Text as="span" color={colorMode == 'dark' ? 'red.400' : 'red'}>
+									*
+								</Text>
+							)}
+						</FormLabel>
+					)}
+					<NumberInput
+						bg={colorMode == 'dark' ? '#3a4453' : undefined}
+						precision={2}
+						id={name}
+						{...field}
+						min={min}
+					>
 						<NumberInputField />
 						<NumberInputStepper>
 							<NumberIncrementStepper />

@@ -5,7 +5,9 @@ import {
 	FormLabel,
 	HStack,
 	Select as SelectChakra,
-	useColorModeValue
+	Text,
+	useColorMode,
+	useColorModeValue,
 } from '@chakra-ui/react'
 import { Controller, UseFormReturn } from 'react-hook-form'
 import { ISelect } from 'type/element/commom'
@@ -21,6 +23,7 @@ export const Select = ({
 	onOpenModal,
 	disabled = false,
 }: ISelect & { form: UseFormReturn<any, any> }) => {
+	const { colorMode } = useColorMode()
 	const errorColor = useColorModeValue('red.400', 'pink.400')
 
 	return (
@@ -28,14 +31,21 @@ export const Select = ({
 			control={form?.control}
 			name={name}
 			render={({ field }) => (
-				<FormControl isRequired={required}>
-					<FormLabel color={'gray.400'} fontWeight={'normal'} htmlFor={name}>
-						{label}
-					</FormLabel>
+				<FormControl>
+					{label && (
+						<FormLabel color={'gray.400'} fontWeight={'normal'} htmlFor={name}>
+							{label}{' '}
+							{required && (
+								<Text as="span" color={colorMode == 'dark' ? 'red.400' : 'red'}>
+									*
+								</Text>
+							)}
+						</FormLabel>
+					)}
 					<HStack>
 						<SelectChakra
 							disabled={disabled}
-							background={'#ffffff10'}
+							bg={colorMode == 'dark' ? '#3a4453' : undefined}
 							{...field}
 							id={name}
 							placeholder={placeholder}

@@ -7,6 +7,8 @@ import {
 	FormHelperText,
 	useColorModeValue,
 	Box,
+	useColorMode,
+	Text,
 } from '@chakra-ui/react'
 import { Controller, UseFormReturn } from 'react-hook-form'
 import { IInput } from 'type/element/commom'
@@ -23,6 +25,7 @@ export const MultiDatePicker = ({
 	required = false,
 	type = 'text',
 }: IInput & { form: UseFormReturn<any, any> }) => {
+	const { colorMode } = useColorMode()
 	const errorColor = useColorModeValue('red.400', 'pink.400')
 
 	const {
@@ -46,15 +49,22 @@ export const MultiDatePicker = ({
 			control={control}
 			name={name}
 			render={() => (
-				<FormControl role={'group'} isRequired={required}>
-					<FormLabel fontWeight={'normal'} htmlFor={name}>
-						{label}
-					</FormLabel>
+				<FormControl>
+					{label && (
+						<FormLabel color={'gray.400'} fontWeight={'normal'} htmlFor={name}>
+							{label}{' '}
+							{required && (
+								<Text as="span" color={colorMode == 'dark' ? 'red.400' : 'red'}>
+									*
+								</Text>
+							)}
+						</FormLabel>
+					)}
 					<InputGroup>
 						<InputLeftElement pointerEvents="none" children={icon} />
 						<CInput
 							autoComplete="off"
-							background={'#ffffff10'}
+							bg={colorMode == 'dark' ? '#3a4453' : undefined}
 							placeholder={placeholder}
 							id={name}
 							type={type}

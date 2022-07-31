@@ -58,42 +58,42 @@ export interface commonResponse {
 	[index: string]: any
 }
 
-export interface authMutaionResponse extends commonResponse {
+export interface authMutationResponse extends commonResponse {
 	user?: employeeType
 	accessToken?: string
 }
 
-export interface userMutaionResponse extends commonResponse {
+export interface userMutationResponse extends commonResponse {
 	user?: userType
 	users?: userType[]
 }
 
-export interface employeeMutaionResponse extends commonResponse {
+export interface employeeMutationResponse extends commonResponse {
 	employee?: employeeType
 	employees?: employeeType[]
 }
 
-export interface openTasksEmployeeMutaionResponse extends commonResponse {
+export interface openTasksEmployeeMutationResponse extends commonResponse {
 	countOpentasks?: number
 }
 
-export interface hoursLoggedEmployeeMutaionResponse extends commonResponse {
+export interface hoursLoggedEmployeeMutationResponse extends commonResponse {
 	hoursLogged?: number
 }
 
-export interface lateAttendanceEmployeeMutaionResponse extends commonResponse {
+export interface lateAttendanceEmployeeMutationResponse extends commonResponse {
 	lateAttendance?: number
 }
 
-export interface countLeavesTakenEmployeeMutaionResponse extends commonResponse {
+export interface countLeavesTakenEmployeeMutationResponse extends commonResponse {
 	countLeavesTaken?: number
 }
 
-export interface countTasksStatusEmployeeMutaionResponse extends commonResponse {
+export interface countTasksStatusEmployeeMutationResponse extends commonResponse {
 	countTasksStatus?: number
 }
 
-export interface countProjectsEmployeeMutaionResponse extends commonResponse {
+export interface countProjectsEmployeeMutationResponse extends commonResponse {
 	countProjects?: { title: string; count: string | number; color: string }[]
 }
 
@@ -109,17 +109,17 @@ export interface countStatusProjectsMutationResponse extends commonResponse {
 	countStatusProjects?: { project_status: string; count: string }[]
 }
 
-export interface leaveTypeMutaionResponse extends commonResponse {
+export interface leaveTypeMutationResponse extends commonResponse {
 	leaveType?: leaveTypeType
 	leaveTypes?: leaveTypeType[]
 }
 
-export interface leaveMutaionResponse extends commonResponse {
+export interface leaveMutationResponse extends commonResponse {
 	leave?: leaveType
 	leaves?: leaveType[]
 }
 
-export interface milestoneMutaionResponse extends commonResponse {
+export interface milestoneMutationResponse extends commonResponse {
 	milestone?: milestoneType
 	milestones?: milestoneType[]
 }
@@ -129,7 +129,7 @@ export interface signMutationResponse extends commonResponse {
 	signs?: signType[]
 }
 
-export interface DepartmentMutaionResponse extends commonResponse {
+export interface DepartmentMutationResponse extends commonResponse {
 	department?: departmentType
 	departments?: departmentType[]
 }
@@ -144,7 +144,7 @@ export interface ConversationReplyMutationResponse extends commonResponse {
 	replies: conversationReplyType[]
 }
 
-export interface DesignationMutaionResponse extends commonResponse {
+export interface DesignationMutationResponse extends commonResponse {
 	designation?: designationType
 	designations?: designationType[]
 }
@@ -154,53 +154,53 @@ export interface DiscussionMutationResponse extends commonResponse {
 	discussions?: discussionType[]
 }
 
-export interface ClientCategoryMutaionResponse extends commonResponse {
+export interface ClientCategoryMutationResponse extends commonResponse {
 	clientCategory?: clientCategoryType
 	clientCategories?: clientCategoryType[]
 }
 
-export interface ClientSubCategoryMutaionResponse extends commonResponse {
+export interface ClientSubCategoryMutationResponse extends commonResponse {
 	clientSubCategory?: clientSubCategoryType
 	clientSubCategories?: clientSubCategoryType[]
 }
 
-export interface attendanceMutaionResponse {
+export interface attendanceMutationResponse {
 	data: employeeType[]
 }
 
-export interface clientMutaionResponse extends commonResponse {
+export interface clientMutationResponse extends commonResponse {
 	client?: clientType
 	clients?: clientType[]
 }
 
-export interface clientProjectStatusMutaionResponse extends commonResponse {
+export interface clientProjectStatusMutationResponse extends commonResponse {
 	countProjectStatus?: { project_status: string; count: string | number }[]
 }
 
-export interface clientTotalProjectsMutaionResponse extends commonResponse {
+export interface clientTotalProjectsMutationResponse extends commonResponse {
 	totalProjects?: number
 }
 
-export interface clientTotalEarningMutaionResponse extends commonResponse {
+export interface clientTotalEarningMutationResponse extends commonResponse {
 	totalEarnings?: number
 }
 
-export interface holidayMutaionResponse extends commonResponse {
+export interface holidayMutationResponse extends commonResponse {
 	holiday?: holidayType
 	holidays?: holidayType[]
 }
 
-export interface contractMutaionResponse extends commonResponse {
+export interface contractMutationResponse extends commonResponse {
 	contract?: contractType
 	contracts?: contractType[]
 }
 
-export interface contractTypeMutaionResponse extends commonResponse {
+export interface contractTypeMutationResponse extends commonResponse {
 	contractType?: contractTypeType
 	contractTypes?: contractTypeType[]
 }
 
-export interface contractFileMutaionResponse extends commonResponse {
+export interface contractFileMutationResponse extends commonResponse {
 	contractFile?: contractFileType
 	contractFiles?: contractFileType[]
 	[index: string]: any
@@ -210,17 +210,17 @@ export interface companyInfoMutationResponse extends commonResponse {
 	companyInfo: companyInfoType
 }
 
-export interface eventMutaionResponse extends commonResponse {
+export interface eventMutationResponse extends commonResponse {
 	event?: eventType
 	Events?: eventType[]
 }
 
-export interface ProjectCategoryMutaionResponse extends commonResponse {
+export interface ProjectCategoryMutationResponse extends commonResponse {
 	projectCategory?: projectCategoryType
 	projectCategories?: projectCategoryType[]
 }
 
-export interface projectMutaionResponse extends commonResponse {
+export interface projectMutationResponse extends commonResponse {
 	project?: projectType
 	hourly_rate_projects: Hourly_rate_project[]
 	projects?: projectType[]
@@ -229,59 +229,59 @@ export interface projectMutaionResponse extends commonResponse {
 	countstatusTasks: statusType[]
 }
 
-export interface statusMutaionResponse extends commonResponse {
+export interface statusMutationResponse extends commonResponse {
 	status?: statusType
 	statuses?: statusType[]
 }
 
-export interface projectFileMutaionResponse extends commonResponse {
+export interface projectFileMutationResponse extends commonResponse {
 	projectFile?: projectFileType
 	projectFiles?: projectFileType[]
 }
 
-export interface SalaryMutaionResponse extends commonResponse {
+export interface SalaryMutationResponse extends commonResponse {
 	salary?: salaryType
 	historySalary: employeeType
 	salaries?: employeeType[]
 }
 
-export interface NoticeBoardMutaionResponse extends commonResponse {
+export interface NoticeBoardMutationResponse extends commonResponse {
 	noticeBoard?: noticeBoardType
 	noticeBoards?: noticeBoardType[]
 }
 
-export interface ProjectDisucssionRoomMutaionResponse extends commonResponse {
+export interface ProjectDisucssionRoomMutationResponse extends commonResponse {
 	projectDiscussionRoom?: projectDiscussionRoomType
 	projectDiscussionRooms?: projectDiscussionRoomType[]
 }
 
-export interface projectDisucssionCategoryMutaionResponse extends commonResponse {
+export interface projectDiscussionCategoryMutationResponse extends commonResponse {
 	projectDiscussionCategory?: projectDiscussionCategoryType
 	projectDiscussionCategories?: projectDiscussionCategoryType[]
 	[index: string]: any
 }
 
-export interface projectdiscussionReplyMutaionResponse extends commonResponse {
+export interface projectDiscussionReplyMutationResponse extends commonResponse {
 	projectDiscussionReply?: projectDiscussionReplyType
 	projectDiscussionReplies?: projectDiscussionReplyType[]
 }
 
-export interface ProjectNoteMutaionResponse extends commonResponse {
+export interface ProjectNoteMutationResponse extends commonResponse {
 	projectNote?: projectNoteType
 	projectNotes?: projectNoteType[]
 }
 
-export interface TaskCategoryMutaionResponse extends commonResponse {
+export interface TaskCategoryMutationResponse extends commonResponse {
 	taskCategory?: taskCategoryType
 	taskCategories?: taskCategoryType[]
 }
 
-export interface TaskMutaionResponse extends commonResponse {
+export interface TaskMutationResponse extends commonResponse {
 	task?: taskType
 	tasks?: taskType[]
 }
 
-export interface taskFileMutaionResponse extends commonResponse {
+export interface taskFileMutationResponse extends commonResponse {
 	taskFile?: taskFileType
 	taskFiles?: taskFileType[]
 }
@@ -291,23 +291,23 @@ export interface TaskCommentMutationResponse extends commonResponse {
 	taskComments?: taskCommentType[]
 }
 
-export interface TimeLogMutaionResponse extends commonResponse {
+export interface TimeLogMutationResponse extends commonResponse {
 	timeLog?: timeLogType
 	timeLogs?: timeLogType[]
 }
 
-export interface stickyNoteMutaionResponse extends commonResponse {
+export interface stickyNoteMutationResponse extends commonResponse {
 	stickynote?: stickyNoteType
 	stickyNotes?: stickyNoteType[]
 }
 
-export interface roomMutaionResponse extends commonResponse {
+export interface roomMutationResponse extends commonResponse {
 	room?: roomType
 	rooms?: roomType[]
 	other_rooms?: roomType[]
 }
 
-export interface NotificationMutaionResponse extends commonResponse {
+export interface NotificationMutationResponse extends commonResponse {
 	notification?: notificationType
 	notifications?: notificationType[]
 }
@@ -317,15 +317,15 @@ export interface skillMutationResponse extends commonResponse {
 	skills?: skillType[]
 }
 
-export interface countContractSignedClientMutaionResponse extends commonResponse {
+export interface countContractSignedClientMutationResponse extends commonResponse {
 	countStatusProjects?: number
 }
 
-export interface pendingMilestoneClientMutaionResponse extends commonResponse {
+export interface pendingMilestoneClientMutationResponse extends commonResponse {
 	pendingMilestone?: milestoneType[]
 }
 
-export interface IpendingTasks  extends commonResponse {
+export interface IPendingTasks  extends commonResponse {
 	pendingTasksRaw: taskType[]
 }
 
@@ -359,7 +359,7 @@ export interface interviewMutationResponse extends commonResponse {
 	interviews?: interviewType[]
 }
 
-export interface interviewFileMutaionResponse extends commonResponse {
+export interface interviewFileMutationResponse extends commonResponse {
 	interviewFile?: interviewFileType
 	interviewFiles?: interviewFileType[]
 }
@@ -369,11 +369,11 @@ export interface jobOfferLetterMutationResponse extends commonResponse {
 	jobOfferLetters?: jobOfferLetterType[]
 }
 
-export interface jobApplicationFileMutaionResponse extends commonResponse {
+export interface jobApplicationFileMutationResponse extends commonResponse {
 	jobApplicationFile?: jobApplicationFileType
 	jobApplicationFiles?: jobApplicationFileType[]
 }
 
-export interface projectActivityMutaionResponse extends commonResponse {
+export interface projectActivityMutationResponse extends commonResponse {
 	projectActivity?: projectActivityType[]
 }

@@ -28,25 +28,18 @@ export default function DetailInterview({
 	onUpdate,
 	onDelete,
 }: IDetailInterviewProps) {
-	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
+	const { isAuthenticated, handleLoading } = useContext(AuthContext)
 	const router = useRouter()
 	const { interviewId: interviewIdRouter } = router.query
 
-	//State -------------------------------------------------------------------
-
 	//Query -------------------------------------------------------------------
 	//Get detail job application
-	const { data: dataDetailinterview } = detailInterviewQuery(
+	const { data: dataDetailInterview } = detailInterviewQuery(
 		isAuthenticated,
 		interviewIdProp || (interviewIdRouter as string)
 	)
 
-	//mutation ----------------------------------------------------------------
-
-	//Funcion -----------------------------------------------------------------
-
 	//User effect ---------------------------------------------------------------
-
 	//Handle check loged in
 	useEffect(() => {
 		if (isAuthenticated) {
@@ -66,38 +59,38 @@ export default function DetailInterview({
 						Job:
 					</GridItem>
 					<GridItem w="100%" colSpan={[4, 3]}>
-						{`${dataDetailinterview?.interview?.candidate.jobs.title || '--'}`}
+						{`${dataDetailInterview?.interview?.candidate.jobs.title || '--'}`}
 					</GridItem>
 					<GridItem w="100%" colSpan={[4, 1]} color={'gray.400'}>
 						Candidate Name:
 					</GridItem>
 					<GridItem w="100%" colSpan={[4, 3]}>
-						{`${dataDetailinterview?.interview?.candidate.name || '--'}`}
+						{`${dataDetailInterview?.interview?.candidate.name || '--'}`}
 					</GridItem>
 					<GridItem w="100%" colSpan={[4, 1]} color={'gray.400'}>
 						Candidate Email:
 					</GridItem>
 					<GridItem w="100%" colSpan={[4, 3]}>
-						{`${dataDetailinterview?.interview?.candidate.email || '--'}`}
+						{`${dataDetailInterview?.interview?.candidate.email || '--'}`}
 					</GridItem>
 					<GridItem w="100%" colSpan={[4, 1]} color={'gray.400'}>
 						Phone:
 					</GridItem>
 					<GridItem w="100%" colSpan={[4, 3]}>
-						{`${dataDetailinterview?.interview?.candidate.mobile || '--'}`}
+						{`${dataDetailInterview?.interview?.candidate.mobile || '--'}`}
 					</GridItem>
 					<GridItem w="100%" colSpan={[4, 1]} color={'gray.400'}>
 						Interview Type:
 					</GridItem>
 					<GridItem w="100%" colSpan={[4, 3]}>
-						{`${dataDetailinterview?.interview?.type || '--'}`}
+						{`${dataDetailInterview?.interview?.type || '--'}`}
 					</GridItem>
 					<GridItem w="100%" colSpan={[4, 1]} color={'gray.400'}>
 						Start On Date:
 					</GridItem>
 					<GridItem w="100%" colSpan={[4, 3]}>
-						{dataDetailinterview?.interview?.date
-							? new Date(dataDetailinterview?.interview?.date).toLocaleDateString(
+						{dataDetailInterview?.interview?.date
+							? new Date(dataDetailInterview?.interview?.date).toLocaleDateString(
 									'es-CL'
 							  )
 							: '--'}
@@ -106,13 +99,13 @@ export default function DetailInterview({
 						Start On Time:
 					</GridItem>
 					<GridItem w="100%" colSpan={[4, 3]}>
-						{dataDetailinterview?.interview?.start_time || '--'}
+						{dataDetailInterview?.interview?.start_time || '--'}
 					</GridItem>
 					<GridItem w="100%" colSpan={[4, 1]} color={'gray.400'}>
 						Comment:
 					</GridItem>
 					<GridItem w="100%" colSpan={[4, 3]}>
-						{dataDetailinterview?.interview?.comment || '--'}
+						{dataDetailInterview?.interview?.comment || '--'}
 					</GridItem>
 				</Grid>
 

@@ -87,7 +87,7 @@ export const UpdateClientValidate = yup.object({
 export const CreateContractValidate = yup.object({
 	subject: yup.string().required('Please enter field subject'),
 	start_date: yup.date().required('Please select start date'),
-	contract_value: yup.number().required('Please enter field subject conctract value'),
+	contract_value: yup.number().required('Please enter field subject contract value'),
 	currency: yup.string().required('Please select currency'),
 	client: yup.string().required('Please select client'),
 })
@@ -95,7 +95,7 @@ export const CreateContractValidate = yup.object({
 export const UpdateContractValidate = yup.object({
 	subject: yup.string().required('Please enter field subject'),
 	start_date: yup.date().required('Please select start date'),
-	contract_value: yup.number().required('Please enter field subject conctract value'),
+	contract_value: yup.number().required('Please enter field subject contract value'),
 	currency: yup.string().required('Please select currency'),
 	client: yup.string().required('Please select client'),
 })
@@ -114,7 +114,7 @@ export const createEventValidate = yup.object({
 	name: yup.string().required('Please enter field name event'),
 	color: yup.string().required('Please enter field color'),
 	where: yup.string().required('Please enter field where'),
-	starts_on_date: yup.date().required('Please sele3ct start on date event'),
+	starts_on_date: yup.date().required('Please select start on date event'),
 	ends_on_date: yup.date().required('Please enter field end on date event'),
 	employeeEmails: yup.array().required('Please select employees for event'),
 	clientEmails: yup.array().required('Please select clients for event'),
@@ -124,7 +124,7 @@ export const updateEventValidate = yup.object({
 	name: yup.string().required('Please enter field name event'),
 	color: yup.string().required('Please enter field color'),
 	where: yup.string().required('Please enter field where'),
-	starts_on_date: yup.date().required('Please sele3ct start on date event'),
+	starts_on_date: yup.date().required('Please select start on date event'),
 	ends_on_date: yup.date().required('Please enter field end on date event'),
 })
 
@@ -258,7 +258,7 @@ export const CreateJobValidate = yup.object({
 	recruiter: yup.number().required('Please select department for job'),
 	starting_salary_amount: yup.number().min(0).required('Please select department for job'),
 	starts_on_date: yup.date().required('Please select starts on date'),
-	ends_on_date: yup.date().required('Please select ends ondate'),
+	ends_on_date: yup.date().required('Please select ends on date'),
 	rate: yup.string().required('Please select job rate'),
 })
 
@@ -273,7 +273,7 @@ export const UpdateJobValidate = yup.object({
 	recruiter: yup.number().required('Please select department for job'),
 	starting_salary_amount: yup.number().min(0).required('Please select department for job'),
 	starts_on_date: yup.date().required('Please select starts on date'),
-	ends_on_date: yup.date().required('Please select ends ondate'),
+	ends_on_date: yup.date().required('Please select ends on date'),
 	rate: yup.string().required('Please select job rate'),
 })
 
@@ -318,7 +318,7 @@ export const CreateInterviewValidate = yup.object({
 export const CreateJobOfferValidate = yup.object({
 	job:  yup.number().required('Please select job'),
 	job_application:  yup.number().required('Please select job application'),
-	exprise_on: yup.date().required('Please select job offer exprise on date'),
+	exprise_on: yup.date().required('Please select job offer expires on date'),
 	expected_joining_date: yup.date().required('Please select job offer expected joining date'),
 	salary: yup.number().min(1).required('Please enter job offer salary'),
 	rate: yup.string().required('Please select rate')
@@ -327,7 +327,7 @@ export const CreateJobOfferValidate = yup.object({
 export const UpdateJobOfferValidate = yup.object({
 	job:  yup.number().required('Please select job'),
 	job_application:  yup.number().required('Please select job application'),
-	exprise_on: yup.date().required('Please select job offer exprise on date'),
+	exprise_on: yup.date().required('Please select job offer expires on date'),
 	expected_joining_date: yup.date().required('Please select job offer expected joining date'),
 	salary: yup.number().min(1).required('Please enter job offer salary'),
 	rate: yup.string().required('Please select rate'),

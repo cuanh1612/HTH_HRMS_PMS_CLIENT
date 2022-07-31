@@ -1,5 +1,11 @@
 import {
-    FormControl, FormHelperText, FormLabel, Text, Textarea as TextareaChakra, useColorModeValue
+	FormControl,
+	FormHelperText,
+	FormLabel,
+	Text,
+	Textarea as TextareaChakra,
+	useColorMode,
+	useColorModeValue,
 } from '@chakra-ui/react'
 import { Controller, UseFormReturn } from 'react-hook-form'
 import { ITextarea } from 'type/element/commom'
@@ -10,8 +16,9 @@ export const Textarea = ({
 	form,
 	placeholder,
 	required = false,
-	defaultValue
+	defaultValue,
 }: ITextarea & { form: UseFormReturn<any, any> }) => {
+	const { colorMode } = useColorMode()
 	const errorColor = useColorModeValue('red.400', 'pink.400')
 
 	const {
@@ -25,15 +32,22 @@ export const Textarea = ({
 			name={name}
 			render={({ field }) => (
 				<FormControl>
-					<FormLabel fontWeight={'normal'} htmlFor={name} color={"gray.400"}>
-						{label} { required && <Text as='span' color={'red'}>*</Text>}
-					</FormLabel>
+					{label && (
+						<FormLabel color={'gray.400'} fontWeight={'normal'} htmlFor={name}>
+							{label}{' '}
+							{required && (
+								<Text as="span" color={colorMode == 'dark' ? 'red.400' : 'red'}>
+									*
+								</Text>
+							)}
+						</FormLabel>
+					)}
 					<TextareaChakra
 						defaultValue={defaultValue ? defaultValue : undefined}
 						placeholder={placeholder}
 						id={name}
 						{...field}
-						background={'#ffffff10'}
+						bg={colorMode == 'dark' ? '#3a4453' : undefined}
 					/>
 
 					{errors[name] && (

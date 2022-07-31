@@ -25,11 +25,13 @@ import { CreateInterviewValidate } from 'utils/validate'
 export interface IUpdateInterviewProps {
 	onCloseDrawer?: () => void
 	interviewId: string | number | null
+	onUpdateInterview?: any
 }
 
 export default function UpdateInterview({
 	onCloseDrawer,
 	interviewId: interviewIdProp,
+	onUpdateInterview,
 }: IUpdateInterviewProps) {
 	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
 	const router = useRouter()
@@ -49,12 +51,9 @@ export default function UpdateInterview({
 	const { mutate: refetchAllInterviews } = allInterviewsQuery(isAuthenticated)
 	const { data: allEmployees } = allEmployeesQuery(isAuthenticated)
 	const { mutate: refetchAllInterviewsNew } = allInterviewsNewQuery(isAuthenticated)
-	const { data: dataNewInterview, mutate: refetchNewInterview } =
-		newInterviewQuery(isAuthenticated)
-	const { data: dataTodayInterview, mutate: refetchTodayInterview } =
-		todayInterviewQuery(isAuthenticated)
-	const { data: dataTodayInterviewCalendar, mutate: refetchTodayInterviewCalendar } =
-		todayInterviewCalendarQuery(isAuthenticated)
+	const { mutate: refetchNewInterview } = newInterviewQuery(isAuthenticated)
+	const { mutate: refetchTodayInterview } = todayInterviewQuery(isAuthenticated)
+	const { mutate: refetchTodayInterviewCalendar } = todayInterviewCalendarQuery(isAuthenticated)
 
 	//Get detail interview
 	const { data: dataDetailInterview } = detailInterviewQuery(
@@ -66,8 +65,7 @@ export default function UpdateInterview({
 	const [mutateUpInterview, { status: statusUpInterview, data: dataUpInterview }] =
 		updateInterviewMutation(setToast)
 
-	//Funcion -----------------------------------------------------------------
-
+	//Function -----------------------------------------------------------------
 	// setForm and submit form update interview ---------------------------
 	const formSetting = useForm<updateInterviewForm>({
 		defaultValues: {
@@ -187,6 +185,7 @@ export default function UpdateInterview({
 			refetchNewInterview()
 			refetchTodayInterview()
 			refetchTodayInterviewCalendar()
+			if (onUpdateInterview) onUpdateInterview()
 		}
 	}, [statusUpInterview])
 

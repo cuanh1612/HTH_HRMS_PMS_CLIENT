@@ -1,7 +1,7 @@
 import { HStack, Text, useColorMode, VStack } from '@chakra-ui/react'
 import React from 'react'
 
-interface Ifunc {
+interface IFunc {
 	icon: any
 	title: string
 	description: string
@@ -9,7 +9,7 @@ interface Ifunc {
 	disabled?: boolean
 }
 
-export const Func = ({ icon, title, description, action, disabled = false }: Ifunc) => {
+export const Func = ({ icon, title, description, action, disabled = false }: IFunc) => {
 	const { colorMode } = useColorMode()
 	return (
 		<HStack

@@ -30,13 +30,17 @@ import { IoMdClose } from 'react-icons/io'
 import { IoEyeOutline } from 'react-icons/io5'
 import { MdOutlineDeleteOutline, MdOutlineMoreVert } from 'react-icons/md'
 import { RiPencilLine } from 'react-icons/ri'
+import { clientType, employeeType, projectCategoryType, timeLogType } from 'type/basicTypes'
 import {
-	clientType,
-	employeeType,
-	projectCategoryType,
-	timeLogType,
-} from 'type/basicTypes'
-import { IContractColumn, IEmployeeColumn, IJobColumn, ILeaveColumn, IOptionColumn, IProjectMemberColumn, IProjectTimeLogsColumn } from 'type/columnType'
+	ICandidateColumn,
+	IContractColumn,
+	IEmployeeColumn,
+	IJobColumn,
+	ILeaveColumn,
+	IOptionColumn,
+	IProjectMemberColumn,
+	IProjectTimeLogsColumn,
+} from 'type/columnType'
 import { TColumn } from 'type/tableTypes'
 import { dataInterviewStatus, dataJobApplicationStatus, dataJobStatus } from './basicData'
 import {
@@ -2832,7 +2836,7 @@ export const employeeTimeLogsColumn = ({
 					Header: 'Employee',
 					accessor: 'employee',
 					minWidth: 250,
-					Cell: ({ value, row}) => {
+					Cell: ({ value, row }) => {
 						return (
 							<>
 								{value ? (
@@ -3732,7 +3736,287 @@ export const jobApplicationColumn = ({
 	]
 }
 
+export const candidateColumn = ({
+	onDelete,
+	onUpdate,
+	onDetail,
+	currentUser,
+	onChangeStatus,
+}: ICandidateColumn): TColumn[] => {
+	return [
+		{
+			Header: 'Candidates',
+
+			columns: [
+				{
+					Header: 'Id',
+					accessor: 'id',
+					filter: selectFilter(['id']),
+					width: 80,
+					minWidth: 80,
+					disableResizing: true,
+					Cell: ({ value }) => {
+						return value
+					},
+				},
+				{
+					Header: 'Name',
+					accessor: 'name',
+					minWidth: 250,
+					Cell: ({ value }) => {
+						return (
+							<Text isTruncated w={'full'}>
+								{value}
+							</Text>
+						)
+					},
+				},
+				{
+					Header: 'Job',
+					accessor: 'jobs',
+					filter: textFilter(['jobs', 'id']),
+					minWidth: 80,
+					Cell: ({ value }) => {
+						return <Text isTruncated>{value.title}</Text>
+					},
+				},
+				{
+					Header: 'Location',
+					accessor: 'location',
+					filter: selectFilter(['location', 'name']),
+					minWidth: 80,
+					Cell: ({ value }) => {
+						return <Text isTruncated>{value.name}</Text>
+					},
+				},
+
+				{
+					Header: 'Date',
+					accessor: 'createdAt',
+					filter: dateFilter(['createdAt']),
+					minWidth: 80,
+					Cell: ({ value }) => {
+						return (
+							<Text isTruncated>{new Date(value).toLocaleDateString('es-CL')}</Text>
+						)
+					},
+				},
+				{
+					Header: 'Status',
+					accessor: 'status',
+					filter: selectFilter(['status']),
+
+					minWidth: 160,
+					Cell: ({ value, row }) => {
+						return (
+							<Select
+								onChange={async (event) => {
+									await onChangeStatus(row.values['id'], event)
+								}}
+								defaultValue={value}
+							>
+								{dataJobApplicationStatus.map((e, key) => (
+									<option key={key} value={e.value}>
+										{e.label}
+									</option>
+								))}
+							</Select>
+						)
+					},
+				},
+				{
+					Header: 'Action',
+					accessor: 'action',
+					disableResizing: true,
+					width: 120,
+					minWidth: 120,
+					disableSortBy: true,
+					Cell: ({ row }) => (
+						<Menu>
+							<MenuButton as={Button} paddingInline={3}>
+								<MdOutlineMoreVert />
+							</MenuButton>
+							<MenuList>
+								<MenuItem
+									onClick={() => {
+										onDetail(row.values['id'])
+									}}
+									icon={<IoEyeOutline fontSize={'15px'} />}
+								>
+									View
+								</MenuItem>
+								{currentUser?.role === 'Admin' && (
+									<>
+										<MenuItem
+											onClick={() => {
+												onUpdate(row.values['id'])
+											}}
+											icon={<RiPencilLine fontSize={'15px'} />}
+										>
+											Edit
+										</MenuItem>
+
+										<MenuItem
+											onClick={() => {
+												onDelete(row.values['id'])
+											}}
+											icon={<MdOutlineDeleteOutline fontSize={'15px'} />}
+										>
+											Delete
+										</MenuItem>
+									</>
+								)}
+							</MenuList>
+						</Menu>
+					),
+				},
+			],
+		},
+	]
+}
+
 export const interviewScheduleColumn = ({
+	onDelete,
+	onUpdate,
+	onDetail,
+	currentUser,
+	onChangeStatus,
+}: IJobColumn): TColumn[] => {
+	return [
+		{
+			Header: 'Interview schedules',
+			columns: [
+				{
+					Header: 'Id',
+					accessor: 'id',
+					width: 80,
+					minWidth: 80,
+					disableResizing: true,
+					Cell: ({ value }) => {
+						return value
+					},
+				},
+				{
+					Header: 'Candidate',
+					accessor: 'candidate',
+					filter: textFilter(['candidate', 'name']),
+					minWidth: 80,
+					Cell: ({ value }) => {
+						return <Text isTruncated>{value.name}</Text>
+					},
+				},
+				{
+					Header: 'Schedule date and time',
+					accessor: 'date',
+					filter: dateFilter(['date']),
+					minWidth: 80,
+					Cell: ({ value, row }) => {
+						return (
+							<Text isTruncated>{`${new Date(value).toLocaleDateString('es-CL')} ${
+								row.original.start_time
+							}`}</Text>
+						)
+					},
+				},
+				{
+					Header: 'Status',
+					accessor: 'status',
+					filter: selectFilter(['status']),
+					minWidth: 160,
+					width: 160,
+					Cell: ({ value, row }) => {
+						return (
+							<Select
+								onChange={async (event) => {
+									await onChangeStatus(row.values['id'], event)
+								}}
+								defaultValue={value}
+							>
+								{dataInterviewStatus.map((e, key) => (
+									<option key={key} value={e.value}>
+										{e.label}
+									</option>
+								))}
+							</Select>
+						)
+					},
+				},
+
+				{
+					Header: 'Interviewers',
+					accessor: 'interviewer',
+					minWidth: 150,
+					width: 150,
+					filter: arrayFilter(['interviewer'], 'id'),
+					Cell: ({ value }: { value: employeeType[] }) => {
+						return (
+							<AvatarGroup size="sm" max={4}>
+								{value.map((employee) => (
+									<Avatar
+										key={employee.id}
+										name={employee.name}
+										src={employee.avatar?.url}
+									/>
+								))}
+							</AvatarGroup>
+						)
+					},
+				},
+
+				{
+					Header: 'Action',
+					accessor: 'action',
+					disableResizing: true,
+					width: 120,
+					minWidth: 120,
+					disableSortBy: true,
+					Cell: ({ row }) => (
+						<Menu>
+							<MenuButton as={Button} paddingInline={3}>
+								<MdOutlineMoreVert />
+							</MenuButton>
+							<MenuList>
+								<MenuItem
+									onClick={() => {
+										onDetail(row.values['id'])
+									}}
+									icon={<IoEyeOutline fontSize={'15px'} />}
+								>
+									View
+								</MenuItem>
+
+								{currentUser?.role === 'Admin' && (
+									<>
+										<MenuItem
+											onClick={() => {
+												onUpdate(row.values['id'])
+											}}
+											icon={<RiPencilLine fontSize={'15px'} />}
+										>
+											Edit
+										</MenuItem>
+
+										<MenuItem
+											onClick={() => {
+												onDelete(row.values['id'])
+											}}
+											icon={<MdOutlineDeleteOutline fontSize={'15px'} />}
+										>
+											Delete
+										</MenuItem>
+									</>
+								)}
+							</MenuList>
+						</Menu>
+					),
+				},
+			],
+		},
+	]
+}
+
+
+export const jobInterviewColumn = ({
 	onDelete,
 	onUpdate,
 	onDetail,

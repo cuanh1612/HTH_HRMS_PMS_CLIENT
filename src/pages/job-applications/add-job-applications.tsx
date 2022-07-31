@@ -12,7 +12,7 @@ import { useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { AiOutlineCheck, AiOutlineMail, AiOutlineMobile } from 'react-icons/ai'
 import { MdDriveFileRenameOutline } from 'react-icons/md'
-import { IOption, jobType } from 'type/basicTypes'
+import { IOption } from 'type/basicTypes'
 import { ICloudinaryImg, IImg } from 'type/fileType'
 import { createJobApplicationForm } from 'type/form/basicFormType'
 import { jobMutationResponse } from 'type/mutationResponses'
@@ -23,9 +23,14 @@ import { CreateJobApplicationValidate } from 'utils/validate'
 export interface IAddJobApplicationProps {
 	onCloseDrawer?: () => void
 	dataJob?: jobMutationResponse
+	onUpdateCandidates?: any
 }
 
-export default function AddJobApplication({ onCloseDrawer, dataJob }: IAddJobApplicationProps) {
+export default function AddJobApplication({
+	onCloseDrawer,
+	dataJob,
+	onUpdateCandidates,
+}: IAddJobApplicationProps) {
 	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
 	const router = useRouter()
 
@@ -44,8 +49,8 @@ export default function AddJobApplication({ onCloseDrawer, dataJob }: IAddJobApp
 	const { data: allLocations } = allLocationsQuery(isAuthenticated)
 	const { data: allJobs } = allJobsQuery()
 
-		// refetch all job application
-		const { mutate: refetchJobApplications } = allJobApplicationsQuery(isAuthenticated)
+	// refetch all job application
+	const { mutate: refetchJobApplications } = allJobApplicationsQuery(isAuthenticated)
 
 	//mutation ----------------------------------------------------------------
 	const [
@@ -204,6 +209,7 @@ export default function AddJobApplication({ onCloseDrawer, dataJob }: IAddJobApp
 				location: undefined,
 			})
 			refetchJobApplications()
+			if (onUpdateCandidates) onUpdateCandidates()
 		}
 	}, [statusCreJobApplication])
 

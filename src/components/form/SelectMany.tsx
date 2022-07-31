@@ -4,6 +4,8 @@ import {
 	FormHelperText,
 	FormLabel,
 	HStack,
+	Text,
+	useColorMode,
 	useColorModeValue,
 } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
@@ -26,6 +28,7 @@ export const SelectMany = ({
 	onOpenModal,
 }: ISelect & { form: UseFormReturn<any, any> }) => {
 	const errorColor = useColorModeValue('red.400', 'pink.400')
+	const {colorMode} = useColorMode()
 
 	const [selectedOptionsState, setSelectedOptionsState] = useState<IOption[]>([])
 
@@ -38,7 +41,7 @@ export const SelectMany = ({
 
 	//handle change select
 	const onChangeSelect = (options: IOption[]) => {
-		let newOptionSelects: any[] = []
+		const newOptionSelects: any[] = []
 
 		for (let index = 0; index < options.length; index++) {
 			const option = options[index]
@@ -61,10 +64,15 @@ export const SelectMany = ({
 
 	return (
 		<>
-			<FormControl isRequired={required}>
+			<FormControl>
 				{label && (
 					<FormLabel color={'gray.400'} fontWeight={'normal'} htmlFor={name}>
-						{label}
+						{label}{' '}
+						{required && (
+							<Text as="span" color={colorMode == 'dark' ? 'red.400' : 'red'}>
+								*
+							</Text>
+						)}
 					</FormLabel>
 				)}
 

@@ -5,7 +5,9 @@ import { Header } from 'components/partials'
 import { AuthContext } from 'contexts/AuthContext'
 import { useRouter } from 'next/router'
 import { useContext, useEffect, useState } from 'react'
-import { AiOutlineFileText, AiOutlineProfile } from 'react-icons/ai'
+import { AiOutlineProfile } from 'react-icons/ai'
+import { BsPerson } from 'react-icons/bs'
+import { MdOutlineEvent } from 'react-icons/md'
 import { ITab } from 'type/element/commom'
 
 export const JobLayout = ({ children }: { children: JSX.Element }) => {
@@ -23,9 +25,14 @@ export const JobLayout = ({ children }: { children: JSX.Element }) => {
 					title: 'Profile',
 				},
 				{
-					icon: <AiOutlineFileText fontSize={'15'} />,
-					link: `/employees/${jobId}/detail`,
-					title: 'Detail',
+					icon: <BsPerson fontSize={'15'} />,
+					link: `/jobs/${jobId}/candidate`,
+					title: 'Candidates',
+				},
+				{
+					icon: <MdOutlineEvent fontSize={'15'} />,
+					link: `/jobs/${jobId}/interview`,
+					title: 'Interviews',
 				},
 			]
 			setTabs(data)

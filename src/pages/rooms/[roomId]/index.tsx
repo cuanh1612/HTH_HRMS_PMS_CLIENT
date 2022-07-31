@@ -1,4 +1,14 @@
-import { Avatar, AvatarGroup, Box, Grid, GridItem, HStack, Text, VStack } from '@chakra-ui/react'
+import {
+	Avatar,
+	AvatarGroup,
+	Box,
+	Button,
+	Grid,
+	GridItem,
+	HStack,
+	Text,
+	VStack,
+} from '@chakra-ui/react'
 import { AuthContext } from 'contexts/AuthContext'
 import { useRouter } from 'next/router'
 import { detailRoomQuery } from 'queries/room'
@@ -7,10 +17,18 @@ import 'react-quill/dist/quill.bubble.css'
 import 'react-quill/dist/quill.snow.css'
 
 export interface IDetailRoomProps {
-	roomIdProp: string | number | null
+	roomIdProp?: string | number
+	onOpenUpdate?: any
+	onOpenDl?: any
+	onCloseDetailRoom?: any
 }
 
-export default function DetailRoom({ roomIdProp }: IDetailRoomProps) {
+export default function DetailRoom({
+	roomIdProp,
+	onOpenUpdate,
+	onOpenDl,
+	onCloseDetailRoom,
+}: IDetailRoomProps) {
 	const { isAuthenticated, handleLoading } = useContext(AuthContext)
 	const router = useRouter()
 	const { roomId: roomIdRouter } = router.query
@@ -43,25 +61,27 @@ export default function DetailRoom({ roomIdProp }: IDetailRoomProps) {
 						Room Title:
 					</GridItem>
 					<GridItem w="100%" colSpan={[2, 1]}>
-						{detailRoom?.room?.title ? detailRoom?.room?.title: "--"}
+						{detailRoom?.room?.title ? detailRoom?.room?.title : '--'}
 					</GridItem>
 					<GridItem w="100%" colSpan={[2, 1]} color={'gray.400'}>
 						Description:
 					</GridItem>
 					<GridItem w="100%" colSpan={[2, 1]}>
-						{detailRoom?.room?.description ? detailRoom?.room?.description : "--"}
+						{detailRoom?.room?.description ? detailRoom?.room?.description : '--'}
 					</GridItem>
 					<GridItem w="100%" colSpan={[2, 1]} color={'gray.400'}>
 						Start On Date:
 					</GridItem>
 					<GridItem w="100%" colSpan={[2, 1]}>
-						 {detailRoom?.room?.date ? new Date(detailRoom?.room?.date).toLocaleDateString('es-CL') : '--'}
+						{detailRoom?.room?.date
+							? new Date(detailRoom?.room?.date).toLocaleDateString('es-CL')
+							: '--'}
 					</GridItem>
 					<GridItem w="100%" colSpan={[2, 1]} color={'gray.400'}>
 						Start On Time:
 					</GridItem>
 					<GridItem w="100%" colSpan={[2, 1]}>
-						{detailRoom?.room?.start_time ? detailRoom?.room?.start_time : "--"}
+						{detailRoom?.room?.start_time ? detailRoom?.room?.start_time : '--'}
 					</GridItem>
 					<GridItem w="100%" colSpan={[2, 1]} color={'gray.400'}>
 						Employees:
@@ -106,15 +126,41 @@ export default function DetailRoom({ roomIdProp }: IDetailRoomProps) {
 									name={detailRoom?.room?.empl_create.name}
 									src={detailRoom?.room?.empl_create.avatar?.url}
 								/>
-                                <VStack align={"start"}>
-                                    <Text>{detailRoom?.room?.empl_create.name}</Text>
-                                    <Text fontSize={12} color={"gray.400"}>{detailRoom?.room?.empl_create.email}</Text>
-                                </VStack>
+								<VStack align={'start'}>
+									<Text>{detailRoom?.room?.empl_create.name}</Text>
+									<Text fontSize={12} color={'gray.400'}>
+										{detailRoom?.room?.empl_create.email}
+									</Text>
+								</VStack>
 							</HStack>
 						)}
 					</GridItem>
 				</Grid>
 			</Box>
+			{onOpenUpdate && (
+				<Button
+					onClick={() => {
+						if (onCloseDetailRoom) {
+							onCloseDetailRoom()
+						}
+						onOpenUpdate()
+					}}
+				>
+					Update
+				</Button>
+			)}{' '}
+			{onOpenDl && (
+				<Button
+					onClick={() => {
+						if (onCloseDetailRoom) {
+							onCloseDetailRoom()
+						}
+						onOpenDl()
+					}}
+				>
+					Delete
+				</Button>
+			)}
 		</>
 	)
 }

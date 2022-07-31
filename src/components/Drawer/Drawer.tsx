@@ -1,11 +1,11 @@
 import {
 	DrawerOverlay,
-	Drawer as DrawerChakra,
+	Drawer as CDrawer,
 	DrawerContent,
 	DrawerCloseButton,
 	DrawerHeader,
 	DrawerBody,
-	DrawerFooter
+	DrawerFooter,
 } from '@chakra-ui/modal'
 import { ReactNode } from 'react'
 
@@ -20,16 +20,14 @@ export interface IDrawerProps {
 
 export const Drawer = ({ isOpen, children, title, onClose, size, footer }: IDrawerProps) => {
 	return (
-		<>
-			<DrawerChakra size={size} placement={'right'} onClose={onClose} isOpen={isOpen}>
-				<DrawerOverlay />
-				<DrawerContent>
-					<DrawerCloseButton />
-					<DrawerHeader borderBottomWidth="1px">{title}</DrawerHeader>
-					<DrawerBody p={0}>{children}</DrawerBody>
-					{footer && <DrawerFooter>{footer}</DrawerFooter>}
-				</DrawerContent>
-			</DrawerChakra>
-		</>
+		<CDrawer size={size} placement={'right'} onClose={onClose} isOpen={isOpen}>
+			<DrawerOverlay />
+			<DrawerContent>
+				<DrawerCloseButton />
+				<DrawerHeader borderBottomWidth="1px">{title}</DrawerHeader>
+				<DrawerBody p={0}>{children}</DrawerBody>
+				{footer && <DrawerFooter>{footer}</DrawerFooter>}
+			</DrawerContent>
+		</CDrawer>
 	)
 }

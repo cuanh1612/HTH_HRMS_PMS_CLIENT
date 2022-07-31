@@ -1,19 +1,20 @@
-import { Box, HStack, Input, Text, VStack } from '@chakra-ui/react'
+import { Box, HStack, Input, Text, useColorMode, VStack } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
 import { UseFormReturn } from 'react-hook-form'
 import { TiDeleteOutline } from 'react-icons/ti'
 
 export interface IInputMutipleProps {
-	lable: string
+	label: string
 	name: string
 	form: UseFormReturn<any, any>
 }
 
-export const InputMutiple = ({ lable, name, form }: IInputMutipleProps)=> {
+export const InputMutiple = ({ label, name, form }: IInputMutipleProps)=> {
+	const {colorMode} = useColorMode()
 	const [valueMultiple, setValueMultiple] = useState<string[]>(form.getValues(name))
 
 	//handle press enter
-	const onAddvalue: React.KeyboardEventHandler<HTMLInputElement> = (e) => {
+	const onAddValue: React.KeyboardEventHandler<HTMLInputElement> = (e) => {
 		if (e.ctrlKey && e.keyCode === 13) {
 			const oldValues = form.getValues(name)
 
@@ -39,8 +40,6 @@ export const InputMutiple = ({ lable, name, form }: IInputMutipleProps)=> {
 
 	//Handle delete value
 	const onDelete = (index: number) => {
-		console.log(index)
-
 		let oldValues = form.getValues(name)
 		if (oldValues && Array(oldValues)) {
 			oldValues.splice(index, 1)
@@ -48,7 +47,7 @@ export const InputMutiple = ({ lable, name, form }: IInputMutipleProps)=> {
 			oldValues = []
 		}
 
-		//Setvalue form
+		//Set value form
 		form.setValue(name, oldValues)
 
 		//Set value state
@@ -62,8 +61,8 @@ export const InputMutiple = ({ lable, name, form }: IInputMutipleProps)=> {
 
 	return (
 		<VStack alignItems={'start'}>
-			<Text>{lable}</Text>
-			<Input background={'#ffffff10'} placeholder="Enter skill and press 'Ctrl + Enter'" onKeyDown={onAddvalue} />
+			<Text>{label}</Text>
+			<Input 	bg={colorMode == 'dark' ? '#3a4453' : undefined} placeholder="Enter skill and press 'Ctrl + Enter'" onKeyDown={onAddValue} />
 			{valueMultiple && valueMultiple.length > 0 && (
 				<Box display={'flex'} flexWrap={'wrap'}>
 					{valueMultiple.map((value, index) => (

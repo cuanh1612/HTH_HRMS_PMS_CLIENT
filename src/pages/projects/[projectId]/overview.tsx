@@ -26,8 +26,6 @@ import { StatisticPrj } from 'components/common'
 import { Bar, Donut } from 'components/charts'
 import Head from 'next/head'
 import { allActivitiesByProjectQuery } from 'queries/ProjectActivity'
-import { MdCheckCircle } from 'react-icons/md'
-import { FaStarOfLife } from 'react-icons/fa'
 import { FiGitCommit } from 'react-icons/fi'
 
 const Overview: NextLayout = () => {
@@ -42,7 +40,7 @@ const Overview: NextLayout = () => {
 	const { data: dataHoursLogged } = projectHoursLoggedQuery(isAuthenticated, projectId as string)
 	const { data: dataCountStatus } = countStatusTasksQuery(isAuthenticated, projectId as string)
 	//all activities for project
-	const { data: allActs, mutate: allActivitiesProject } = allActivitiesByProjectQuery(
+	const { data: allActs } = allActivitiesByProjectQuery(
 		isAuthenticated,
 		projectId
 	)

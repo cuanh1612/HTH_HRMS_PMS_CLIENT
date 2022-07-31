@@ -10,37 +10,42 @@ import {
 } from '@chakra-ui/react'
 import { AlertDialog, Func, FuncCollapse, Table } from 'components/common'
 import { Drawer } from 'components/Drawer'
-import { ClientLayout } from 'components/layouts'
+import { DateRange, Input, SelectCustom, Select as FSelect } from 'components/filter'
+import { JobLayout } from 'components/layouts'
 import { AuthContext } from 'contexts/AuthContext'
-import Head from 'next/head'
-import { useRouter } from 'next/router'
-// import { allJobsQuery } from 'queries/job'
-import { useContext, useEffect, useState } from 'react'
-import { AiOutlineDelete, AiOutlineSearch } from 'react-icons/ai'
-import { IoAdd} from 'react-icons/io5'
-import { VscFilter } from 'react-icons/vsc'
-import { NextLayout } from 'type/element/layout'
-import AddInterviews from './add-interviews'
-import DetailInterview from './[interviewId]'
-import UpdateInterview from './[interviewId]/update'
-import { allInterviewsQuery } from 'queries/interview'
-import { IFilter, TColumn } from 'type/tableTypes'
-import { dataInterviewStatus } from 'utils/basicData'
-import { MdOutlineEvent } from 'react-icons/md'
 import {
 	deleteInterviewMutation,
 	deleteInterviewsMutation,
 	updateInterviewStatusMutation,
 } from 'mutations/interview'
-import { DateRange, Input, Select as FSelect, SelectCustom } from 'components/filter'
-import { IOption } from 'type/basicTypes'
+import Head from 'next/head'
+import { useRouter } from 'next/router'
 import { allEmployeesNormalQuery } from 'queries'
-import { interviewScheduleColumn } from 'utils/columns'
-// import UpdateJob from './[jobId]/update'
+import { interviewsByJobQuery } from 'queries/interview'
+import { useContext, useEffect, useState } from 'react'
+import { AiOutlineDelete, AiOutlineSearch } from 'react-icons/ai'
+import { IoAdd } from 'react-icons/io5'
+import { MdOutlineEvent } from 'react-icons/md'
+import { VscFilter } from 'react-icons/vsc'
+import 'react-quill/dist/quill.bubble.css'
+import 'react-quill/dist/quill.snow.css'
+import DetailInterview from 'src/pages/interviews/[interviewId]'
+import UpdateInterview from 'src/pages/interviews/[interviewId]/update'
+import { IOption } from 'type/basicTypes'
+import { NextLayout } from 'type/element/layout'
+import { IFilter, TColumn } from 'type/tableTypes'
+import { dataInterviewStatus } from 'utils/basicData'
+import { jobInterviewColumn } from 'utils/columns'
+import AddInterviews from '../../interviews/add-interviews'
 
-const interviews: NextLayout = () => {
-	const { currentUser, isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
+export interface ICandidateProps {
+	jobIdProp: string | number | null
+}
+
+const Interview: NextLayout | any = ({ jobIdProp }: ICandidateProps) => {
+	const { isAuthenticated, handleLoading, setToast, currentUser } = useContext(AuthContext)
 	const router = useRouter()
+	const { jobId: jobIdRouter } = router.query
 	const { colorMode } = useColorMode()
 
 	// set filter
@@ -74,10 +79,11 @@ const interviews: NextLayout = () => {
 		onClose: onCloseDlMany,
 	} = useDisclosure()
 
-	//Query ---------------------------------------------------------------------
-	// const { data: dataAllJobs } = allJobsQuery(isAuthenticated)
-	const { data: allInterviewSchedule, mutate: refetchAllInterview } =
-		allInterviewsQuery(isAuthenticated)
+	//Query -------------------------------------------------------------
+	const { data: dataInterviews, mutate: refreshInterviews } = interviewsByJobQuery(
+		isAuthenticated,
+		jobIdProp || (jobIdRouter as string)
+	)
 	const { data: allEmployees } = allEmployeesNormalQuery(isAuthenticated)
 
 	// mutate
@@ -99,6 +105,12 @@ const interviews: NextLayout = () => {
 		}
 	}, [isAuthenticated])
 
+	useEffect(() => {
+		if (dataInterviews) {
+			setIsLoading(false)
+		}
+	}, [dataInterviews])
+
 	// check is successfully delete one
 	useEffect(() => {
 		if (statusDlOne == 'success' && dataDlOne) {
@@ -106,7 +118,7 @@ const interviews: NextLayout = () => {
 				msg: dataDlOne.message,
 				type: statusDlOne,
 			})
-			refetchAllInterview()
+			refreshInterviews()
 			setIsLoading(false)
 		}
 	}, [statusDlOne])
@@ -118,7 +130,7 @@ const interviews: NextLayout = () => {
 				msg: dataUpdateStatus.message,
 				type: statusUpdate,
 			})
-			refetchAllInterview()
+			refreshInterviews()
 			setIsLoading(false)
 		}
 	}, [statusUpdate])
@@ -131,17 +143,10 @@ const interviews: NextLayout = () => {
 				type: 'success',
 			})
 			setDataSl(null)
-			refetchAllInterview()
+			refreshInterviews()
 			setIsLoading(false)
 		}
 	}, [statusDlMany])
-
-	useEffect(() => {
-		if (allInterviewSchedule) {
-			console.log(allInterviewSchedule)
-			setIsLoading(false)
-		}
-	}, [allInterviewSchedule])
 
 	// set employee to filter
 	useEffect(() => {
@@ -169,7 +174,7 @@ const interviews: NextLayout = () => {
 		}
 	}, [allEmployees, colorMode])
 
-	const columns: TColumn[] = interviewScheduleColumn({
+	const columns: TColumn[] = jobInterviewColumn({
 		currentUser,
 		onChangeStatus: async (id: number, event: any) => {
 			setIsLoading(true)
@@ -195,20 +200,17 @@ const interviews: NextLayout = () => {
 	return (
 		<Box pb={8}>
 			<Head>
-				<title>Huprom - Interview schedule</title>
+				<title>Huprom - Job interviews</title>
 				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
 			</Head>
-
 			<FuncCollapse>
 				{currentUser && currentUser.role === 'Admin' && (
-					<>
-						<Func
-							icon={<IoAdd />}
-							description={'Add new interview schedule by form'}
-							title={'Add new'}
-							action={onOpenAdd}
-						/>
-					</>
+					<Func
+						icon={<IoAdd />}
+						description={'Add new interview schedule by form'}
+						title={'Add new'}
+						action={onOpenAdd}
+					/>
 				)}
 				<Func
 					icon={<VscFilter />}
@@ -223,18 +225,9 @@ const interviews: NextLayout = () => {
 					action={onOpenDlMany}
 					disabled={!dataSl || dataSl.length == 0 ? true : false}
 				/>
-				<Func
-					icon={<MdOutlineEvent />}
-					title={'Calendar'}
-					description={'show interview schedule as calendar'}
-					action={() => {
-						router.push('/interviews/calendar')
-					}}
-				/>
 			</FuncCollapse>
-
 			<Table
-				data={allInterviewSchedule?.interviews || []}
+				data={dataInterviews?.interviews || []}
 				columns={columns}
 				isLoading={isLoading}
 				isSelect
@@ -271,7 +264,7 @@ const interviews: NextLayout = () => {
 				onClose={onCloseDlMany}
 			/>
 			<Drawer size="xl" title="Add Interview" onClose={onCloseAdd} isOpen={isOpenAdd}>
-				<AddInterviews onCloseDrawer={onCloseAdd} />
+				<AddInterviews onUpdateInterview={refreshInterviews} onCloseDrawer={onCloseAdd} />
 			</Drawer>
 			<Drawer
 				size="xl"
@@ -279,7 +272,11 @@ const interviews: NextLayout = () => {
 				onClose={onCloseUpdate}
 				isOpen={isOpenUpdate}
 			>
-				<UpdateInterview onCloseDrawer={onCloseUpdate} interviewId={interviewId} />
+				<UpdateInterview
+					onUpdateInterview={refreshInterviews}
+					onCloseDrawer={onCloseUpdate}
+					interviewId={interviewId}
+				/>
 			</Drawer>
 			<Drawer
 				size="xl"
@@ -370,6 +367,6 @@ const interviews: NextLayout = () => {
 		</Box>
 	)
 }
-interviews.getLayout = ClientLayout
 
-export default interviews
+Interview.getLayout = JobLayout
+export default Interview

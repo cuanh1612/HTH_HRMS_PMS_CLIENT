@@ -12,6 +12,8 @@ import {
 	FormHelperText,
 	useDisclosure,
 	Collapse,
+	Text,
+	useColorMode,
 } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
 import { Controller, UseFormReturn } from 'react-hook-form'
@@ -28,6 +30,7 @@ export const TimePicker = ({
 	timeInit,
 }: IInput & { form: UseFormReturn<any, any>; timeInit?: string }) => {
 	const errorColor = useColorModeValue('red.400', 'pink.400')
+	const {colorMode} = useColorMode()
 	const [timeInitCurrent, setTimeInitCurrent] = useState<string>()
 	const [hours, setHours] = useState({
 		value: 0,
@@ -96,7 +99,7 @@ export const TimePicker = ({
 		}
 	}, [timeInitCurrent])
 
-	const { onToggle, onOpen, isOpen, onClose } = useDisclosure()
+	const { onToggle, isOpen } = useDisclosure()
 
 	const getVlFutureHorM = (status: number, time: any) => {
 		if (status == 1) {
@@ -107,7 +110,6 @@ export const TimePicker = ({
 			if (time.value > time.min) {
 				return time.value - 1
 			}
-			
 		}
 	}
 
@@ -134,10 +136,17 @@ export const TimePicker = ({
 			control={form?.control}
 			name={name}
 			render={() => (
-				<FormControl onMouseMove={onOpen} onMouseLeave={onClose} isRequired={required}>
-					<FormLabel fontWeight={'normal'} htmlFor={name} color={'gray.400'}>
-						{label}
-					</FormLabel>
+				<FormControl>
+					{label && (
+						<FormLabel color={'gray.400'} fontWeight={'normal'} htmlFor={name}>
+							{label}{' '}
+							{required && (
+								<Text as="span" color={colorMode == 'dark' ? 'red.400' : 'red'}>
+									*
+								</Text>
+							)}
+						</FormLabel>
+					)}
 
 					<InputGroup onClick={onToggle}>
 						<InputLeftElement
@@ -181,7 +190,7 @@ export const TimePicker = ({
 									textAlign={'center'}
 								/>
 								<IconButton
-								disabled={hours.value == hours.min}
+									disabled={hours.value == hours.min}
 									onClick={() => {
 										const value = getVlFutureHorM(-1, hours)
 										setHoursHandle(value)
@@ -208,7 +217,7 @@ export const TimePicker = ({
 									textAlign={'center'}
 								/>
 								<IconButton
-								    disabled={minutes.value == minutes.min}
+									disabled={minutes.value == minutes.min}
 									onClick={() => {
 										const value = getVlFutureHorM(-1, minutes)
 										setMinutesHandle(value)

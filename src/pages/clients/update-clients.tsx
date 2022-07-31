@@ -10,7 +10,7 @@ import {
 	VStack,
 } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { CoutrySelector, Input, Select, Textarea, UploadAvatar } from 'components/form'
+import { CountrySelector, Input, Select, Textarea, UploadAvatar } from 'components/form'
 import {Loading} from 'components/common'
 import Modal from 'components/modal/Modal'
 import { AuthContext } from 'contexts/AuthContext'
@@ -467,7 +467,7 @@ export default function UpdateClient({ onCloseDrawer, clientUpdateId }: IAddClie
 					</GridItem>
 
 					<GridItem w="100%" colSpan={[2, 1]}>
-						<CoutrySelector name="country" form={formSetting} />
+						<CountrySelector name="country" form={formSetting} />
 					</GridItem>
 				</Grid>
 

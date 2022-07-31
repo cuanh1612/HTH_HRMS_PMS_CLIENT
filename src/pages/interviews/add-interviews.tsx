@@ -29,9 +29,10 @@ import { CreateInterviewValidate } from 'utils/validate'
 
 export interface IAddJobProps {
 	onCloseDrawer?: () => void
+	onUpdateInterview?: any
 }
 
-export default function AddJob({ onCloseDrawer }: IAddJobProps) {
+export default function AddJob({ onCloseDrawer, onUpdateInterview}: IAddJobProps) {
 	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
 	const router = useRouter()
 
@@ -53,7 +54,6 @@ export default function AddJob({ onCloseDrawer }: IAddJobProps) {
 		createInterviewMutation(setToast)
 
 	//Funcion -----------------------------------------------------------------
-
 	// setForm and submit form create new interview ---------------------------
 	const formSetting = useForm<createInterviewForm>({
 		defaultValues: {
@@ -76,7 +76,6 @@ export default function AddJob({ onCloseDrawer }: IAddJobProps) {
 	}
 
 	//User effect ---------------------------------------------------------------
-
 	//Handle check loged in
 	useEffect(() => {
 		if (isAuthenticated) {
@@ -170,6 +169,7 @@ export default function AddJob({ onCloseDrawer }: IAddJobProps) {
 
 			refetchAllInterviews()
 			refetchAllInterviewsNew()
+			if(onUpdateInterview) onUpdateInterview()
 		}
 	}, [statusCreInterview])
 

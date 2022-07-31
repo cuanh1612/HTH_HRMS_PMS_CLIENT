@@ -48,7 +48,7 @@ export interface IUpdateJobProps {
 }
 
 export default function UpdateJob({ onCloseDrawer, JobIdProp }: IUpdateJobProps) {
-	const { isAuthenticated, handleLoading, setToast, socket } = useContext(AuthContext)
+	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
 	const router = useRouter()
 	const { jobId: jobIdRouter } = router.query
 

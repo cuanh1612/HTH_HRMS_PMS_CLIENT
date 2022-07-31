@@ -3,9 +3,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { Loading } from 'components/common'
 import { Input, SelectCustom, Textarea, UploadAvatar } from 'components/form'
 import { AuthContext } from 'contexts/AuthContext'
-import {
-	updateJobApplicationMutation,
-} from 'mutations/jobApplication'
+import { updateJobApplicationMutation } from 'mutations/jobApplication'
 import { useRouter } from 'next/router'
 import { allJobsQuery } from 'queries/job'
 import { allJobApplicationsQuery, detailJobApplicationQuery } from 'queries/jobApplication'
@@ -24,11 +22,13 @@ import { UpdateJobApplicationValidate } from 'utils/validate'
 export interface IUpdateJobApplicationProps {
 	onCloseDrawer?: () => void
 	jobApplicationId: string | number | null
+	onUpdateCandidates?: any
 }
 
 export default function UpdateJobApplication({
 	onCloseDrawer,
 	jobApplicationId: jobApplicationIdProp,
+	onUpdateCandidates,
 }: IUpdateJobApplicationProps) {
 	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
 	const router = useRouter()
@@ -212,6 +212,7 @@ export default function UpdateJobApplication({
 			})
 
 			refetchJobApplications()
+			if (onUpdateCandidates) onUpdateCandidates()
 		}
 	}, [statusUpJobApplication])
 

@@ -1,4 +1,4 @@
-import { Select, Text } from '@chakra-ui/react'
+import { Select, Text, useColorMode } from '@chakra-ui/react'
 import React, { useEffect, useMemo, useState } from 'react'
 import { UseFormReturn } from 'react-hook-form'
 import countryList from 'react-select-country-list'
@@ -8,8 +8,9 @@ export interface ICoutrySelectorProps {
 	form: UseFormReturn<any, any>
 }
 
-export const CoutrySelector = ({ name, form }: ICoutrySelectorProps)=> {
+export const CountrySelector = ({ name, form }: ICoutrySelectorProps)=> {
 	const options = useMemo(() => countryList().getData(), [])
+	const {colorMode} = useColorMode()
 
 	//Initial value
 	const [value, setValue] = useState<string>(form.getValues(name) ? form.getValues(name) : '')
@@ -32,6 +33,7 @@ export const CoutrySelector = ({ name, form }: ICoutrySelectorProps)=> {
 		<>
 			<Text mb={2} color={"gray.400"}>Country</Text>
 			<Select
+				bg={colorMode == 'dark' ? '#3a4453': undefined}
 				name={name}
 				placeholder="Select option"
 				onChange={onChangeCountry}

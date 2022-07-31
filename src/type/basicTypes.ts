@@ -661,3 +661,10 @@ export interface projectActivityType {
 	[index: string]: any
 }
 
+export interface filterRooms {
+	date: {
+		from?: Date
+		to?: Date
+	}
+	title: string
+}

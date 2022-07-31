@@ -5,17 +5,10 @@ import { Header } from 'components/partials'
 import { AuthContext } from 'contexts/AuthContext'
 import { useRouter } from 'next/router'
 import { useContext, useEffect, useState } from 'react'
-import { AiOutlineFileAdd, AiOutlineFileImage, AiOutlineFileText, AiOutlineProject } from 'react-icons/ai'
-import { BsPerson } from 'react-icons/bs'
-import { GrDocumentText } from 'react-icons/gr'
-import { RiDiscussLine } from 'react-icons/ri'
+import { AiOutlineFileAdd, AiOutlineFileText } from 'react-icons/ai'
 import { VscCommentDiscussion } from 'react-icons/vsc'
 import { ITab } from 'type/element/commom'
-{
-	/* <Tab>Summary</Tab>
-					<Tab>Discussion</Tab>
-					<Tab isSelected={true}>Contract Files</Tab> */
-}
+
 export const ContractLayout = ({ children }: { children: JSX.Element }) => {
 	const { currentUser } = useContext(AuthContext)
 	const {

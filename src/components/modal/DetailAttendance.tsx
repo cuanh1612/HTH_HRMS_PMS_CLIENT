@@ -19,7 +19,7 @@ import { FiAlertTriangle } from 'react-icons/fi'
 import { UserAttendance } from 'type/basicTypes'
 import { getMinutes, setTime } from 'utils/time'
 
-interface IdetailAttendance {
+interface IDetailAttendance {
 	isOpenDetail: boolean
 	onCloseDetail: () => void
 	onOpenInsert: () => void
@@ -33,7 +33,7 @@ export default function DetailAttendance({
 	onOpenInsert,
 	user,
 	values,
-}: IdetailAttendance) {
+}: IDetailAttendance) {
 	return (
 		<Modal isOpen={isOpenDetail} onClose={onCloseDetail}>
 			<ModalOverlay />

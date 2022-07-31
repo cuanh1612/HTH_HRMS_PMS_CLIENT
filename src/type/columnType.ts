@@ -16,6 +16,12 @@ export interface IJobColumn extends IOptionColumn {
 	onChangeStatus: any
 }
 
+export interface ICandidateColumn extends IOptionColumn {
+	onChangeStatus: any
+	job?: string
+	location?: string
+}
+
 export interface ILeaveColumn extends IOptionColumn {
 	onRejected: any
 	onApproved: any

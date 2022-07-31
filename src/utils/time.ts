@@ -31,7 +31,6 @@ export const compareDateTime = (date1: string, date2: string, inClock: string, o
 		const timeInClock = inClockSplit[0].split(':')
 		const timeOutClock = outClockSplit[0].split(':')
 		if (Number(timeInClock[0]) >= Number(timeOutClock[0])) {
-			console.log('fxsdf')
 			return true
 		}
 		if (

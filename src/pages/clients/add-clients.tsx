@@ -10,7 +10,7 @@ import {
 	VStack,
 } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { CoutrySelector, Input, Select, Textarea, UploadAvatar } from 'components/form'
+import { CountrySelector, Input, Select, Textarea, UploadAvatar } from 'components/form'
 import {Loading} from 'components/common'
 import Modal from 'components/modal/Modal'
 import { AuthContext } from 'contexts/AuthContext'
@@ -131,14 +131,14 @@ export default function AddClient({ onCloseDrawer }: IAddClientProps) {
 		values.can_receive_email = advancedInfo.can_receive_email
 
 		//Upload avatar
-		const dataUploadAvattar: ICloudinaryImg | null = await handleUploadAvatar()
+		const dataUploadAvatar: ICloudinaryImg | null = await handleUploadAvatar()
 
 		//Check upload avatar success
-		if (dataUploadAvattar) {
+		if (dataUploadAvatar) {
 			values.avatar = {
-				name: dataUploadAvattar.name,
-				url: dataUploadAvattar.url,
-				public_id: dataUploadAvattar.public_id,
+				name: dataUploadAvatar.name,
+				url: dataUploadAvatar.url,
+				public_id: dataUploadAvatar.public_id,
 			}
 		}
 
@@ -159,7 +159,7 @@ export default function AddClient({ onCloseDrawer }: IAddClientProps) {
 		}
 	}, [isAuthenticated])
 
-	//Set option client catetgory
+	//Set option client category
 	useEffect(() => {
 		if (dataCategories?.clientCategories) {
 			const newOptionCategories: IOption[] = dataCategories.clientCategories.map(
@@ -223,7 +223,7 @@ export default function AddClient({ onCloseDrawer }: IAddClientProps) {
 			if (name === 'client_category') {
 				//Set data option sub category
 				if (dataSubCategories?.clientSubCategories) {
-					let newOptionSubCategories: IOption[] = []
+					const newOptionSubCategories: IOption[] = []
 
 					//Check if client category is exist
 					if (value.client_category) {
@@ -397,7 +397,7 @@ export default function AddClient({ onCloseDrawer }: IAddClientProps) {
 					</GridItem>
 
 					<GridItem w="100%" colSpan={[2, 1]}>
-						<CoutrySelector name="country" form={formSetting} />
+						<CountrySelector name="country" form={formSetting} />
 					</GridItem>
 				</Grid>
 
@@ -419,7 +419,7 @@ export default function AddClient({ onCloseDrawer }: IAddClientProps) {
 								/>
 							}
 							form={formSetting}
-							placeholder="e.g. ABC Copany"
+							placeholder="e.g. ABC Company"
 							type="text"
 						/>
 					</GridItem>

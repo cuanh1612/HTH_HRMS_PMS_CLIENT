@@ -9,21 +9,13 @@ import { holidayType, leaveType } from 'type/basicTypes'
 import { IAttendance } from 'type/element/commom'
 
 interface ICheckAttendance {
-	// số ngày
 	countDate: number
-	// ngày attendance
 	attendances?: IAttendance[]
-	// ngày nghỉ
 	leaveDates?: leaveType[]
-	// khi tạo ngày nghỉ thì làm gì
 	createHandle: any
-	// lọc theo tháng, năm
 	dateFilter: Date
-
 	holidays?: holidayType[]
-
 	isChange?: boolean
-
 	employeeId: number
 }
 

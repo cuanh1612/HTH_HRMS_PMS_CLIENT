@@ -1,7 +1,7 @@
 import { Button, Grid, GridItem, Skeleton, Text, useDisclosure, VStack } from '@chakra-ui/react'
 import { AlertDialog, Func, FuncCollapse } from 'components/common'
 import { Drawer } from 'components/Drawer'
-import { DateRange, Input, Select } from 'components/filter'
+import { DateRange, Input } from 'components/filter'
 import { ClientLayout } from 'components/layouts'
 import { Cards } from 'components/room'
 import { AuthContext } from 'contexts/AuthContext'
@@ -14,6 +14,7 @@ import { AiOutlineSearch } from 'react-icons/ai'
 import { IoAdd } from 'react-icons/io5'
 import { MdOutlineEvent } from 'react-icons/md'
 import { VscFilter } from 'react-icons/vsc'
+import { filterRooms, roomType } from 'type/basicTypes'
 
 import { NextLayout } from 'type/element/layout'
 import { IFilter } from 'type/tableTypes'
@@ -21,25 +22,16 @@ import AddRooms from './add-rooms'
 import DetailRoom from './[roomId]'
 import UpdateRoom from './[roomId]/update-room'
 
+let textTimeOut: NodeJS.Timeout
 const zoom: NextLayout = () => {
 	const { isAuthenticated, handleLoading, currentUser, setToast } = useContext(AuthContext)
 	const router = useRouter()
 
 	//State ---------------------------------------------------------------------
+	const [yourRooms, setYourRooms] = useState<roomType[]>()
+	const [otherRooms, setOtherRooms] = useState<roomType[]>()
 	const [roomId, setRoomId] = useState<string | number>()
-	const [filter, setFilter] = useState<{
-		date: {
-			from?: Date
-			to?: Date
-		}
-		title: string
-	}>({
-		date: {
-			from: undefined,
-			to: undefined,
-		},
-		title: '',
-	})
+	const [filter, setFilter] = useState<filterRooms>({ title: '', date: {} })
 
 	//Setup modal ----------------------------------------------------------------
 	const {
@@ -70,6 +62,37 @@ const zoom: NextLayout = () => {
 	// mutation
 	const [deleteRoom, { data: dataDl, status: statusDl }] = deleteRoomMutation(setToast)
 
+	const handleFilterRooms = useCallback((rooms: roomType[], filter: filterRooms) => {
+		let data: roomType[] = rooms
+		if (filter.title) {
+			data = data.filter((room) => {
+				if (room.title.replace(/-/g, ' ').includes(filter.title)) {
+					return true
+				}
+				return false
+			})
+		}
+		if (filter.date?.from) {
+			const date = filter.date.from
+			data = data.filter((room) => {
+				if (new Date(room.date) >= new Date(date)) {
+					return true
+				}
+				return false
+			})
+		}
+		if (filter.date?.to) {
+			const date = filter.date.to
+			data = data.filter((room) => {
+				if (new Date(room.date) <= new Date(date)) {
+					return true
+				}
+				return false
+			})
+		}
+		return data
+	}, [])
+
 	//Useeffect ---------------------------------------------------------
 	//Handle check loged in
 	useEffect(() => {
@@ -92,6 +115,30 @@ const zoom: NextLayout = () => {
 		}
 	}, [statusDl])
 
+	useEffect(() => {
+		if (dataRooms) {
+			if (dataRooms.rooms) {
+				setYourRooms(dataRooms.rooms)
+			}
+			if (dataRooms.other_rooms) {
+				setOtherRooms(dataRooms.other_rooms)
+			}
+		}
+	}, [dataRooms, filter])
+
+	useEffect(() => {
+		if (filter) {
+			if (dataRooms?.rooms) {
+				const data = handleFilterRooms(dataRooms.rooms, filter)
+				setYourRooms(data)
+			}
+			if (dataRooms?.other_rooms) {
+				const data = handleFilterRooms(dataRooms.other_rooms, filter)
+				setOtherRooms(data)
+			}
+		}
+	}, [filter])
+
 	// show alert when delete
 	const showAlertDl = useCallback((id: number) => {
 		setRoomId(id)
@@ -102,6 +149,12 @@ const zoom: NextLayout = () => {
 	const showUpdate = (id: number) => {
 		setRoomId(id)
 		onOpenUpRoom()
+	}
+
+	// show detail
+	const showDetail = (id: number) => {
+		setRoomId(id)
+		onOpenDetailRoom()
 	}
 	return (
 		<VStack justifyContent={'start'} pb={8} alignItems={'start'} w={'full'} spacing={5}>
@@ -137,10 +190,8 @@ const zoom: NextLayout = () => {
 				<Text w={'full'} fontWeight={'bold'} fontSize={'xl'}>
 					Your rooms:
 				</Text>
-				<Button onClick={onOpenDetailRoom}>
-					Open detail room
-				</Button>
-				{dataRooms?.rooms && dataRooms.rooms.length > 0 ? (
+
+				{yourRooms && yourRooms.length > 0 ? (
 					<Grid
 						w={'full'}
 						templateColumns={[
@@ -155,7 +206,8 @@ const zoom: NextLayout = () => {
 						<Cards
 							showAlertDl={showAlertDl}
 							showUpdate={showUpdate}
-							data={dataRooms.rooms}
+							showDetail={showDetail}
+							data={yourRooms}
 						/>
 					</Grid>
 				) : (
@@ -185,9 +237,9 @@ const zoom: NextLayout = () => {
 
 			<VStack w={'full'} spacing={5}>
 				<Text w={'full'} fontWeight={'bold'} fontSize={'xl'}>
-					another rooms:
+					Other rooms:
 				</Text>
-				{dataRooms?.another_rooms && dataRooms.another_rooms.length > 0 ? (
+				{otherRooms && otherRooms.length > 0 ? (
 					<Grid
 						w={'full'}
 						templateColumns={[
@@ -199,7 +251,7 @@ const zoom: NextLayout = () => {
 						]}
 						gap={6}
 					>
-						<Cards isEdit={false} data={dataRooms.another_rooms} />
+						<Cards isEdit={false} data={otherRooms} />
 					</Grid>
 				) : (
 					<Grid
@@ -247,17 +299,34 @@ const zoom: NextLayout = () => {
 			<Drawer
 				title="Filter"
 				size="xs"
-				footer={<Button onClick={() => {}}>reset</Button>}
+				footer={
+					<Button
+						onClick={() => {
+							setFilter({
+								title: '',
+								date: {
+									from: undefined,
+									to: undefined,
+								},
+							})
+						}}
+					>
+						reset
+					</Button>
+				}
 				isOpen={isOpenFilter}
 				onClose={onCloseFilter}
 			>
 				<VStack spacing={5} p={6}>
 					<Input
 						handleSearch={(data: IFilter) => {
-							setFilter((state) => ({
-								...state,
-								title: data.filterValue,
-							}))
+							clearTimeout(textTimeOut)
+							textTimeOut = setTimeout(() => {
+								setFilter((state) => ({
+									...state,
+									title: data.filterValue,
+								}))
+							}, 200)
 						}}
 						columnId={'name'}
 						label="Project name"
@@ -277,8 +346,13 @@ const zoom: NextLayout = () => {
 				</VStack>
 			</Drawer>
 
-			<Drawer size="md" title="Detail Room" onClose={onCloseDetailRoom} isOpen={isOpenDetailRoom}>
-				<DetailRoom roomIdProp={1} />
+			<Drawer
+				size="md"
+				title="Detail Room"
+				onClose={onCloseDetailRoom}
+				isOpen={isOpenDetailRoom}
+			>
+				<DetailRoom roomIdProp={roomId} />
 			</Drawer>
 		</VStack>
 	)

@@ -1,4 +1,13 @@
-import { Button, FormControl, FormHelperText, FormLabel, HStack, useColorModeValue } from '@chakra-ui/react'
+import {
+	Button,
+	FormControl,
+	FormHelperText,
+	FormLabel,
+	HStack,
+	Text,
+	useColorMode,
+	useColorModeValue,
+} from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
 import { UseFormReturn } from 'react-hook-form'
 import Select from 'react-select'
@@ -18,9 +27,10 @@ export const SelectCustom = ({
 	onChangeValue,
 	isModal,
 	onOpenModal,
-	disabled
+	disabled,
 }: ISelect & { form: UseFormReturn<any, any> }) => {
 	const errorColor = useColorModeValue('red.400', 'pink.400')
+	const {colorMode} = useColorMode()
 
 	//Sate
 	const [optionSelect, setOptionSelect] = useState<IOption | undefined>(undefined)
@@ -49,8 +59,6 @@ export const SelectCustom = ({
 	//Change value selected when form data change
 	useEffect(() => {
 		if (form.getValues(name)) {
-			console.log('doi', form.getValues(name))
-
 			const selectedOption = options.filter(
 				(option) => option.value === form.getValues(name)
 			)[0]
@@ -60,10 +68,17 @@ export const SelectCustom = ({
 
 	return (
 		<>
-			<FormControl isRequired={required}>
-				<FormLabel color={'gray.400'} fontWeight={'normal'} htmlFor={name}>
-					{label}
-				</FormLabel>
+			<FormControl>
+				{label && (
+					<FormLabel color={'gray.400'} fontWeight={'normal'} htmlFor={name}>
+						{label}{' '}
+						{required && (
+							<Text as="span" color={colorMode == 'dark' ? 'red.400' : 'red'}>
+								*
+							</Text>
+						)}
+					</FormLabel>
+				)}
 
 				<HStack w={'full'} position={'relative'}>
 					<Select

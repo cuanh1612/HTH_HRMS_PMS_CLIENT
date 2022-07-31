@@ -418,7 +418,7 @@ const Messages: NextLayout = () => {
 						id={'messages'}
 					>
 						{replies &&
-							replies.map((conversationReply, key) => {
+							replies.map((conversationReply) => {
 								return (
 									<Message
 										key={conversationReply.id}

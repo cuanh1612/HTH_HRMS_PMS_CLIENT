@@ -1,10 +1,10 @@
 import { createRoomForm, updateRoomForm } from 'type/form/basicFormType'
-import { roomMutaionResponse } from 'type/mutationResponses'
+import { roomMutationResponse } from 'type/mutationResponses'
 import { getData, postData, putData } from 'utils/fetchData'
 
 //Function handle create
 export async function createRoomRequest(inputCreate: createRoomForm) {
-	const resultFetch = await postData<roomMutaionResponse>({
+	const resultFetch = await postData<roomMutationResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/rooms`,
 		body: inputCreate,
 	})
@@ -14,7 +14,7 @@ export async function createRoomRequest(inputCreate: createRoomForm) {
 
 //Function handle get detail 
 export const detailRoomRequest = async (url: string) => {
-	return await getData<roomMutaionResponse>({
+	return await getData<roomMutationResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/${url}`,
 	})
 }
@@ -27,7 +27,7 @@ export async function updateRoomRequest({
 	roomId: number | string
 	inputUpdate: updateRoomForm
 }) {
-	const resultFetch = await putData<roomMutaionResponse>({
+	const resultFetch = await putData<roomMutationResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/rooms/${roomId}`,
 		body: inputUpdate,
 	})

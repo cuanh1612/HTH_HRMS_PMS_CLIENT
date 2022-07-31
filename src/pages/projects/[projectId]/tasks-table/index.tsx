@@ -131,7 +131,7 @@ const tasks: NextLayout = () => {
 		{ label: 'updatedAt', key: 'updatedAt' },
 	]
 
-	//Useeffect ---------------------------------------------------------
+	//UseEffect ---------------------------------------------------------
 	//Handle check login successfully
 	useEffect(() => {
 		if (isAuthenticated) {

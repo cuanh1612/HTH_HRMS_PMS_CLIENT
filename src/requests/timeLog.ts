@@ -1,10 +1,10 @@
 import { createProjectTimeLogForm, updateProjectTimeLogForm } from 'type/form/basicFormType'
-import { TimeLogMutaionResponse } from 'type/mutationResponses'
+import { TimeLogMutationResponse } from 'type/mutationResponses'
 import { deleteData, getData, postData, putData } from 'utils/fetchData'
 
 //Function handle create
 export async function createTimeLogRequest(inputCreate: createProjectTimeLogForm) {
-	const resultFetch = await postData<TimeLogMutaionResponse>({
+	const resultFetch = await postData<TimeLogMutationResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/time-logs`,
 		body: inputCreate,
 	})
@@ -14,14 +14,14 @@ export async function createTimeLogRequest(inputCreate: createProjectTimeLogForm
 
 //Function handle get detail timelog
 export const detailTimeLogRequest = async (url: string) => {
-	return await getData<TimeLogMutaionResponse>({
+	return await getData<TimeLogMutationResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/${url}`,
 	})
 }
 
 //Function handle get detail timelog
 export const allTimeLogByProjectRequest = async (url: string) => {
-	return await getData<TimeLogMutaionResponse>({
+	return await getData<TimeLogMutationResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/${url}`,
 	})
 }
@@ -34,7 +34,7 @@ export async function updateTimeLogRequest({
 	inputUpdate: updateProjectTimeLogForm
 	timeLogId: number | string
 }) {
-	const resultFetch = await putData<TimeLogMutaionResponse>({
+	const resultFetch = await putData<TimeLogMutationResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/time-logs/${timeLogId}`,
 		body: inputUpdate,
 	})
@@ -44,14 +44,14 @@ export async function updateTimeLogRequest({
 
 //Handle to delete time log
 export const deleteTimeLogRequest = async (id: string) => {
-	return await deleteData<TimeLogMutaionResponse>({
+	return await deleteData<TimeLogMutationResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/time-logs/${id}`,
 	})
 }
 
 // Handle to delete many time logs
 export const deleteTimeLogsRequest = async (ids: number[]) => {
-	return await postData<TimeLogMutaionResponse>({
+	return await postData<TimeLogMutationResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/time-logs/delete-many`,
 		body: {
 			timelogs: ids,

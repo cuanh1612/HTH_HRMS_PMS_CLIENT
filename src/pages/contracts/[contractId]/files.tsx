@@ -21,7 +21,7 @@ import { useDropzone } from 'react-dropzone'
 import { AiOutlinePlusCircle, AiOutlineSave } from 'react-icons/ai'
 import { NextLayout } from 'type/element/layout'
 import { ICloudinaryImg } from 'type/fileType'
-import { contractMutaionResponse } from 'type/mutationResponses'
+import { contractMutationResponse } from 'type/mutationResponses'
 import { generateImgFile } from 'utils/helper'
 import { uploadFile } from 'utils/uploadFile'
 import Head from 'next/head'
@@ -100,7 +100,7 @@ const Files: NextLayout = () => {
 		return leaveRoom
 	}, [socket, contractId])
 
-	//Handle check loged in
+	//Handle check logged in
 	useEffect(() => {
 		if (isAuthenticated) {
 			handleLoading(false)
@@ -161,7 +161,7 @@ const Files: NextLayout = () => {
 		onCloseAdd()
 	}
 
-	//Handle upload fies
+	//Handle upload files
 	const handleUploadFiles = async () => {
 		if (filesUpload.length > 0) {
 			//Set is load upload file
@@ -350,7 +350,7 @@ export const getStaticProps: GetStaticProps = async () => {
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-	const res: contractMutaionResponse = await fetch('http://localhost:4000/api/contracts')
+	const res: contractMutationResponse = await fetch('http://localhost:4000/api/contracts')
 		.then((result) => result.json())
 		.catch(() => undefined)
 

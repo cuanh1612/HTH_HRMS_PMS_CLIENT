@@ -45,8 +45,8 @@ export default function WorkExperiences() {
 	//Query -------------------------------------------------------------
 	const { data: dataWorkExperience, mutate: refetchWorkExperience } = allWorkExperiencesQuery(isAuthenticated)
 
-	//Useeffect ---------------------------------------------------------
-	//Handle check loged in
+	//UseEffect ---------------------------------------------------------
+	//Handle check logged in
 	useEffect(() => {
 		if (isAuthenticated) {
 			handleLoading(false)

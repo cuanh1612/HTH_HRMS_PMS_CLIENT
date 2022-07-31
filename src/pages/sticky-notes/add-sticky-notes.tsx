@@ -38,7 +38,7 @@ export default function AddStickyNotes({ onCloseDrawer }: IAddStickyNotesProps) 
 		createStickyNoteMutation(setToast)
 
 	//User effect ---------------------------------------------------------------
-	//Handle check loged in
+	//Handle check logged in
 	useEffect(() => {
 		if (isAuthenticated) {
 			handleLoading(false)
@@ -88,7 +88,7 @@ export default function AddStickyNotes({ onCloseDrawer }: IAddStickyNotesProps) 
 		}
 	}
 
-	//Funtion -------------------------------------------------------------------
+	//Function -------------------------------------------------------------------
 	const onChangeNote = (value: string) => {
 		setNote(value)
 	}

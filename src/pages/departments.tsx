@@ -49,8 +49,8 @@ export default function Department() {
 	const { data: dataDepartments, mutate: refetchDepartments } =
 		allDepartmentsQuery(isAuthenticated)
 
-	//Useeffect ---------------------------------------------------------
-	//Handle check loged in
+	//UseEffect ---------------------------------------------------------
+	//Handle check logged in
 	useEffect(() => {
 		if (isAuthenticated) {
 			handleLoading(false)

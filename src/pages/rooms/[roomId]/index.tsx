@@ -42,7 +42,7 @@ export default function DetailRoom({
 	console.log(detailRoom)
 
 	//User effect ---------------------------------------------------------------
-	//Handle check loged in
+	//Handle check logged in
 	useEffect(() => {
 		if (isAuthenticated) {
 			handleLoading(false)

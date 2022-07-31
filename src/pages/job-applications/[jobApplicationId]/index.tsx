@@ -66,8 +66,6 @@ export default function DetailJobApplication({
 	const [mutateChangeSkillsJobApplication, { status: statusChangeSkillsJobApplication }] =
 		changeSkillsobApplicationMutation(setToast)
 
-	//Funcion -----------------------------------------------------------------
-
 	// setForm and submit form create new job application ---------------------
 	const formSetting = useForm<changeSkillsJobApplicationForm>({
 		defaultValues: {
@@ -86,7 +84,7 @@ export default function DetailJobApplication({
 	}
 	//User effect ---------------------------------------------------------------
 
-	//Handle check loged in
+	//Handle check logged in
 	useEffect(() => {
 		if (isAuthenticated) {
 			handleLoading(false)
@@ -117,7 +115,7 @@ export default function DetailJobApplication({
 		}
 	}, [allSkills])
 
-	//Chane data form when have data detail event
+	//Change data form when have data detail event
 	useEffect(() => {
 		if (dataDetailJobApplication && dataDetailJobApplication.jobApplication) {
 			//Set data selected option skills

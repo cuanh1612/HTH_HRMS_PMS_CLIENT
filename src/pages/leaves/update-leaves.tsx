@@ -90,7 +90,7 @@ export default function UpdateLeaves({ onCloseDrawer, leaveId }: IUpdateLeavesPr
 
 	//User effect ---------------------------------------------------------------
 
-	//Handle check loged in
+	//Handle check logged in
 	useEffect(() => {
 		if (isAuthenticated) {
 			handleLoading(false)

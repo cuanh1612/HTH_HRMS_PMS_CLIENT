@@ -7,7 +7,7 @@ import {
 	updateEmployeeRequest,
 } from 'requests/employee'
 import { TToast } from 'type/basicTypes'
-import { employeeMutaionResponse } from 'type/mutationResponses'
+import { employeeMutationResponse } from 'type/mutationResponses'
 import useMutation from 'use-mutation'
 
 //create
@@ -77,7 +77,7 @@ export const changeRoleMutation = (setToast: TToast) => {
 			employeeId: number
 			role: string
 		},
-		employeeMutaionResponse,
+		employeeMutationResponse,
 		any
 	>(changeRoleRequest, {
 		onFailure({ error }) {

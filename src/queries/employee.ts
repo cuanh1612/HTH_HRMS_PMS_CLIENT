@@ -1,10 +1,10 @@
 import { AxiosError } from 'axios'
 import { allEmployeesRequest, detailEmployeeRequest } from 'requests/employee'
 import useSWR from 'swr'
-import { countLeavesTakenEmployeeMutaionResponse, countPCompleteTasksMutationResponse, countPendingTasksMutationResponse, countProjectsEmployeeMutaionResponse, countStatusProjectsMutationResponse, employeeMutaionResponse, hoursLoggedEmployeeMutaionResponse, lateAttendanceEmployeeMutaionResponse, openTasksEmployeeMutaionResponse } from 'type/mutationResponses'
+import { countLeavesTakenEmployeeMutationResponse, countPCompleteTasksMutationResponse, countPendingTasksMutationResponse, countProjectsEmployeeMutationResponse, countStatusProjectsMutationResponse, employeeMutationResponse, hoursLoggedEmployeeMutationResponse, lateAttendanceEmployeeMutationResponse, openTasksEmployeeMutationResponse } from 'type/mutationResponses'
 
 export const detailEmployeeQuery = (isAuthenticated: boolean | null, employeeId?: string | number | null) => {
-	return useSWR<employeeMutaionResponse, AxiosError>(
+	return useSWR<employeeMutationResponse, AxiosError>(
 		isAuthenticated && employeeId ? `employees/${employeeId}` : null,
 		detailEmployeeRequest,
 		{
@@ -15,7 +15,7 @@ export const detailEmployeeQuery = (isAuthenticated: boolean | null, employeeId?
 }
 
 export const openTasksEmployeeQuery = (isAuthenticated: boolean | null, employeeId?: string | number) => {
-	return useSWR<openTasksEmployeeMutaionResponse, AxiosError>(
+	return useSWR<openTasksEmployeeMutationResponse, AxiosError>(
 		isAuthenticated && employeeId ? `employees/${employeeId}/open-tasks` : null,
 		detailEmployeeRequest,
 		{
@@ -26,7 +26,7 @@ export const openTasksEmployeeQuery = (isAuthenticated: boolean | null, employee
 }
 
 export const hoursLoggedEmployeeQuery = (isAuthenticated: boolean | null, employeeId?: string | number) => {
-	return useSWR<hoursLoggedEmployeeMutaionResponse, AxiosError>(
+	return useSWR<hoursLoggedEmployeeMutationResponse, AxiosError>(
 		isAuthenticated && employeeId ? `employees/${employeeId}/hours-logged` : null,
 		detailEmployeeRequest,
 		{
@@ -37,7 +37,7 @@ export const hoursLoggedEmployeeQuery = (isAuthenticated: boolean | null, employ
 }
 
 export const countProjectsEmployeeQuery = (isAuthenticated: boolean | null, employeeId?: string | number) => {
-	return useSWR<countProjectsEmployeeMutaionResponse, AxiosError>(
+	return useSWR<countProjectsEmployeeMutationResponse, AxiosError>(
 		isAuthenticated && employeeId ? `employees/${employeeId}/count-projects` : null,
 		detailEmployeeRequest,
 		{
@@ -48,7 +48,7 @@ export const countProjectsEmployeeQuery = (isAuthenticated: boolean | null, empl
 }
 
 export const lateAttendanceEmployeeQuery = (isAuthenticated: boolean | null, employeeId?: string | number) => {
-	return useSWR<lateAttendanceEmployeeMutaionResponse, AxiosError>(
+	return useSWR<lateAttendanceEmployeeMutationResponse, AxiosError>(
 		isAuthenticated && employeeId ? `employees/${employeeId}/late-attendance` : null,
 		detailEmployeeRequest,
 		{
@@ -59,7 +59,7 @@ export const lateAttendanceEmployeeQuery = (isAuthenticated: boolean | null, emp
 }
 
 export const leavesTakenEmployeeQuery = (isAuthenticated: boolean | null, employeeId?: string | number) => {
-	return useSWR<countLeavesTakenEmployeeMutaionResponse, AxiosError>(
+	return useSWR<countLeavesTakenEmployeeMutationResponse, AxiosError>(
 		isAuthenticated && employeeId ? `employees/${employeeId}/count-leaves-taken` : null,
 		detailEmployeeRequest,
 		{
@@ -70,7 +70,7 @@ export const leavesTakenEmployeeQuery = (isAuthenticated: boolean | null, employ
 }
 
 export const countTasksStatusEmployeeQuery = (isAuthenticated: boolean | null, employeeId?: string | number) => {
-	return useSWR<countProjectsEmployeeMutaionResponse, AxiosError>(
+	return useSWR<countProjectsEmployeeMutationResponse, AxiosError>(
 		isAuthenticated && employeeId ? `employees/${employeeId}/count-tasks-status` : null,
 		detailEmployeeRequest,
 		{
@@ -81,7 +81,7 @@ export const countTasksStatusEmployeeQuery = (isAuthenticated: boolean | null, e
 }
 
 export const allEmployeesNormalQuery = (isAuthenticated: boolean | null) => {
-	return useSWR<employeeMutaionResponse, AxiosError>(
+	return useSWR<employeeMutationResponse, AxiosError>(
 		isAuthenticated ? `employees/normal` : null,
 		allEmployeesRequest,
 		{
@@ -92,7 +92,7 @@ export const allEmployeesNormalQuery = (isAuthenticated: boolean | null) => {
 }
 
 export const allEmployeesQuery = (isAuthenticated: boolean | null) => {
-	return useSWR<employeeMutaionResponse, AxiosError>(
+	return useSWR<employeeMutationResponse, AxiosError>(
 		isAuthenticated ? `employees` : null,
 		allEmployeesRequest,
 		{

@@ -1,10 +1,10 @@
 import { AxiosError } from "axios"
 import { allStatusRequest, allStatusTasksRequest, detailStatusRequest } from "requests/status"
 import useSWR from "swr"
-import { statusMutaionResponse } from "type/mutationResponses"
+import { statusMutationResponse } from "type/mutationResponses"
 
 export const allStatusTasksQuery = (isAuthenticated: boolean | null, projectId: string | number | any) => {
-	return useSWR<statusMutaionResponse, AxiosError>(
+	return useSWR<statusMutationResponse, AxiosError>(
 		isAuthenticated && projectId ? `status/${projectId}`: null,
 		allStatusTasksRequest,
 		{
@@ -15,7 +15,7 @@ export const allStatusTasksQuery = (isAuthenticated: boolean | null, projectId: 
 }
 
 export const allStatusQuery = (isAuthenticated: boolean | null, projectId: string | number | any) => {
-	return useSWR<statusMutaionResponse, AxiosError>(
+	return useSWR<statusMutationResponse, AxiosError>(
 		isAuthenticated && projectId ? `status/normal/${projectId}`: null,
 		allStatusRequest,
 		{
@@ -26,7 +26,7 @@ export const allStatusQuery = (isAuthenticated: boolean | null, projectId: strin
 }
 
 export const detailStatusQuery = (isAuthenticated: boolean | null, statusId: string | number | any) => {
-	return useSWR<statusMutaionResponse, AxiosError>(
+	return useSWR<statusMutationResponse, AxiosError>(
 		isAuthenticated && statusId ? `status/detail/${statusId}`: null,
 		detailStatusRequest,
 		{

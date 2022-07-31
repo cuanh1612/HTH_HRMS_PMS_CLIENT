@@ -23,7 +23,8 @@ import { useDropzone } from 'react-dropzone'
 import { AiOutlinePlusCircle, AiOutlineSave } from 'react-icons/ai'
 import { NextLayout } from 'type/element/layout'
 import { ICloudinaryImg } from 'type/fileType'
-import { projectMutaionResponse } from 'type/mutationResponses'
+import { projectMutationResponse } from 'type/mutationResponses'
+
 import { generateImgFile } from 'utils/helper'
 import { uploadFile } from 'utils/uploadFile'
 
@@ -102,7 +103,7 @@ const Files: NextLayout = () => {
 		return leaveRoom
 	}, [socket, projectId])
 
-	//Handle check loged in
+	//Handle check logged in
 	useEffect(() => {
 		if (isAuthenticated) {
 			handleLoading(false)
@@ -163,7 +164,7 @@ const Files: NextLayout = () => {
 		onCloseAdd()
 	}
 
-	//Handle upload fies
+	//Handle upload files
 	const handleUploadFiles = async () => {
 		if (filesUpload.length > 0) {
 			//Set is load upload file
@@ -338,7 +339,7 @@ const Files: NextLayout = () => {
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-	//Get accesstoken
+	//Get access token
 	const getAccessToken: { accessToken: string; code: number; message: string; success: boolean } =
 		await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/refresh_token`, {
 			method: 'GET',
@@ -358,7 +359,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 	}
 
 	//Check assigned
-	const checkAsignedProject: projectMutaionResponse = await fetch(
+	const checkAssignedProject: projectMutationResponse = await fetch(
 		`${process.env.NEXT_PUBLIC_API_URL}/api/projects/${context.query.projectId}/check-assigned`,
 		{
 			method: 'GET',
@@ -368,9 +369,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 		}
 	).then((e) => e.json())
 
-	console.log(checkAsignedProject)
+	console.log(checkAssignedProject)
 
-	if (!checkAsignedProject.success) {
+	if (!checkAssignedProject.success) {
 		return {
 			notFound: true,
 		}

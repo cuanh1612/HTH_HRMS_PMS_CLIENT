@@ -1,10 +1,10 @@
 import { AxiosError } from 'axios'
 import { allLeavesRequest, detailLeaveRequest } from 'requests/leave'
 import useSWR from 'swr'
-import { leaveMutaionResponse } from 'type/mutationResponses'
+import { leaveMutationResponse } from 'type/mutationResponses'
 
 export const detailLeaveQuery = (leaveId: number | string | null | undefined) => {
-	return useSWR<leaveMutaionResponse, AxiosError>(
+	return useSWR<leaveMutationResponse, AxiosError>(
 		leaveId ? `leaves/${leaveId}` : null,
 		detailLeaveRequest,
 		{
@@ -38,7 +38,7 @@ export const allLeaveQuery = (input: {
 		}
 	}
 
-	return useSWR<leaveMutaionResponse, AxiosError>(
+	return useSWR<leaveMutationResponse, AxiosError>(
 		input.isAuthenticated ? (url ? `leaves${url}` : 'leaves') : null,
 		allLeavesRequest,
 		{

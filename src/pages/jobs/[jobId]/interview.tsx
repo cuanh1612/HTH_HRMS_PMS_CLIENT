@@ -94,7 +94,7 @@ const Interview: NextLayout | any = ({ jobIdProp }: ICandidateProps) => {
 		updateInterviewStatusMutation(setToast)
 
 	//User effect ---------------------------------------------------------------
-	//Handle check loged in
+	//Handle check logged in
 	useEffect(() => {
 		if (isAuthenticated) {
 			handleLoading(false)

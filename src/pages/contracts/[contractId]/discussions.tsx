@@ -15,7 +15,7 @@ import 'react-quill/dist/quill.bubble.css'
 import 'react-quill/dist/quill.snow.css'
 import { updateDiscussionForm } from 'type/form/basicFormType'
 import { GetStaticPaths, GetStaticProps } from 'next'
-import { contractMutaionResponse } from 'type/mutationResponses'
+import { contractMutationResponse } from 'type/mutationResponses'
 import { NextLayout } from 'type/element/layout'
 import { ContractLayout } from 'components/layouts/Contract'
 import Head from 'next/head'
@@ -72,7 +72,7 @@ const Discussion: NextLayout = () => {
 		return leaveRoom
 	}, [socket, contractId])
 
-	//Handle check loged in
+	//Handle check logged in
 	useEffect(() => {
 		if (isAuthenticated) {
 			handleLoading(false)
@@ -177,7 +177,7 @@ const Discussion: NextLayout = () => {
 	const onUpdateDiscussion = ({ content, discussionId, email_author }: updateDiscussionForm) => {
 		if (!content) {
 			setToast({
-				msg: 'Pleser enter field content',
+				msg: 'Please enter field content',
 				type: 'warning',
 			})
 		} else {
@@ -307,7 +307,7 @@ export const getStaticProps: GetStaticProps = async () => {
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-	const res: contractMutaionResponse = await fetch(
+	const res: contractMutationResponse = await fetch(
 		`${process.env.NEXT_PUBLIC_API_URL}/api/contracts`
 	)
 		.then((result) => result.json())

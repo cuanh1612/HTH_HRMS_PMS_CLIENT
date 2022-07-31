@@ -6,13 +6,13 @@ import {
 	detailTaskRequest
 } from 'requests/task'
 import useSWR from 'swr'
-import { TaskMutaionResponse } from 'type/mutationResponses'
+import { TaskMutationResponse } from 'type/mutationResponses'
 
 export const detailTaskQuery = (
 	isAuthenticated: boolean | null,
 	taskId: string | number | null | undefined
 ) => {
-	return useSWR<TaskMutaionResponse, AxiosError>(
+	return useSWR<TaskMutationResponse, AxiosError>(
 		isAuthenticated && taskId ? `tasks/${taskId}` : null,
 		detailTaskRequest,
 		{
@@ -26,7 +26,7 @@ export const allTasksByProjectQuery = (
 	isAuthenticated: boolean | null,
 	projectId?: string | string[] | number
 ) => {
-	return useSWR<TaskMutaionResponse, AxiosError>(
+	return useSWR<TaskMutationResponse, AxiosError>(
 		isAuthenticated && projectId ? `tasks/project/${projectId}` : null,
 		allTaskByProjectRequest,
 		{
@@ -37,7 +37,7 @@ export const allTasksByProjectQuery = (
 }
 
 export const allTasksQuery = (isAuthenticated: boolean | null) => {
-	return useSWR<TaskMutaionResponse, AxiosError>(
+	return useSWR<TaskMutationResponse, AxiosError>(
 		isAuthenticated ? `tasks` : null,
 		allTasksRequest,
 		{
@@ -51,7 +51,7 @@ export const allTasksByEmployeeQuery = (
 	isAuthenticated: boolean | null,
 	employeeId?: number | string
 ) => {
-	return useSWR<TaskMutaionResponse, AxiosError>(
+	return useSWR<TaskMutationResponse, AxiosError>(
 		isAuthenticated && employeeId ? `tasks/employee/${employeeId}` : null,
 		allTasksByEmployeeRequest,
 		{
@@ -66,7 +66,7 @@ export const allTasksByEmployeeAndProjectQuery = (
 	employeeId?: number | string,
 	projectId?: number | string
 ) => {
-	return useSWR<TaskMutaionResponse, AxiosError>(
+	return useSWR<TaskMutationResponse, AxiosError>(
 		isAuthenticated && employeeId ? `tasks/project/${projectId}/employee/${employeeId}` : null,
 		allTasksByEmployeeRequest,
 		{
@@ -105,7 +105,7 @@ export const allTasksCalendarQuery = ({
 		}
 	}
 
-	return useSWR<TaskMutaionResponse, AxiosError>(
+	return useSWR<TaskMutationResponse, AxiosError>(
 		isAuthenticated ? `tasks/calendar${url}` : null,
 		allTasksRequest,
 		{
@@ -146,7 +146,7 @@ export const allTasksCalendarByEmployeeQuery = ({
 		}
 	}
 
-	return useSWR<TaskMutaionResponse, AxiosError>(
+	return useSWR<TaskMutationResponse, AxiosError>(
 		isAuthenticated && employeeId ? `tasks/calendar-employee/${employeeId}${url}` : null,
 		allTasksRequest,
 		{

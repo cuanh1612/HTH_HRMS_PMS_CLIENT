@@ -161,7 +161,7 @@ export default function AddTask({ onCloseDrawer }: IAddTaskProps) {
 	}
 
 	//User effect ---------------------------------------------------------------
-	//Handle check loged in
+	//Handle check logged in
 	useEffect(() => {
 		if (isAuthenticated) {
 			handleLoading(false)
@@ -175,7 +175,7 @@ export default function AddTask({ onCloseDrawer }: IAddTaskProps) {
 	//Set option select status when have data all status
 	useEffect(() => {
 		if (dataAllStatus?.statuses) {
-			//Set data option satuses state
+			//Set data option statuses state
 			const newOptionStatus: IOption[] = []
 
 			dataAllStatus.statuses.map((status) => {
@@ -189,7 +189,7 @@ export default function AddTask({ onCloseDrawer }: IAddTaskProps) {
 		}
 	}, [dataAllStatus])
 
-	//Set option select milestiones when have data all milestones
+	//Set option select milestones when have data all milestones
 	useEffect(() => {
 		if (dataAllMilestones?.milestones) {
 			//Set data option milestones state

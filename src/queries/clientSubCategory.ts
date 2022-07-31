@@ -1,10 +1,10 @@
 import { AxiosError } from 'axios'
 import { allClientSubCategoryRequest } from 'requests/clientSubCategory'
 import useSWR from 'swr'
-import { ClientSubCategoryMutaionResponse } from 'type/mutationResponses'
+import { ClientSubCategoryMutationResponse } from 'type/mutationResponses'
 
 export const allClientSubCategoriesQuery = () => {
-	return useSWR<ClientSubCategoryMutaionResponse, AxiosError>(
+	return useSWR<ClientSubCategoryMutationResponse, AxiosError>(
 		'client-sub-categories',
 		allClientSubCategoryRequest,
 		{

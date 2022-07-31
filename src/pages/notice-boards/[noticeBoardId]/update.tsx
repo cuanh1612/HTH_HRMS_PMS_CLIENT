@@ -93,7 +93,7 @@ export default function UpdateNoticeBoard({
 		}
 	}
 
-	//Funtion -------------------------------------------------------------------
+	//Function -------------------------------------------------------------------
 	const onChangeDetails = (value: string) => {
 		setDetailNotice(value)
 	}

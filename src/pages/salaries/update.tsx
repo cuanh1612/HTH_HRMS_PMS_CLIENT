@@ -56,8 +56,8 @@ export default function UpdateSalary({ employeeId = 6 }: IUpdateSalaryProps) {
 		}
 	}
 
-	//Useeffect ---------------------------------------------------------
-	//Handle check loged in
+	//UseEffect ---------------------------------------------------------
+	//Handle check logged in
 	useEffect(() => {
 		if (isAuthenticated) {
 			handleLoading(false)

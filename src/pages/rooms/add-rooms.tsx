@@ -47,7 +47,7 @@ export default function AddRooms({ onCloseDrawer }: IAddRoomsProps) {
 		createRoomMutation(setToast)
 
 	//User effect ---------------------------------------------------------------
-	//Handle check loged in
+	//Handle check logged in
 	useEffect(() => {
 		if (isAuthenticated) {
 			handleLoading(false)

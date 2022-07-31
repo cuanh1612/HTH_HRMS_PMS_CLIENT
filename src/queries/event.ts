@@ -1,13 +1,13 @@
 import { AxiosError } from 'axios'
 import { allEventsRequest, detailEventRequest } from 'requests/event'
 import useSWR from 'swr'
-import { eventMutaionResponse } from 'type/mutationResponses'
+import { eventMutationResponse } from 'type/mutationResponses'
 
 export const detailEventQuery = (
 	isAuthenticated: boolean | null,
 	eventId: string | number | null | undefined
 ) => {
-	return useSWR<eventMutaionResponse, AxiosError>(
+	return useSWR<eventMutationResponse, AxiosError>(
 		isAuthenticated && eventId ? `events/${eventId}` : null,
 		detailEventRequest,
 		{
@@ -33,7 +33,7 @@ export const allEventsQuery = (isAuthenticated: boolean | null, employee?: strin
 		}
 	}
 
-	return useSWR<eventMutaionResponse, AxiosError>(
+	return useSWR<eventMutationResponse, AxiosError>(
 		isAuthenticated ? (url ? `events${url}` : 'events') : null,
 		allEventsRequest,
 		{
@@ -47,7 +47,7 @@ export const eventsByEmployeeQuery = (
 	isAuthenticated: boolean | null,
 	employeeId?: string | number 
 ) => {
-	return useSWR<eventMutaionResponse, AxiosError>(
+	return useSWR<eventMutationResponse, AxiosError>(
 		isAuthenticated && employeeId ? `events/employee/${employeeId}` : null,
 		allEventsRequest,
 		{

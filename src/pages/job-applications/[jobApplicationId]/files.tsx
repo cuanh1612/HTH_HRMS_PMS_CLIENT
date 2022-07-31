@@ -111,7 +111,7 @@ export default function JobApplicationFile({ jobApplicationIdProp }: IJobApplica
 		return leaveRoom
 	}, [socket, jobApplicationIdProp, jobApplicationIdRouter])
 
-	//Handle check loged in
+	//Handle check logged in
 	useEffect(() => {
 		if (isAuthenticated) {
 			handleLoading(false)
@@ -172,7 +172,7 @@ export default function JobApplicationFile({ jobApplicationIdProp }: IJobApplica
 		onCloseAdd()
 	}
 
-	//Handle upload fies
+	//Handle upload files
 	const handleUploadFiles = async () => {
 		if (filesUpload.length > 0) {
 			//Set is load upload file

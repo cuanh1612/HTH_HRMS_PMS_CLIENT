@@ -4,7 +4,7 @@ import { GetStaticPaths, GetStaticProps } from 'next'
 import { useRouter } from 'next/router'
 import { detailHolidayQuery } from 'queries'
 import { useContext, useEffect } from 'react'
-import { holidayMutaionResponse } from 'type/mutationResponses'
+import { holidayMutationResponse } from 'type/mutationResponses'
 
 export interface IDetailHolidayProps {
 	holidayIdProp: number | null
@@ -27,7 +27,7 @@ export default function DetailHoliday({ holidayIdProp, onOpenUpdate, onOpenDl}: 
 	)
 
 	//User effect ---------------------------------------------------------------
-	//Handle check loged in
+	//Handle check logged in
 	useEffect(() => {
 		if (isAuthenticated) {
 			handleLoading(false)
@@ -77,7 +77,7 @@ export const getStaticProps: GetStaticProps = async () => {
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-	const res: holidayMutaionResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/holidays`).then(
+	const res: holidayMutationResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/holidays`).then(
 		(result) => result.json()
 	)
 

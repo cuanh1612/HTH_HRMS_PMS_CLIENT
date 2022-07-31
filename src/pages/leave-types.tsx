@@ -38,8 +38,8 @@ export default function LeaveType() {
 		mutateCreLeaveType(value)
 	}
 
-	//Useeffect ----------------------------------------------------------
-	//Handle check loged in
+	//UseEffect ----------------------------------------------------------
+	//Handle check logged in
 	useEffect(() => {
 		if (isAuthenticated) {
 			handleLoading(false)
@@ -50,7 +50,7 @@ export default function LeaveType() {
 		}
 	}, [isAuthenticated])
 
-	//Useeffect ----------------------------------------------------------
+	//UseEffect ----------------------------------------------------------
 	//Notice when create success
 	useEffect(() => {
 		switch (statusCreLeaveType) {

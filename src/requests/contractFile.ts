@@ -1,10 +1,10 @@
 import { createContractFileForm } from 'type/form/basicFormType'
-import { contractFileMutaionResponse } from 'type/mutationResponses'
+import { contractFileMutationResponse } from 'type/mutationResponses'
 import { deleteData, getData, postData } from 'utils/fetchData'
 
 //Function handle create contract file
 export async function createContractFileRequest(inputCreate: createContractFileForm) {
-	const resultFetch = await postData<contractFileMutaionResponse>({
+	const resultFetch = await postData<contractFileMutationResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/contract-files`,
 		body: inputCreate,
 	})
@@ -17,7 +17,7 @@ export async function deleteContractFileRequest(inputDelete: {
 	contractFileId: number
 	contractId: number
 }) {
-	const resultFetch = await deleteData<contractFileMutaionResponse>({
+	const resultFetch = await deleteData<contractFileMutationResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/contract-files/${inputDelete.contractFileId}/contract/${inputDelete.contractId}`,
 	})
 
@@ -26,7 +26,7 @@ export async function deleteContractFileRequest(inputDelete: {
 
 //Function handle get all contract file
 export const allContractFilesRequest = async (url: string) => {
-	return await getData<contractFileMutaionResponse>({
+	return await getData<contractFileMutationResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/${url}`,
 	})
 }

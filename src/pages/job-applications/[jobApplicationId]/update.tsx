@@ -65,7 +65,7 @@ export default function UpdateJobApplication({
 	const [mutateUpJobApplication, { status: statusUpJobApplication, data: dataUpJobApplication }] =
 		updateJobApplicationMutation(setToast)
 
-	//Funcion -----------------------------------------------------------------
+	//Function -----------------------------------------------------------------
 	const handleUploadAvatar = async () => {
 		if (infoImg) {
 			setLoadingImg(true)
@@ -125,14 +125,14 @@ export default function UpdateJobApplication({
 
 			values.jobApplicationId = jobApplicationIdProp || (jobApplicationIdRouter as string)
 
-			//updat
+			//update
 			mutateUpJobApplication(values)
 		}
 	}
 
 	//User effect ---------------------------------------------------------------
 
-	//Handle check loged in
+	//Handle check logged in
 	useEffect(() => {
 		if (isAuthenticated) {
 			handleLoading(false)
@@ -216,7 +216,7 @@ export default function UpdateJobApplication({
 		}
 	}, [statusUpJobApplication])
 
-	//Chane data form when have data detail event
+	//Change data form when have data detail event
 	useEffect(() => {
 		if (dataDetailJobApplication && dataDetailJobApplication.jobApplication) {
 			//Set data selected option job
@@ -369,7 +369,7 @@ export default function UpdateJobApplication({
 								dataDetailJobApplication?.jobApplication?.cover_leter || undefined
 							}
 							name="cover_leter"
-							label="Application Cover Leter"
+							label="Application Cover Letter"
 							form={formSetting}
 							placeholder="Application Source"
 						/>

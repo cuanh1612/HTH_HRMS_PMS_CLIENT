@@ -49,8 +49,8 @@ export default function ClientCategory() {
 	const { data: dataClientCategories, mutate: refetchClientCategories } =
 		allClientCategoriesQuery()
 
-	//Useeffect ---------------------------------------------------------
-	//Handle check loged in
+	//UseEffect ---------------------------------------------------------
+	//Handle check logged in
 	useEffect(() => {
 		if (isAuthenticated) {
 			handleLoading(false)

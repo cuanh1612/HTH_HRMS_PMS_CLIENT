@@ -15,7 +15,7 @@ import { AiOutlinePlusCircle, AiOutlineSend } from 'react-icons/ai'
 import 'react-quill/dist/quill.bubble.css'
 import 'react-quill/dist/quill.snow.css'
 import { updateTaskCommentForm } from 'type/form/basicFormType'
-import { projectMutaionResponse } from 'type/mutationResponses'
+import { projectMutationResponse } from 'type/mutationResponses'
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
 
@@ -75,7 +75,7 @@ export default function TaskComments({ taskIdProp }: ITaskCommentsProps) {
 		return leaveRoom
 	}, [socket, taskIdProp, taskIdRouter])
 
-	//Handle check loged in
+	//Handle check logged in
 	useEffect(() => {
 		if (isAuthenticated) {
 			handleLoading(false)
@@ -176,7 +176,7 @@ export default function TaskComments({ taskIdProp }: ITaskCommentsProps) {
 	const onUpdateTaskComment = ({ content, taskCommentId }: updateTaskCommentForm) => {
 		if (!content) {
 			setToast({
-				msg: 'Pleser enter field content',
+				msg: 'Please enter field content',
 				type: 'warning',
 			})
 		} else {
@@ -289,7 +289,7 @@ export default function TaskComments({ taskIdProp }: ITaskCommentsProps) {
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-	//Get accesstoken
+	//Get access token
 	const getAccessToken: { accessToken: string; code: number; message: string; success: boolean } =
 		await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/refresh_token`, {
 			method: 'GET',
@@ -309,7 +309,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 	}
 
 	//Check assigned
-	const checkAsignedProject: projectMutaionResponse = await fetch(
+	const checkAssignedProject: projectMutationResponse = await fetch(
 		`${process.env.NEXT_PUBLIC_API_URL}/api/projects/${context.query.projectId}/check-asigned`,
 		{
 			method: 'GET',
@@ -319,7 +319,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 		}
 	).then((e) => e.json())
 
-	if (!checkAsignedProject.success) {
+	if (!checkAssignedProject.success) {
 		return {
 			notFound: true,
 		}

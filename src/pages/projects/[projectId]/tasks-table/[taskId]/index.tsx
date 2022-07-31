@@ -53,12 +53,8 @@ export default function DetailTask({ taskIdProp }: IDetailTaskProps) {
 		taskIdProp || (taskIdRouter as string)
 	)
 
-	//mutation -----------------------------------------------------------
-
-	//Function -----------------------------------------------------------
-
 	//User effect ---------------------------------------------------------------
-	//Handle check loged in
+	//Handle check logged in
 	useEffect(() => {
 		if (isAuthenticated) {
 			handleLoading(false)

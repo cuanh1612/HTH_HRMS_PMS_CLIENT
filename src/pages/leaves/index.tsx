@@ -89,7 +89,7 @@ const Leaves: NextLayout = () => {
 	const [leaveId, setLeaveId] = useState<number | null>(30)
 
 	// data all users to select
-	const [dataUsersSl, setAllusersSl] = useState<IPeople[]>([])
+	const [dataUsersSl, setAllUsersSl] = useState<IPeople[]>([])
 
 	// is reset table
 	const [isResetFilter, setIsReset] = useState(false)
@@ -176,7 +176,7 @@ const Leaves: NextLayout = () => {
 					avatar: item.employee.avatar?.url,
 				}
 			})
-			setAllusersSl(users || [])
+			setAllUsersSl(users || [])
 			setIsLoading(false)
 
 			//Set data csv
@@ -196,7 +196,7 @@ const Leaves: NextLayout = () => {
 		}
 	}, [allLeaves])
 
-	// set leavetypes when get all successfully
+	// set leave types when get all successfully
 	useEffect(() => {
 		if (allLeaveType) {
 			const types = allLeaveType.leaveTypes?.map((item): IOption => {

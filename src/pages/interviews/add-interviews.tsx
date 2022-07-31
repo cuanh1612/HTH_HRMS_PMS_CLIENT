@@ -53,7 +53,7 @@ export default function AddJob({ onCloseDrawer, onUpdateInterview}: IAddJobProps
 	const [mutateCreInterview, { status: statusCreInterview, data: dataCreInterview }] =
 		createInterviewMutation(setToast)
 
-	//Funcion -----------------------------------------------------------------
+	//Function -----------------------------------------------------------------
 	// setForm and submit form create new interview ---------------------------
 	const formSetting = useForm<createInterviewForm>({
 		defaultValues: {
@@ -76,7 +76,7 @@ export default function AddJob({ onCloseDrawer, onUpdateInterview}: IAddJobProps
 	}
 
 	//User effect ---------------------------------------------------------------
-	//Handle check loged in
+	//Handle check logged in
 	useEffect(() => {
 		if (isAuthenticated) {
 			handleLoading(false)

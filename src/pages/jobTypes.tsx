@@ -44,8 +44,8 @@ export default function JobTypes() {
 	//Query -------------------------------------------------------------
 	const { data: dataJobTypes, mutate: refetchJobTypes } = allJobTypesQuery(isAuthenticated)
 
-	//Useeffect ---------------------------------------------------------
-	//Handle check loged in
+	//UseEffect ---------------------------------------------------------
+	//Handle check logged in
 	useEffect(() => {
 		if (isAuthenticated) {
 			handleLoading(false)

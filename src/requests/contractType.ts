@@ -1,10 +1,10 @@
 import { createContractTypeForm } from 'type/form/basicFormType'
-import { contractTypeMutaionResponse } from 'type/mutationResponses'
+import { contractTypeMutationResponse } from 'type/mutationResponses'
 import { deleteData, getData, postData, putData } from 'utils/fetchData'
 
 //Function handle get all contract types
 export async function allContractTypesRequest(url: string) {
-	const resultFetch = await getData<contractTypeMutaionResponse>({
+	const resultFetch = await getData<contractTypeMutationResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/${url}`,
 	})
 
@@ -13,7 +13,7 @@ export async function allContractTypesRequest(url: string) {
 
 //Function handle create department
 export async function createContractTypeRequest(inputCreate: createContractTypeForm) {
-	const resultFetch = await postData<contractTypeMutaionResponse>({
+	const resultFetch = await postData<contractTypeMutationResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/contract-types`,
 		body: inputCreate,
 	})
@@ -23,7 +23,7 @@ export async function createContractTypeRequest(inputCreate: createContractTypeF
 
 //Function handle delete department
 export async function deleteContractTypeRequest(inputDelete: { contractTypeId: number }) {
-	const resultFetch = await deleteData<contractTypeMutaionResponse>({
+	const resultFetch = await deleteData<contractTypeMutationResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/contract-types/${inputDelete.contractTypeId}`,
 	})
 
@@ -38,7 +38,7 @@ export async function updateContractTypeRequest({
 	contractTypeId: number
 	name: string
 }) {
-	const resultFetch = await putData<contractTypeMutaionResponse>({
+	const resultFetch = await putData<contractTypeMutationResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/contract-types/${contractTypeId}`,
 		body: {
 			name,

@@ -12,7 +12,7 @@ import {
 import { AiOutlineComment } from 'react-icons/ai'
 import { BsThreeDots } from 'react-icons/bs'
 import { projectDiscussionRoomType } from 'type/basicTypes'
-import { ProjectDisucssionRoomMutaionResponse } from 'type/mutationResponses'
+import { ProjectDiscussionRoomMutationResponse } from 'type/mutationResponses'
 import moment from 'moment'
 
 export interface IProjectDiscussionItemProps {
@@ -20,7 +20,7 @@ export interface IProjectDiscussionItemProps {
 	onClick: (discussionRoomId: number) => void
 	onDelete: (input: {
 		ProjectDiscussionRoomId: number
-	}) => Promise<ProjectDisucssionRoomMutaionResponse | undefined>
+	}) => Promise<ProjectDiscussionRoomMutationResponse | undefined>
 	isOnChange?: boolean
 }
 

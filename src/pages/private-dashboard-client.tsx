@@ -21,7 +21,7 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 import {
 	clientCountProjectStatusQuery,
-	clientTotalProejctsQuery,
+	clientTotalProjectsQuery,
 	countContractSignedQuery,
 	pendingMilestoneClientQuery,
 } from 'queries'
@@ -40,7 +40,7 @@ const privateDashboard: NextLayout = () => {
 
 	//Query -------------------------------------------------------------------------------------------------
 
-	const { data: dataTotalProject } = clientTotalProejctsQuery(
+	const { data: dataTotalProject } = clientTotalProjectsQuery(
 		isAuthenticated,
 		currentUser?.role === 'Client' ? currentUser?.id : undefined
 	)
@@ -60,8 +60,8 @@ const privateDashboard: NextLayout = () => {
 		currentUser?.role === 'Client' ? currentUser?.id : undefined
 	)
 
-	//Useeffect ---------------------------------------------------------
-	//Handle check loged in
+	//UseEffect ---------------------------------------------------------
+	//Handle check logged in
 	useEffect(() => {
 		if (isAuthenticated) {
 			handleLoading(false)

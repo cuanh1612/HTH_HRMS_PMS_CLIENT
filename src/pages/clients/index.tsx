@@ -161,7 +161,7 @@ const Clients: NextLayout = () => {
 	const [dataSl, setDataSl] = useState<Array<number> | null>()
 
 	// data all users to select
-	const [dataUsersSl, setAllusersSl] = useState<IPeople[]>([])
+	const [dataUsersSl, setAllUsersSl] = useState<IPeople[]>([])
 
 	// is reset table
 	const [isResetFilter, setIsReset] = useState(false)
@@ -249,7 +249,7 @@ const Clients: NextLayout = () => {
 					avatar: item.avatar?.url,
 				}
 			})
-			setAllusersSl(users || [])
+			setAllUsersSl(users || [])
 			setIsLoading(false)
 
 			//Set data csv

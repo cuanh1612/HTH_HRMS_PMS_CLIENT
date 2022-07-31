@@ -1,10 +1,10 @@
 import { AxiosError } from 'axios'
 import { allDepartmentRequest } from 'requests/department'
 import useSWR from 'swr'
-import { DepartmentMutaionResponse } from 'type/mutationResponses'
+import { DepartmentMutationResponse } from 'type/mutationResponses'
 
 export const allDepartmentsQuery = (isAuthenticated: boolean | null) => {
-	return useSWR<DepartmentMutaionResponse, AxiosError>(
+	return useSWR<DepartmentMutationResponse, AxiosError>(
 		isAuthenticated ? 'departments' : null,
 		allDepartmentRequest,
 		{

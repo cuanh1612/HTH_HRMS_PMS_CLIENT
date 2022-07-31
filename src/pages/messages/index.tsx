@@ -5,7 +5,7 @@ import {
 	Text,
 	useDisclosure,
 	VStack,
-	Input as InputChakra,
+	Input as CInput,
 	InputGroup,
 	InputRightElement,
 	useColorMode,
@@ -52,7 +52,7 @@ const Messages: NextLayout = () => {
 
 	//State -------------------------------------------------------------
 	const [currentReceiver, setCurrentReceiver] = useState<{
-		converstion: number
+		conversation: number
 		email: string
 		name: string
 	}>()
@@ -70,7 +70,7 @@ const Messages: NextLayout = () => {
 
 	//Get all replies of current conversation
 	const { data: dataConversationReplies, mutate: refetchReplies } =
-		allConversationRepliesByConversationQuery(isAuthenticated, currentReceiver?.converstion)
+		allConversationRepliesByConversationQuery(isAuthenticated, currentReceiver?.conversation)
 
 	//mutation ----------------------------------------------------------
 	const [
@@ -98,7 +98,7 @@ const Messages: NextLayout = () => {
 				type: 'warning',
 				msg: 'Please login first',
 			})
-		} else if (!currentReceiver?.converstion) {
+		} else if (!currentReceiver?.conversation) {
 			setToast({
 				type: 'warning',
 				msg: 'Please select conversation',
@@ -110,7 +110,7 @@ const Messages: NextLayout = () => {
 			})
 		} else {
 			values.user = currentUser.id
-			values.conversation = currentReceiver.converstion
+			values.conversation = currentReceiver.conversation
 
 			//Create conversation rely
 			mutateCreConversationReply(values)
@@ -121,7 +121,7 @@ const Messages: NextLayout = () => {
 	//Handle change current receiver
 	const onChangeReceiver = (conversation: conversationType, employee: employeeType) => {
 		setCurrentReceiver({
-			converstion: conversation.id,
+			conversation: conversation.id,
 			email: employee.email,
 			name: employee.name,
 		})
@@ -195,7 +195,7 @@ const Messages: NextLayout = () => {
 			if (socket) {
 				socket.emit('newReply', {
 					email: currentReceiver?.email,
-					conversation: currentReceiver?.converstion,
+					conversation: currentReceiver?.conversation,
 					newReplies: [...replies, dataCreateReply.reply],
 				})
 			}
@@ -312,7 +312,7 @@ const Messages: NextLayout = () => {
 						spacing={4}
 					>
 						<InputGroup>
-							<InputChakra
+							<CInput
 								value={search}
 								onChange={(e) => {
 									setSearch(e.target.value)
@@ -500,7 +500,7 @@ const Messages: NextLayout = () => {
 			>
 				<HStack p={'20px'} w={'full'} mt={2} spacing={4}>
 					<InputGroup>
-						<InputChakra
+						<CInput
 							value={search}
 							onChange={(e) => {
 								setSearch(e.target.value)

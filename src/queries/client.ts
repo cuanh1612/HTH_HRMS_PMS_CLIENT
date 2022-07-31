@@ -2,19 +2,19 @@ import { AxiosError } from 'axios'
 import { allClientsRequest, countProjectStatusRequest, detailClientRequest } from 'requests/client'
 import useSWR from 'swr'
 import {
-	clientMutaionResponse,
-	clientProjectStatusMutaionResponse,
-	clientTotalEarningMutaionResponse,
-	clientTotalProjectsMutaionResponse,
-	countContractSignedClientMutaionResponse,
-	pendingMilestoneClientMutaionResponse,
+	clientMutationResponse,
+	clientProjectStatusMutationResponse,
+	clientTotalEarningMutationResponse,
+	clientTotalProjectsMutationResponse,
+	countContractSignedClientMutationResponse,
+	pendingMilestoneClientMutationResponse,
 } from 'type/mutationResponses'
 
 export const detailClientQuery = (
 	isAuthenticated: boolean | null,
 	clientId: string | number | null
 ) => {
-	return useSWR<clientMutaionResponse, AxiosError>(
+	return useSWR<clientMutationResponse, AxiosError>(
 		isAuthenticated && clientId ? `clients/${clientId}` : null,
 		detailClientRequest,
 		{
@@ -24,11 +24,11 @@ export const detailClientQuery = (
 	)
 }
 
-export const clientTotalProejctsQuery = (
+export const clientTotalProjectsQuery = (
 	isAuthenticated: boolean | null,
 	clientId?: string | number | null
 ) => {
-	return useSWR<clientTotalProjectsMutaionResponse, AxiosError>(
+	return useSWR<clientTotalProjectsMutationResponse, AxiosError>(
 		isAuthenticated && clientId ? `clients/${clientId}/total-projects` : null,
 		detailClientRequest,
 		{
@@ -42,7 +42,7 @@ export const clientTotalEarningQuery = (
 	isAuthenticated: boolean | null,
 	clientId: string | number | null
 ) => {
-	return useSWR<clientTotalEarningMutaionResponse, AxiosError>(
+	return useSWR<clientTotalEarningMutationResponse, AxiosError>(
 		isAuthenticated && clientId ? `clients/${clientId}/total-earnings` : null,
 		detailClientRequest,
 		{
@@ -56,7 +56,7 @@ export const clientCountProjectStatusQuery = (
 	isAuthenticated: boolean | null,
 	clientId?: string | number | null
 ) => {
-	return useSWR<clientProjectStatusMutaionResponse, AxiosError>(
+	return useSWR<clientProjectStatusMutationResponse, AxiosError>(
 		isAuthenticated && clientId ? `projects/client/${clientId}/project-status` : null,
 		countProjectStatusRequest,
 		{
@@ -67,7 +67,7 @@ export const clientCountProjectStatusQuery = (
 }
 
 export const allClientsQuery = (isAuthenticated: boolean | null) => {
-	return useSWR<clientMutaionResponse, AxiosError>(
+	return useSWR<clientMutationResponse, AxiosError>(
 		isAuthenticated ? `clients` : null,
 		allClientsRequest,
 		{
@@ -78,7 +78,7 @@ export const allClientsQuery = (isAuthenticated: boolean | null) => {
 }
 
 export const allClientsNormalQuery = (isAuthenticated: boolean | null) => {
-	return useSWR<clientMutaionResponse, AxiosError>(
+	return useSWR<clientMutationResponse, AxiosError>(
 		isAuthenticated ? `clients/normal` : null,
 		allClientsRequest,
 		{
@@ -92,7 +92,7 @@ export const countContractSignedQuery = (
 	isAuthenticated: boolean | null,
 	clientId?: string | number | null
 ) => {
-	return useSWR<countContractSignedClientMutaionResponse, AxiosError>(
+	return useSWR<countContractSignedClientMutationResponse, AxiosError>(
 		isAuthenticated && clientId ? `contracts/client/${clientId}/count-contracts-signed` : null,
 		detailClientRequest,
 		{
@@ -106,7 +106,7 @@ export const pendingMilestoneClientQuery = (
 	isAuthenticated: boolean | null,
 	clientId?: string | number | null
 ) => {
-	return useSWR<pendingMilestoneClientMutaionResponse, AxiosError>(
+	return useSWR<pendingMilestoneClientMutationResponse, AxiosError>(
 		isAuthenticated && clientId ? `clients/${clientId}/pending-milestone` : null,
 		detailClientRequest,
 		{

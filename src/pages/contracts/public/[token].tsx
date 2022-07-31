@@ -41,16 +41,16 @@ import { MdOutlineDriveFileRenameOutline } from 'react-icons/md'
 import SignaturePad from 'react-signature-canvas'
 import { SWRConfig } from 'swr'
 import { createSignatureForm } from 'type/form/basicFormType'
-import { contractMutaionResponse } from 'type/mutationResponses'
+import { contractMutationResponse } from 'type/mutationResponses'
 import { signBase64Empaty } from 'utils/basicData'
 import { getDataBlob, uploadBase64 } from 'utils/uploadFile'
 import { CreateSignatureValidate } from 'utils/validate'
 
-export default function PublickContract({
+export default function PublicContract({
 	result,
 	token,
 }: {
-	result: contractMutaionResponse
+	result: contractMutationResponse
 	token: string
 }) {
 	const { handleLoading, setToast } = useContext(AuthContext)
@@ -131,7 +131,7 @@ export default function PublickContract({
 		console.log(data)
 	}
 
-	//Useeffect --------------------------------------------------------
+	//UseEffect --------------------------------------------------------
 	//Handle loading page
 	useEffect(() => {
 		handleLoading(false)
@@ -335,7 +335,7 @@ export default function PublickContract({
 									<Text>Signature</Text>
 									<Image
 										src={dataDetailContract.contract.sign.url}
-										alt="Dan Abramov"
+										alt="Avatar"
 									/>
 									<Text fontSize={13}>
 										(
@@ -496,7 +496,7 @@ export default function PublickContract({
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-	const getAccessToken: contractMutaionResponse = await fetch(
+	const getAccessToken: contractMutationResponse = await fetch(
 		`${process.env.NEXT_PUBLIC_API_URL}/api/contracts/public/${context.query.token}`,
 		{
 			method: 'GET',

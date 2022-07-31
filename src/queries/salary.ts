@@ -1,10 +1,10 @@
 import { AxiosError } from 'axios'
 import { allSalariesRequest, historySalaryRequest } from 'requests/salary'
 import useSWR from 'swr'
-import { SalaryMutaionResponse } from 'type/mutationResponses'
+import { SalaryMutationResponse } from 'type/mutationResponses'
 
 export const allSalariesQuery = (isAuthenticated: boolean | null) => {
-	return useSWR<SalaryMutaionResponse, AxiosError>(
+	return useSWR<SalaryMutationResponse, AxiosError>(
 		isAuthenticated ? 'salaries' : null,
 		allSalariesRequest,
 		{
@@ -15,7 +15,7 @@ export const allSalariesQuery = (isAuthenticated: boolean | null) => {
 }
 
 export const historySalaryQuery = (isAuthenticated: boolean | null, employeeId: number | string | null) => {
-	return useSWR<SalaryMutaionResponse, AxiosError>(
+	return useSWR<SalaryMutationResponse, AxiosError>(
 		isAuthenticated && employeeId ? `salaries/employee/${employeeId}` : null,
 		historySalaryRequest,
 		{

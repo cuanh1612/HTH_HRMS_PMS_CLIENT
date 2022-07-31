@@ -13,7 +13,7 @@ import { useContext, useEffect, useState } from 'react'
 import { AiOutlineCheck } from 'react-icons/ai'
 import 'react-quill/dist/quill.bubble.css'
 import 'react-quill/dist/quill.snow.css'
-import { projectMutaionResponse } from 'type/mutationResponses'
+import { projectMutationResponse } from 'type/mutationResponses'
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
 
@@ -37,7 +37,7 @@ export default function UpdateReply({ onCloseModal, replyId, discussionId }: IUp
 		discussionId as string
 	)
 
-	const { data: detailDiscussionRepaly } = detailDiscussionReplyQuery(isAuthenticated, replyId)
+	const { data: detailDiscussionReply } = detailDiscussionReplyQuery(isAuthenticated, replyId)
 
 	//Mutation -----------------------------------------------------------
 	const [
@@ -64,8 +64,8 @@ export default function UpdateReply({ onCloseModal, replyId, discussionId }: IUp
 		setReply(value)
 	}
 
-	//Useeffect ----------------------------------------------------------
-	//Handle check loged in
+	//UseEffect ----------------------------------------------------------
+	//Handle check logged in
 	useEffect(() => {
 		if (isAuthenticated) {
 			handleLoading(false)
@@ -105,12 +105,12 @@ export default function UpdateReply({ onCloseModal, replyId, discussionId }: IUp
 		}
 	}, [statusUpProjectDiscussionReplyType])
 
-	//Set again detai reply when have data detail reply
+	//Set again detail reply when have data detail reply
 	useEffect(() => {
-		if (detailDiscussionRepaly?.projectDiscussionReply) {
-			setReply(detailDiscussionRepaly.projectDiscussionReply.reply)
+		if (detailDiscussionReply?.projectDiscussionReply) {
+			setReply(detailDiscussionReply.projectDiscussionReply.reply)
 		}
-	}, [detailDiscussionRepaly])
+	}, [detailDiscussionReply])
 
 	return (
 		<Box>
@@ -177,7 +177,7 @@ export default function UpdateReply({ onCloseModal, replyId, discussionId }: IUp
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-	//Get accesstoken
+	//Get access token
 	const getAccessToken: { accessToken: string; code: number; message: string; success: boolean } =
 		await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/refresh_token`, {
 			method: 'GET',
@@ -197,7 +197,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 	}
 
 	//Check assigned
-	const checkAsignedProject: projectMutaionResponse = await fetch(
+	const checkAssignedProject: projectMutationResponse = await fetch(
 		`${process.env.NEXT_PUBLIC_API_URL}/api/projects/${context.query.projectId}/check-asigned`,
 		{
 			method: 'GET',
@@ -207,7 +207,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 		}
 	).then((e) => e.json())
 
-	if (!checkAsignedProject.success) {
+	if (!checkAssignedProject.success) {
 		return {
 			notFound: true,
 		}

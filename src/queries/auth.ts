@@ -1,10 +1,10 @@
 import { AxiosError } from 'axios'
 import { currentUserRequest } from 'requests/auth'
 import useSWR from 'swr'
-import { authMutaionResponse } from 'type/mutationResponses'
+import { authMutationResponse } from 'type/mutationResponses'
 
 export const currentUserQuery = (isAuthenticated: boolean | null) => {
-	return useSWR<authMutaionResponse, AxiosError>(
+	return useSWR<authMutationResponse, AxiosError>(
 		isAuthenticated ? 'me' : null,
 		currentUserRequest,
 		{

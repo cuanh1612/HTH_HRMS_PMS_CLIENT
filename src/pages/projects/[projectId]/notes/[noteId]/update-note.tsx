@@ -96,13 +96,13 @@ export default function UpdateNote({ onCloseDrawer, noteIdProp }: IUpdateNotePro
 		}
 	}
 
-	//Funtion -------------------------------------------------------------------
+	//Function -------------------------------------------------------------------
 	const onChangeDetail = (value: string) => {
 		setDetail(value)
 	}
 
 	//User effect ---------------------------------------------------------------
-	//Handle check loged in
+	//Handle check logged in
 	useEffect(() => {
 		if (isAuthenticated) {
 			handleLoading(false)

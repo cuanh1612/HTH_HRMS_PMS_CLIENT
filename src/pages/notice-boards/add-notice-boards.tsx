@@ -44,11 +44,11 @@ export default function AddNoticeBoard({ onCloseDrawer }: IAddNoticeBoardProps) 
 	const [mutateCreNoticeBoard, { status: statusCreNoticeBoard, data: dataCreNoticeBoard }] =
 		createNoticeBoardMutation(setToast)
 
-	// refetch all norice
+	// refetch all notice
 	const { mutate: refetchNotice} = allNoticeBoardQuery(isAuthenticated)
 	
 	//User effect ---------------------------------------------------------------
-	//Handle check loged in
+	//Handle check logged in
 	useEffect(() => {
 		if (isAuthenticated) {
 			handleLoading(false)
@@ -94,7 +94,7 @@ export default function AddNoticeBoard({ onCloseDrawer }: IAddNoticeBoardProps) 
 		//Check value employees
 		if (!detailNotice) {
 			setToast({
-				msg: 'Please enter field detail notive board',
+				msg: 'Please enter field detail notice board',
 				type: 'warning',
 			})
 		} else {
@@ -105,7 +105,7 @@ export default function AddNoticeBoard({ onCloseDrawer }: IAddNoticeBoardProps) 
 		}
 	}
 
-	//Funtion -------------------------------------------------------------------
+	//Function -------------------------------------------------------------------
 	const onChangeDetails = (value: string) => {
 		setDetailNotice(value)
 	}

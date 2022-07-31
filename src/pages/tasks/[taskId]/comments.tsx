@@ -88,7 +88,7 @@ export default function TaskComments({ taskIdProp }: ITaskCommentsProps) {
 		return leaveRoom
 	}, [socket, taskIdProp, taskIdRouter])
 
-	//Handle check loged in
+	//Handle check logged in
 	useEffect(() => {
 		if (isAuthenticated) {
 			handleLoading(false)
@@ -189,7 +189,7 @@ export default function TaskComments({ taskIdProp }: ITaskCommentsProps) {
 	const onUpdateTaskComment = ({ content, taskCommentId }: updateTaskCommentForm) => {
 		if (!content) {
 			setToast({
-				msg: 'Pleser enter field content',
+				msg: 'Please enter field content',
 				type: 'warning',
 			})
 		} else {

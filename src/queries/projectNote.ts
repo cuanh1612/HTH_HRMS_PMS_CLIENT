@@ -1,13 +1,13 @@
 import { AxiosError } from 'axios'
 import { allProjectNotesRequest, detailProjectNoteRequest } from 'requests/projectNote'
 import useSWR from 'swr'
-import { ProjectNoteMutaionResponse } from 'type/mutationResponses'
+import { ProjectNoteMutationResponse } from 'type/mutationResponses'
 
 export const detailProjectNoteRoomQuery = (
 	isAuthenticated: boolean | null,
 	projectNoteId: number | null
 ) => {
-	return useSWR<ProjectNoteMutaionResponse, AxiosError>(
+	return useSWR<ProjectNoteMutationResponse, AxiosError>(
 		isAuthenticated && projectNoteId ? `project-notes/${projectNoteId}` : null,
 		detailProjectNoteRequest,
 		{
@@ -18,7 +18,7 @@ export const detailProjectNoteRoomQuery = (
 }
 
 export const allProjectNotesQuery = (isAuthenticated: boolean | null, projectId: string | number | null) => {
-	return useSWR<ProjectNoteMutaionResponse, AxiosError>(
+	return useSWR<ProjectNoteMutationResponse, AxiosError>(
 		isAuthenticated && projectId ? `project-notes/project/${projectId}` : null,
 		allProjectNotesRequest,
 		{

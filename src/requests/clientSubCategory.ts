@@ -1,17 +1,17 @@
 import { createSubCategoryForm } from 'type/form/basicFormType'
-import { ClientSubCategoryMutaionResponse } from 'type/mutationResponses'
+import { ClientSubCategoryMutationResponse } from 'type/mutationResponses'
 import { deleteData, getData, postData, putData } from 'utils/fetchData'
 
 //Function handle get all client sub category
 export const allClientSubCategoryRequest = async (url: string) => {
-	return await getData<ClientSubCategoryMutaionResponse>({
+	return await getData<ClientSubCategoryMutationResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/${url}`,
 	})
 }
 
 //Function handle create client sub category
 export async function createSubCategoryRequest(inputCreate: createSubCategoryForm) {
-	const resultFetch = await postData<ClientSubCategoryMutaionResponse>({
+	const resultFetch = await postData<ClientSubCategoryMutationResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/client-sub-categories`,
 		body: inputCreate,
 	})
@@ -21,7 +21,7 @@ export async function createSubCategoryRequest(inputCreate: createSubCategoryFor
 
 //Function handle delete client sub category
 export async function deleteSubCategoryRequest(inputDelete: { clientCategoryId: number }) {
-	const resultFetch = await deleteData<ClientSubCategoryMutaionResponse>({
+	const resultFetch = await deleteData<ClientSubCategoryMutationResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/client-sub-categories/${inputDelete.clientCategoryId}`,
 	})
 
@@ -36,7 +36,7 @@ export async function updateSubCategoryRequest({
 	clientSubCategoryId: number
 	name: string
 }) {
-	const resultFetch = await putData<ClientSubCategoryMutaionResponse>({
+	const resultFetch = await putData<ClientSubCategoryMutationResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/client-sub-categories/${clientSubCategoryId}`,
 		body: {
 			name,

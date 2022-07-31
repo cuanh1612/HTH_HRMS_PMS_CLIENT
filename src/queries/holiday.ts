@@ -1,10 +1,10 @@
 import { AxiosError } from 'axios'
 import { detailHolidayRequest } from 'requests/holiday'
 import useSWR from 'swr'
-import { holidayMutaionResponse } from 'type/mutationResponses'
+import { holidayMutationResponse } from 'type/mutationResponses'
 
 export const detailHolidayQuery = (holidayId: string | number | null) => {
-	return useSWR<holidayMutaionResponse, AxiosError>(
+	return useSWR<holidayMutationResponse, AxiosError>(
 		holidayId ? `holidays/${holidayId}` : null,
 		detailHolidayRequest,
 		{
@@ -28,7 +28,7 @@ export const allHolidaysQuery = (input: { month?: number| string, year?: number|
 		}
 	}
 
-	return useSWR<holidayMutaionResponse, AxiosError>(
+	return useSWR<holidayMutationResponse, AxiosError>(
 		url,
 		detailHolidayRequest,
 		{

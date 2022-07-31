@@ -1,7 +1,7 @@
 import { AxiosError } from "axios"
 import { allMilestoneNormalRequest, allMilestoneRequest } from "requests/milestone"
 import useSWR from "swr"
-import { milestoneMutaionResponse } from "type/mutationResponses"
+import { milestoneMutationResponse } from "type/mutationResponses"
 
 
 
@@ -9,7 +9,7 @@ export const milestonesByProjectQuery = (
 	isAuthenticated: boolean | null,
 	projectId?: string | number | string[]
 ) => {
-	return useSWR<milestoneMutaionResponse, AxiosError>(
+	return useSWR<milestoneMutationResponse, AxiosError>(
 		isAuthenticated && projectId ? `milestone/${projectId}` : null,
 		allMilestoneRequest,
 		{
@@ -23,7 +23,7 @@ export const detailMilestoneQuery = (
 	isAuthenticated: boolean | null,
 	milestoneId?: string | number
 ) => {
-	return useSWR<milestoneMutaionResponse, AxiosError>(
+	return useSWR<milestoneMutationResponse, AxiosError>(
 		isAuthenticated && milestoneId ? `milestone/detail/${milestoneId}` : null,
 		allMilestoneRequest,
 		{
@@ -37,7 +37,7 @@ export const milestonesByProjectNormalQuery = (
 	isAuthenticated: boolean | null,
 	projectId?: string | number | string[]
 ) => {
-	return useSWR<milestoneMutaionResponse, AxiosError>(
+	return useSWR<milestoneMutationResponse, AxiosError>(
 		isAuthenticated && projectId ? `milestone/normal/${projectId}` : null,
 		allMilestoneNormalRequest,
 		{
@@ -50,7 +50,7 @@ export const milestonesByProjectNormalQuery = (
 export const allMilestonesQuery = (
 	isAuthenticated?: boolean | null,
 ) => {
-	return useSWR<milestoneMutaionResponse, AxiosError>(
+	return useSWR<milestoneMutationResponse, AxiosError>(
 		isAuthenticated  ? `milestone/normal` : null,
 		allMilestoneNormalRequest,
 		{

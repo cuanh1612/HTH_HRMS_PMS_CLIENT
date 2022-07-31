@@ -125,7 +125,7 @@ const LeavesEmployee: NextLayout = () => {
 		}
 	}, [allLeaves])
 
-	// set leavetypes when get all successfully
+	// set leave types when get all successfully
 	useEffect(() => {
 		if (allLeaveType) {
 			const types = allLeaveType.leaveTypes?.map((item): IOption => {

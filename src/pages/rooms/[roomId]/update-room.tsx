@@ -74,7 +74,7 @@ export default function UpdateRoom({ roomId: RoomIdProp, onCloseDrawer }: IUpdat
 	}
 
 	//User effect ---------------------------------------------------------------
-	//Handle check loged in
+	//Handle check logged in
 	useEffect(() => {
 		if (isAuthenticated) {
 			handleLoading(false)
@@ -151,7 +151,7 @@ export default function UpdateRoom({ roomId: RoomIdProp, onCloseDrawer }: IUpdat
 		}
 	}, [allClients])
 
-	//Chane data form when have data detail event
+	//Change data form when have data detail event
 	useEffect(() => {
 		if (dataDetailRoom && dataDetailRoom.room) {
 			//Set data selected option employee

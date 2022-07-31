@@ -6,7 +6,7 @@ import { GetServerSideProps } from 'next'
 import { useRouter } from 'next/router'
 import { allRepliesByDiscussionQuery, detailProjectDiscussionRoomQuery } from 'queries'
 import { useContext, useEffect, useState } from 'react'
-import { projectMutaionResponse } from 'type/mutationResponses'
+import { projectMutationResponse } from 'type/mutationResponses'
 import AddReply from './add-reply'
 import UpdateReply from './update-reply'
 
@@ -45,17 +45,13 @@ export default function DetailDiscussion({ discussionIdProp }: IDetailDiscussion
 	)
 
 	//Get detail discussion
-	const { data: dataDetailDiscusison } = detailProjectDiscussionRoomQuery(
+	const { data: dataDetailDiscussion } = detailProjectDiscussionRoomQuery(
 		isAuthenticated,
 		Number(discussionIdProp || discussionIdRouter)
 	)
 
-	//mutation ------------------------------------------------------------------
-
-	//Function ------------------------------------------------------------------
-
 	//User effect ---------------------------------------------------------------
-	//Handle check loged in
+	//Handle check logged in
 	useEffect(() => {
 		if (isAuthenticated) {
 			handleLoading(false)
@@ -101,10 +97,10 @@ export default function DetailDiscussion({ discussionIdProp }: IDetailDiscussion
 					>
 						<VStack align={'start'}>
 							<Text fontWeight={'semibold'}>
-								{dataDetailDiscusison?.projectDiscussionRoom?.title}
+								{dataDetailDiscussion?.projectDiscussionRoom?.title}
 							</Text>
 							<Text fontSize={12} color={'gray.400'}>
-								posted on {dataDetailDiscusison?.projectDiscussionRoom?.createdAt}
+								posted on {dataDetailDiscussion?.projectDiscussionRoom?.createdAt}
 							</Text>
 						</VStack>
 
@@ -112,7 +108,7 @@ export default function DetailDiscussion({ discussionIdProp }: IDetailDiscussion
 							<Box w={3} h={3} borderRadius={'50%'} bgColor={'red'}></Box>
 							<Text>
 								{
-									dataDetailDiscusison?.projectDiscussionRoom
+									dataDetailDiscussion?.projectDiscussionRoom
 										?.project_discussion_category.name
 								}
 							</Text>
@@ -233,7 +229,7 @@ export default function DetailDiscussion({ discussionIdProp }: IDetailDiscussion
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-	//Get accesstoken
+	//Get access token
 	const getAccessToken: { accessToken: string; code: number; message: string; success: boolean } =
 		await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/refresh_token`, {
 			method: 'GET',
@@ -253,7 +249,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 	}
 
 	//Check assigned
-	const checkAsignedProject: projectMutaionResponse = await fetch(
+	const checkAssignedProject: projectMutationResponse = await fetch(
 		`${process.env.NEXT_PUBLIC_API_URL}/api/projects/${context.query.projectId}/check-asigned`,
 		{
 			method: 'GET',
@@ -263,7 +259,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 		}
 	).then((e) => e.json())
 
-	if (!checkAsignedProject.success) {
+	if (!checkAssignedProject.success) {
 		return {
 			notFound: true,
 		}

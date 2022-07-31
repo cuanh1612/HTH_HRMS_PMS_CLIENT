@@ -1,13 +1,13 @@
 import { createInterviewFileForm, createJobApplicationFileForm } from 'type/form/basicFormType'
 import {
-	interviewFileMutaionResponse,
-	jobApplicationFileMutaionResponse,
+	interviewFileMutationResponse,
+	jobApplicationFileMutationResponse,
 } from 'type/mutationResponses'
 import { deleteData, getData, postData } from 'utils/fetchData'
 
 //Function handle create job application file
 export async function createJobApplicationFileRequest(inputCreate: createJobApplicationFileForm) {
-	const resultFetch = await postData<jobApplicationFileMutaionResponse>({
+	const resultFetch = await postData<jobApplicationFileMutationResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/job-application-files`,
 		body: inputCreate,
 	})
@@ -20,7 +20,7 @@ export async function deleteJobApplicationFileRequest(inputDelete: {
 	jobApplicationFileId: number
 	jobApplicationId: number
 }) {
-	const resultFetch = await deleteData<jobApplicationFileMutaionResponse>({
+	const resultFetch = await deleteData<jobApplicationFileMutationResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/job-application-files/${inputDelete.jobApplicationFileId}/job-application/${inputDelete.jobApplicationId}`,
 	})
 
@@ -29,7 +29,7 @@ export async function deleteJobApplicationFileRequest(inputDelete: {
 
 //Function handle get all job application files
 export const allJobApplicationFilesRequest = async (url: string) => {
-	return await getData<jobApplicationFileMutaionResponse>({
+	return await getData<jobApplicationFileMutationResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/${url}`,
 	})
 }

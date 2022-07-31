@@ -8,13 +8,13 @@ import {
 	employeesNotInProjectRequest,
 } from 'requests/project'
 import useSWR from 'swr'
-import { employeeMutaionResponse, projectMutaionResponse } from 'type/mutationResponses'
+import { employeeMutationResponse, projectMutationResponse } from 'type/mutationResponses'
 
 export const detailProjectQuery = (
 	isAuthenticated: boolean | null,
 	projectId?: string | number | string[]
 ) => {
-	return useSWR<projectMutaionResponse, AxiosError>(
+	return useSWR<projectMutationResponse, AxiosError>(
 		isAuthenticated && projectId ? `projects/${projectId}` : null,
 		detailProjectRequest,
 		{
@@ -28,7 +28,7 @@ export const employeesNotInProjectQuery = (
 	isAuthenticated: boolean | null,
 	projectId?: string | string[] | number
 ) => {
-	return useSWR<employeeMutaionResponse, AxiosError>(
+	return useSWR<employeeMutationResponse, AxiosError>(
 		isAuthenticated && projectId ? `projects/get-employees-not-in-project/${projectId}` : null,
 		employeesNotInProjectRequest,
 		{
@@ -42,7 +42,7 @@ export const allEmployeesInProjectQuery = (
 	isAuthenticated: boolean | null,
 	projectId?: string | string[] | number
 ) => {
-	return useSWR<projectMutaionResponse, AxiosError>(
+	return useSWR<projectMutationResponse, AxiosError>(
 		isAuthenticated && projectId ? `all-employees/${projectId}` : null,
 		allEmployeesInProjectRequest,
 		{
@@ -54,7 +54,7 @@ export const allEmployeesInProjectQuery = (
 
 // get all projects with info employees and client
 export const allProjectsQuery = (isAuthenticated?: boolean | null) => {
-	return useSWR<projectMutaionResponse, AxiosError>(
+	return useSWR<projectMutationResponse, AxiosError>(
 		isAuthenticated ? 'projects' : null,
 		allProjectsRequest,
 		{
@@ -68,7 +68,7 @@ export const allProjectsQuery = (isAuthenticated?: boolean | null) => {
 export const allProjectsByCurrentUserQuery = (
 	isAuthenticated?: boolean | null,
 ) => {
-	return useSWR<projectMutaionResponse, AxiosError>(
+	return useSWR<projectMutationResponse, AxiosError>(
 		isAuthenticated ? `projects/current-user` : null,
 		allProjectsByEmployeeRequest,
 		{
@@ -80,7 +80,7 @@ export const allProjectsByCurrentUserQuery = (
 
 // get all projects
 export const allProjectsNormalQuery = (isAuthenticated?: boolean | null) => {
-	return useSWR<projectMutaionResponse, AxiosError>(
+	return useSWR<projectMutationResponse, AxiosError>(
 		isAuthenticated ? 'projects/normal' : null,
 		allProjectsRequest,
 		{
@@ -92,7 +92,7 @@ export const allProjectsNormalQuery = (isAuthenticated?: boolean | null) => {
 
 // get all projects normal by employee
 export const allProjectsNormalByEmployeeQuery = (isAuthenticated?: boolean | null, employeeId?: string | number) => {
-	return useSWR<projectMutaionResponse, AxiosError>(
+	return useSWR<projectMutationResponse, AxiosError>(
 		isAuthenticated && employeeId ? `projects/normal/employee/${employeeId}` : null,
 		allProjectsByEmployeeNormalRequest,
 		{
@@ -103,7 +103,7 @@ export const allProjectsNormalByEmployeeQuery = (isAuthenticated?: boolean | nul
 }
 
 export const projectEarningsQuery = (isAuthenticated: boolean | null, idProject?: string | string[] | number) => {
-	return useSWR<projectMutaionResponse, AxiosError>(
+	return useSWR<projectMutationResponse, AxiosError>(
 		isAuthenticated && idProject ? `projects/${idProject}/earnings`: null,
 		detailProjectRequest,
 		{
@@ -114,7 +114,7 @@ export const projectEarningsQuery = (isAuthenticated: boolean | null, idProject?
 }
 
 export const projectHoursLoggedQuery = (isAuthenticated: boolean | null, idProject?: string | string[] | number) => {
-	return useSWR<projectMutaionResponse, AxiosError>(
+	return useSWR<projectMutationResponse, AxiosError>(
 		isAuthenticated && idProject ? `projects/${idProject}/Hours-logged`: null,
 		detailProjectRequest,
 		{
@@ -125,7 +125,7 @@ export const projectHoursLoggedQuery = (isAuthenticated: boolean | null, idProje
 }
 
 export const countStatusTasksQuery = (isAuthenticated: boolean | null, idProject?: string | string[] | number) => {
-	return useSWR<projectMutaionResponse, AxiosError>(
+	return useSWR<projectMutationResponse, AxiosError>(
 		isAuthenticated && idProject ? `projects/${idProject}/count-status-tasks`: null,
 		detailProjectRequest,
 		{

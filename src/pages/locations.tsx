@@ -48,8 +48,8 @@ export default function Locations() {
 	//Query -------------------------------------------------------------
 	const { data: dataLocations, mutate: refetchLocations } = allLocationsQuery(isAuthenticated)
 
-	//Useeffect ---------------------------------------------------------
-	//Handle check loged in
+	//UseEffect ---------------------------------------------------------
+	//Handle check logged in
 	useEffect(() => {
 		if (isAuthenticated) {
 			handleLoading(false)

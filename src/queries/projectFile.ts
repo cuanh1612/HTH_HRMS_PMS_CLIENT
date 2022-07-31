@@ -1,10 +1,10 @@
 import { AxiosError } from 'axios'
 import { allProjectFilesRequest } from 'requests/projectFile'
 import useSWR from 'swr'
-import { projectFileMutaionResponse } from 'type/mutationResponses'
+import { projectFileMutationResponse } from 'type/mutationResponses'
 
 export const allProjectFilesQuery = (isAuthenticated: boolean | null, projectId: number | null) => {
-	return useSWR<projectFileMutaionResponse, AxiosError>(
+	return useSWR<projectFileMutationResponse, AxiosError>(
 		isAuthenticated && projectId ? `project-files/project/${projectId}` : null,
 		allProjectFilesRequest,
 		{

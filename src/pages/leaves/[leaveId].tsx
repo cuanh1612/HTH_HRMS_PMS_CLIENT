@@ -14,7 +14,7 @@ import { GetStaticPaths, GetStaticProps } from 'next'
 import { useRouter } from 'next/router'
 import { detailLeaveQuery } from 'queries'
 import { useContext, useEffect } from 'react'
-import { leaveMutaionResponse } from 'type/mutationResponses'
+import { leaveMutationResponse } from 'type/mutationResponses'
 
 export interface IDetailLeaveProps {
 	leaveId: string | number | null
@@ -34,7 +34,7 @@ export default function DetailLeave({ leaveId: leaveIdProp, onOpenUpdate, onOpen
 
 	//User effect ---------------------------------------------------------------
 
-	//Handle check loged in
+	//Handle check logged in
 	useEffect(() => {
 		if (isAuthenticated) {
 			handleLoading(false)
@@ -140,7 +140,7 @@ export const getStaticProps: GetStaticProps = async () => {
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-	const res: leaveMutaionResponse = await fetch(
+	const res: leaveMutationResponse = await fetch(
 		`${process.env.NEXT_PUBLIC_API_URL}/api/leaves`
 	).then((result) => result.json())
 

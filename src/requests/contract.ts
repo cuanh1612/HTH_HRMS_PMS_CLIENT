@@ -1,10 +1,10 @@
 import { createContractForm, updateContractForm } from 'type/form/basicFormType'
-import { contractMutaionResponse } from 'type/mutationResponses'
+import { contractMutationResponse } from 'type/mutationResponses'
 import { deleteData, getData, postData, putData } from 'utils/fetchData'
 
 //Function handle create contract
 export async function createContractRequest(inputCreate: createContractForm) {
-	const resultFetch = await postData<contractMutaionResponse>({
+	const resultFetch = await postData<contractMutationResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/contracts`,
 		body: inputCreate,
 	})
@@ -14,7 +14,7 @@ export async function createContractRequest(inputCreate: createContractForm) {
 
 //Function handle create contract by import csv 
 export async function importCSVContractRequest(inputCreate: {contracts: createContractForm[]}) {
-	const resultFetch = await postData<contractMutaionResponse>({
+	const resultFetch = await postData<contractMutationResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/contracts/csv`,
 		body: inputCreate,
 	})
@@ -25,7 +25,7 @@ export async function importCSVContractRequest(inputCreate: {contracts: createCo
 
 //Function handle get detail contract
 export const detailContractRequest = async (url: string) => {
-	return await getData<contractMutaionResponse>({
+	return await getData<contractMutationResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/${url}`,
 	})
 }
@@ -38,7 +38,7 @@ export async function updateContractRequest({
 	inputUpdate: updateContractForm
 	contractId: number
 }) {
-	const resultFetch = await putData<contractMutaionResponse>({
+	const resultFetch = await putData<contractMutationResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/contracts/${contractId}`,
 		body: inputUpdate,
 	})
@@ -48,14 +48,14 @@ export async function updateContractRequest({
 
 //Function handle get all employees
 export const allContractsRequest = async (url: string) => {
-	return await getData<contractMutaionResponse>({
+	return await getData<contractMutationResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/${url}`,
 	})
 }
 
 // Handle to delete many contracts
 export const deleteContractsRequest = async (ids: number[]) => {
-	return await postData<contractMutaionResponse>({
+	return await postData<contractMutationResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/contracts/delete-many`,
 		body: {
 			contracts: ids,
@@ -65,7 +65,7 @@ export const deleteContractsRequest = async (ids: number[]) => {
 
 //Handle to delete contract
 export const deleteContractRequest = async (id: string | number) => {
-	return await deleteData<contractMutaionResponse>({
+	return await deleteData<contractMutationResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/contracts/${id}`,
 	})
 }
@@ -73,7 +73,7 @@ export const deleteContractRequest = async (id: string | number) => {
 //get public token
 export async function  publicLinkRequest(idContract: string | number) {
 
-	const resultFetch = await postData<contractMutaionResponse>({
+	const resultFetch = await postData<contractMutationResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/contracts/public-link`,
 		body: {
 			idContract: Number(idContract)
@@ -86,7 +86,7 @@ export async function  publicLinkRequest(idContract: string | number) {
 //get public contract
 
 export async function  publicContractRequest(token: string | number) {
-	const resultFetch = await getData<contractMutaionResponse>({
+	const resultFetch = await getData<contractMutationResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/contracts/public/${token}`,
 	})
 

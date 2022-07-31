@@ -55,8 +55,8 @@ export default function ProjectCategory() {
 	const { data: dataProjectCategories, mutate: refetchProjectCategories } =
 		allProjectCategoriesQuery(isAuthenticated)
 
-	//Useeffect ---------------------------------------------------------
-	//Handle check loged in
+	//UseEffect ---------------------------------------------------------
+	//Handle check logged in
 	useEffect(() => {
 		if (isAuthenticated) {
 			handleLoading(false)

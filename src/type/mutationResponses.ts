@@ -250,7 +250,7 @@ export interface NoticeBoardMutationResponse extends commonResponse {
 	noticeBoards?: noticeBoardType[]
 }
 
-export interface ProjectDisucssionRoomMutationResponse extends commonResponse {
+export interface ProjectDiscussionRoomMutationResponse extends commonResponse {
 	projectDiscussionRoom?: projectDiscussionRoomType
 	projectDiscussionRooms?: projectDiscussionRoomType[]
 }

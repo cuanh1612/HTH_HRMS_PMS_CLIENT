@@ -6,7 +6,7 @@ import {
 	Grid,
 	GridItem,
 	HStack,
-	Input as InputChakra,
+	Input as CInput,
 	Text,
 	useDisclosure,
 	VStack,
@@ -140,7 +140,7 @@ export default function UpdateTask({ onCloseDrawer, taskIdProp }: IUpdateTaskPro
 	}
 
 	//User effect ---------------------------------------------------------------
-	//Handle check loged in
+	//Handle check logged in
 	useEffect(() => {
 		if (isAuthenticated) {
 			handleLoading(false)
@@ -151,7 +151,7 @@ export default function UpdateTask({ onCloseDrawer, taskIdProp }: IUpdateTaskPro
 		}
 	}, [isAuthenticated])
 
-	//Set option select milestiones when have data all milestones
+	//Set option select milestones when have data all milestones
 	useEffect(() => {
 		if (dataAllMilestones?.milestones) {
 			//Set data option milestones state
@@ -253,7 +253,7 @@ export default function UpdateTask({ onCloseDrawer, taskIdProp }: IUpdateTaskPro
 	//Set option select status when have data all status
 	useEffect(() => {
 		if (dataAllStatus?.statuses) {
-			//Set data option satuses state
+			//Set data option statuses state
 			const newOptionStatus: IOption[] = []
 
 			dataAllStatus.statuses.map((status) => {
@@ -335,7 +335,7 @@ export default function UpdateTask({ onCloseDrawer, taskIdProp }: IUpdateTaskPro
 				<GridItem w="100%" colSpan={[2, 1]}>
 					<VStack align={'start'}>
 						<Text color={'gray.400'}>Project</Text>
-						<InputChakra
+						<CInput
 							type={'text'}
 							value={dataDetailTask?.task?.project.name}
 							disabled

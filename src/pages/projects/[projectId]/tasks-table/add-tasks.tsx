@@ -6,7 +6,7 @@ import {
 	Grid,
 	GridItem,
 	HStack,
-	Input as InputChakra,
+	Input as CInput,
 	Text,
 	useDisclosure,
 	VStack,
@@ -145,7 +145,7 @@ export default function AddTask({ onCloseDrawer, statusId }: IAddTaskProps) {
 	}
 
 	//User effect ---------------------------------------------------------------
-	//Handle check loged in
+	//Handle check logged in
 	useEffect(() => {
 		if (isAuthenticated) {
 			handleLoading(false)
@@ -175,7 +175,7 @@ export default function AddTask({ onCloseDrawer, statusId }: IAddTaskProps) {
 		}
 
 		if (dataAllStatus?.statuses) {
-			//Set data option satuses state
+			//Set data option statuses state
 			const newOptionStatus: IOption[] = []
 
 			dataAllStatus.statuses.map((status) => {
@@ -189,7 +189,7 @@ export default function AddTask({ onCloseDrawer, statusId }: IAddTaskProps) {
 		}
 	}, [dataAllStatus])
 
-	//Set option select milestiones when have data all milestones
+	//Set option select milestones when have data all milestones
 	useEffect(() => {
 		if (dataAllMilestones?.milestones) {
 			//Set data option milestones state
@@ -306,7 +306,7 @@ export default function AddTask({ onCloseDrawer, statusId }: IAddTaskProps) {
 				<GridItem w="100%" colSpan={[2, 1]}>
 					<VStack align={'start'}>
 						<Text color={'gray.400'}>Project</Text>
-						<InputChakra
+						<CInput
 							type={'text'}
 							value={dataDetailProject?.project?.name}
 							disabled

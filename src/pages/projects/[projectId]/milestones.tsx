@@ -267,7 +267,7 @@ const milestones: NextLayout = () => {
 					<HStack alignItems="start" w={'full'} spacing={5}>
 						<Input
 							name="title"
-							label="Tilte"
+							label="Title"
 							icon={
 								<MdDriveFileRenameOutline
 									fontSize={'20px'}

@@ -72,7 +72,7 @@ const Salaries: NextLayout = () => {
 	const { data: dataSalaries } = allSalariesQuery(isAuthenticated)
 	const { data: allEmployees } = allEmployeesNormalQuery(isAuthenticated)
 
-	//Useeffect ---------------------------------------------------------
+	//UseEffect ---------------------------------------------------------
 	//Handle check loged in
 	useEffect(() => {
 		if (isAuthenticated) {

@@ -25,7 +25,7 @@ const ConfigCompany: NextLayout = () => {
 	const [mutateUpCompanyInfo, { status: statusUpCompanyInfo, data: dataUpCompanyInfo }] =
 		updateCompanyInfoMutation(setToast)
 
-	//Usereffect -----------------------------------------------------------------
+	//UserEffect -----------------------------------------------------------------
 	//Handle check loged in
 	useEffect(() => {
 		if (isAuthenticated) {
@@ -70,7 +70,7 @@ const ConfigCompany: NextLayout = () => {
 		})
 	}
 
-	//Cancle update or reset data
+	//Cancel update or reset data
 	const onCancleUpdate = () => {
 		if (dataCompanyInfo?.companyInfo) {
 			setName(dataCompanyInfo.companyInfo.name)

@@ -1,17 +1,17 @@
 import { createProjectDiscussionReplyForm, updateProjectDiscussionReplyForm } from 'type/form/basicFormType'
-import { projectdiscussionReplyMutaionResponse } from 'type/mutationResponses'
+import { projectDiscussionReplyMutationResponse } from 'type/mutationResponses'
 import { getData, postData, putData } from 'utils/fetchData'
 
 //Function handle get all reply of a discussion
 export const allRepliesByDiscussionRequest = async (url: string) => {
-	return await getData<projectdiscussionReplyMutaionResponse>({
+	return await getData<projectDiscussionReplyMutationResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/${url}`,
 	})
 }
 
 //Function handle get detail reply of a discussion
 export const detailDiscussionReplyRequest = async (url: string) => {
-	return await getData<projectdiscussionReplyMutaionResponse>({
+	return await getData<projectDiscussionReplyMutationResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/${url}`,
 	})
 }
@@ -21,7 +21,7 @@ export const detailDiscussionReplyRequest = async (url: string) => {
 export async function createProjectDiscussionReplyRequest(
 	inputCreate: createProjectDiscussionReplyForm
 ) {
-	const resultFetch = await postData<projectdiscussionReplyMutaionResponse>({
+	const resultFetch = await postData<projectDiscussionReplyMutationResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/project-discussion-replies`,
 		body: inputCreate,
 	})
@@ -33,7 +33,7 @@ export async function createProjectDiscussionReplyRequest(
 export async function updateProjectDiscussionReplyRequest(
 	inputUpdate: updateProjectDiscussionReplyForm
 ) {
-	const resultFetch = await putData<projectdiscussionReplyMutaionResponse>({
+	const resultFetch = await putData<projectDiscussionReplyMutationResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/project-discussion-replies/${inputUpdate.discussionReplyId}`,
 		body: inputUpdate,
 	})

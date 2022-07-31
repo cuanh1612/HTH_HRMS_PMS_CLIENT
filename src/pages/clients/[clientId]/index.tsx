@@ -16,13 +16,13 @@ import {
 	clientCountProjectStatusQuery,
 	allProjectsByCurrentUserQuery,
 	clientTotalEarningQuery,
-	clientTotalProejctsQuery,
+	clientTotalProjectsQuery,
 	detailClientQuery,
 } from 'queries'
 import { useContext, useEffect, useState } from 'react'
 import { AiOutlineProject } from 'react-icons/ai'
 import { SWRConfig } from 'swr'
-import { authMutaionResponse, clientMutaionResponse } from 'type/mutationResponses'
+import { authMutationResponse, clientMutationResponse } from 'type/mutationResponses'
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js'
 import { NextLayout } from 'type/element/layout'
 import { ClientLayout } from 'components/layouts'
@@ -40,7 +40,7 @@ const DetailClient: NextLayout | any = ({
 	dataDetailClientServer,
 	clientIdProp,
 }: {
-	dataDetailClientServer?: clientMutaionResponse
+	dataDetailClientServer?: clientMutationResponse
 	clientIdProp?: string | number
 }) => {
 	const { isAuthenticated, handleLoading, currentUser, setToast } = useContext(AuthContext)
@@ -60,7 +60,7 @@ const DetailClient: NextLayout | any = ({
 
 	//Query -------------------------------------------------------------------
 	const { data: dataDetailClient } = detailClientQuery(isAuthenticated, clientId as string)
-	const { data: dataTotalProjects } = clientTotalProejctsQuery(
+	const { data: dataTotalProjects } = clientTotalProjectsQuery(
 		isAuthenticated,
 		(clientId as string) || clientIdProp
 	)
@@ -80,10 +80,8 @@ const DetailClient: NextLayout | any = ({
 	const { isOpen: isOpenDialogDl, onOpen: onOpenDl, onClose: onCloseDl } = useDisclosure()
 	const { isOpen: isOpenUpdate, onOpen: onOpenUpdate, onClose: onCloseUpdate } = useDisclosure()
 
-	//Funcion -----------------------------------------------------------------
-
 	//effect --------------------------------------------------------------
-	//Handle check loged in
+	//Handle check logged in
 	useEffect(() => {
 		if (isAuthenticated) {
 			handleLoading(false)
@@ -243,7 +241,7 @@ const DetailClient: NextLayout | any = ({
 										</Text>
 									</GridItem>
 									<GridItem colSpan={[3, 1]}>
-										<Text color={'gray.400'}>Adress</Text>
+										<Text color={'gray.400'}>Address</Text>
 									</GridItem>
 									<GridItem colSpan={[3, 2]}>
 										<Text>
@@ -386,7 +384,7 @@ const DetailClient: NextLayout | any = ({
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-	const res: authMutaionResponse = await fetch(
+	const res: authMutationResponse = await fetch(
 		`${process.env.NEXT_PUBLIC_API_URL}/api/auth/refresh_token`,
 		{
 			headers: context.req.headers as HeadersInit,
@@ -394,7 +392,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 	).then((result) => result.json())
 
 	//get detail client
-	const queryClient: clientMutaionResponse = await fetch(
+	const queryClient: clientMutationResponse = await fetch(
 		`${process.env.NEXT_PUBLIC_API_URL}/api/clients/${context.query.clientId}`,
 		{
 			headers: {

@@ -34,3 +34,17 @@ export const publicJobOfferLetterQuery = (token: string) => {
 		revalidateOnFocus: false,
 	})
 }
+
+export const offerLettersByJobQuery = (
+	isAuthenticated: boolean | null,
+	jobId: string | number | null
+) => {
+	return useSWR<jobOfferLetterMutationResponse, AxiosError>(
+		isAuthenticated && jobId ? `job-offer-letters/job/${jobId}` : null,
+		getJobOfferRequest,
+		{
+			errorRetryCount: 2,
+			revalidateOnFocus: false,
+		}
+	)
+}

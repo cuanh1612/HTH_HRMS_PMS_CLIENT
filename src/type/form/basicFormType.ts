@@ -782,7 +782,7 @@ export type createInterviewFileForm = {
 }
 
 export interface createJobOfferLetterForm {
-	job: number
+	job: number | string
 	job_application?: number
 	exprise_on: Date
 	expected_joining_date: Date

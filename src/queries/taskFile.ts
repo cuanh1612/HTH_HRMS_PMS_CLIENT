@@ -1,10 +1,10 @@
 import { AxiosError } from 'axios'
 import { allTaskFilesRequest } from 'requests/taskFile'
 import useSWR from 'swr'
-import { taskFileMutaionResponse } from 'type/mutationResponses'
+import { taskFileMutationResponse } from 'type/mutationResponses'
 
 export const allTaskFilesQuery = (isAuthenticated: boolean | null, taskId: number | null) => {
-	return useSWR<taskFileMutaionResponse, AxiosError>(
+	return useSWR<taskFileMutationResponse, AxiosError>(
 		isAuthenticated && taskId ? `task-files/task/${taskId}` : null,
 		allTaskFilesRequest,
 		{

@@ -1,17 +1,17 @@
 import { createDesignationForm } from 'type/form/basicFormType'
-import { DesignationMutaionResponse } from 'type/mutationResponses'
+import { DesignationMutationResponse } from 'type/mutationResponses'
 import { deleteData, getData, postData, putData } from 'utils/fetchData'
 
 //Function handle get all department
 export const allDesignationRequest = async (url: string) => {
-	return await getData<DesignationMutaionResponse>({
+	return await getData<DesignationMutationResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/${url}`,
 	})
 }
 
 //Function handle create designation
 export async function createDesignationRequest(inputCreate: createDesignationForm) {
-	const resultFetch = await postData<DesignationMutaionResponse>({
+	const resultFetch = await postData<DesignationMutationResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/designations`,
 		body: inputCreate,
 	})
@@ -21,7 +21,7 @@ export async function createDesignationRequest(inputCreate: createDesignationFor
 
 //Function handle delete designation
 export async function deleteDesignationRequest(inputDelete: { designationId: number }) {
-	const resultFetch = await deleteData<DesignationMutaionResponse>({
+	const resultFetch = await deleteData<DesignationMutationResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/designations/${inputDelete.designationId}`,
 	})
 
@@ -36,7 +36,7 @@ export async function updateDesignationRequest({
 	designationId: number
 	name: string
 }) {
-	const resultFetch = await putData<DesignationMutaionResponse>({
+	const resultFetch = await putData<DesignationMutationResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/designations/${designationId}`,
 		body: {
 			name,

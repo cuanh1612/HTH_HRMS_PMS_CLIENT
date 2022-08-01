@@ -58,7 +58,7 @@ export default function AddJobApplication({
 		{ status: statusCreJobApplication, data: dataCreJobApplication },
 	] = createJobApplicationMutation(setToast)
 
-	//Funcion -----------------------------------------------------------------
+	//Function -----------------------------------------------------------------
 	const handleUploadAvatar = async () => {
 		if (infoImg) {
 			setLoadingImg(true)
@@ -109,13 +109,13 @@ export default function AddJobApplication({
 				public_id: dataUploadAvattar.public_id,
 			}
 		}
-		//create new job aplication
+		//create new job application
 		mutateCreJobApplication(values)
 	}
 
 	//User effect ---------------------------------------------------------------
 
-	//Handle check loged in
+	//Handle check logged in
 	useEffect(() => {
 		if (isAuthenticated) {
 			handleLoading(false)

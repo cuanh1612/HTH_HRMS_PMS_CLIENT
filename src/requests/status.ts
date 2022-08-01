@@ -1,24 +1,24 @@
 import { statusForm } from "type/form/basicFormType"
-import { statusMutaionResponse } from "type/mutationResponses"
+import { statusMutationResponse } from "type/mutationResponses"
 import { deleteData, getData, postData, putData } from "utils/fetchData"
 
 // get all
 export const allStatusTasksRequest = async (url: string) => {
-	return await getData<statusMutaionResponse>({
+	return await getData<statusMutationResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/${url}`,
 	})
 }
 
 // get all status normal
 export const allStatusRequest = async (url: string) => {
-	return await getData<statusMutaionResponse>({
+	return await getData<statusMutationResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/${url}`,
 	})
 }
 
 // get detail status 
 export const detailStatusRequest = async (url: string) => {
-	return await getData<statusMutaionResponse>({
+	return await getData<statusMutationResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/${url}`,
 	})
 }
@@ -34,7 +34,7 @@ export async function changePositionRequest({
 	projectId: number
 	idStatus2: number
 }) {
-	const resultFetch = await putData<statusMutaionResponse>({
+	const resultFetch = await putData<statusMutationResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/status/position`,
 		body: {
 			id1: idStatus1,
@@ -49,7 +49,7 @@ export async function changePositionRequest({
 export async function createStatusColumnRequest(inputCreate: statusForm & {
 	projectId?: string | string[]
 }) {
-	const resultFetch = await postData<statusMutaionResponse>({
+	const resultFetch = await postData<statusMutationResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/status`,
 		body: inputCreate,
 	})
@@ -59,7 +59,7 @@ export async function createStatusColumnRequest(inputCreate: statusForm & {
 
 //Handle to delete status column
 export const deleteStatusColumnRequest = async (id: string) => {
-	return await deleteData<statusMutaionResponse>({
+	return await deleteData<statusMutationResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/status/${id}`,
 	})
 }
@@ -72,7 +72,7 @@ export async function updateStatusRequest({
 	inputUpdate: statusForm
 	columnId: string
 }) {
-	const resultFetch = await putData<statusMutaionResponse>({
+	const resultFetch = await putData<statusMutationResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/status/${columnId}`,
 		body: inputUpdate,
 	})

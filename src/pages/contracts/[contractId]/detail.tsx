@@ -47,7 +47,7 @@ const DetailContract: NextLayout = () => {
 	const { data: dataDetailContract } = detailContractQuery(isAuthenticated, Number(contractId))
 	const { data: dataCompanyInfo } = companyInfoQuery()
 
-	//Useeffect --------------------------------------------------------
+	//UseEffect --------------------------------------------------------
 	//Handle loading page
 	useEffect(() => {
 		handleLoading(false)
@@ -176,7 +176,7 @@ const DetailContract: NextLayout = () => {
 							<Image
 								boxSize={'50px'}
 								src="https://bit.ly/dan-abramov"
-								alt="Dan Abramov"
+								alt="Avatar"
 								borderRadius={5}
 							/>
 							<Text fontSize={20} fontWeight={'bold'}>
@@ -288,7 +288,7 @@ const DetailContract: NextLayout = () => {
 									<Text>Signature</Text>
 									<Image
 										src={dataDetailContract.contract.sign.url}
-										alt="Dan Abramov"
+										alt="Avatar"
 									/>
 									<Text fontSize={13}>
 										(

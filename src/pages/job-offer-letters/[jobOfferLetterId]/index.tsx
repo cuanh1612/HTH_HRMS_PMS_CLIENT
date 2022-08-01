@@ -48,7 +48,7 @@ const DetailJobOfferLetter: NextLayout | any = ({
 	)
 	const { data: dataCompanyInfo } = companyInfoQuery()
 
-	//Useeffect --------------------------------------------------------
+	//UseEffect --------------------------------------------------------
 	//Handle loading page
 	useEffect(() => {
 		handleLoading(false)

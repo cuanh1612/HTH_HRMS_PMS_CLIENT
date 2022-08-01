@@ -110,7 +110,6 @@ const AuthContextProvider = ({ children }: { children: ReactNode }) => {
 	//mutation
 	const { data: dataCurrentUser } = currentUserQuery(isAuthenticated)
 
-	//Funtion handle
 	const logoutClient = () => {
 		JWTManager.deleteToken()
 		setIsAuthenticated(false)

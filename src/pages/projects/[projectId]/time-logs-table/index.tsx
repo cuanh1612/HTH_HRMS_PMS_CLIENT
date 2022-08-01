@@ -12,7 +12,7 @@ import { useContext, useEffect, useState } from 'react'
 import { AiOutlineDelete, AiOutlineSearch } from 'react-icons/ai'
 import { IoAdd } from 'react-icons/io5'
 import { NextLayout } from 'type/element/layout'
-import { projectMutaionResponse } from 'type/mutationResponses'
+import { projectMutationResponse } from 'type/mutationResponses'
 import { IFilter, TColumn } from 'type/tableTypes'
 import AddTimeLog from './add-time-logs'
 import DetailTimeLog from './[timeLogId]'
@@ -123,7 +123,7 @@ const TimeLogs: NextLayout = () => {
 	// get all status to filter
 	const { data: allStatuses } = allStatusQuery(isAuthenticated, projectId)
 
-	//Useeffect ---------------------------------------------------------
+	//UseEffect ---------------------------------------------------------
 	//Handle check login successfully
 	useEffect(() => {
 		if (isAuthenticated) {
@@ -410,7 +410,7 @@ const TimeLogs: NextLayout = () => {
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-	//Get accesstoken
+	//Get access token
 	const getAccessToken: { accessToken: string; code: number; message: string; success: boolean } =
 		await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/refresh_token`, {
 			method: 'GET',
@@ -430,7 +430,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 	}
 
 	//Check assigned
-	const checkAsignedProject: projectMutaionResponse = await fetch(
+	const checkAssignedProject: projectMutationResponse = await fetch(
 		`${process.env.NEXT_PUBLIC_API_URL}/api/projects/${context.query.projectId}/check-assigned`,
 		{
 			method: 'GET',
@@ -440,7 +440,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 		}
 	).then((e) => e.json())
 
-	if (!checkAsignedProject.success) {
+	if (!checkAssignedProject.success) {
 		return {
 			notFound: true,
 		}

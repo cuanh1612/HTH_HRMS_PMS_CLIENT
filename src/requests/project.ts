@@ -1,10 +1,10 @@
 import { createProjectForm, updateProjectForm, EmployeesNotInProjectForm, EmployeesByDepartmentProjectForm, updateStatusProjectForm } from 'type/form/basicFormType'
-import { employeeMutaionResponse, projectMutaionResponse } from 'type/mutationResponses'
+import { employeeMutationResponse, projectMutationResponse } from 'type/mutationResponses'
 import { deleteData, getData, postData, putData } from 'utils/fetchData'
 
 //Function handle create
 export async function createProjectRequest(inputCreate: createProjectForm) {
-	const resultFetch = await postData<projectMutaionResponse>({
+	const resultFetch = await postData<projectMutationResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/projects`,
 		body: inputCreate,
 	})
@@ -14,14 +14,14 @@ export async function createProjectRequest(inputCreate: createProjectForm) {
 
 //Function handle get detail project
 export const detailProjectRequest = async (url: string) => {
-	return await getData<projectMutaionResponse>({
+	return await getData<projectMutationResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/${url}`,
 	})
 }
 
 //Function handle get employees not in project
 export const employeesNotInProjectRequest = async (url: string) => {
-	return await getData<employeeMutaionResponse>({
+	return await getData<employeeMutationResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/${url}`,
 	})
 }
@@ -34,7 +34,7 @@ export async function assignEmployeeRequest({
 	inputUpdate: EmployeesNotInProjectForm
 	projectId?: string | string[] | number 
 }) {
-	const resultFetch = await putData<projectMutaionResponse>({
+	const resultFetch = await putData<projectMutationResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/projects/assign-employee/${projectId}`,
 		body: inputUpdate,
 	})
@@ -51,7 +51,7 @@ export async function assignEmplByDepartmentRequest({
 	inputUpdate: EmployeesByDepartmentProjectForm
 	projectId?: string | string[] | number 
 }) {
-	const resultFetch = await putData<projectMutaionResponse>({
+	const resultFetch = await putData<projectMutationResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/projects/assign-employee/department/${projectId}`,
 		body: inputUpdate,
 	})
@@ -61,7 +61,7 @@ export async function assignEmplByDepartmentRequest({
 
 //Function handle get all employees in project
 export const allEmployeesInProjectRequest = async (url: string) => {
-	return await getData<projectMutaionResponse>({
+	return await getData<projectMutationResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/projects/${url}`,
 	})
 }
@@ -74,7 +74,7 @@ export async function updateProjectRequest({
 	inputUpdate: updateProjectForm
 	projectId: number
 }) {
-	const resultFetch = await putData<projectMutaionResponse>({
+	const resultFetch = await putData<projectMutationResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/projects/${projectId}`,
 		body: inputUpdate,
 	})
@@ -90,7 +90,7 @@ export async function updateStatusProjectRequest({
 	inputUpdate: updateStatusProjectForm
 	projectId: number | string
 }) {
-	const resultFetch = await putData<projectMutaionResponse>({
+	const resultFetch = await putData<projectMutationResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/projects/${projectId}/change-status`,
 		body: inputUpdate,
 	})
@@ -100,35 +100,35 @@ export async function updateStatusProjectRequest({
 
 // get all project with info employee and client in project
 export const allProjectsRequest = async (url: string) => {
-	return await getData<projectMutaionResponse>({
+	return await getData<projectMutationResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/${url}`,
 	})
 }
 
 // get all project normal by employee
 export const allProjectsByEmployeeNormalRequest = async (url: string) => {
-	return await getData<projectMutaionResponse>({
+	return await getData<projectMutationResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/${url}`,
 	})
 }
 
 // get all project by employee
 export const allProjectsByEmployeeRequest = async (url: string) => {
-	return await getData<projectMutaionResponse>({
+	return await getData<projectMutationResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/${url}`,
 	})
 }
 
 // get all project 
 export const allProjectsNormalRequest = async (url: string) => {
-	return await getData<projectMutaionResponse>({
+	return await getData<projectMutationResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/${url}`,
 	})
 }
 
 // Handle to delete many 
 export const deleteProjectsRequest = async (ids: number[]) => {
-	return await postData<projectMutaionResponse>({
+	return await postData<projectMutationResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/projects/delete-many`,
 		body: {
 			projects: ids,
@@ -138,7 +138,7 @@ export const deleteProjectsRequest = async (ids: number[]) => {
 
 //Handle to delete 
 export const deleteProjectRequest = async (id: string | number) => {
-	return await deleteData<projectMutaionResponse>({
+	return await deleteData<projectMutationResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/projects/${id}`,
 	})
 }
@@ -147,7 +147,7 @@ export const deleteProjectRequest = async (id: string | number) => {
 export async function setProjectAdminRequest(data : {
 	idProject?: string | string [] , idEmployee: number
 }) {
-	const resultFetch = await postData<projectMutaionResponse>({
+	const resultFetch = await postData<projectMutationResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/projects/project-admin`,
 		body: data
 	})
@@ -160,7 +160,7 @@ export async function deleteEmpInProjectRequest(inputCreate: {
 	projectId?: string | string [],
 	employeeId?: number
 }) {
-	const resultFetch = await postData<projectMutaionResponse>({
+	const resultFetch = await postData<projectMutationResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/projects/delete-employee`,
 		body: inputCreate,
 	})

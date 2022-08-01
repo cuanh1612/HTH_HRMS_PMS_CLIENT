@@ -50,8 +50,8 @@ export default function TaskCategory() {
 	console.log(dataTaskCategories);
 	
 
-	//Useeffect ---------------------------------------------------------
-	//Handle check loged in
+	//UseEffect ---------------------------------------------------------
+	//Handle check logged in
 	useEffect(() => {
 		if (isAuthenticated) {
 			handleLoading(false)

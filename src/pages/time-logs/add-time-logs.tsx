@@ -103,7 +103,7 @@ export default function AddTimeLog({ onCloseDrawer }: IAddTimeLogProps) {
 	}
 
 	//Function ------------------------------------------------------------------
-	//handle when change stask
+	//handle when change task
 	const onChangeTask = (taskId: string | number) => {
 		setSelectedTaskId(taskId)
 	}
@@ -141,7 +141,7 @@ export default function AddTimeLog({ onCloseDrawer }: IAddTimeLogProps) {
 		}
 	}, [dataAllProjects])
 
-	//Handle check loged in
+	//Handle check logged in
 	useEffect(() => {
 		if (isAuthenticated) {
 			handleLoading(false)
@@ -191,7 +191,7 @@ export default function AddTimeLog({ onCloseDrawer }: IAddTimeLogProps) {
 				})
 			})
 
-			//When refetch data tasks, value employeeid existing, need to clear option selected employee and employee id form
+			//When refetch data tasks, value employee id existing, need to clear option selected employee and employee id form
 			setOptionEmployees(newOptionEmployees)
 			setSelectedEmployeeId({
 				label: <Text color={'gray.400'}>Select...</Text>,

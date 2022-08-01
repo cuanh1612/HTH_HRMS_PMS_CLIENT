@@ -29,7 +29,7 @@ import 'react-quill/dist/quill.bubble.css'
 import 'react-quill/dist/quill.snow.css'
 import { IOption } from 'type/basicTypes'
 import { createProjectNoteForm } from 'type/form/basicFormType'
-import { projectMutaionResponse } from 'type/mutationResponses'
+import { projectMutationResponse } from 'type/mutationResponses'
 import { CreateProjectNoteValidate } from 'utils/validate'
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
@@ -61,7 +61,7 @@ export default function AddNote({ onCloseDrawer }: IAddNoteProps) {
 	const { mutate: refetchAllNotes } = allProjectNotesQuery(isAuthenticated, projectId as string)
 
 	//User effect ---------------------------------------------------------------
-	//Handle check loged in
+	//Handle check logged in
 	useEffect(() => {
 		if (isAuthenticated) {
 			handleLoading(false)
@@ -148,7 +148,7 @@ export default function AddNote({ onCloseDrawer }: IAddNoteProps) {
 		}
 	}
 
-	//Funtion -------------------------------------------------------------------
+	//Function -------------------------------------------------------------------
 	const onChangeDetail = (value: string) => {
 		setDetail(value)
 	}
@@ -275,7 +275,7 @@ export default function AddNote({ onCloseDrawer }: IAddNoteProps) {
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-	//Get accesstoken
+	//Get access token
 	const getAccessToken: { accessToken: string; code: number; message: string; success: boolean } =
 		await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/refresh_token`, {
 			method: 'GET',
@@ -295,7 +295,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 	}
 
 	//Check assigned
-	const checkAsignedProject: projectMutaionResponse = await fetch(
+	const checkAssignedProject: projectMutationResponse = await fetch(
 		`${process.env.NEXT_PUBLIC_API_URL}/api/projects/${context.query.projectId}/check-asigned`,
 		{
 			method: 'GET',
@@ -305,7 +305,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 		}
 	).then((e) => e.json())
 
-	if (!checkAsignedProject.success) {
+	if (!checkAssignedProject.success) {
 		return {
 			notFound: true,
 		}

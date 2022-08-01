@@ -13,7 +13,7 @@ import { updateContractForm } from 'type/form/basicFormType'
 import { dataCurrency } from 'utils/basicData'
 import { UpdateContractValidate } from 'utils/validate'
 //CSS
-import { InputNumber, CoutrySelector, Textarea, UploadAvatar, Input, Select } from 'components/form'
+import { InputNumber, CountrySelector, Textarea, UploadAvatar, Input, Select } from 'components/form'
 import Modal from 'components/modal/Modal'
 import {
 	allClientsQuery,
@@ -147,7 +147,7 @@ export default function UpdateContract({ onCloseDrawer, contractIdUpdate }: IUpd
 
 	//User effect ---------------------------------------------------------------
 
-	//Handle check loged in
+	//Handle check logged in
 	useEffect(() => {
 		if (isAuthenticated) {
 			handleLoading(false)
@@ -206,7 +206,7 @@ export default function UpdateContract({ onCloseDrawer, contractIdUpdate }: IUpd
 	//Setting form when have data detail contract
 	useEffect(() => {
 		if (dataDetailContract?.contract) {
-			//set content qill
+			//set content editor
 			setDescription(dataDetailContract.contract.description || '')
 
 			//Set data form
@@ -400,7 +400,7 @@ export default function UpdateContract({ onCloseDrawer, contractIdUpdate }: IUpd
 					</GridItem>
 
 					<GridItem w="100%" colSpan={[2, 1]}>
-						<CoutrySelector name="country" form={formSetting} />
+						<CountrySelector name="country" form={formSetting} />
 					</GridItem>
 
 					<GridItem w="100%" colSpan={[2, 1]}>
@@ -426,7 +426,7 @@ export default function UpdateContract({ onCloseDrawer, contractIdUpdate }: IUpd
 						<Textarea
 							name="alternate_address"
 							label="Alternate Address"
-							placeholder="Enter alternate Addreess"
+							placeholder="Enter alternate address"
 							form={formSetting}
 						/>
 					</GridItem>

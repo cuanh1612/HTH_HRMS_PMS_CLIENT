@@ -61,7 +61,7 @@ export default function AddEvent({ onCloseDrawer }: IAddEventProps) {
 		createEventMutation(setToast)
 
 	//User effect ---------------------------------------------------------------
-	//Handle check loged in
+	//Handle check logged in
 	useEffect(() => {
 		if (isAuthenticated) {
 			handleLoading(false)
@@ -206,7 +206,7 @@ export default function AddEvent({ onCloseDrawer }: IAddEventProps) {
 		}
 	}
 
-	//Funtion -------------------------------------------------------------------
+	//Function -------------------------------------------------------------------
 	const onChangeDescription = (value: string) => {
 		setDescription(value)
 	}

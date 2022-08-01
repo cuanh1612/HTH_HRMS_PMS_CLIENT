@@ -14,14 +14,14 @@ import { AiOutlineEdit, AiOutlinePlusCircle } from 'react-icons/ai'
 import ProjectDiscussionCategory from 'src/pages/project-discussion-categories'
 import { NextLayout } from 'type/element/layout'
 import {
-	ProjectDisucssionRoomMutaionResponse,
-	projectMutaionResponse,
+	ProjectDiscussionRoomMutationResponse,
+	projectMutationResponse,
 } from 'type/mutationResponses'
 import AddDiscussion from '../add-discussion'
 import DetailDiscussion from './[discussionId]'
 
 export interface IDiscussionsProps {
-	allDiscussionRooms: ProjectDisucssionRoomMutaionResponse
+	allDiscussionRooms: ProjectDiscussionRoomMutationResponse
 }
 
 const Discussions: NextLayout = () => {
@@ -53,7 +53,7 @@ const Discussions: NextLayout = () => {
 	} = useDisclosure()
 
 	//Query ---------------------------------------------------------------------
-	const { data: dataAllProjectDisucssionRooms, mutate: refetchAllDiscussionRooms } =
+	const { data: dataAllProjectDiscussionRooms, mutate: refetchAllDiscussionRooms } =
 		allProjectDiscussionRoomsQuery(isAuthenticated, Number(projectId))
 
 	const { data: dataDetailProject } = detailProjectQuery(isAuthenticated, Number(projectId))
@@ -65,7 +65,7 @@ const Discussions: NextLayout = () => {
 	] = deleteProjectDiscussionRoomMutation(setToast)
 
 	//User effect ---------------------------------------------------------------
-	//Handle check loged in
+	//Handle check logged in
 	useEffect(() => {
 		if (isAuthenticated) {
 			handleLoading(false)
@@ -166,8 +166,8 @@ const Discussions: NextLayout = () => {
 					</HStack>
 
 					<VStack w={'100%'}>
-						{dataAllProjectDisucssionRooms?.projectDiscussionRooms &&
-							dataAllProjectDisucssionRooms.projectDiscussionRooms.map(
+						{dataAllProjectDiscussionRooms?.projectDiscussionRooms &&
+							dataAllProjectDiscussionRooms.projectDiscussionRooms.map(
 								(discussionRoom) => (
 									<>
 										<ProjectDiscussionItem
@@ -233,7 +233,7 @@ const Discussions: NextLayout = () => {
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-	//Get accesstoken
+	//Get access token
 	const getAccessToken: { accessToken: string; code: number; message: string; success: boolean } =
 		await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/refresh_token`, {
 			method: 'GET',
@@ -253,7 +253,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 	}
 
 	//Check assigned
-	const checkAsignedProject: projectMutaionResponse = await fetch(
+	const checkAssignedProject: projectMutationResponse = await fetch(
 		`${process.env.NEXT_PUBLIC_API_URL}/api/projects/${context.query.projectId}/check-assigned`,
 		{
 			method: 'GET',
@@ -263,7 +263,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 		}
 	).then((e) => e.json())
 
-	if (!checkAsignedProject.success) {
+	if (!checkAssignedProject.success) {
 		return {
 			notFound: true,
 		}

@@ -1,7 +1,7 @@
 import { AxiosError } from "axios"
 import { getDataDashBoardRequest } from "requests/dashboard"
 import useSWR from "swr"
-import { IpendingTasks } from "type/mutationResponses"
+import { IPendingTasks } from "type/mutationResponses"
 
 export const pendingTasksQuery = (
 	isAuthenticated: boolean | null
@@ -81,7 +81,7 @@ export const todayAttendanceQuery = (
 export const pendingTasksRawQuery = (
 	isAuthenticated: boolean | null
 ) => {
-	return useSWR<IpendingTasks, AxiosError>(
+	return useSWR<IPendingTasks, AxiosError>(
 		isAuthenticated 
 			? `/pending-tasks-raw`
 			: null,

@@ -30,7 +30,7 @@ const Login: NextLayout = () => {
 
 	// login ------------------------------------------------
 
-	// loadding button
+	// loading button
 	const [googleLoad, setGLoad] = useState(false)
 
 	const { signIn} = useGoogleLogin({

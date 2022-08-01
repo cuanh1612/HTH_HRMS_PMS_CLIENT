@@ -1,10 +1,10 @@
 import { createStickyNoteForm, updateStickyNoteForm } from 'type/form/basicFormType'
-import { stickyNoteMutaionResponse } from 'type/mutationResponses'
+import { stickyNoteMutationResponse } from 'type/mutationResponses'
 import { deleteData, getData, postData, putData } from 'utils/fetchData'
 
 //Function handle create
 export async function createStickyNoteRequest(inputCreate: createStickyNoteForm) {
-	const resultFetch = await postData<stickyNoteMutaionResponse>({
+	const resultFetch = await postData<stickyNoteMutationResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/sticky-notes`,
 		body: inputCreate,
 	})
@@ -14,21 +14,21 @@ export async function createStickyNoteRequest(inputCreate: createStickyNoteForm)
 
 //Function handle get all sticky note
 export const allStickyNoteRequest = async (url: string) => {
-	return await getData<stickyNoteMutaionResponse>({
+	return await getData<stickyNoteMutationResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/${url}`,
 	})
 }
 
 //Handle to delete sticky note
 export const deleteStickyNoteRequest = async (id: string | number) => {
-	return await deleteData<stickyNoteMutaionResponse>({
+	return await deleteData<stickyNoteMutationResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/sticky-notes/${id}`,
 	})
 }
 
 //Function handle get detail stickyNote
 export const detailStickyNoteRequest = async (url: string) => {
-	return await getData<stickyNoteMutaionResponse>({
+	return await getData<stickyNoteMutationResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/${url}`,
 	})
 }
@@ -41,7 +41,7 @@ export async function updateStickyNoteRequest({
 	stickyNoteId: number | string
 	inputUpdate: updateStickyNoteForm
 }) {
-	const resultFetch = await putData<stickyNoteMutaionResponse>({
+	const resultFetch = await putData<stickyNoteMutationResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/sticky-notes/${stickyNoteId}`,
 		body: inputUpdate,
 	})

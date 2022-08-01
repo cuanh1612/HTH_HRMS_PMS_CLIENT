@@ -49,8 +49,8 @@ export default function Designation() {
 	const { data: dataDesignations, mutate: refetchDesignations } =
 		allDesignationsQuery(isAuthenticated)
 
-	//Useeffect ---------------------------------------------------------
-	//Handle check loged in
+	//UseEffect ---------------------------------------------------------
+	//Handle check logged in
 	useEffect(() => {
 		if (isAuthenticated) {
 			handleLoading(false)

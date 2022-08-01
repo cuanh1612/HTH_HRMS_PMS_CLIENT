@@ -5,7 +5,7 @@ import {
 	Grid,
 	GridItem,
 	HStack,
-	Input as ChakraInput,
+	Input as CInput,
 	Text,
 	VStack
 } from '@chakra-ui/react'
@@ -114,13 +114,13 @@ export default function UpdateTimeLog({ onCloseDrawer, timeLogIdProp }: IUpdateT
 	}
 
 	//Function ------------------------------------------------------------------
-	//handle when change stask
+	//handle when change task
 	const onChangeTask = (taskId: string | number) => {
 		setSelectedTaskId(taskId)
 	}
 
 	//User effect ---------------------------------------------------------------
-	//Handle check loged in
+	//Handle check logged in
 	useEffect(() => {
 		if (isAuthenticated) {
 			handleLoading(false)
@@ -177,7 +177,7 @@ export default function UpdateTimeLog({ onCloseDrawer, timeLogIdProp }: IUpdateT
 				})
 			})
 
-			//When refetch data tasks, value employeeid existing, need to clear option selected employee and employee id form
+			//When refetch data tasks, value employee id existing, need to clear option selected employee and employee id form
 			setOptionEmployees(newOptionEmployees)
 			setSelectedEmployeeId({
 				label: <Text color={'gray.400'}>Select...</Text>,
@@ -255,7 +255,7 @@ export default function UpdateTimeLog({ onCloseDrawer, timeLogIdProp }: IUpdateT
 					<GridItem w="100%" colSpan={[2, 1]}>
 						<VStack align={'start'}>
 							<Text color={'gray.400'}>Project</Text>
-							<ChakraInput
+							<CInput
 								type={'text'}
 								value={detailTimeLog?.timeLog?.project?.name}
 								disabled

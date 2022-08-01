@@ -1,10 +1,10 @@
 import { createTaskFileForm } from 'type/form/basicFormType'
-import { taskFileMutaionResponse } from 'type/mutationResponses'
+import { taskFileMutationResponse } from 'type/mutationResponses'
 import { deleteData, getData, postData } from 'utils/fetchData'
 
 //Function handle create task file
 export async function createTaskFileRequest(inputCreate: createTaskFileForm) {
-	const resultFetch = await postData<taskFileMutaionResponse>({
+	const resultFetch = await postData<taskFileMutationResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/task-files`,
 		body: inputCreate,
 	})
@@ -17,7 +17,7 @@ export async function deleteTaskFileRequest(inputDelete: {
 	taskFileId: number
 	taskId: number
 }) {
-	const resultFetch = await deleteData<taskFileMutaionResponse>({
+	const resultFetch = await deleteData<taskFileMutationResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/task-files/${inputDelete.taskFileId}/task/${inputDelete.taskId}`,
 	})
 
@@ -26,7 +26,7 @@ export async function deleteTaskFileRequest(inputDelete: {
 
 //Function handle get all task file
 export const allTaskFilesRequest = async (url: string) => {
-	return await getData<taskFileMutaionResponse>({
+	return await getData<taskFileMutationResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/${url}`,
 	})
 }

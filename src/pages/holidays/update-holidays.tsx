@@ -57,7 +57,7 @@ export default function UpdateHoliday({ onCloseDrawer, holidayId }: IUpdateHolid
 
 	//User effect ---------------------------------------------------------------
 
-	//Handle check loged in
+	//Handle check loggd in
 	useEffect(() => {
 		if (isAuthenticated) {
 			handleLoading(false)

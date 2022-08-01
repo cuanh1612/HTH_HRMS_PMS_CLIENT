@@ -106,7 +106,7 @@ const Holiday: NextLayout = () => {
 	const dataCSVTemplate = [{ holiday_date: '1-1-2022', occasion: 'occasion example' }]
 
 	//User effect ---------------------------------------------------------------
-	//Handle check loged in
+	//Handle check logged in
 	useEffect(() => {
 		if (isAuthenticated) {
 			handleLoading(false)

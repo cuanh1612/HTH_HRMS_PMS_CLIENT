@@ -12,7 +12,7 @@ import {
 import { yupResolver } from '@hookform/resolvers/yup'
 import {
 	Input,
-	CoutrySelector,
+	CountrySelector,
 	InputMutiple,
 	InputNumber,
 	Select,
@@ -213,7 +213,7 @@ export default function UpdateEmployees({ onCloseDrawer, employeeId }: IUpdateEm
 		}
 	}, [errorDepartments, errorDesignations, errorEmployee])
 
-	//Handle check loged in
+	//Handle check logged in
 	useEffect(() => {
 		if (isAuthenticated) {
 			handleLoading(false)
@@ -411,7 +411,7 @@ export default function UpdateEmployees({ onCloseDrawer, employeeId }: IUpdateEm
 					</GridItem>
 
 					<GridItem w="100%" colSpan={[2, 1]}>
-						<CoutrySelector name="country" form={formSetting} />
+						<CountrySelector name="country" form={formSetting} />
 					</GridItem>
 
 					<GridItem w="100%" colSpan={[2, 1]}>

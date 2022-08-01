@@ -4,13 +4,13 @@ import {
 	detailDiscussionReplyRequest,
 } from 'requests/projectDiscussionReply'
 import useSWR from 'swr'
-import { projectdiscussionReplyMutaionResponse } from 'type/mutationResponses'
+import { projectDiscussionReplyMutationResponse } from 'type/mutationResponses'
 
 export const allRepliesByDiscussionQuery = (
 	isAuthenticated: boolean | null,
 	projectDiscussionId?: number | string
 ) => {
-	return useSWR<projectdiscussionReplyMutaionResponse, AxiosError>(
+	return useSWR<projectDiscussionReplyMutationResponse, AxiosError>(
 		isAuthenticated && projectDiscussionId
 			? `project-discussion-replies/project-discussion-room/${projectDiscussionId}`
 			: null,
@@ -26,7 +26,7 @@ export const detailDiscussionReplyQuery = (
 	isAuthenticated: boolean | null,
 	discussionReplyId?: number | string
 ) => {
-	return useSWR<projectdiscussionReplyMutaionResponse, AxiosError>(
+	return useSWR<projectDiscussionReplyMutationResponse, AxiosError>(
 		isAuthenticated && discussionReplyId
 			? `project-discussion-replies/${discussionReplyId}`
 			: null,

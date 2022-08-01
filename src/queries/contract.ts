@@ -1,13 +1,13 @@
 import { AxiosError } from 'axios'
 import { allContractsRequest, detailContractRequest, publicContractRequest } from 'requests/contract'
 import useSWR from 'swr'
-import { contractMutaionResponse } from 'type/mutationResponses'
+import { contractMutationResponse } from 'type/mutationResponses'
 
 export const detailContractQuery = (
 	isAuthenticated: boolean | null,
 	contractId: number | null | undefined
 ) => {
-	return useSWR<contractMutaionResponse, AxiosError>(
+	return useSWR<contractMutationResponse, AxiosError>(
 		isAuthenticated && contractId ? `contracts/${contractId}` : null,
 		detailContractRequest,
 		{
@@ -20,7 +20,7 @@ export const detailContractQuery = (
 export const allContractsQuery = (
 	isAuthenticated: boolean | null
 ) => {
-	return useSWR<contractMutaionResponse, AxiosError>(
+	return useSWR<contractMutationResponse, AxiosError>(
 		isAuthenticated ? `contracts` : null,
 		allContractsRequest,
 		{
@@ -31,7 +31,7 @@ export const allContractsQuery = (
 }
 
 export const publicContractQuery = (token: string) => {
-	return useSWR<contractMutaionResponse, AxiosError>(
+	return useSWR<contractMutationResponse, AxiosError>(
 		token,
 		publicContractRequest,
 		{

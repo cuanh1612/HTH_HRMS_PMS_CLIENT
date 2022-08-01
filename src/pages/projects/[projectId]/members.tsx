@@ -27,7 +27,6 @@ import {
 	updateHourlyRateMutation,
 } from 'mutations'
 import { AlertDialog, Func, FuncCollapse, Table } from 'components/common'
-import { projectMutaionResponse } from 'type/mutationResponses'
 import Modal from 'components/modal/Modal'
 import { IOption } from 'type/basicTypes'
 import {
@@ -39,6 +38,7 @@ import { SelectMany } from 'components/form'
 import { IoAdd } from 'react-icons/io5'
 import { projectMembersColumn } from 'utils/columns'
 import Head from 'next/head'
+import { projectMutationResponse } from 'type/mutationResponses'
 
 var hourlyRateTimeOut: NodeJS.Timeout
 
@@ -48,7 +48,7 @@ const members: NextLayout = () => {
 	const router = useRouter()
 	const { projectId } = router.query
 	const [employeeId, setIdEmployee] = useState<number>()
-	const [projectResponse, setProject] = useState<projectMutaionResponse>()
+	const [projectResponse, setProject] = useState<projectMutationResponse>()
 
 	// set option employee to select
 	const [optionEmployees, setOptionEmployees] = useState<IOption[]>([])

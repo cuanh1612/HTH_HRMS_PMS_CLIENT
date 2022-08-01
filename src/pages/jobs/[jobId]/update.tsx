@@ -90,7 +90,7 @@ export default function UpdateJob({ onCloseDrawer, JobIdProp }: IUpdateJobProps)
 
 	//State selected
 	const [selectedOptionSkills, setSelectedSkills] = useState<IOption[]>([])
-	const [selectedOptionlocations, setSelectedLocations] = useState<IOption[]>([])
+	const [selectedOptionLocations, setSelectedLocations] = useState<IOption[]>([])
 	const [selectedOptionDepartment, setSelectedDepartment] = useState<IOption>()
 
 	//query ----------------------------------------------------------------------
@@ -168,7 +168,7 @@ export default function UpdateJob({ onCloseDrawer, JobIdProp }: IUpdateJobProps)
 		}
 	}
 
-	//Funtion -------------------------------------------------------------------
+	//Function -------------------------------------------------------------------
 	const onChangeDescription = (value: string) => {
 		setJobDescription(value)
 	}
@@ -339,15 +339,15 @@ export default function UpdateJob({ onCloseDrawer, JobIdProp }: IUpdateJobProps)
 		}
 	}, [statusUpJob])
 
-	//Chane data form when have data detail event
+	//Change data form when have data detail event
 	useEffect(() => {
 		if (dataDetailJob && dataDetailJob.job) {
 			//Set data selected option skills
 			if (dataDetailJob.job.skills) {
-				const newSelectedOptionSkils: IOption[] = []
+				const newSelectedOptionSkills: IOption[] = []
 
 				dataDetailJob.job.skills.map((skill) => {
-					newSelectedOptionSkils.push({
+					newSelectedOptionSkills.push({
 						label: (
 							<>
 								<Text>{skill.name}</Text>
@@ -357,15 +357,15 @@ export default function UpdateJob({ onCloseDrawer, JobIdProp }: IUpdateJobProps)
 					})
 				})
 
-				setSelectedSkills(newSelectedOptionSkils)
+				setSelectedSkills(newSelectedOptionSkills)
 			}
 
 			//Set data selected option locations
 			if (dataDetailJob.job.locations) {
-				const newSelectedOptionlocations: IOption[] = []
+				const newSelectedOptionLocations: IOption[] = []
 
 				dataDetailJob.job.locations.map((location) => {
-					newSelectedOptionlocations.push({
+					newSelectedOptionLocations.push({
 						label: (
 							<>
 								<Text>{location.name}</Text>
@@ -375,7 +375,7 @@ export default function UpdateJob({ onCloseDrawer, JobIdProp }: IUpdateJobProps)
 					})
 				})
 
-				setSelectedLocations(newSelectedOptionlocations)
+				setSelectedLocations(newSelectedOptionLocations)
 			}
 
 			//Set data selected option department
@@ -483,7 +483,7 @@ export default function UpdateJob({ onCloseDrawer, JobIdProp }: IUpdateJobProps)
 								options={optionLocations}
 								isModal={true}
 								onOpenModal={onOpenLocation}
-								selectedOptions={selectedOptionlocations}
+								selectedOptions={selectedOptionLocations}
 							/>
 						</HStack>
 					</GridItem>

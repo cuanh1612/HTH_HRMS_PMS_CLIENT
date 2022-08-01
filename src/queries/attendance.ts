@@ -1,7 +1,7 @@
 import { AxiosError } from 'axios'
 import { allAttendancesRequest } from 'requests/attendance'
 import useSWR from 'swr'
-import { attendanceMutaionResponse } from 'type/mutationResponses'
+import { attendanceMutationResponse } from 'type/mutationResponses'
 
 export const allAttendancesQuery = (
 	isAuthenticated: boolean | null,
@@ -24,7 +24,7 @@ export const allAttendancesQuery = (
 		}
 	}
 
-	return useSWR<attendanceMutaionResponse, AxiosError>(
+	return useSWR<attendanceMutationResponse, AxiosError>(
 		isAuthenticated ? (url ? `attendances${url}` : 'attendances') : null,
 		allAttendancesRequest,
 		{

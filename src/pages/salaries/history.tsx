@@ -40,8 +40,8 @@ export default function HistorySalary({ employeeId = 6 }: IHistorySalaryProps) {
 	)
 	console.log(dataHistorySalary)
 
-	//Useeffect ---------------------------------------------------------
-	//Handle check loged in
+	//UseEffect ---------------------------------------------------------
+	//Handle check logged in
 	useEffect(() => {
 		if (isAuthenticated) {
 			handleLoading(false)
@@ -148,7 +148,7 @@ export default function HistorySalary({ employeeId = 6 }: IHistorySalaryProps) {
 										$
 										{dataHistorySalary?.historySalary.salaries
 											? dataHistorySalary?.historySalary.salaries.reduce(
-													(accu, salary) => {
+													(accu: any, salary: any) => {
 														if (salary.type === 'Increment') {
 															return accu + salary.amount
 														} else {

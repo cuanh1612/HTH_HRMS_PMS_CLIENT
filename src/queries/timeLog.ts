@@ -1,13 +1,13 @@
 import { AxiosError } from 'axios'
 import { allTimeLogByProjectRequest, detailTimeLogRequest } from 'requests/timeLog'
 import useSWR from 'swr'
-import { TimeLogMutaionResponse } from 'type/mutationResponses'
+import { TimeLogMutationResponse } from 'type/mutationResponses'
 
 export const detailTimeLogQuery = (
 	isAuthenticated: boolean | null,
 	timeLogId?: string | number
 ) => {
-	return useSWR<TimeLogMutaionResponse, AxiosError>(
+	return useSWR<TimeLogMutationResponse, AxiosError>(
 		isAuthenticated && timeLogId ? `time-logs/${timeLogId}` : null,
 		detailTimeLogRequest,
 		{
@@ -20,7 +20,7 @@ export const timeLogsByProjectQuery = (
 	isAuthenticated: boolean | null,
 	projectId?: string | string[] | number
 ) => {
-	return useSWR<TimeLogMutaionResponse, AxiosError>(
+	return useSWR<TimeLogMutationResponse, AxiosError>(
 		isAuthenticated && projectId ? `time-logs/by-project/${projectId}` : null,
 		allTimeLogByProjectRequest,
 		{
@@ -33,7 +33,7 @@ export const timeLogsByProjectQuery = (
 export const timeLogsQuery = (
 	isAuthenticated: boolean | null,
 ) => {
-	return useSWR<TimeLogMutaionResponse, AxiosError>(
+	return useSWR<TimeLogMutationResponse, AxiosError>(
 		isAuthenticated ? `time-logs` : null,
 		allTimeLogByProjectRequest,
 		{
@@ -46,7 +46,7 @@ export const timeLogsQuery = (
 export const timeLogsCurrentUserQuery = (
 	isAuthenticated: boolean | null,
 ) => {
-	return useSWR<TimeLogMutaionResponse, AxiosError>(
+	return useSWR<TimeLogMutationResponse, AxiosError>(
 		isAuthenticated ? `time-logs/current-user` : null,
 		allTimeLogByProjectRequest,
 		{
@@ -85,7 +85,7 @@ export const timeLogsCalendarQuery = ({
 		}
 	}
 
-	return useSWR<TimeLogMutaionResponse, AxiosError>(
+	return useSWR<TimeLogMutationResponse, AxiosError>(
 		isAuthenticated ? `time-logs/calendar${url}` : null,
 		allTimeLogByProjectRequest,
 		{
@@ -126,7 +126,7 @@ export const timeLogsCalendarByEmployeeQuery = ({
 		}
 	}
 
-	return useSWR<TimeLogMutaionResponse, AxiosError>(
+	return useSWR<TimeLogMutationResponse, AxiosError>(
 		isAuthenticated && employeeId? `time-logs/calendar-employee/${employeeId}${url}` : null,
 		allTimeLogByProjectRequest,
 		{

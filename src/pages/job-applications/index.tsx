@@ -84,7 +84,7 @@ const jobApplications: NextLayout = () => {
 		deleteJobApplicationsMutation(setToast)
 
 	//User effect ---------------------------------------------------------------
-	//Handle check loged in
+	//Handle check logged in
 	useEffect(() => {
 		if (isAuthenticated) {
 			handleLoading(false)

@@ -101,7 +101,7 @@ export default function UpdateProject({ onCloseDrawer, projectIdUpdate }: IUpdat
 		updateProjectMutation(setToast)
 
 	//User effect ---------------------------------------------------------------
-	//Handle check loged in
+	//Handle check logged in
 	useEffect(() => {
 		if (isAuthenticated) {
 			handleLoading(false)
@@ -247,7 +247,7 @@ export default function UpdateProject({ onCloseDrawer, projectIdUpdate }: IUpdat
 		}
 	}
 
-	//Funtion -------------------------------------------------------------------
+	//Function -------------------------------------------------------------------
 	const onChangeSummary = (value: string) => {
 		setSummary(value)
 	}

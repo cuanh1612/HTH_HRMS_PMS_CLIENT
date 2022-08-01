@@ -87,7 +87,7 @@ export default function UpdateClient({ onCloseDrawer, clientUpdateId }: IAddClie
 	const [mutateUpClient, { status: statusUpClient, data: dataUpClient }] =
 		updateClientMutation(setToast)
 
-	//Funcion -----------------------------------------------------------------
+	//Function -----------------------------------------------------------------
 	//Handle change content editor
 	const handleChangeNote = (value: any) => {
 		setNote(value)
@@ -154,14 +154,14 @@ export default function UpdateClient({ onCloseDrawer, clientUpdateId }: IAddClie
 			values.note = note
 
 			//Upload avatar
-			const dataUploadAvattar: ICloudinaryImg | null = await handleUploadAvatar()
+			const dataUploadAvatar: ICloudinaryImg | null = await handleUploadAvatar()
 
 			//Check upload avatar success
-			if (dataUploadAvattar) {
+			if (dataUploadAvatar) {
 				values.avatar = {
-					name: dataUploadAvattar.name,
-					url: dataUploadAvattar.url,
-					public_id: dataUploadAvattar.public_id,
+					name: dataUploadAvatar.name,
+					url: dataUploadAvatar.url,
+					public_id: dataUploadAvatar.public_id,
 				}
 			}
 
@@ -250,7 +250,7 @@ export default function UpdateClient({ onCloseDrawer, clientUpdateId }: IAddClie
 		}
 	}, [dataDetailClient])
 
-	//Set option client catetgory
+	//Set option client category
 	useEffect(() => {
 		if (dataCategories?.clientCategories) {
 			const newOptionCategories: IOption[] = dataCategories.clientCategories.map(
@@ -489,7 +489,7 @@ export default function UpdateClient({ onCloseDrawer, clientUpdateId }: IAddClie
 								/>
 							}
 							form={formSetting}
-							placeholder="e.g. ABC Copany"
+							placeholder="e.g. ABC Company"
 							type="text"
 						/>
 					</GridItem>

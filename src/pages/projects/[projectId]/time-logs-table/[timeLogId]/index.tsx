@@ -6,7 +6,7 @@ import { detailTimeLogQuery } from 'queries/timeLog'
 import { useContext, useEffect } from 'react'
 import 'react-quill/dist/quill.bubble.css'
 import 'react-quill/dist/quill.snow.css'
-import { projectMutaionResponse } from 'type/mutationResponses'
+import { projectMutationResponse } from 'type/mutationResponses'
 
 export interface IDetailTimeLogProps {
 	timeLogIdProp?: string | number
@@ -24,7 +24,7 @@ export default function DetailTimeLog({ timeLogIdProp }: IDetailTimeLogProps) {
 	)
 
 	//User effect ---------------------------------------------------------------
-	//Handle check loged in
+	//Handle check logged in
 	useEffect(() => {
 		if (isAuthenticated) {
 			handleLoading(false)
@@ -113,7 +113,7 @@ export default function DetailTimeLog({ timeLogIdProp }: IDetailTimeLogProps) {
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-	//Get accesstoken
+	//Get access token
 	const getAccessToken: { accessToken: string; code: number; message: string; success: boolean } =
 		await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/refresh_token`, {
 			method: 'GET',
@@ -133,7 +133,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 	}
 
 	//Check assigned
-	const checkAsignedProject: projectMutaionResponse = await fetch(
+	const checkAssignedProject: projectMutationResponse = await fetch(
 		`${process.env.NEXT_PUBLIC_API_URL}/api/projects/${context.query.projectId}/check-asigned`,
 		{
 			method: 'GET',
@@ -143,7 +143,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 		}
 	).then((e) => e.json())
 
-	if (!checkAsignedProject.success) {
+	if (!checkAssignedProject.success) {
 		return {
 			notFound: true,
 		}

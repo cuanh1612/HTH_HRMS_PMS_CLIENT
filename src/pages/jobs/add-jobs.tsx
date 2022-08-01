@@ -105,7 +105,7 @@ export default function AddJob({ onCloseDrawer }: IAddJobProps) {
 	//mutation ----------------------------------------------------------------
 	const [mutateCreJob, { status: statusCreJob, data: dataCreJob }] = createJobMutation(setToast)
 
-	//Funcion -----------------------------------------------------------------
+	//Function -----------------------------------------------------------------
 	const onChangeDescription = (value: string) => {
 		setJobDescription(value)
 	}

@@ -50,11 +50,11 @@ export const compareDateTime = (date1: string, date2: string, inClock: string, o
 
 export const setTime = (time: string) => {
 	if (time.split(' ')[1] && time.split(' ')[1] == ('AM' || 'PM')) {
-		const hoursAminutes = time.split(':')
+		const hoursAMinutes = time.split(':')
 		return {
 			time,
-			hours: Number(hoursAminutes[0]),
-			minutes: Number(hoursAminutes[1]),
+			hours: Number(hoursAMinutes[0]),
+			minutes: Number(hoursAMinutes[1]),
 			AMOrPM: time.split(' ')[1],
 		}
 	}

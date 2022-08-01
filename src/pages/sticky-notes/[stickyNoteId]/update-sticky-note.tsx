@@ -72,13 +72,13 @@ export default function UpdateStickyNote({
 		}
 	}
 
-	//Funtion -------------------------------------------------------------------
+	//Function -------------------------------------------------------------------
 	const onChangeNote = (value: string) => {
 		setNote(value)
 	}
 
 	//User effect ---------------------------------------------------------------
-	//Handle check loged in
+	//Handle check logged in
 	useEffect(() => {
 		if (isAuthenticated) {
 			handleLoading(false)

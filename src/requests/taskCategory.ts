@@ -1,17 +1,17 @@
 import { createTaskCategoryForm } from 'type/form/basicFormType'
-import { TaskCategoryMutaionResponse } from 'type/mutationResponses'
+import { TaskCategoryMutationResponse } from 'type/mutationResponses'
 import { deleteData, getData, postData, putData } from 'utils/fetchData'
 
 //Function handle get all task category
 export const allTaskCategoryRequest = async (url: string) => {
-	return await getData<TaskCategoryMutaionResponse>({
+	return await getData<TaskCategoryMutationResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/${url}`,
 	})
 }
 
 //Function handle create task category
 export async function createTaskCategoryRequest(inputCreate: createTaskCategoryForm) {
-	const resultFetch = await postData<TaskCategoryMutaionResponse>({
+	const resultFetch = await postData<TaskCategoryMutationResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/task-categories`,
 		body: inputCreate,
 	})
@@ -21,7 +21,7 @@ export async function createTaskCategoryRequest(inputCreate: createTaskCategoryF
 
 //Function handle delete task category
 export async function deleteTaskCategoryRequest(inputDelete: { taskCategoryId: number }) {
-	const resultFetch = await deleteData<TaskCategoryMutaionResponse>({
+	const resultFetch = await deleteData<TaskCategoryMutationResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/task-categories/${inputDelete.taskCategoryId}`,
 	})
 
@@ -36,7 +36,7 @@ export async function updateTaskCategoryRequest({
 	taskCategoryId: number
 	name: string
 }) {
-	const resultFetch = await putData<TaskCategoryMutaionResponse>({
+	const resultFetch = await putData<TaskCategoryMutationResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/task-categories/${taskCategoryId}`,
 		body: {
 			name,

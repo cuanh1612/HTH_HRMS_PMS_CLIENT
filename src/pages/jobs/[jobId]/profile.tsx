@@ -24,7 +24,7 @@ const DetailJob: NextLayout | any = ({ jobIdProp, onOpenDl, onOpenUpdate }: IDet
 	const { data: detailJob } = detailJobQuery(jobIdProp || (jobIdRouter as string))
 
 	//User effect ---------------------------------------------------------------
-	//Handle check loged in
+	//Handle check logged in
 	useEffect(() => {
 		if (isAuthenticated) {
 			handleLoading(false)

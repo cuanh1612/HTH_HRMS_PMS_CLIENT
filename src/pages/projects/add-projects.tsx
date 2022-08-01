@@ -107,7 +107,7 @@ export default function AddProject({ onCloseDrawer }: IAddProjectProps) {
 		createProjectMutation(setToast)
 
 	//User effect ---------------------------------------------------------------
-	//Handle check loged in
+	//Handle check logged in
 	useEffect(() => {
 		if (isAuthenticated) {
 			handleLoading(false)
@@ -246,7 +246,7 @@ export default function AddProject({ onCloseDrawer }: IAddProjectProps) {
 		//Check value employees
 		if (!values.employees || values.employees.length === 0) {
 			setToast({
-				msg: 'Please selct employees for project',
+				msg: 'Please select employees for project',
 				type: 'warning',
 			})
 		} else if (new Date(values.deadline) < new Date(values.start_date)) {
@@ -279,7 +279,7 @@ export default function AddProject({ onCloseDrawer }: IAddProjectProps) {
 		}
 	}
 
-	//Funtion -------------------------------------------------------------------
+	//Function -------------------------------------------------------------------
 	const onChangeSummary = (value: string) => {
 		setSummary(value)
 	}
@@ -314,7 +314,7 @@ export default function AddProject({ onCloseDrawer }: IAddProjectProps) {
 		setFilesUpload(newFilesUpload)
 	}
 
-	//Handle upload fies
+	//Handle upload files
 	const handleUploadFiles = async () => {
 		if (filesUpload.length > 0) {
 			//Set is load upload file

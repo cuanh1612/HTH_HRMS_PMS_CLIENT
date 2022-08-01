@@ -19,7 +19,7 @@ import {
 	createProDiscussionCategoryForm,
 	createProjectDiscussionRoomForm
 } from 'type/form/basicFormType'
-import { projectMutaionResponse } from 'type/mutationResponses'
+import { projectMutationResponse } from 'type/mutationResponses'
 import { CreateProjectDiscussionRoomValidate } from 'utils/validate'
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
@@ -73,8 +73,8 @@ export default function AddDiscussion({onCloseModal}: IAddDiscussionProps) {
 		setDescription(value)
 	}
 
-	//Useeffect ----------------------------------------------------------
-	//Handle check loged in
+	//UseEffect ----------------------------------------------------------
+	//Handle check logged in
 	useEffect(() => {
 		if (isAuthenticated) {
 			handleLoading(false)
@@ -85,7 +85,7 @@ export default function AddDiscussion({onCloseModal}: IAddDiscussionProps) {
 		}
 	}, [isAuthenticated])
 
-	//Useeffect ----------------------------------------------------------
+	//UseEffect ----------------------------------------------------------
 	//Notice when create success
 	useEffect(() => {
 		switch (statusCreProjectDiscussionRoomType) {
@@ -230,7 +230,7 @@ export default function AddDiscussion({onCloseModal}: IAddDiscussionProps) {
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-	//Get accesstoken
+	//Get access token
 	const getAccessToken: { accessToken: string; code: number; message: string; success: boolean } =
 		await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/refresh_token`, {
 			method: 'GET',
@@ -250,7 +250,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 	}
 
 	//Check assigned
-	const checkAsignedProject: projectMutaionResponse = await fetch(
+	const checkAssignedProject: projectMutationResponse = await fetch(
 		`${process.env.NEXT_PUBLIC_API_URL}/api/projects/${context.query.projectId}/check-asigned`,
 		{
 			method: 'GET',
@@ -260,7 +260,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 		}
 	).then((e) => e.json())
 
-	if (!checkAsignedProject.success) {
+	if (!checkAssignedProject.success) {
 		return {
 			notFound: true,
 		}

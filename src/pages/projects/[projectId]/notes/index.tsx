@@ -28,7 +28,7 @@ import {
 import { IoAdd } from 'react-icons/io5'
 import { VscFilter } from 'react-icons/vsc'
 import { NextLayout } from 'type/element/layout'
-import { projectMutaionResponse } from 'type/mutationResponses'
+import { projectMutationResponse } from 'type/mutationResponses'
 import { IFilter, TColumn } from 'type/tableTypes'
 import { projectNotesColumn } from 'utils/columns'
 import AddNote from './add-notes'
@@ -112,8 +112,8 @@ const Notes: NextLayout = () => {
 		onClose: onCloseReEnterPassword,
 	} = useDisclosure()
 
-	//Useeffect ---------------------------------------------------------
-	//Handle check loged in
+	//UseEffect ---------------------------------------------------------
+	//Handle check logged in
 	useEffect(() => {
 		if (isAuthenticated) {
 			handleLoading(false)
@@ -399,7 +399,7 @@ const Notes: NextLayout = () => {
 					<VStack align={'start'}>
 						<Input
 							type={'text'}
-							placeholder="Plear Enter Your Password"
+							placeholder="Please Enter Your Password"
 							defaultValue={password}
 							handleSearch={(e: IFilter) => {
 								console.log(e.filterValue)
@@ -434,7 +434,7 @@ const Notes: NextLayout = () => {
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-	//Get accesstoken
+	//Get access token
 	const getAccessToken: { accessToken: string; code: number; message: string; success: boolean } =
 		await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/refresh_token`, {
 			method: 'GET',
@@ -454,7 +454,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 	}
 
 	//Check assigned
-	const checkAsignedProject: projectMutaionResponse = await fetch(
+	const checkAssignedProject: projectMutationResponse = await fetch(
 		`${process.env.NEXT_PUBLIC_API_URL}/api/projects/${context.query.projectId}/check-assigned`,
 		{
 			method: 'GET',
@@ -464,7 +464,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 		}
 	).then((e) => e.json())
 
-	if (!checkAsignedProject.success) {
+	if (!checkAssignedProject.success) {
 		return {
 			notFound: true,
 		}

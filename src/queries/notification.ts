@@ -1,10 +1,10 @@
 import { AxiosError } from 'axios'
 import { notificationByCurrentUserRequest } from 'requests/notification'
 import useSWR from 'swr'
-import { NotificationMutaionResponse } from 'type/mutationResponses'
+import { NotificationMutationResponse } from 'type/mutationResponses'
 
 export const NotificationByCurrentUserQuery = (isAuthenticated: boolean | null) => {
-	return useSWR<NotificationMutaionResponse, AxiosError>(
+	return useSWR<NotificationMutationResponse, AxiosError>(
 		isAuthenticated ? `notifications` : null,
 		notificationByCurrentUserRequest,
 		{

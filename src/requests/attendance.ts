@@ -1,10 +1,10 @@
 import { AttendanceForm } from "type/form/basicFormType"
-import { attendanceMutaionResponse, commonResponse} from "type/mutationResponses"
+import { attendanceMutationResponse, commonResponse} from "type/mutationResponses"
 import { getData, postData } from "utils/fetchData"
 
 //Function handle get all attendance
 export async function allAttendancesRequest(url: any) {
-	const resultFetch = await getData<attendanceMutaionResponse>({
+	const resultFetch = await getData<attendanceMutationResponse>({
 		url: `${process.env.NEXT_PUBLIC_API_URL}/api/${url}`,
 	})
 

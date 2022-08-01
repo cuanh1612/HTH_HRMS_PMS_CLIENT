@@ -39,12 +39,12 @@ import { MdOutlineDriveFileRenameOutline } from 'react-icons/md'
 import SignaturePad from 'react-signature-canvas'
 import { SWRConfig } from 'swr'
 import { createSignatureForm } from 'type/form/basicFormType'
-import { contractMutaionResponse, jobOfferLetterMutationResponse } from 'type/mutationResponses'
+import { contractMutationResponse, jobOfferLetterMutationResponse } from 'type/mutationResponses'
 import { signBase64Empaty } from 'utils/basicData'
 import { getDataBlob, uploadBase64 } from 'utils/uploadFile'
 import { CreateSignatureValidate } from 'utils/validate'
 
-export default function PublickContract({
+export default function PublicContract({
 	result,
 	token,
 }: {
@@ -63,7 +63,6 @@ export default function PublickContract({
 		onClose: onCloseSignature,
 	} = useDisclosure()
 
-	//Useref -----------------------------------------------------------
 	let signPad: any = useRef({})
 
 	//mutation ---------------------------------------------------------
@@ -128,7 +127,7 @@ export default function PublickContract({
 		signPad.current.clear()
 	}
 
-	//Useeffect --------------------------------------------------------
+	//UseEffect --------------------------------------------------------
 	//Handle loading page
 	useEffect(() => {
 		handleLoading(false)
@@ -301,7 +300,7 @@ export default function PublickContract({
 							<Image
 								boxSize={'50px'}
 								src="https://bit.ly/dan-abramov"
-								alt="Dan Abramov"
+								alt="Avatar"
 								borderRadius={5}
 							/>
 							<VStack align={'end'}>
@@ -389,7 +388,7 @@ export default function PublickContract({
 									</Text>
 									<Grid templateColumns="repeat(4, 1fr)" gap={6} w={'full'}>
 										<GridItem w="100%" colSpan={[4, 1]}>
-											<Text color={'gray.400'}>Job ttle:</Text>
+											<Text color={'gray.400'}>Job title:</Text>
 										</GridItem>
 										<GridItem w="100%" colSpan={[4, 3]}>
 											<Text>
@@ -621,7 +620,7 @@ export default function PublickContract({
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-	const getAccessToken: contractMutaionResponse = await fetch(
+	const getAccessToken: contractMutationResponse = await fetch(
 		`${process.env.NEXT_PUBLIC_API_URL}/api/job-offer-letters/public/${context.query.token}`,
 		{
 			method: 'GET',

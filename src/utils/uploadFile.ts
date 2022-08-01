@@ -1,13 +1,13 @@
 import { ICloudinaryImg, IImgCrop } from 'type/fileType'
-interface IIploadFile {
+interface IUploadFile {
 	files: File[]
-	tags: String[]
+	tags: string[]
 	folder?: string
 	options?: IImgCrop
 	upload_preset: string
 	raw: boolean
 }
-export const uploadFile = async ({ files, tags, folder, options, upload_preset, raw }: IIploadFile) => {
+export const uploadFile = async ({ files, tags, folder, options, upload_preset, raw }: IUploadFile) => {
 	let data: any = []
 	await Promise.all(
 		files.map(async (file) => {

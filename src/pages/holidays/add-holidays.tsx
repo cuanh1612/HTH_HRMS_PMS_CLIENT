@@ -61,14 +61,14 @@ export default function AddHoliday({ onCloseDrawer }: IAddHolidayProps) {
 		setHolidays([...newHolidays])
 	}
 
-	//Handle change date occation
+	//Handle change date occasion
 	const onChangeDate = (date: string, index: number) => {
 		let newHolidays = holidays
 		newHolidays[index].holiday_date = date
 		setHolidays(newHolidays)
 	}
 
-	//Handle change occation
+	//Handle change occasion
 	const onChangeOccasion = (occasion: string, index: number) => {
 		let newHolidays = holidays
 		newHolidays[index].occasion = occasion
@@ -92,7 +92,7 @@ export default function AddHoliday({ onCloseDrawer }: IAddHolidayProps) {
 
 	//User effect ---------------------------------------------------------------
 
-	//Handle check loged in
+	//Handle check log ged in
 	useEffect(() => {
 		if (isAuthenticated) {
 			handleLoading(false)

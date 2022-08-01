@@ -13,7 +13,7 @@ const index:NextLayout = ()=> {
 
 
 
-	//Handle check loged in
+	//Handle check logged in
 	useEffect(() => {
 		if (isAuthenticated) {
 			handleLoading(false)

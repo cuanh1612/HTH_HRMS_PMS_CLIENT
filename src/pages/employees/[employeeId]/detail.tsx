@@ -22,13 +22,13 @@ import { BsCheck2 } from 'react-icons/bs'
 import { VscTasklist } from 'react-icons/vsc'
 import { SWRConfig } from 'swr'
 import { NextLayout } from 'type/element/layout'
-import { authMutaionResponse, employeeMutaionResponse } from 'type/mutationResponses'
+import { authMutationResponse, employeeMutationResponse } from 'type/mutationResponses'
 
 export const DetailEmployee: NextLayout | any = ({
 	dataDetailEmployee,
 	employeeIdProp,
 }: {
-	dataDetailEmployee: employeeMutaionResponse
+	dataDetailEmployee: employeeMutationResponse
 	employeeIdProp?: string | number
 }) => {
 	// const { isOpen, onOpen, onClose } = useDisclosure()
@@ -72,7 +72,7 @@ export const DetailEmployee: NextLayout | any = ({
 	console.log(countTasksStatus)
 
 	//User effect ---------------------------------------------------------------
-	//Handle check loged in
+	//Handle check logged in
 	useEffect(() => {
 		if (isAuthenticated) {
 			handleLoading(false)
@@ -305,7 +305,7 @@ export const DetailEmployee: NextLayout | any = ({
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-	const res: authMutaionResponse = await fetch(
+	const res: authMutationResponse = await fetch(
 		`${process.env.NEXT_PUBLIC_API_URL}/api/auth/refresh_token`,
 		{
 			headers: context.req.headers as HeadersInit,
@@ -313,7 +313,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 	).then((result) => result.json())
 
 	//get detail employee
-	const queryEmployee: employeeMutaionResponse = await fetch(
+	const queryEmployee: employeeMutationResponse = await fetch(
 		`${process.env.NEXT_PUBLIC_API_URL}/api/employees/${context.query.employeeId}`,
 		{
 			headers: {

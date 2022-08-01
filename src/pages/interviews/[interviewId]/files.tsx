@@ -97,7 +97,7 @@ export default function InterviewFile({ interviewIdProp }: IInterviewFileProps) 
 		return leaveRoom
 	}, [socket, interviewIdProp, interviewIdRouter])
 
-	//Handle check loged in
+	//Handle check logged in
 	useEffect(() => {
 		if (isAuthenticated) {
 			handleLoading(false)
@@ -158,7 +158,7 @@ export default function InterviewFile({ interviewIdProp }: IInterviewFileProps) 
 		onCloseAdd()
 	}
 
-	//Handle upload fies
+	//Handle upload files
 	const handleUploadFiles = async () => {
 		if (filesUpload.length > 0) {
 			//Set is load upload file

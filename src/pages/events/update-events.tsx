@@ -163,7 +163,7 @@ export default function UpdateEvent({ onCloseDrawer, eventIdUpdate }: IUpdateEve
 		}
 	}, [statusUpEvent])
 
-	//Chane data form when have data detail event
+	//change data form when have data detail event
 	useEffect(() => {
 		if (dataDetailEvent && dataDetailEvent.event) {
 			//Set data selected option employee
@@ -263,7 +263,7 @@ export default function UpdateEvent({ onCloseDrawer, eventIdUpdate }: IUpdateEve
 		console.log(formSetting.getValues())
 	}, [formSetting])
 
-	//Funtion -------------------------------------------------------------------
+	//Function -------------------------------------------------------------------
 	const onChangeDescription = (value: string) => {
 		setDescription(value)
 	}

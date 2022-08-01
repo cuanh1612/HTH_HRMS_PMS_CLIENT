@@ -5,7 +5,7 @@ import {
 	Grid,
 	GridItem,
 	HStack,
-	Input as ChakraInput,
+	Input as CInput,
 	Text,
 	VStack,
 } from '@chakra-ui/react'
@@ -32,7 +32,7 @@ import 'react-quill/dist/quill.bubble.css'
 import 'react-quill/dist/quill.snow.css'
 import { IOption } from 'type/basicTypes'
 import { createProjectTimeLogForm } from 'type/form/basicFormType'
-import { projectMutaionResponse } from 'type/mutationResponses'
+import { projectMutationResponse } from 'type/mutationResponses'
 import { compareDateTime } from 'utils/time'
 import { CreateProjectTimeLogValidate } from 'utils/validate'
 
@@ -113,13 +113,13 @@ export default function AddTimeLog({ onCloseDrawer }: IAddTimeLogProps) {
 	}
 
 	//Function ------------------------------------------------------------------
-	//handle when change stask
+	//handle when change task
 	const onChangeTask = (taskId: string | number) => {
 		setSelectedTaskId(taskId)
 	}
 
 	//User effect ---------------------------------------------------------------
-	//Handle check loged in
+	//Handle check logged in
 	useEffect(() => {
 		if (isAuthenticated) {
 			handleLoading(false)
@@ -169,7 +169,7 @@ export default function AddTimeLog({ onCloseDrawer }: IAddTimeLogProps) {
 				})
 			})
 
-			//When refetch data tasks, value employeeid existing, need to clear option selected employee and employee id form
+			//When refetch data tasks, value employee id existing, need to clear option selected employee and employee id form
 			setOptionEmployees(newOptionEmployees)
 			setSelectedEmployeeId({
 				label: <Text color={'gray.400'}>Select...</Text>,
@@ -209,7 +209,7 @@ export default function AddTimeLog({ onCloseDrawer }: IAddTimeLogProps) {
 					<GridItem w="100%" colSpan={[2, 1]}>
 						<VStack align={'start'}>
 							<Text color={'gray.400'}>Project</Text>
-							<ChakraInput
+							<CInput
 								type={'text'}
 								value={dataDetailProject?.project?.name}
 								disabled
@@ -314,7 +314,7 @@ export default function AddTimeLog({ onCloseDrawer }: IAddTimeLogProps) {
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-	//Get accesstoken
+	//Get access token
 	const getAccessToken: { accessToken: string; code: number; message: string; success: boolean } =
 		await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/refresh_token`, {
 			method: 'GET',
@@ -334,7 +334,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 	}
 
 	//Check assigned
-	const checkAsignedProject: projectMutaionResponse = await fetch(
+	const checkAssignedProject: projectMutationResponse = await fetch(
 		`${process.env.NEXT_PUBLIC_API_URL}/api/projects/${context.query.projectId}/check-asigned`,
 		{
 			method: 'GET',
@@ -344,7 +344,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 		}
 	).then((e) => e.json())
 
-	if (!checkAsignedProject.success) {
+	if (!checkAssignedProject.success) {
 		return {
 			notFound: true,
 		}

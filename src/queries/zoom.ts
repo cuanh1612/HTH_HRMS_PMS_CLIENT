@@ -1,7 +1,7 @@
 import { AxiosError } from 'axios'
 import useSWR from 'swr'
 import { allUsersRequest } from 'requests/user'
-import { roomMutaionResponse } from 'type/mutationResponses'
+import { roomMutationResponse } from 'type/mutationResponses'
 
 export const allRoomsQuery = (input: {
 	isAuthenticated: boolean | null
@@ -35,7 +35,7 @@ export const allRoomsQuery = (input: {
 		}
 	}
 
-	return useSWR<roomMutaionResponse, AxiosError>(
+	return useSWR<roomMutationResponse, AxiosError>(
 		input.isAuthenticated ? url : null,
 		allUsersRequest,
 		{

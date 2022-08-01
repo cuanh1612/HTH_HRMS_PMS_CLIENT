@@ -83,7 +83,7 @@ const TimeLog: NextLayout = () => {
 	// get all project to filter
 	const { data: dataAllProjects } = allProjectsNormalQuery(isAuthenticated)
 
-	//Useeffect ---------------------------------------------------------
+	//UseEffect ---------------------------------------------------------
 	//Handle check login successfully
 	useEffect(() => {
 		if (isAuthenticated) {

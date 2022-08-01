@@ -62,7 +62,7 @@ const Skill: NextLayout = () => {
 	const [deleteMany, { status: statusDlMany, data: dataDlMany }] = deleteManySkillMutation(setToast)
 
 	//User effect ---------------------------------------------------------------
-	//Handle check loged in
+	//Handle check logged in
 	useEffect(() => {
 		if (isAuthenticated) {
 			handleLoading(false)

@@ -1,10 +1,10 @@
 import { AxiosError } from 'axios'
 import { allContractTypesRequest } from 'requests/contractType'
 import useSWR from 'swr'
-import { contractTypeMutaionResponse } from 'type/mutationResponses'
+import { contractTypeMutationResponse } from 'type/mutationResponses'
 
 export const allContractTypesQuery = () => {
-	return useSWR<contractTypeMutaionResponse, AxiosError>(
+	return useSWR<contractTypeMutationResponse, AxiosError>(
 		`contract-types`,
 		allContractTypesRequest,
 		{

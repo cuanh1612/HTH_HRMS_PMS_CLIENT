@@ -13,7 +13,7 @@ import { createContractForm } from 'type/form/basicFormType'
 import { dataCurrency } from 'utils/basicData'
 import { CreateContractValidate } from 'utils/validate'
 //CSS
-import { CoutrySelector, Input, InputNumber, Select, Textarea, UploadAvatar } from 'components/form'
+import { CountrySelector, Input, InputNumber, Select, Textarea, UploadAvatar } from 'components/form'
 import Modal from 'components/modal/Modal'
 import { allClientsQuery, allContractsQuery, allContractTypesQuery } from 'queries'
 import { BsCalendarDate } from 'react-icons/bs'
@@ -361,7 +361,7 @@ export default function AddContract({ onCloseDrawer }: IAddContractProps) {
 					</GridItem>
 
 					<GridItem w="100%" colSpan={[2, 1]}>
-						<CoutrySelector name="country" form={formSetting} />
+						<CountrySelector name="country" form={formSetting} />
 					</GridItem>
 
 					<GridItem w="100%" colSpan={[2, 1]}>

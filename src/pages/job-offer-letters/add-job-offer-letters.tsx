@@ -20,11 +20,13 @@ import { CreateJobOfferValidate } from 'utils/validate'
 export interface IAddJobOfferLettersProps {
 	onCloseDrawer?: () => void
 	job?: jobType
+	onUpdateOffer?: any
 }
 
 export default function AddOfferLetter({
 	onCloseDrawer,
 	job: jobProp,
+	onUpdateOffer
 }: IAddJobOfferLettersProps) {
 	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
 	const router = useRouter()
@@ -216,6 +218,9 @@ export default function AddOfferLetter({
 			})
 
 			refetchAllJobOfferLetters()
+			if(onUpdateOffer) {
+				onUpdateOffer()
+			}
 		}
 	}, [statusCreJobOffer])
 

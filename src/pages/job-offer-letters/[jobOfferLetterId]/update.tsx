@@ -20,7 +20,7 @@ import { UpdateJobOfferValidate } from 'utils/validate'
 export interface IUpdateJobOfferLettersProps {
 	onCloseDrawer?: () => void
 	jobOfferLetterId: number | null
-	onUpdateOffer: any
+	onUpdateOffer?: any
 }
 
 export default function UpdateOfferLetter({

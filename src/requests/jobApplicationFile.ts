@@ -1,6 +1,5 @@
-import { createInterviewFileForm, createJobApplicationFileForm } from 'type/form/basicFormType'
+import { createJobApplicationFileForm } from 'type/form/basicFormType'
 import {
-	interviewFileMutationResponse,
 	jobApplicationFileMutationResponse,
 } from 'type/mutationResponses'
 import { deleteData, getData, postData } from 'utils/fetchData'

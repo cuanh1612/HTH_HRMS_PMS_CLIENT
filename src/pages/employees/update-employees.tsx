@@ -436,7 +436,7 @@ export default function UpdateEmployees({ onCloseDrawer, employeeId }: IUpdateEm
 					</GridItem>
 
 					<GridItem w="100%" colSpan={2}>
-						<InputMutiple lable="Skills" name="skills" form={formSetting} />
+						<InputMutiple label="Skills" name="skills" form={formSetting} />
 					</GridItem>
 				</Grid>
 

@@ -15,27 +15,29 @@ import { AuthContext } from 'contexts/AuthContext'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 // import { allJobsQuery } from 'queries/job'
-import { useContext, useEffect, useState } from 'react'
-import { AiOutlineDelete, AiOutlineSearch } from 'react-icons/ai'
-import { IoAdd} from 'react-icons/io5'
-import { VscFilter } from 'react-icons/vsc'
-import { NextLayout } from 'type/element/layout'
-import AddInterviews from './add-interviews'
-import DetailInterview from './[interviewId]'
-import UpdateInterview from './[interviewId]/update'
-import { allInterviewsQuery } from 'queries/interview'
-import { IFilter, TColumn } from 'type/tableTypes'
-import { dataInterviewStatus } from 'utils/basicData'
-import { MdOutlineEvent } from 'react-icons/md'
+import { DateRange, Input, Select as FSelect, SelectCustom } from 'components/filter'
 import {
 	deleteInterviewMutation,
 	deleteInterviewsMutation,
 	updateInterviewStatusMutation,
 } from 'mutations/interview'
-import { DateRange, Input, Select as FSelect, SelectCustom } from 'components/filter'
-import { IOption } from 'type/basicTypes'
 import { allEmployeesNormalQuery } from 'queries'
+import { allInterviewsQuery } from 'queries/interview'
+import { useContext, useEffect, useState } from 'react'
+import { CSVLink } from 'react-csv'
+import { AiOutlineDelete, AiOutlineSearch } from 'react-icons/ai'
+import { BiExport } from 'react-icons/bi'
+import { IoAdd } from 'react-icons/io5'
+import { MdOutlineEvent } from 'react-icons/md'
+import { VscFilter } from 'react-icons/vsc'
+import { IOption } from 'type/basicTypes'
+import { NextLayout } from 'type/element/layout'
+import { IFilter, TColumn } from 'type/tableTypes'
+import { dataInterviewStatus } from 'utils/basicData'
 import { interviewScheduleColumn } from 'utils/columns'
+import AddInterviews from './add-interviews'
+import DetailInterview from './[interviewId]'
+import UpdateInterview from './[interviewId]/update'
 // import UpdateJob from './[jobId]/update'
 
 const interviews: NextLayout = () => {
@@ -57,6 +59,8 @@ const interviews: NextLayout = () => {
 	const [interviewId, setInterviewId] = useState<number | null>(null)
 	// get employee to select to filter
 	const [employeesFilter, setEmployeesFilter] = useState<IOption[]>([])
+	//State download csv
+	const [dataCSV, setDataCSV] = useState<any[]>([])
 
 	//Setup drawer --------------------------------------------------------------
 	const { isOpen: isOpenAdd, onOpen: onOpenAdd, onClose: onCloseAdd } = useDisclosure()
@@ -86,6 +90,19 @@ const interviews: NextLayout = () => {
 		deleteInterviewsMutation(setToast)
 	const [updateStatus, { data: dataUpdateStatus, status: statusUpdate }] =
 		updateInterviewStatusMutation(setToast)
+
+	//Setup download csv --------------------------------------------------------
+	const headersCSV = [
+		{ label: 'id', key: 'id' },
+		{ label: 'candidate id', key: 'candidateId' },
+		{ label: 'candidate email', key: 'candidateEmail' },
+		{ label: 'candidate mobile', key: 'candidateMobile' },
+		{ label: 'date', key: 'date' },
+		{ label: 'start time', key: 'startTime' },
+		{ label: 'status', key: 'status' },
+		{ label: 'type', key: 'type' },
+		{ label: 'createdAt', key: 'createdAt' },
+	]
 
 	//User effect ---------------------------------------------------------------
 	//Handle check logged in
@@ -138,8 +155,24 @@ const interviews: NextLayout = () => {
 
 	useEffect(() => {
 		if (allInterviewSchedule) {
-			console.log(allInterviewSchedule)
 			setIsLoading(false)
+
+			if (allInterviewSchedule.interviews) {
+				//Set data csv
+				const dataCSV: any[] = allInterviewSchedule.interviews.map((interview) => ({
+					id: interview.id,
+					candidateId: interview.candidate.id,
+					candidateEmail: interview.candidate.email,
+					candidateMobile: interview.candidate.mobile,
+					date: interview.date,
+					startTime: interview.start_time,
+					status: interview.status,
+					type: interview.type,
+					createdAt: interview.createdAt,
+				}))
+
+				setDataCSV(dataCSV)
+			}
 		}
 	}, [allInterviewSchedule])
 
@@ -208,6 +241,15 @@ const interviews: NextLayout = () => {
 							title={'Add new'}
 							action={onOpenAdd}
 						/>
+
+						<CSVLink filename={'interviews.csv'} headers={headersCSV} data={dataCSV}>
+							<Func
+								icon={<BiExport />}
+								description={'export to csv'}
+								title={'export'}
+								action={() => {}}
+							/>
+						</CSVLink>
 					</>
 				)}
 				<Func

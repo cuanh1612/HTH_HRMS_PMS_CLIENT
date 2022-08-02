@@ -88,8 +88,6 @@ const Salaries: NextLayout = () => {
 		if (dataSalaries) {
 			setIsLoading(false)
 
-			console.log(dataSalaries)
-
 			if (dataSalaries.salaries) {
 				//Set data csv
 				const dataCSV: any[] = dataSalaries.salaries.map((salary) => ({

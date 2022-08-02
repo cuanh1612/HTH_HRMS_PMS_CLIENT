@@ -1,9 +1,4 @@
-import {
-	Box,
-	Button,
-	useDisclosure,
-	VStack,
-} from '@chakra-ui/react'
+import { Box, Button, useDisclosure, VStack } from '@chakra-ui/react'
 import { AlertDialog, Func, FuncCollapse, Table } from 'components/common'
 import { Drawer } from 'components/Drawer'
 import { Input } from 'components/filter'
@@ -14,7 +9,9 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { allSkillsQuery } from 'queries/skill'
 import { useContext, useEffect, useState } from 'react'
+import { CSVLink } from 'react-csv'
 import { AiOutlineDelete, AiOutlineSearch } from 'react-icons/ai'
+import { BiExport } from 'react-icons/bi'
 import { IoAdd } from 'react-icons/io5'
 import { VscFilter } from 'react-icons/vsc'
 import { NextLayout } from 'type/element/layout'
@@ -39,6 +36,8 @@ const Skill: NextLayout = () => {
 	const [isResetFilter, setIsReset] = useState(false)
 	// data select to delete all
 	const [dataSl, setDataSl] = useState<Array<number> | null>()
+	//State download csv
+	const [dataCSV, setDataCSV] = useState<any[]>([])
 
 	//Setup drawer --------------------------------------------------------------
 	const { isOpen: isOpenAdd, onOpen: onOpenAdd, onClose: onCloseAdd } = useDisclosure()
@@ -59,7 +58,14 @@ const Skill: NextLayout = () => {
 
 	// mutate
 	const [deleteOne, { status: statusDlOne, data: dataDl }] = deleteSkillMutation(setToast)
-	const [deleteMany, { status: statusDlMany, data: dataDlMany }] = deleteManySkillMutation(setToast)
+	const [deleteMany, { status: statusDlMany, data: dataDlMany }] =
+		deleteManySkillMutation(setToast)
+
+	//Setup download csv --------------------------------------------------------
+	const headersCSV = [
+		{ label: 'id', key: 'id' },
+		{ label: 'name', key: 'name' },
+	]
 
 	//User effect ---------------------------------------------------------------
 	//Handle check logged in
@@ -76,6 +82,15 @@ const Skill: NextLayout = () => {
 	useEffect(() => {
 		if (dataAllSkills) {
 			setIsLoading(false)
+
+			if (dataAllSkills.skills) {
+				// Set data csv
+				const dataCSV: any[] = dataAllSkills.skills.map((skill) => ({
+					id: skill.id,
+					name: skill.name,
+				}))
+				setDataCSV(dataCSV)
+			}
 		}
 	}, [dataAllSkills])
 
@@ -118,6 +133,7 @@ const Skill: NextLayout = () => {
 				<title>Huprom - Skills</title>
 				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
 			</Head>
+
 			<FuncCollapse>
 				{currentUser && currentUser.role === 'Admin' && (
 					<>
@@ -127,6 +143,14 @@ const Skill: NextLayout = () => {
 							title={'Add new'}
 							action={onOpenAdd}
 						/>
+						<CSVLink filename={'skills.csv'} headers={headersCSV} data={dataCSV}>
+							<Func
+								icon={<BiExport />}
+								description={'export to csv'}
+								title={'export'}
+								action={() => {}}
+							/>
+						</CSVLink>
 						<Func
 							icon={<AiOutlineDelete />}
 							title={'Delete all'}

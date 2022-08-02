@@ -8,13 +8,13 @@ import {
 	useDisclosure,
 	VStack,
 } from '@chakra-ui/react'
-import { AlertDialog, Func, FuncCollapse, Table } from 'components/common'
+import { AlertDialog, Func, FuncCollapse, Head, Table } from 'components/common'
 import { Drawer } from 'components/Drawer'
 import { DateRange, Input, Select, SelectCustom } from 'components/filter'
 import { EmployeeLayout } from 'components/layouts/Employee'
 import { AuthContext } from 'contexts/AuthContext'
 import { deleteTaskMutation, deleteTasksMutation } from 'mutations'
-import Head from 'next/head'
+
 import { useRouter } from 'next/router'
 import {
 	allEmployeesNormalQuery,
@@ -22,6 +22,7 @@ import {
 	allProjectsNormalQuery,
 	allTaskCategoriesQuery,
 	allTasksByEmployeeQuery,
+	detailEmployeeQuery,
 } from 'queries'
 import { useContext, useEffect, useState } from 'react'
 import { AiOutlineDelete, AiOutlineSearch } from 'react-icons/ai'
@@ -37,6 +38,7 @@ const TasksEmployee: NextLayout = () => {
 	const { isAuthenticated, handleLoading, setToast, currentUser, socket } =
 		useContext(AuthContext)
 	const router = useRouter()
+	
 	const { employeeId } = router.query
 
 	const { colorMode } = useColorMode()
@@ -67,6 +69,7 @@ const TasksEmployee: NextLayout = () => {
 		isAuthenticated,
 		employeeId as string
 	)
+	const { data: dataEmployee } = detailEmployeeQuery(isAuthenticated, employeeId as string)
 
 	// get all projects to filter
 	const { data: dataAllProjects } = allProjectsNormalQuery(isAuthenticated)
@@ -236,10 +239,7 @@ const TasksEmployee: NextLayout = () => {
 
 	return (
 		<Box pb={8}>
-			<Head>
-				<title>Huprom - Tasks of employee {employeeId}</title>
-				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
-			</Head>
+			<Head title={dataEmployee?.employee?.name} />
 
 			<FuncCollapse>
 				<Func

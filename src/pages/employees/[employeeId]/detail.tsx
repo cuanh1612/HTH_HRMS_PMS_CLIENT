@@ -1,10 +1,10 @@
 import { Avatar, Box, Grid, GridItem, HStack, Stack, Text, VStack } from '@chakra-ui/react'
 import { Donut } from 'components/charts'
-import { Static } from 'components/common'
+import { Head, Static } from 'components/common'
 import { EmployeeLayout } from 'components/layouts/Employee'
 import { AuthContext } from 'contexts/AuthContext'
 import { GetServerSideProps } from 'next'
-import Head from 'next/head'
+
 import { useRouter } from 'next/router'
 import {
 	countProjectsEmployeeQuery,
@@ -31,7 +31,7 @@ export const DetailEmployee: NextLayout | any = ({
 	dataDetailEmployee: employeeMutationResponse
 	employeeIdProp?: string | number
 }) => {
-	// const { isOpen, onOpen, onClose } = useDisclosure()
+	
 	const { isAuthenticated, handleLoading } = useContext(AuthContext)
 	const router = useRouter()
 	const { employeeId } = router.query
@@ -93,10 +93,8 @@ export const DetailEmployee: NextLayout | any = ({
 					fallback: { [urlDetailEmployee]: dataDetailEmployee },
 				}}
 			>
-				<Head>
-					<title>Huprom - Detail employee {employeeId}</title>
-					<meta name="viewport" content="initial-scale=1.0, width=device-width" />
-				</Head>
+				<Head title={dataEmployee?.employee?.name} />
+
 				<Box w="full" pb={8}>
 					<VStack spacing={5} alignItems={'start'} w={'full'}>
 						<HStack spacing={5} h={'full'} w={'full'}>

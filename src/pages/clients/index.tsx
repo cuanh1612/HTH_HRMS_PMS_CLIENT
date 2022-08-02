@@ -8,7 +8,7 @@ import { allClientCategoriesQuery, allClientsQuery, allClientSubCategoriesQuery 
 
 // components
 import { Box, Button, useDisclosure, VStack } from '@chakra-ui/react'
-import { AlertDialog, Func, FuncCollapse, Table } from 'components/common'
+import { AlertDialog, Func, FuncCollapse, Head, Table } from 'components/common'
 import { Drawer } from 'components/Drawer'
 
 // use layout
@@ -44,7 +44,7 @@ import { IOption } from 'type/basicTypes'
 import { IPeople } from 'type/element/commom'
 import { VscFilter } from 'react-icons/vsc'
 import { clientColumn } from 'utils/columns'
-import Head from 'next/head'
+
 
 const Clients: NextLayout = () => {
 	const { isAuthenticated, handleLoading, currentUser, setToast } = useContext(AuthContext)
@@ -334,10 +334,7 @@ const Clients: NextLayout = () => {
 
 	return (
 		<Box w={'full'} pb={8}>
-			<Head>
-				<title>Huprom - Clients</title>
-				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
-			</Head>
+			<Head title='Clients'/>
 			<FuncCollapse>
 				{currentUser && currentUser.role === 'Admin' && (
 					<>

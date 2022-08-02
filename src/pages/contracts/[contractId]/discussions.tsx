@@ -1,5 +1,5 @@
 import { Avatar, Box, Button, HStack, Text, useDisclosure, VStack } from '@chakra-ui/react'
-import { Loading, Discussion as CDiscussion } from 'components/common'
+import { Loading, Discussion as CDiscussion, Head } from 'components/common'
 import { AuthContext } from 'contexts/AuthContext'
 import {
 	createDiscussionMutation,
@@ -18,7 +18,6 @@ import { GetStaticPaths, GetStaticProps } from 'next'
 import { contractMutationResponse } from 'type/mutationResponses'
 import { NextLayout } from 'type/element/layout'
 import { ContractLayout } from 'components/layouts/Contract'
-import Head from 'next/head'
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
 
@@ -191,10 +190,8 @@ const Discussion: NextLayout = () => {
 
 	return (
 		<Box p={10} bgColor={'#f2f4f7'}>
-			<Head>
-				<title>Huprom - Discussions of contract {contractId}</title>
-				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
-			</Head>
+			<Head title={`Contract number #${contractId}`} />
+
 			<VStack align={'start'} w="full" bgColor={'white'} p={5} borderRadius={5} spacing={5}>
 				<Text fontSize={18} fontWeight={'semibold'}>
 					Discussion

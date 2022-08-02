@@ -7,6 +7,7 @@ import {
 	allEmployeesInProjectQuery,
 	employeesNotInProjectQuery,
 	allDepartmentsQuery,
+	detailProjectQuery,
 } from 'queries'
 import { TColumn } from 'type/tableTypes'
 import {
@@ -26,7 +27,7 @@ import {
 	projectAdminMutation,
 	updateHourlyRateMutation,
 } from 'mutations'
-import { AlertDialog, Func, FuncCollapse, Table } from 'components/common'
+import { AlertDialog, Func, FuncCollapse, Head, Table } from 'components/common'
 import Modal from 'components/modal/Modal'
 import { IOption } from 'type/basicTypes'
 import {
@@ -37,7 +38,7 @@ import { useForm } from 'react-hook-form'
 import { SelectMany } from 'components/form'
 import { IoAdd } from 'react-icons/io5'
 import { projectMembersColumn } from 'utils/columns'
-import Head from 'next/head'
+
 import { projectMutationResponse } from 'type/mutationResponses'
 
 var hourlyRateTimeOut: NodeJS.Timeout
@@ -91,6 +92,8 @@ const members: NextLayout = () => {
 		isAuthenticated,
 		projectId
 	)
+
+	const { data: dataDetailProject } = detailProjectQuery(isAuthenticated, projectId)
 
 	// get all employee not in project
 	const { data: allEmployeesNotIn, mutate: refetchEmplNotIn } = employeesNotInProjectQuery(
@@ -359,10 +362,8 @@ const members: NextLayout = () => {
 
 	return (
 		<Box pb={8}>
-			<Head>
-				<title>Huprom - Members of project {projectId}</title>
-				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
-			</Head>
+			<Head title={dataDetailProject?.project?.name} />
+
 			<FuncCollapse>
 				{currentUser && currentUser.role === 'Admin' && (
 					<>

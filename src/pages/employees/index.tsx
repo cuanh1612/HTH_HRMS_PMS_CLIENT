@@ -1,6 +1,6 @@
 // components
 import { Box, Button, useDisclosure, VStack } from '@chakra-ui/react'
-import { AlertDialog, Func, FuncCollapse, Table } from 'components/common'
+import { AlertDialog, Func, FuncCollapse, Head, Table } from 'components/common'
 import { Drawer } from 'components/Drawer'
 import { CSVLink } from 'react-csv'
 
@@ -45,7 +45,6 @@ import { IOption } from 'type/basicTypes'
 import { IPeople } from 'type/element/commom'
 import { VscFilter } from 'react-icons/vsc'
 import { employeeColumn } from 'utils/columns'
-import Head from 'next/head'
 
 const Employees: NextLayout = () => {
 	///setting for import csv--------------------------------------------------
@@ -180,10 +179,12 @@ const Employees: NextLayout = () => {
 	const [mutateDeleteEmpl, { status: statusDl, data: dataDl }] = deleteEmployeeMutation(setToast)
 
 	// delete all employees
-	const [mutateDeleteEmpls, { status: statusDlMany, data: dataDlMany}] = deleteEmployeesMutation(setToast)
+	const [mutateDeleteEmpls, { status: statusDlMany, data: dataDlMany }] =
+		deleteEmployeesMutation(setToast)
 
 	// change role
-	const [mutateChangeRole, { status: statusChangeRole, data: dataChangeRole }] = changeRoleMutation(setToast)
+	const [mutateChangeRole, { status: statusChangeRole, data: dataChangeRole }] =
+		changeRoleMutation(setToast)
 
 	//User effect ---------------------------------------------------------------
 	// check authenticate in
@@ -343,10 +344,7 @@ const Employees: NextLayout = () => {
 
 	return (
 		<Box pb={8}>
-			<Head>
-				<title>Huprom - Employees</title>
-				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
-			</Head>
+			<Head title={'Employees'} />
 			<FuncCollapse>
 				{currentUser && currentUser.role === 'Admin' && (
 					<>

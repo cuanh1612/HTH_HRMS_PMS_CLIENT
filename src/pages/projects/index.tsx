@@ -8,7 +8,7 @@ import {
 	useColorMode,
 	Box,
 } from '@chakra-ui/react'
-import { AlertDialog, Func, FuncCollapse, Table } from 'components/common'
+import { AlertDialog, Func, FuncCollapse, Head, Table } from 'components/common'
 import { Drawer } from 'components/Drawer'
 import { Input, Select, SelectCustom } from 'components/filter'
 import { ClientLayout } from 'components/layouts'
@@ -33,7 +33,6 @@ import { CSVLink } from 'react-csv'
 import { BiExport } from 'react-icons/bi'
 import { VscFilter } from 'react-icons/vsc'
 import { projectColumn } from 'utils/columns'
-import Head from 'next/head'
 
 const Projects: NextLayout = () => {
 	const { isAuthenticated, handleLoading, setToast, currentUser } = useContext(AuthContext)
@@ -116,7 +115,8 @@ const Projects: NextLayout = () => {
 	const [mutateDeletePj, { status: statusDl, data: dataDl }] = deleteProjectMutation(setToast)
 
 	// delete all projects
-	const [mutateDeletePjs, { status: statusDlMany, data: dataDlMany }] = deleteProjectsMutation(setToast)
+	const [mutateDeletePjs, { status: statusDlMany, data: dataDlMany }] =
+		deleteProjectsMutation(setToast)
 
 	// header ----------------------------------------
 	const columns: TColumn[] = projectColumn({
@@ -246,10 +246,8 @@ const Projects: NextLayout = () => {
 
 	return (
 		<Box pb={8}>
-			<Head>
-				<title>Huprom - Projects</title>
-				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
-			</Head>
+			<Head title="Projects" />
+
 			<FuncCollapse>
 				{currentUser && currentUser.role === 'Admin' && (
 					<>

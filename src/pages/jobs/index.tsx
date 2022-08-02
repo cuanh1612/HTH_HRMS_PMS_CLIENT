@@ -1,9 +1,4 @@
-import {
-	Box,
-	Button,
-	useDisclosure,
-	VStack,
-} from '@chakra-ui/react'
+import { Box, Button, useDisclosure, VStack } from '@chakra-ui/react'
 import { AlertDialog, Func, FuncCollapse, Table } from 'components/common'
 import { Drawer } from 'components/Drawer'
 import { ClientLayout } from 'components/layouts'
@@ -23,6 +18,8 @@ import { deleteJobMutation, deleteJobsMutation, updateJobStatusMutation } from '
 import { AiOutlineDelete, AiOutlineSearch } from 'react-icons/ai'
 import { DateRange, Input, Select as FSelect } from 'components/filter'
 import { jobColumn } from 'utils/columns'
+import { CSVLink } from 'react-csv'
+import { BiExport } from 'react-icons/bi'
 
 const Job: NextLayout = () => {
 	const { isAuthenticated, handleLoading, currentUser, setToast } = useContext(AuthContext)
@@ -43,6 +40,8 @@ const Job: NextLayout = () => {
 		columnId: '',
 		filterValue: '',
 	})
+	//State download csv
+	const [dataCSV, setDataCSV] = useState<any[]>([])
 
 	//Setup drawer --------------------------------------------------------------
 	const { isOpen: isOpenAdd, onOpen: onOpenAdd, onClose: onCloseAdd } = useDisclosure()
@@ -68,6 +67,14 @@ const Job: NextLayout = () => {
 	const [updateStatus, { status: statusUpdate, data: dataUpdate }] =
 		updateJobStatusMutation(setToast)
 
+	//Setup download csv --------------------------------------------------------
+	const headersCSV = [
+		{ label: 'id', key: 'id' },
+		{ label: 'starts on date', key: 'starts_on_date' },
+		{ label: 'ends on date', key: 'ends_on_date' },
+		{ label: 'status', key: 'status' },
+	]
+
 	//User effect ---------------------------------------------------------------
 	//Handle check logged in
 	useEffect(() => {
@@ -83,6 +90,18 @@ const Job: NextLayout = () => {
 	useEffect(() => {
 		if (dataAllJobs) {
 			setIsLoading(false)
+
+			if (dataAllJobs.jobs) {
+				//Set data csv
+				const dataCSV: any[] = dataAllJobs.jobs.map((job) => ({
+					id: job.id,
+					starts_on_date: job.starts_on_date,
+					ends_on_date: job.ends_on_date,
+					status: job.status ? "Open" : "Close",
+				}))
+
+				setDataCSV(dataCSV)
+			}
 		}
 	}, [dataAllJobs])
 
@@ -151,6 +170,15 @@ const Job: NextLayout = () => {
 							title={'Add new'}
 							action={onOpenAdd}
 						/>
+
+						<CSVLink filename={'jobs.csv'} headers={headersCSV} data={dataCSV}>
+							<Func
+								icon={<BiExport />}
+								description={'export to csv'}
+								title={'export'}
+								action={() => {}}
+							/>
+						</CSVLink>
 
 						<Func
 							icon={<AiOutlineDelete />}

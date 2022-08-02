@@ -22,9 +22,9 @@ import {
 import { useContext, useEffect } from 'react'
 import { NextLayout } from 'type/element/layout'
 import { ProjectLayout } from 'components/layouts'
-import { StatisticPrj } from 'components/common'
+import { Head, StatisticPrj } from 'components/common'
 import { Bar, Donut } from 'components/charts'
-import Head from 'next/head'
+
 import { allActivitiesByProjectQuery } from 'queries/ProjectActivity'
 import { FiGitCommit } from 'react-icons/fi'
 
@@ -61,10 +61,7 @@ const Overview: NextLayout = () => {
 
 	return (
 		<Stack pb={8} direction={'row'} spacing={'30px'}>
-			<Head>
-				<title>Huprom - Overview of project {projectId}</title>
-				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
-			</Head>
+			<Head title={dataDetailProject?.project?.name} />
 			<VStack spacing={5} flex={1}>
 				<VStack spacing={'4'} w={'full'} alignItems={'start'}>
 					<Text fontWeight={'semibold'} fontSize={'xl'}>

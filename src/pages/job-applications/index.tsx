@@ -1,9 +1,4 @@
-import {
-	Box,
-	Button,
-	useDisclosure,
-	VStack,
-} from '@chakra-ui/react'
+import { Box, Button, useDisclosure, VStack } from '@chakra-ui/react'
 import { AlertDialog, Func, FuncCollapse, Table } from 'components/common'
 import { Drawer } from 'components/Drawer'
 import { DateRange, Input, Select as FSelect } from 'components/filter'
@@ -12,7 +7,7 @@ import { AuthContext } from 'contexts/AuthContext'
 import {
 	deleteJobApplicationMutation,
 	deleteJobApplicationsMutation,
-	updateJobApplicationStatusMutation,
+	updateJobApplicationStatusMutation
 } from 'mutations/jobApplication'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
@@ -20,7 +15,9 @@ import { allJobsQuery } from 'queries/job'
 import { allJobApplicationsQuery } from 'queries/jobApplication'
 import { allLocationsQuery } from 'queries/location'
 import { useContext, useEffect, useState } from 'react'
+import { CSVLink } from 'react-csv'
 import { AiOutlineDelete, AiOutlineSearch } from 'react-icons/ai'
+import { BiExport } from 'react-icons/bi'
 import { IoAdd } from 'react-icons/io5'
 import { VscFilter } from 'react-icons/vsc'
 import { NextLayout } from 'type/element/layout'
@@ -51,6 +48,8 @@ const jobApplications: NextLayout = () => {
 		columnId: '',
 		filterValue: '',
 	})
+	//State download csv
+	const [dataCSV, setDataCSV] = useState<any[]>([])
 
 	//Setup drawer --------------------------------------------------------------
 	const { isOpen: isOpenAdd, onOpen: onOpenAdd, onClose: onCloseAdd } = useDisclosure()
@@ -82,6 +81,21 @@ const jobApplications: NextLayout = () => {
 		deleteJobApplicationMutation(setToast)
 	const [deleteMany, { status: statusDlMany, data: dataDlMany }] =
 		deleteJobApplicationsMutation(setToast)
+
+	//Setup download csv --------------------------------------------------------
+	const headersCSV = [
+		{ label: 'id', key: 'id' },
+		{ label: 'candidate name', key: 'candidateName' },
+		{ label: 'candidate email', key: 'candidateEmail' },
+		{ label: 'candidate mobile', key: 'candidateMobile' },
+		{ label: 'job id', key: 'jobId' },
+		{ label: 'job title', key: 'jobTitle' },
+		{ label: 'location', key: 'location' },
+		{ label: 'skills', key: 'skills' },
+		{ label: 'source', key: 'source' },
+		{ label: 'status', key: 'status' },
+		{ label: 'created at', key: 'createdAt' },
+	]
 
 	//User effect ---------------------------------------------------------------
 	//Handle check logged in
@@ -129,6 +143,29 @@ const jobApplications: NextLayout = () => {
 	useEffect(() => {
 		if (dataAllJobApplications) {
 			setIsLoading(false)
+
+			if (dataAllJobApplications.jobApplications) {
+				//Set data csv
+				const dataCSV: any[] = dataAllJobApplications.jobApplications.map(
+					(jobApplication) => ({
+						id: jobApplication.id,
+						candidateName: jobApplication.name,
+						candidateEmail: jobApplication.email,
+						candidateMobile: jobApplication.mobile,
+						jobId: jobApplication.jobs.id,
+						jobTitle: jobApplication.jobs.title,
+						location: jobApplication.location.name,
+						skills: jobApplication.skills
+							? jobApplication.skills.map((skill) => skill.name).toString()
+							: '',
+						source: jobApplication.source,
+						status: jobApplication.status,
+						createdAt: jobApplication.createdAt,
+					})
+				)
+
+				setDataCSV(dataCSV)
+			}
 		}
 	}, [dataAllJobApplications])
 
@@ -170,6 +207,19 @@ const jobApplications: NextLayout = () => {
 							title={'Add new'}
 							action={onOpenAdd}
 						/>
+
+						<CSVLink
+							filename={'jobApplications.csv'}
+							headers={headersCSV}
+							data={dataCSV}
+						>
+							<Func
+								icon={<BiExport />}
+								description={'export to csv'}
+								title={'export'}
+								action={() => {}}
+							/>
+						</CSVLink>
 
 						<Func
 							icon={<AiOutlineDelete />}

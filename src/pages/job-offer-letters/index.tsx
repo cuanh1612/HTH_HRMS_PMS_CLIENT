@@ -13,7 +13,9 @@ import { useRouter } from 'next/router'
 import { allJobsQuery } from 'queries/job'
 import { allJobOffersQuery } from 'queries/jobOfferLetter'
 import { useContext, useEffect, useState } from 'react'
+import { CSVLink } from 'react-csv'
 import { AiOutlineDelete } from 'react-icons/ai'
+import { BiExport } from 'react-icons/bi'
 import { IoAdd } from 'react-icons/io5'
 import { VscFilter } from 'react-icons/vsc'
 import { NextLayout } from 'type/element/layout'
@@ -43,6 +45,9 @@ const Job: NextLayout = () => {
 		filterValue: '',
 	})
 
+	//State download csv
+	const [dataCSV, setDataCSV] = useState<any[]>([])
+
 	//Setup drawer --------------------------------------------------------------
 	const { isOpen: isOpenAdd, onOpen: onOpenAdd, onClose: onCloseAdd } = useDisclosure()
 	const { isOpen: isOpenUpdate, onOpen: onOpenUpdate, onClose: onCloseUpdate } = useDisclosure()
@@ -71,6 +76,21 @@ const Job: NextLayout = () => {
 	const [deleteMany, { status: statusDlMany, data: dataDlMany }] =
 		deleteJobOfferLettersMutation(setToast)
 
+	//Setup download csv --------------------------------------------------------
+	const headersCSV = [
+		{ label: 'id', key: 'id' },
+		{ label: 'job id', key: 'jobId' },
+		{ label: 'job title', key: 'jobTitle' },
+		{ label: 'application id', key: 'applicationId' },
+		{ label: 'candidate name', key: 'candidateName' },
+		{ label: 'candidate email', key: 'candidateEmail' },
+		{ label: 'expected joining date', key: 'expectedJoiningDate' },
+		{ label: 'exprise on', key: 'expriseOn' },
+		{ label: 'rate', key: 'rate' },
+		{ label: 'salary', key: 'salary' },
+		{ label: 'status', key: 'status' },
+	]
+
 	//User effect ---------------------------------------------------------------
 	//Handle check logged in
 	useEffect(() => {
@@ -85,8 +105,28 @@ const Job: NextLayout = () => {
 
 	useEffect(() => {
 		if (dataOfferLetters) {
-			console.log(dataOfferLetters)
 			setIsLoading(false)
+
+			if (dataOfferLetters.jobOfferLetters) {
+				//Set data csv
+				const dataCSV: any[] = dataOfferLetters.jobOfferLetters.map(
+					(jobOfferLetter) => ({
+						id: jobOfferLetter.id,
+						jobId: jobOfferLetter.job.id,
+						jobTitle: jobOfferLetter.job.title,
+						applicationId: jobOfferLetter.job_application.id,
+						candidateName: jobOfferLetter.job_application.name,
+						candidateEmail: jobOfferLetter.job_application.email,
+						expectedJoiningDate: jobOfferLetter.expected_joining_date,
+						expriseOn: jobOfferLetter.exprise_on,
+						rate: jobOfferLetter.rate,
+						salary: jobOfferLetter.salary,
+						status: jobOfferLetter.status,
+					})
+				)
+
+				setDataCSV(dataCSV)
+			}
 		}
 	}, [dataOfferLetters])
 
@@ -138,6 +178,19 @@ const Job: NextLayout = () => {
 							title={'Add new'}
 							action={onOpenAdd}
 						/>
+
+						<CSVLink
+							filename={'jobOfferLetters.csv'}
+							headers={headersCSV}
+							data={dataCSV}
+						>
+							<Func
+								icon={<BiExport />}
+								description={'export to csv'}
+								title={'export'}
+								action={() => {}}
+							/>
+						</CSVLink>
 
 						<Func
 							icon={<AiOutlineDelete />}

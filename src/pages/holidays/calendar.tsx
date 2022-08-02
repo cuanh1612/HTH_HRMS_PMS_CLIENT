@@ -20,7 +20,7 @@ import interactionPlugin from '@fullcalendar/interaction'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import listPlugin from '@fullcalendar/list'
 import timeGridPlugin from '@fullcalendar/timegrid'
-import { AlertDialog, ButtonIcon, Func, FuncCollapse } from 'components/common'
+import { AlertDialog, ButtonIcon, Func, FuncCollapse, Head } from 'components/common'
 import { MdOutlineNavigateBefore, MdOutlineNavigateNext } from 'react-icons/md'
 import { Drawer } from 'components/Drawer'
 import AddHoliday from './add-holidays'
@@ -29,7 +29,7 @@ import DetailHoliday from './[holidayId]'
 import { deleteHolidayMutation } from 'mutations'
 import { Select } from 'components/filter'
 import { IFilter } from 'type/tableTypes'
-import Head from 'next/head'
+
 import { IoAdd } from 'react-icons/io5'
 import { BsCalendar2Day, BsCalendar2Month, BsCalendar2Week } from 'react-icons/bs'
 import { VscFilter } from 'react-icons/vsc'
@@ -162,10 +162,7 @@ const calendar: NextLayout = () => {
 
 	return (
 		<Box pb={8}>
-			<Head>
-				<title>Huprom - Holidays calendar</title>
-				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
-			</Head>
+			<Head title='Holidays calendar'/>
 			<FuncCollapse>
 				{currentUser && currentUser.role === 'Admin' && (
 					<>

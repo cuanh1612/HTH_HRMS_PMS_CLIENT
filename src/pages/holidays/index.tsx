@@ -1,12 +1,12 @@
 import { Box, Button, useDisclosure, VStack } from '@chakra-ui/react'
-import { AlertDialog, Func, FuncCollapse, Table } from 'components/common'
+import { AlertDialog, Func, FuncCollapse, Head, Table } from 'components/common'
 import { Drawer } from 'components/Drawer'
 import { Input, Select } from 'components/filter'
 import ImportCSV from 'components/importCSV'
 import { ClientLayout } from 'components/layouts'
 import { AuthContext } from 'contexts/AuthContext'
 import { createHolidaysMutation, deleteHolidayMutation, deleteHolidaysMutation } from 'mutations'
-import Head from 'next/head'
+
 import { useRouter } from 'next/router'
 import { allHolidaysQuery } from 'queries'
 import { useContext, useEffect, useState } from 'react'
@@ -213,10 +213,7 @@ const Holiday: NextLayout = () => {
 
 	return (
 		<Box pb={8}>
-			<Head>
-				<title>Huprom - Holidays</title>
-				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
-			</Head>
+			<Head title='Holidays'/>
 			<FuncCollapse>
 				{currentUser && currentUser.role === 'Admin' && (
 					<>

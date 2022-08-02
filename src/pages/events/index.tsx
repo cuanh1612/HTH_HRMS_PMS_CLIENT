@@ -27,7 +27,7 @@ import { useContext, useEffect, useState } from 'react'
 import { NextLayout } from 'type/element/layout'
 import AddEvent from './add-events'
 import UpdateEvent from './update-events'
-import { AlertDialog, ButtonIcon, Func, FuncCollapse } from 'components/common'
+import { AlertDialog, ButtonIcon, Func, FuncCollapse, Head } from 'components/common'
 import { MdOutlineNavigateBefore, MdOutlineNavigateNext } from 'react-icons/md'
 import { IOption } from 'type/basicTypes'
 import { Input, SelectCustom } from 'components/filter'
@@ -35,7 +35,7 @@ import { AiOutlineSearch } from 'react-icons/ai'
 import { IFilter } from 'type/tableTypes'
 import DetailEvent from './[eventId]'
 import { deleteEventMutation } from 'mutations'
-import Head from 'next/head'
+
 import { IoAdd } from 'react-icons/io5'
 import { BsCalendar2Day, BsCalendar2Month, BsCalendar2Week } from 'react-icons/bs'
 import { VscFilter } from 'react-icons/vsc'
@@ -254,10 +254,7 @@ const Event: NextLayout = () => {
 
 	return (
 		<Box w={'full'} pb={8}>
-			<Head>
-				<title>Huprom - Events</title>
-				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
-			</Head>
+			<Head title="Events" />
 			<FuncCollapse>
 				{currentUser && currentUser.role === 'Admin' && (
 					<>

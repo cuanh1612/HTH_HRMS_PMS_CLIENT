@@ -64,10 +64,10 @@ import { IoAirplaneOutline } from 'react-icons/io5'
 import { BiCheck } from 'react-icons/bi'
 import { IoMdClose } from 'react-icons/io'
 import { AiTwotoneStar } from 'react-icons/ai'
-import { Func, FuncCollapse } from 'components/common'
+import { Func, FuncCollapse, Head } from 'components/common'
 import { VscFilter } from 'react-icons/vsc'
 import { Drawer } from 'components/Drawer'
-import Head from 'next/head'
+
 
 const attendance: NextLayout = () => {
 	const { colorMode } = useColorMode()
@@ -258,10 +258,7 @@ const attendance: NextLayout = () => {
 
 	return (
 		<Box w={'full'} pb={8}>
-			<Head>
-				<title>Huprom - Attendances</title>
-				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
-			</Head>
+			<Head title='Attendances'/>
 			<FuncCollapse>
 				<Func
 					icon={<VscFilter />}

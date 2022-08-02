@@ -4,7 +4,7 @@ import { allLeaveQuery, allLeaveTypesQuery } from 'queries'
 
 // components
 import { Box, Button, useDisclosure, VStack } from '@chakra-ui/react'
-import { AlertDialog, Func, FuncCollapse, Table } from 'components/common'
+import { AlertDialog, Func, FuncCollapse, Head, Table } from 'components/common'
 import { Drawer } from 'components/Drawer'
 import { CSVLink } from 'react-csv'
 
@@ -42,7 +42,7 @@ import { VscFilter } from 'react-icons/vsc'
 import DetailLeave from './[leaveId]'
 import { leaveColumn } from 'utils/columns'
 import { dataStatusLeave } from 'utils/basicData'
-import Head from 'next/head'
+
 
 // get current year
 const year = new Date().getFullYear()
@@ -255,10 +255,7 @@ const Leaves: NextLayout = () => {
 
 	return (
 		<Box pb={8}>
-			<Head>
-				<title>Huprom - Leaves</title>
-				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
-			</Head>
+			<Head title='Leaves'/>
 			<FuncCollapse>
 				{currentUser && currentUser.role === 'Admin' && (
 					<>

@@ -58,6 +58,9 @@ export const Header = () => {
 	const { data: dataNotification, mutate: refetchNotifications } =
 		NotificationByCurrentUserQuery(isAuthenticated)
 
+	console.log(dataNotification);
+	
+
 	const [logout, { status: statusLogout }] = logoutServerMutation(setToast)
 
 	useEffect(() => {
@@ -141,7 +144,7 @@ export const Header = () => {
 											right={'-4px'}
 											top={'-5px'}
 										>
-											dataNotification?.notifications?.length
+											{dataNotification?.notifications?.length}
 										</Box>
 									)
 								) : null}

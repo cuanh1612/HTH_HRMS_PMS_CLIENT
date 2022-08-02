@@ -1,13 +1,13 @@
 import { Box, Button, useDisclosure, VStack } from '@chakra-ui/react'
-import { AlertDialog, Func, FuncCollapse, Table } from 'components/common'
+import { AlertDialog, Func, FuncCollapse, Head, Table } from 'components/common'
 import { Drawer } from 'components/Drawer'
 import { DateRange, Input, Select } from 'components/filter'
 import { EmployeeLayout } from 'components/layouts/Employee'
 import { AuthContext } from 'contexts/AuthContext'
 import { deleteLeaveMutation, deleteLeavesMutation, updateStatusMutation } from 'mutations'
-import Head from 'next/head'
+
 import { useRouter } from 'next/router'
-import { allLeaveQuery, allLeaveTypesQuery } from 'queries'
+import { allLeaveQuery, allLeaveTypesQuery, detailEmployeeQuery } from 'queries'
 import { useContext, useEffect, useState } from 'react'
 import { AiOutlineDelete, AiOutlineSearch } from 'react-icons/ai'
 import { VscFilter } from 'react-icons/vsc'
@@ -69,6 +69,8 @@ const LeavesEmployee: NextLayout = () => {
 		isAuthenticated,
 		employee: employeeId as string,
 	})
+
+	const { data: dataEmployee } = detailEmployeeQuery(isAuthenticated, employeeId as string)
 
 	// get all leave type
 	const { data: allLeaveType } = allLeaveTypesQuery()
@@ -189,10 +191,7 @@ const LeavesEmployee: NextLayout = () => {
 
 	return (
 		<Box pb={8}>
-			<Head>
-				<title>Huprom - Leaves of employee {employeeId}</title>
-				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
-			</Head>
+			<Head title={dataEmployee?.employee?.name} />
 			<FuncCollapse>
 				<Func
 					icon={<VscFilter />}

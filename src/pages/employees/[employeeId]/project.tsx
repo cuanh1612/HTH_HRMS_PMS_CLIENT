@@ -8,7 +8,7 @@ import {
 	useColorMode,
 	Box,
 } from '@chakra-ui/react'
-import { AlertDialog, Func, FuncCollapse, Table } from 'components/common'
+import { AlertDialog, Func, FuncCollapse, Head, Table } from 'components/common'
 import { Drawer } from 'components/Drawer'
 import { Input, Select, SelectCustom } from 'components/filter'
 import { AuthContext } from 'contexts/AuthContext'
@@ -19,6 +19,7 @@ import {
 	allEmployeesNormalQuery,
 	allProjectCategoriesQuery,
 	allProjectsByCurrentUserQuery,
+	detailEmployeeQuery,
 } from 'queries'
 import { useContext, useEffect, useState } from 'react'
 import { AiOutlineDelete, AiOutlineSearch } from 'react-icons/ai'
@@ -30,11 +31,12 @@ import UpdateProject from 'src/pages/projects/update-projects'
 import { EmployeeLayout } from 'components/layouts/Employee'
 import { employeeProjectColumn } from 'utils/columns'
 import { dataProjectStatus } from 'utils/basicData'
-import Head from 'next/head'
 
 const Projects: NextLayout = () => {
 	const { isAuthenticated, handleLoading, setToast, currentUser } = useContext(AuthContext)
 	const router = useRouter()
+	const { employeeId } = router.query
+
 	const { colorMode } = useColorMode()
 
 	//State ---------------------------------------------------------------------
@@ -84,6 +86,8 @@ const Projects: NextLayout = () => {
 	const { data: allProjects, mutate: refetchAllProjects } =
 		allProjectsByCurrentUserQuery(isAuthenticated)
 
+	const { data: dataEmployee } = detailEmployeeQuery(isAuthenticated, employeeId as string)
+
 	const { data: allPjCategories } = allProjectCategoriesQuery(isAuthenticated)
 
 	const { data: allClients } = allClientsQuery(isAuthenticated)
@@ -94,7 +98,8 @@ const Projects: NextLayout = () => {
 	const [mutateDeletePj, { status: statusDl, data: dataDl }] = deleteProjectMutation(setToast)
 
 	// delete all projects
-	const [mutateDeletePjs, { status: statusDlMany, data: dataDlMany }] = deleteProjectsMutation(setToast)
+	const [mutateDeletePjs, { status: statusDlMany, data: dataDlMany }] =
+		deleteProjectsMutation(setToast)
 
 	// header ----------------------------------------
 	const columns: TColumn[] = employeeProjectColumn({
@@ -208,10 +213,7 @@ const Projects: NextLayout = () => {
 
 	return (
 		<Box pb={8}>
-			<Head>
-				<title>Huprom - Projects of employee {router.query.employeeId}</title>
-				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
-			</Head>
+			<Head title={dataEmployee?.employee?.name} />
 			<FuncCollapse>
 				<Func
 					icon={<VscFilter />}

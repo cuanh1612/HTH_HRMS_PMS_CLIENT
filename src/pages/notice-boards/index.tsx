@@ -1,5 +1,5 @@
 import { Button, useDisclosure, VStack, Box } from '@chakra-ui/react'
-import { AlertDialog, Func, FuncCollapse, Table } from 'components/common'
+import { AlertDialog, Func, FuncCollapse, Head, Table } from 'components/common'
 import { Drawer } from 'components/Drawer'
 import { DateRange, Input, Select } from 'components/filter'
 import { ClientLayout } from 'components/layouts'
@@ -19,7 +19,7 @@ import { VscFilter } from 'react-icons/vsc'
 import { BiExport } from 'react-icons/bi'
 import { noticeBoardColumn } from 'utils/columns'
 import DetailNoticeBoard from './[noticeBoardId]'
-import Head from 'next/head'
+
 
 const NoticeBoard: NextLayout = () => {
 	const { isAuthenticated, handleLoading, setToast, currentUser, socket } =
@@ -195,10 +195,7 @@ const NoticeBoard: NextLayout = () => {
 
 	return (
 		<Box w={'full'} pb={8}>
-			<Head>
-				<title>Huprom - Notice boards</title>
-				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
-			</Head>
+			<Head title="Notice boards" />
 			<FuncCollapse>
 				{currentUser && currentUser.role === 'Admin' && (
 					<>

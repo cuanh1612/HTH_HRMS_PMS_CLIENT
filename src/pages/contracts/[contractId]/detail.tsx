@@ -22,13 +22,14 @@ import {
 	Tr,
 	VStack,
 } from '@chakra-ui/react'
+import { Head } from 'components/common'
 
 import { ContractLayout } from 'components/layouts/Contract'
 import { AuthContext } from 'contexts/AuthContext'
 import { convert } from 'html-to-text'
 import jsPDF from 'jspdf'
 import { GetStaticPaths, GetStaticProps } from 'next'
-import Head from 'next/head'
+
 import { useRouter } from 'next/router'
 import { detailContractQuery } from 'queries'
 import { companyInfoQuery } from 'queries/companyInfo'
@@ -165,10 +166,7 @@ const DetailContract: NextLayout = () => {
 				fallback: {},
 			}}
 		>
-			<Head>
-				<title>Huprom - Detail contract {contractId}</title>
-				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
-			</Head>
+			<Head title={`Contract number #${contractId}`}/>
 			<Box bgColor={'#f2f4f7'} p={10}>
 				<Container maxW="container.xl" bg="white" color="#262626" borderRadius={5} p={5}>
 					<VStack spacing={4} align="start">

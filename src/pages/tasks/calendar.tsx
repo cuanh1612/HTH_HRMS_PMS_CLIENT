@@ -16,13 +16,13 @@ import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import listPlugin from '@fullcalendar/list'
 import timeGridPlugin from '@fullcalendar/timegrid'
-import { AlertDialog, ButtonIcon, Func, FuncCollapse } from 'components/common'
+import { AlertDialog, ButtonIcon, Func, FuncCollapse, Head } from 'components/common'
 import { Drawer } from 'components/Drawer'
 import { Select, SelectCustom } from 'components/filter'
 import { ClientLayout } from 'components/layouts'
 import { AuthContext } from 'contexts/AuthContext'
 import { deleteTaskMutation } from 'mutations'
-import Head from 'next/head'
+
 import { useRouter } from 'next/router'
 import {
 	allClientsNormalQuery,
@@ -254,10 +254,7 @@ const calendar: NextLayout = () => {
 
 	return (
 		<Box w={'full'} pb={8}>
-			<Head>
-				<title>Huprom - Tasks calendar</title>
-				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
-			</Head>
+			<Head title="Tasks calendar" />
 			<FuncCollapse>
 				{currentUser && currentUser.role === 'Admin' && (
 					<>

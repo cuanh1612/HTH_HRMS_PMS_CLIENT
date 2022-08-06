@@ -26,7 +26,7 @@ import {
 	allTasksQuery,
 } from 'queries'
 import { IFilter, TColumn } from 'type/tableTypes'
-import { AlertDialog, Func, FuncCollapse, Table } from 'components/common'
+import { AlertDialog, Func, FuncCollapse, Head, Table } from 'components/common'
 import { MdOutlineEvent } from 'react-icons/md'
 import { IOption } from 'type/basicTypes'
 import { IoAdd } from 'react-icons/io5'
@@ -37,7 +37,7 @@ import { CSVLink } from 'react-csv'
 import { VscFilter } from 'react-icons/vsc'
 import { BiExport } from 'react-icons/bi'
 import { TasksColumn } from 'utils/columns'
-import Head from 'next/head'
+
 
 const tasks: NextLayout = () => {
 	const { isAuthenticated, handleLoading, setToast, currentUser, socket } =
@@ -282,10 +282,7 @@ const tasks: NextLayout = () => {
 
 	return (
 		<Box pb={8}>
-			<Head>
-				<title>Huprom - Tasks</title>
-				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
-			</Head>
+			<Head title="Tasks" />
 			<FuncCollapse>
 				{currentUser && currentUser.role === 'Admin' && (
 					<>

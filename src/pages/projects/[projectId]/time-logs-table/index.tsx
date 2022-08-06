@@ -1,5 +1,5 @@
 import { Box, Button, useDisclosure, VStack } from '@chakra-ui/react'
-import { AlertDialog, Func, FuncCollapse, Table } from 'components/common'
+import { AlertDialog, Func, FuncCollapse, Head, Table } from 'components/common'
 import { Drawer } from 'components/Drawer'
 import { DateRange, Input, Select } from 'components/filter'
 import { ProjectLayout } from 'components/layouts'
@@ -21,7 +21,6 @@ import { CSVLink } from 'react-csv'
 import { VscFilter } from 'react-icons/vsc'
 import { BiExport } from 'react-icons/bi'
 import { projectTimeLogsColumn } from 'utils/columns'
-import Head from 'next/head'
 
 const TimeLogs: NextLayout = () => {
 	const { isAuthenticated, handleLoading, currentUser, setToast, socket } =
@@ -236,10 +235,8 @@ const TimeLogs: NextLayout = () => {
 
 	return (
 		<Box pb={8}>
-			<Head>
-				<title>Huprom - Time logs of project {projectId}</title>
-				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
-			</Head>
+			<Head title={dataDetailProject?.project?.name} />
+
 			<FuncCollapse>
 				{((currentUser && currentUser.role === 'Admin') ||
 					(currentUser &&

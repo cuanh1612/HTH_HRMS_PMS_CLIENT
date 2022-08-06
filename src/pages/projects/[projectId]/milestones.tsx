@@ -16,7 +16,7 @@ import {
 	AvatarGroup,
 } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { AlertDialog, Table, Loading, Func, FuncCollapse } from 'components/common'
+import { AlertDialog, Table, Loading, Func, FuncCollapse, Head } from 'components/common'
 import { Input, InputNumber, Select, Textarea } from 'components/form'
 import { ProjectLayout } from 'components/layouts'
 import Modal from 'components/modal/Modal'
@@ -27,7 +27,7 @@ import {
 	updateMilestoneMutation,
 } from 'mutations'
 import { useRouter } from 'next/router'
-import { detailMilestoneQuery, milestonesByProjectNormalQuery } from 'queries'
+import { detailMilestoneQuery, detailProjectQuery, milestonesByProjectNormalQuery } from 'queries'
 import React, { useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { MdDriveFileRenameOutline } from 'react-icons/md'
@@ -38,7 +38,7 @@ import { milestoneValidate } from 'utils/validate'
 import { milestoneType } from 'type/basicTypes'
 import { IoAdd } from 'react-icons/io5'
 import { projecMilestonesColumn } from 'utils/columns'
-import Head from 'next/head'
+
 import { allActivitiesByProjectQuery } from 'queries/ProjectActivity'
 
 const milestones: NextLayout = () => {
@@ -75,6 +75,8 @@ const milestones: NextLayout = () => {
 		isAuthenticated,
 		projectId
 	)
+
+	const { data: dataDetailProject } = detailProjectQuery(isAuthenticated, projectId)
 
 	// get detail milestone
 	const { data: detailMilestone } = detailMilestoneQuery(isAuthenticated, idDetail)
@@ -216,10 +218,7 @@ const milestones: NextLayout = () => {
 
 	return (
 		<Box pb={8}>
-			<Head>
-				<title>Huprom - Milestones of project {projectId}</title>
-				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
-			</Head>
+			<Head title={dataDetailProject?.project?.name} />
 			<FuncCollapse>
 				{currentUser && currentUser.role === 'Admin' && (
 					<>

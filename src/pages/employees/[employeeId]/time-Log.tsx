@@ -1,13 +1,13 @@
 import { Box, Button, useDisclosure, VStack } from '@chakra-ui/react'
-import { AlertDialog, Func, FuncCollapse, Table } from 'components/common'
+import { AlertDialog, Func, FuncCollapse, Head, Table } from 'components/common'
 import { Drawer } from 'components/Drawer'
 import { DateRange, Input, Select } from 'components/filter'
 import { EmployeeLayout } from 'components/layouts/Employee'
 import { AuthContext } from 'contexts/AuthContext'
 import { deleteTimeLogMutation, deleteTimeLogsMutation } from 'mutations'
-import Head from 'next/head'
+
 import { useRouter } from 'next/router'
-import { allProjectsNormalQuery, timeLogsCurrentUserQuery } from 'queries'
+import { allProjectsNormalQuery, detailEmployeeQuery, timeLogsCurrentUserQuery } from 'queries'
 import { useContext, useEffect, useState } from 'react'
 import { AiOutlineDelete, AiOutlineSearch } from 'react-icons/ai'
 import { VscFilter } from 'react-icons/vsc'
@@ -21,6 +21,7 @@ const TimeLog: NextLayout = () => {
 	const { isAuthenticated, handleLoading, setToast, currentUser, socket } =
 		useContext(AuthContext)
 	const router = useRouter()
+	const { employeeId } = router.query
 
 	// data select to delete all
 	const [dataSl, setDataSl] = useState<Array<number> | null>()
@@ -79,6 +80,7 @@ const TimeLog: NextLayout = () => {
 	// query
 	// get all time log by project
 	const { data: allTimeLogs, mutate: refetchTimeLogs } = timeLogsCurrentUserQuery(isAuthenticated)
+	const { data: dataEmployee } = detailEmployeeQuery(isAuthenticated, employeeId as string)
 
 	// get all project to filter
 	const { data: dataAllProjects } = allProjectsNormalQuery(isAuthenticated)
@@ -182,10 +184,7 @@ const TimeLog: NextLayout = () => {
 
 	return (
 		<Box pb={8}>
-			<Head>
-				<title>Huprom - Time logs of employee {router.query.employeeId}</title>
-				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
-			</Head>
+			<Head title={dataEmployee?.employee?.name} />
 			<FuncCollapse>
 				<Func
 					icon={<VscFilter />}

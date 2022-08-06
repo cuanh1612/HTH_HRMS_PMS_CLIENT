@@ -22,7 +22,7 @@ import {
 import { NextLayout } from 'type/element/layout'
 // use layout
 import { ClientLayout } from 'components/layouts'
-import { AlertDialog, ButtonIcon, Func, FuncCollapse } from 'components/common'
+import { AlertDialog, ButtonIcon, Func, FuncCollapse, Head } from 'components/common'
 import { MdOutlineNavigateBefore, MdOutlineNavigateNext } from 'react-icons/md'
 import { Drawer } from 'components/Drawer'
 import UpdateLeaves from './update-leaves'
@@ -34,7 +34,7 @@ import { IFilter } from 'type/tableTypes'
 import { IOption } from 'type/basicTypes'
 import DetailLeave from './[leaveId]'
 import { deleteLeaveMutation } from 'mutations'
-import Head from 'next/head'
+
 import { IoAdd } from 'react-icons/io5'
 import { VscFilter } from 'react-icons/vsc'
 import { BsCalendar2Day, BsCalendar2Month, BsCalendar2Week } from 'react-icons/bs'
@@ -185,10 +185,7 @@ const calendar: NextLayout = () => {
 
 	return (
 		<Box pb={8}>
-			<Head>
-				<title>Huprom - Leaves calendar</title>
-				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
-			</Head>
+			<Head title='Leaves calendar'/>
 			<FuncCollapse>
 				{currentUser && currentUser.role === 'Admin' && (
 					<>

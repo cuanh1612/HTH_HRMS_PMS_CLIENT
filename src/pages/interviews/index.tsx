@@ -8,11 +8,11 @@ import {
 	useDisclosure,
 	VStack,
 } from '@chakra-ui/react'
-import { AlertDialog, Func, FuncCollapse, Table } from 'components/common'
+import { AlertDialog, Func, FuncCollapse, Head, Table } from 'components/common'
 import { Drawer } from 'components/Drawer'
 import { ClientLayout } from 'components/layouts'
 import { AuthContext } from 'contexts/AuthContext'
-import Head from 'next/head'
+
 import { useRouter } from 'next/router'
 // import { allJobsQuery } from 'queries/job'
 import { DateRange, Input, Select as FSelect, SelectCustom } from 'components/filter'
@@ -227,10 +227,7 @@ const interviews: NextLayout = () => {
 
 	return (
 		<Box pb={8}>
-			<Head>
-				<title>Huprom - Interview schedule</title>
-				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
-			</Head>
+			<Head title="Interview schedule" />
 
 			<FuncCollapse>
 				{currentUser && currentUser.role === 'Admin' && (

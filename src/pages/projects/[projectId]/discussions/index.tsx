@@ -1,4 +1,5 @@
 import { Box, Button, HStack, useDisclosure, VStack } from '@chakra-ui/react'
+import { Head } from 'components/common'
 import { Drawer } from 'components/Drawer'
 import { ProjectLayout } from 'components/layouts'
 import Modal from 'components/modal/Modal'
@@ -6,7 +7,7 @@ import ProjectDiscussionItem from 'components/projectDiscussion/projectDiscussio
 import { AuthContext } from 'contexts/AuthContext'
 import { deleteProjectDiscussionRoomMutation } from 'mutations'
 import { GetServerSideProps } from 'next'
-import Head from 'next/head'
+
 import { useRouter } from 'next/router'
 import { allProjectDiscussionRoomsQuery, detailProjectQuery } from 'queries'
 import { useContext, useEffect, useState } from 'react'
@@ -130,10 +131,7 @@ const Discussions: NextLayout = () => {
 
 	return (
 		<Box pb={8}>
-			<Head>
-				<title>Huprom - Discussions of project {projectId}</title>
-				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
-			</Head>
+			<Head title={dataDetailProject?.project?.name}/>
 			<Box p={10} bgColor={'#f2f4f7'}>
 				<VStack
 					align={'start'}

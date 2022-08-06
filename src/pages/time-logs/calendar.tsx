@@ -28,7 +28,7 @@ import {
 } from 'queries'
 import React, { useContext, useEffect, useState } from 'react'
 import { NextLayout } from 'type/element/layout'
-import { AlertDialog, ButtonIcon, Func, FuncCollapse } from 'components/common'
+import { AlertDialog, ButtonIcon, Func, FuncCollapse, Head } from 'components/common'
 import { MdOutlineNavigateBefore, MdOutlineNavigateNext } from 'react-icons/md'
 import AddTimeLog from './add-time-logs'
 import { Drawer } from 'components/Drawer'
@@ -38,7 +38,7 @@ import { deleteTimeLogMutation } from 'mutations'
 import { Select, SelectCustom } from 'components/filter'
 import { IFilter } from 'type/tableTypes'
 import { IOption } from 'type/basicTypes'
-import Head from 'next/head'
+
 import { IoAdd } from 'react-icons/io5'
 import { VscFilter } from 'react-icons/vsc'
 import { BsCalendar2Day, BsCalendar2Month, BsCalendar2Week } from 'react-icons/bs'
@@ -267,10 +267,7 @@ const calendar: NextLayout = () => {
 
 	return (
 		<Box w={'full'} pb={8}>
-			<Head>
-				<title>Huprom - Time logs calendar</title>
-				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
-			</Head>
+			<Head title="Time logs calendar" />
 			<FuncCollapse>
 				{currentUser && currentUser.role === 'Admin' && (
 					<>

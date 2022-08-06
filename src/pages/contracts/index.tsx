@@ -8,7 +8,7 @@ import {
 	useDisclosure,
 	VStack,
 } from '@chakra-ui/react'
-import { AlertDialog, Func, FuncCollapse, Table } from 'components/common'
+import { AlertDialog, Func, FuncCollapse, Head, Table } from 'components/common'
 import { Drawer } from 'components/Drawer'
 import { DateRange, Input, Select, SelectCustom } from 'components/filter'
 import ImportCSV from 'components/importCSV'
@@ -20,7 +20,7 @@ import {
 	importCSVContractsMutation,
 	publicLinkContractMutation,
 } from 'mutations'
-import Head from 'next/head'
+
 import { useRouter } from 'next/router'
 import { allClientsQuery, allContractsQuery, allContractTypesQuery } from 'queries'
 import { useContext, useEffect, useState } from 'react'
@@ -385,10 +385,7 @@ const Contracts: NextLayout = () => {
 
 	return (
 		<Box pb={8}>
-			<Head>
-				<title>Huprom - Contracts</title>
-				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
-			</Head>
+			<Head title='Contracts'/>
 			<FuncCollapse>
 				{currentUser && currentUser.role === 'Admin' && (
 					<>

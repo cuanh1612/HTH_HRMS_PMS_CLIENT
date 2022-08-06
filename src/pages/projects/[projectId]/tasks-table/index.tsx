@@ -1,5 +1,5 @@
 import { Box, Button, useDisclosure, VStack } from '@chakra-ui/react'
-import { AlertDialog, Func, FuncCollapse, Table } from 'components/common'
+import { AlertDialog, Func, FuncCollapse, Head, Table } from 'components/common'
 import { DateRange, Input, Select as SelectF } from 'components/filter'
 import { ProjectLayout } from 'components/layouts'
 import { AuthContext } from 'contexts/AuthContext'
@@ -25,7 +25,6 @@ import { BiExport } from 'react-icons/bi'
 import { VscFilter } from 'react-icons/vsc'
 import { Drawer } from 'components/Drawer'
 import { projectTasksColumn } from 'utils/columns'
-import Head from 'next/head'
 
 const tasks: NextLayout = () => {
 	const { isAuthenticated, handleLoading, currentUser, setToast, socket } =
@@ -241,10 +240,8 @@ const tasks: NextLayout = () => {
 
 	return (
 		<Box pb={8}>
-						<Head>
-				<title>Huprom - Tasks of project {projectId}</title>
-				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
-			</Head>
+			<Head title={dataDetailProject?.project?.name} />
+
 			<FuncCollapse>
 				{((currentUser && currentUser.role === 'Admin') ||
 					(currentUser &&

@@ -28,12 +28,12 @@ import { NextLayout } from 'type/element/layout'
 import { ClientLayout } from 'components/layouts'
 import { Donut } from 'components/charts'
 import { TColumn } from 'type/tableTypes'
-import { AlertDialog, Static, Table } from 'components/common'
+import { AlertDialog, Head, Static, Table } from 'components/common'
 import { deleteProjectMutation } from 'mutations'
 import { Drawer } from 'components/Drawer'
 import UpdateProject from 'src/pages/projects/update-projects'
 import { clientProjectsColumn } from 'utils/columns'
-import Head from 'next/head'
+
 ChartJS.register(ArcElement, Tooltip, Legend)
 
 const DetailClient: NextLayout | any = ({
@@ -157,10 +157,7 @@ const DetailClient: NextLayout | any = ({
 					fallback: { [urlDetailClient]: dataDetailClientServer },
 				}}
 			>
-				<Head>
-					<title>Huprom - Detail client {clientId}</title>
-					<meta name="viewport" content="initial-scale=1.0, width=device-width" />
-				</Head>
+				<Head title={dataDetailClient?.client?.name}/>
 				<Box w="full" pb={8}>
 					<VStack spacing={5} alignItems={'start'} w={'full'}>
 						<HStack spacing={5} h={'full'} w={'full'}>

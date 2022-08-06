@@ -8,7 +8,7 @@ import {
 	useDisclosure,
 	VStack,
 } from '@chakra-ui/react'
-import { Func, FuncCollapse, Table } from 'components/common'
+import { Func, FuncCollapse, Head, Table } from 'components/common'
 import { Drawer } from 'components/Drawer'
 import { Input, SelectCustom } from 'components/filter'
 import { ClientLayout } from 'components/layouts'
@@ -27,7 +27,7 @@ import { BiExport } from 'react-icons/bi'
 import { VscFilter } from 'react-icons/vsc'
 import { IOption } from 'type/basicTypes'
 import { salariesColumn } from 'utils/columns'
-import Head from 'next/head'
+
 
 const Salaries: NextLayout = () => {
 	const { isAuthenticated, handleLoading, currentUser } = useContext(AuthContext)
@@ -161,10 +161,7 @@ const Salaries: NextLayout = () => {
 
 	return (
 		<Box pb={8} w={'full'}>
-			<Head>
-				<title>Huprom - Salaries</title>
-				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
-			</Head>
+			<Head title="Salaries" />
 			<FuncCollapse>
 				{currentUser && currentUser.role === 'Admin' && (
 					<>

@@ -28,7 +28,7 @@ import {
 	VStack,
 } from '@chakra-ui/react'
 import { Donut } from 'components/charts'
-import { ButtonIcon, Card, ItemDashboard } from 'components/common'
+import { ButtonIcon, Card, Head, ItemDashboard } from 'components/common'
 import { Drawer } from 'components/Drawer'
 import { ClientLayout } from 'components/layouts'
 import { AuthContext } from 'contexts/AuthContext'
@@ -56,7 +56,6 @@ import { MdOutlineNavigateBefore, MdOutlineNavigateNext } from 'react-icons/md'
 import DetailEvent from './events/[eventId]'
 import { VscTasklist } from 'react-icons/vsc'
 import { BiTimeFive } from 'react-icons/bi'
-import Head from 'next/head'
 
 const TaskCategory: NextLayout = () => {
 	const { isAuthenticated, handleLoading, currentUser } = useContext(AuthContext)
@@ -217,10 +216,7 @@ const TaskCategory: NextLayout = () => {
 
 	return (
 		<Box w={'100%'} pb={8} pos={'relative'}>
-			<Head>
-				<title>Huprom - Private dashboard</title>
-				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
-			</Head>
+			<Head title="Private dashboard" />
 			<HStack
 				_hover={{
 					textDecoration: 'none',

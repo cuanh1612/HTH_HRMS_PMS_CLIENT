@@ -11,7 +11,7 @@ import {
 } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Column } from 'components/board'
-import { AlertDialog } from 'components/common'
+import { AlertDialog, Head } from 'components/common'
 import { Drawer } from 'components/Drawer'
 import { Input } from 'components/form'
 import { ProjectLayout } from 'components/layouts'
@@ -25,7 +25,7 @@ import {
 	deleteTaskMutation,
 	updateStatusColumnMutation,
 } from 'mutations'
-import Head from 'next/head'
+
 import { useRouter } from 'next/router'
 import { allStatusTasksQuery, detailProjectQuery } from 'queries'
 import { allActivitiesByProjectQuery } from 'queries/ProjectActivity'
@@ -82,6 +82,8 @@ const taskBoard: NextLayout = () => {
 		isAuthenticated,
 		query.projectId
 	)
+
+	const { data: dataDetailProject } = detailProjectQuery(isAuthenticated, projectId)
 
 	// refetch all activities for project
 	const { mutate: refetchActivitiesProject } = allActivitiesByProjectQuery(
@@ -418,10 +420,7 @@ const taskBoard: NextLayout = () => {
 
 	return (
 		<Box pb={8}>
-			<Head>
-				<title>Huprom - Task board of project {projectId}</title>
-				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
-			</Head>
+			<Head title={dataDetailProject?.project?.name} />
 			<HStack
 				divider={
 					<StackDivider borderColor={colorMode == 'light' ? 'gray.200' : 'gray.700'} />

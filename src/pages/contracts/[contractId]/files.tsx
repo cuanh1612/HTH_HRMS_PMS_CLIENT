@@ -10,7 +10,7 @@ import {
 	VStack,
 } from '@chakra-ui/react'
 import { ContractLayout } from 'components/layouts/Contract'
-import { Loading, ItemContractFile, ItemFileUpload } from 'components/common'
+import { Loading, ItemContractFile, ItemFileUpload, Head } from 'components/common'
 import { AuthContext } from 'contexts/AuthContext'
 import { createContractFileMutation, deleteContractFileMutation } from 'mutations'
 import { GetStaticPaths, GetStaticProps } from 'next'
@@ -24,7 +24,6 @@ import { ICloudinaryImg } from 'type/fileType'
 import { contractMutationResponse } from 'type/mutationResponses'
 import { generateImgFile } from 'utils/helper'
 import { uploadFile } from 'utils/uploadFile'
-import Head from 'next/head'
 
 const Files: NextLayout = () => {
 	const { isAuthenticated, handleLoading, setToast, socket, currentUser } =
@@ -215,10 +214,8 @@ const Files: NextLayout = () => {
 
 	return (
 		<Box p={10} bgColor={'#f2f4f7'}>
-			<Head>
-				<title>Huprom - Files of contract {contractId}</title>
-				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
-			</Head>
+			<Head title={`Contract number #${contractId}`} />
+
 			<VStack align={'start'} w="full" bgColor={'white'} p={5} borderRadius={5} spacing={5}>
 				<Text fontSize={18} fontWeight={'semibold'}>
 					Files

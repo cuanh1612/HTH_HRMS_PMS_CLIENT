@@ -25,7 +25,7 @@ import {
 } from '@chakra-ui/react'
 
 import { Area, Bar, Donut, Line } from 'components/charts'
-import { Card, ItemDashboard } from 'components/common'
+import { Card, Head, ItemDashboard } from 'components/common'
 import { Drawer } from 'components/Drawer'
 import { ClientLayout } from 'components/layouts'
 import { AuthContext } from 'contexts/AuthContext'
@@ -71,9 +71,13 @@ import DetailLeave from './leaves/[leaveId]'
 import DetailTask from './tasks/[taskId]'
 import { GrDocumentText } from 'react-icons/gr'
 import { clientType } from 'type/basicTypes'
-import Head from 'next/head'
+import 'intro.js/introjs.css'
+import introJs from 'intro.js'
 
 const dashboard: NextLayout = () => {
+
+	const [enable, setEnable] = useState(false)
+
 	const { isAuthenticated, handleLoading, currentUser, setToast } = useContext(AuthContext)
 	const router = useRouter()
 
@@ -117,10 +121,11 @@ const dashboard: NextLayout = () => {
 
 	// mutation ----------------------------------------
 	// update status of leave
-	const [mutateUpdateStatus, { status: statusUpStatus, data: dataUpdate }] = updateStatusMutation(setToast)
+	const [mutateUpdateStatus, { status: statusUpStatus, data: dataUpdate }] =
+		updateStatusMutation(setToast)
 
-	//Useeffect ---------------------------------------------------------
-	//Handle check loged in
+	//UseEffect ---------------------------------------------------------
+	//Handle check logged in
 	useEffect(() => {
 		if (isAuthenticated) {
 			handleLoading(false)
@@ -144,11 +149,10 @@ const dashboard: NextLayout = () => {
 
 	return (
 		<Box w={'100%'} pb={8} pos={'relative'}>
-			<Head>
-				<title>Huprom - Dashboard</title>
-				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
-			</Head>
+			<Button onClick={() => introJs().start()}>enter</Button>
+			<Head title="Dashboards" />
 			<HStack
+				data-title="Welcome!" data-intro="Hello World! 👋" className="card-demo"
 				_hover={{
 					textDecoration: 'none',
 				}}
@@ -163,6 +167,7 @@ const dashboard: NextLayout = () => {
 			</HStack>
 			<Collapse in={isOpenCards} animateOpacity>
 				<Grid
+					data-title="Welcome!" data-intro={'<img src="https://i.giphy.com/media/ujUdrdpX7Ok5W/giphy.webp" onerror="this.onerror=null;this.src=\'https://i.giphy.com/ujUdrdpX7Ok5W.gif\';" alt="">'} className="card-demo"
 					overflow={'hidden'}
 					templateColumns={[
 						'repeat(1, 1fr)',

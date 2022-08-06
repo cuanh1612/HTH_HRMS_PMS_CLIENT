@@ -1,10 +1,5 @@
-import {
-	Box,
-	Button,
-	useDisclosure,
-	VStack,
-} from '@chakra-ui/react'
-import { AlertDialog, Func, FuncCollapse, Table } from 'components/common'
+import { Box, Button, useDisclosure, VStack } from '@chakra-ui/react'
+import { AlertDialog, Func, FuncCollapse, Head, Table } from 'components/common'
 import { Drawer } from 'components/Drawer'
 import { Input, Select } from 'components/filter'
 import { ProjectLayout } from 'components/layouts'
@@ -16,15 +11,11 @@ import {
 	reEnterPasswordMutation,
 } from 'mutations'
 import { GetServerSideProps } from 'next'
-import Head from 'next/head'
+
 import { useRouter } from 'next/router'
 import { allProjectNotesQuery, detailProjectQuery } from 'queries'
 import { FormEventHandler, useContext, useEffect, useState } from 'react'
-import {
-	AiOutlineCheck,
-	AiOutlineDelete,
-	AiOutlineSearch,
-} from 'react-icons/ai'
+import { AiOutlineCheck, AiOutlineDelete, AiOutlineSearch } from 'react-icons/ai'
 import { IoAdd } from 'react-icons/io5'
 import { VscFilter } from 'react-icons/vsc'
 import { NextLayout } from 'type/element/layout'
@@ -80,8 +71,10 @@ const Notes: NextLayout = () => {
 	const [mutateReEnterPassword, { status: statusReEnterPassword }] =
 		reEnterPasswordMutation(setToast)
 
-	const [deleteOne, { status: statusDeleteOne, data: dataDl }] = deleteProjectNoteMutation(setToast)
-	const [deleteMany, { status: statusDeleteMany, data: dataDlMany}] = deleteProjectNotesMutation(setToast)
+	const [deleteOne, { status: statusDeleteOne, data: dataDl }] =
+		deleteProjectNoteMutation(setToast)
+	const [deleteMany, { status: statusDeleteMany, data: dataDlMany }] =
+		deleteProjectNotesMutation(setToast)
 
 	//Modal -------------------------------------------------------------
 	// set open add notes
@@ -240,10 +233,8 @@ const Notes: NextLayout = () => {
 
 	return (
 		<Box pb={8}>
-						<Head> 
-				<title>Huprom - Notes of project {projectId}</title>
-				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
-			</Head>
+			<Head title={dataDetailProject?.project?.name} />
+
 			<FuncCollapse>
 				{((currentUser && currentUser.role === 'Admin') ||
 					(currentUser &&

@@ -1,11 +1,11 @@
 import { Box, Button, useDisclosure, VStack } from '@chakra-ui/react'
-import { AlertDialog, Func, FuncCollapse, Table } from 'components/common'
+import { AlertDialog, Func, FuncCollapse, Head, Table } from 'components/common'
 import { Drawer } from 'components/Drawer'
 import { Input } from 'components/filter'
 import { ClientLayout } from 'components/layouts'
 import { AuthContext } from 'contexts/AuthContext'
 import { deleteManySkillMutation, deleteSkillMutation } from 'mutations/skill'
-import Head from 'next/head'
+
 import { useRouter } from 'next/router'
 import { allSkillsQuery } from 'queries/skill'
 import { useContext, useEffect, useState } from 'react'
@@ -129,10 +129,7 @@ const Skill: NextLayout = () => {
 
 	return (
 		<Box pb={8}>
-			<Head>
-				<title>Huprom - Skills</title>
-				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
-			</Head>
+			<Head title="Skills" />
 
 			<FuncCollapse>
 				{currentUser && currentUser.role === 'Admin' && (

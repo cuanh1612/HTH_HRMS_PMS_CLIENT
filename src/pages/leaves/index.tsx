@@ -3,7 +3,7 @@ import { deleteLeaveMutation, deleteLeavesMutation, updateStatusMutation } from 
 import { allLeaveQuery, allLeaveTypesQuery } from 'queries'
 
 // components
-import { Box, Button, useDisclosure, VStack } from '@chakra-ui/react'
+import { Box, Button, Image, useDisclosure, VStack } from '@chakra-ui/react'
 import { AlertDialog, Func, FuncCollapse, Head, Table } from 'components/common'
 import { Drawer } from 'components/Drawer'
 import { CSVLink } from 'react-csv'
@@ -314,6 +314,7 @@ const Leaves: NextLayout = () => {
 			)}
 
 			{/* alert dialog when delete one */}
+			
 			<AlertDialog
 				handleDelete={() => {
 					setIsLoading(true)

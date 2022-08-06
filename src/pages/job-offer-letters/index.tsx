@@ -1,5 +1,5 @@
 import { Box, Button, useDisclosure, VStack } from '@chakra-ui/react'
-import { AlertDialog, Func, FuncCollapse, Table } from 'components/common'
+import { AlertDialog, Func, FuncCollapse, Head, Table } from 'components/common'
 import { Drawer } from 'components/Drawer'
 import { DateRange, Select as FSelect } from 'components/filter'
 import { ClientLayout } from 'components/layouts'
@@ -8,7 +8,7 @@ import {
 	deleteJobOfferLetterMutation,
 	deleteJobOfferLettersMutation,
 } from 'mutations/jobOfferLetter'
-import Head from 'next/head'
+
 import { useRouter } from 'next/router'
 import { allJobsQuery } from 'queries/job'
 import { allJobOffersQuery } from 'queries/jobOfferLetter'
@@ -165,10 +165,7 @@ const Job: NextLayout = () => {
 
 	return (
 		<Box pb={8}>
-			<Head>
-				<title>Huprom - Offer letters</title>
-				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
-			</Head>
+			<Head title="Offer letters" />
 			<FuncCollapse>
 				{currentUser && currentUser.role === 'Admin' && (
 					<>

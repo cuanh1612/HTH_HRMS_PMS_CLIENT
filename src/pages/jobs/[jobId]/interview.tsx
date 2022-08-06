@@ -8,7 +8,7 @@ import {
 	useDisclosure,
 	VStack,
 } from '@chakra-ui/react'
-import { AlertDialog, Func, FuncCollapse, Table } from 'components/common'
+import { AlertDialog, Func, FuncCollapse, Head, Table } from 'components/common'
 import { Drawer } from 'components/Drawer'
 import { DateRange, Input, SelectCustom, Select as FSelect } from 'components/filter'
 import { JobLayout } from 'components/layouts'
@@ -18,7 +18,7 @@ import {
 	deleteInterviewsMutation,
 	updateInterviewStatusMutation,
 } from 'mutations/interview'
-import Head from 'next/head'
+
 import { useRouter } from 'next/router'
 import { allEmployeesNormalQuery } from 'queries'
 import { interviewsByJobQuery } from 'queries/interview'
@@ -198,10 +198,7 @@ const Interview: NextLayout | any = ({ jobIdProp }: ICandidateProps) => {
 
 	return (
 		<Box pb={8}>
-			<Head>
-				<title>Huprom - Job interviews</title>
-				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
-			</Head>
+			<Head title="Job detail" />
 			<FuncCollapse>
 				{currentUser && currentUser.role === 'Admin' && (
 					<Func

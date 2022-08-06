@@ -8,7 +8,9 @@ import {
 	NumberInput,
 	NumberInputField,
 	NumberInputStepper,
+	Text,
 	useColorMode,
+	VStack,
 } from '@chakra-ui/react'
 
 // react
@@ -37,9 +39,9 @@ import {
 import { FaSort, FaSortDown, FaSortUp } from 'react-icons/fa'
 
 // button icon
-import {ButtonIcon} from './ButtonIcon'
+import { ButtonIcon } from './ButtonIcon'
 import { ITable, TUseTable } from 'type/tableTypes'
-import {Loading} from './Loading'
+import { Loading } from './Loading'
 
 // create timeout variable to await client stop click to set data select
 let selectTimeOut: NodeJS.Timeout
@@ -89,10 +91,10 @@ export const Table = memo(
 		isResetFilter = false,
 	}: ITable) => {
 		const [isSelected, setIsSelected] = useState(false)
-	
+
 		// darkMode
 		const { colorMode } = useColorMode()
-	
+
 		// use table hook of react table
 		const {
 			getTableBodyProps,
@@ -126,7 +128,7 @@ export const Table = memo(
 			useSortBy,
 			usePagination,
 			useRowSelect,
-	
+
 			(hooks) => {
 				if (isSelect) {
 					hooks.visibleColumns.push((columns) => [
@@ -137,7 +139,9 @@ export const Table = memo(
 							Header: ({ getToggleAllPageRowsSelectedProps }: any) => (
 								<IndeterminateCheckbox
 									{...getToggleAllPageRowsSelectedProps()}
-									handleIsSelected={() => {setIsSelected(true)}}
+									handleIsSelected={() => {
+										setIsSelected(true)
+									}}
 								/>
 							),
 							Cell: ({ row }: any) => {
@@ -159,7 +163,7 @@ export const Table = memo(
 				}
 			}
 		)
-	
+
 		// useEffect -------------------------------------
 		// set filter
 		useEffect(() => {
@@ -167,7 +171,7 @@ export const Table = memo(
 				setFilter(filter.columnId, filter.filterValue)
 			}
 		}, [filter])
-	
+
 		// get all data when select
 		useEffect(() => {
 			if (isSelected) {
@@ -177,31 +181,31 @@ export const Table = memo(
 					}
 					return false
 				})
-	
+
 				dataSelect = dataSelect.map((row: Row) => {
 					return row.values[String(selectByColumn)]
 				})
 				console.log(dataSelect)
-	
+
 				if (setSelect) setSelect(dataSelect)
-	
+
 				setIsSelected(false)
 			}
 		}, [isSelected])
-	
+
 		// when data reset
 		useEffect(() => {
 			toggleAllPageRowsSelected(false)
 			// setIsSelected(true)
 		}, [data])
-	
+
 		// reset filter
 		useEffect(() => {
 			if (isResetFilter) {
 				setAllFilters([])
 			}
 		}, [isResetFilter])
-	
+
 		return (
 			<Box overflow={'auto'} pos="relative">
 				<Box userSelect={'none'} as="div" {...getTableProps()}>
@@ -218,7 +222,9 @@ export const Table = memo(
 								{headerGroup.headers.map((column: any) => (
 									<Box
 										fontSize={'md'}
-										color={colorMode == 'light' ? 'hu-GreenN.darkH' : '#FFFFFF90'}
+										color={
+											colorMode == 'light' ? 'hu-GreenN.darkH' : '#FFFFFF90'
+										}
 										fontFamily={'"Montserrat", sans-serif'}
 										fontWeight={'semibold'}
 										as="div"
@@ -232,7 +238,7 @@ export const Table = memo(
 											justifyContent={'space-between'}
 										>
 											{column.render('Header')}
-	
+
 											{column.canSort ? (
 												column.isSorted ? (
 													column.isSortedDesc ? (
@@ -270,120 +276,149 @@ export const Table = memo(
 							</Box>
 						))}
 					</Box>
-					<Box as="div" {...getTableBodyProps()}>
-						{(page as Row<any>[]).map((row: Row) => {
-							prepareRow(row)
-							return (
-								<Box
-									borderBottomWidth={1}
-									borderColor={colorMode == 'light' ? 'hu-Green.light' : 'gray.400'}
-									alignItems={'center'}
-									paddingBlock={'15px'}
-									as="div"
-									{...row.getRowProps()}
-								>
-									{row.cells.map((cell: Cell) => (
-										<Box paddingInline={'4'} as="div" {...cell.getCellProps()}>
-											{cell.render('Cell')}
+					{data && data.length > 0 ? (
+						<>
+							<Box as="div" {...getTableBodyProps()}>
+								{(page as Row<any>[]).map((row: Row) => {
+									prepareRow(row)
+									return (
+										<Box
+											borderBottomWidth={1}
+											borderColor={
+												colorMode == 'light' ? 'hu-Green.light' : 'gray.400'
+											}
+											alignItems={'center'}
+											paddingBlock={'15px'}
+											as="div"
+											{...row.getRowProps()}
+										>
+											{row.cells.map((cell: Cell) => (
+												<Box
+													paddingInline={'4'}
+													as="div"
+													{...cell.getCellProps()}
+												>
+													{cell.render('Cell')}
+												</Box>
+											))}
 										</Box>
-									))}
-								</Box>
-							)
-						})}
-					</Box>
-					<HStack
-						paddingBlock={'15px'}
-						borderBottomWidth={1}
-						borderColor={colorMode == 'light' ? 'hu-Green.light' : 'gray.400'}
-						paddingInline={'4'}
-						justifyContent={'flex-end'}
-						alignItems={'center'}
-						spacing={5}
-					>
-						<Box as="span">
-							Page{' '}
-							<Box
-								as="span"
-								fontWeight={'semibold'}
-								color={'hu-Green.normal'}
-								fontSize={'xl'}
-								paddingInline={'2'}
+									)
+								})}
+							</Box>
+							<HStack
+								paddingBlock={'15px'}
+								borderBottomWidth={1}
+								borderColor={colorMode == 'light' ? 'hu-Green.light' : 'gray.400'}
+								paddingInline={'4'}
+								justifyContent={'flex-end'}
+								alignItems={'center'}
+								spacing={5}
 							>
-								{state.pageIndex + 1}
-							</Box>{' '}
-							of {pageCount}
+								<Box as="span">
+									Page{' '}
+									<Box
+										as="span"
+										fontWeight={'semibold'}
+										color={'hu-Green.normal'}
+										fontSize={'xl'}
+										paddingInline={'2'}
+									>
+										{state.pageIndex + 1}
+									</Box>{' '}
+									of {pageCount}
+								</Box>
+								<NumberInput
+									onChange={(value) => {
+										if (Number(value) == 0) return setPageSize(1)
+										setPageSize(Number(value))
+									}}
+									defaultValue={10}
+									min={5}
+									step={5}
+									max={50}
+									maxW={'70px'}
+								>
+									<NumberInputField readOnly />
+									<NumberInputStepper>
+										<NumberIncrementStepper />
+										<NumberDecrementStepper />
+									</NumberInputStepper>
+								</NumberInput>
+							</HStack>
+
+							<HStack
+								paddingBlock={'15px'}
+								paddingInline={'4'}
+								justifyContent={'flex-end'}
+								alignItems={'center'}
+								spacing={5}
+							>
+								<ButtonIcon
+									isDisabled={!canPreviousPage}
+									handle={() => gotoPage(0)}
+									ariaLabel={'first page'}
+									icon={<MdOutlineArrowBack />}
+								/>
+								<ButtonIcon
+									isDisabled={!canPreviousPage}
+									handle={() => previousPage()}
+									ariaLabel={'previous page'}
+									icon={<MdOutlineNavigateBefore />}
+								/>
+								<ButtonIcon
+									isDisabled={!canNextPage}
+									handle={() => nextPage()}
+									ariaLabel={'next page'}
+									icon={<MdOutlineNavigateNext />}
+								/>
+								<ButtonIcon
+									isDisabled={!canNextPage}
+									handle={() => gotoPage(pageCount - 1)}
+									ariaLabel={'last page'}
+									icon={<MdOutlineArrowForward />}
+								/>
+
+								<NumberInput
+									onChange={(value) => {
+										if (Number(value) == 0) return gotoPage(0)
+										gotoPage(Number(value) - 1)
+									}}
+									defaultValue={1}
+									min={1}
+									max={pageCount}
+									maxW={'70px'}
+								>
+									<NumberInputField />
+									<NumberInputStepper>
+										<NumberIncrementStepper />
+										<NumberDecrementStepper />
+									</NumberInputStepper>
+								</NumberInput>
+							</HStack>
+						</>
+					) : (
+						<Box>
+							<iframe
+								src="/assets/illustrators/empty.svg"
+								style={{
+									width: '100%',
+									height: '300px',
+									opacity: 0.5,
+								}}
+							></iframe>
+							<VStack spacing={1} mt={'-40px'}>
+								<Text fontWeight={'bold'} fontSize={'28px'} textAlign={'center'}>
+									There's no any information
+								</Text>
+								<Text color={'gray'} textAlign={'center'}>
+									Please, add new item or reload this page!
+								</Text>
+							</VStack>
 						</Box>
-						<NumberInput
-							onChange={(value) => {
-								if (Number(value) == 0) return setPageSize(1)
-								setPageSize(Number(value))
-							}}
-							defaultValue={10}
-							min={5}
-							step={5}
-							max={50}
-							maxW={'70px'}
-						>
-							<NumberInputField readOnly />
-							<NumberInputStepper>
-								<NumberIncrementStepper />
-								<NumberDecrementStepper />
-							</NumberInputStepper>
-						</NumberInput>
-					</HStack>
-	
-					<HStack
-						paddingBlock={'15px'}
-						paddingInline={'4'}
-						justifyContent={'flex-end'}
-						alignItems={'center'}
-						spacing={5}
-					>
-						<ButtonIcon
-							isDisabled={!canPreviousPage}
-							handle={() => gotoPage(0)}
-							ariaLabel={'first page'}
-							icon={<MdOutlineArrowBack />}
-						/>
-						<ButtonIcon
-							isDisabled={!canPreviousPage}
-							handle={() => previousPage()}
-							ariaLabel={'previous page'}
-							icon={<MdOutlineNavigateBefore />}
-						/>
-						<ButtonIcon
-							isDisabled={!canNextPage}
-							handle={() => nextPage()}
-							ariaLabel={'next page'}
-							icon={<MdOutlineNavigateNext />}
-						/>
-						<ButtonIcon
-							isDisabled={!canNextPage}
-							handle={() => gotoPage(pageCount - 1)}
-							ariaLabel={'last page'}
-							icon={<MdOutlineArrowForward />}
-						/>
-	
-						<NumberInput
-							onChange={(value) => {
-								if (Number(value) == 0) return gotoPage(0)
-								gotoPage(Number(value) - 1)
-							}}
-							defaultValue={1}
-							min={1}
-							max={pageCount}
-							maxW={'70px'}
-						>
-							<NumberInputField />
-							<NumberInputStepper>
-								<NumberIncrementStepper />
-								<NumberDecrementStepper />
-							</NumberInputStepper>
-						</NumberInput>
-					</HStack>
+					)}
 				</Box>
 				{isLoading && <Loading />}
 			</Box>
 		)
 	}
-) 
+)

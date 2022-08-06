@@ -20,10 +20,10 @@ import listPlugin from '@fullcalendar/list'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import { EventInput } from '@fullcalendar/common'
 import { Donut } from 'components/charts'
-import { AlertDialog, ButtonIcon, Card, ItemDashboard } from 'components/common'
+import { AlertDialog, ButtonIcon, Card, Head, ItemDashboard } from 'components/common'
 import { ClientLayout } from 'components/layouts'
 import { AuthContext } from 'contexts/AuthContext'
-import Head from 'next/head'
+
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import {
@@ -182,10 +182,7 @@ const dashboard: NextLayout = () => {
 
 	return (
 		<Box w={'100%'} pb={8} pos={'relative'}>
-			<Head>
-				<title>Huprom - Dashboard jobs</title>
-				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
-			</Head>
+			<Head title="Dashboards" />
 			<HStack
 				_hover={{
 					textDecoration: 'none',

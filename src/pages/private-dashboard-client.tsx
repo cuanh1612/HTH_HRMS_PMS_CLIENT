@@ -14,10 +14,10 @@ import {
 	useDisclosure,
 } from '@chakra-ui/react'
 import { Donut } from 'components/charts'
-import { Card, ItemDashboard } from 'components/common'
+import { Card, Head, ItemDashboard } from 'components/common'
 import { ClientLayout } from 'components/layouts'
 import { AuthContext } from 'contexts/AuthContext'
-import Head from 'next/head'
+
 import { useRouter } from 'next/router'
 import {
 	clientCountProjectStatusQuery,
@@ -74,10 +74,7 @@ const privateDashboard: NextLayout = () => {
 
 	return (
 		<Box w={'100%'} pos={'relative'}>
-			<Head>
-				<title>Huprom - Private dashboard</title>
-				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
-			</Head>
+			<Head title="Private dashboard" />
 			<HStack
 				_hover={{
 					textDecoration: 'none',

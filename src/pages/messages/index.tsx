@@ -13,7 +13,7 @@ import {
 } from '@chakra-ui/react'
 import { Input } from 'components/form'
 import Modal from 'components/modal/Modal'
-import { Receiver, Loading, Message, MenuIcons } from 'components/common'
+import { Receiver, Loading, Message, MenuIcons, Head } from 'components/common'
 import { AuthContext } from 'contexts/AuthContext'
 import { createConversationReplyMutation, deleteConversationMutation } from 'mutations'
 import { useRouter } from 'next/router'
@@ -28,7 +28,7 @@ import { AiOutlineMenu, AiOutlineSearch, AiOutlineSend } from 'react-icons/ai'
 import { Drawer } from 'components/Drawer'
 import { NextLayout } from 'type/element/layout'
 import { ClientLayout } from 'components/layouts'
-import Head from 'next/head'
+
 
 const Messages: NextLayout = () => {
 	const { isAuthenticated, handleLoading, setToast, currentUser, socket } =
@@ -289,10 +289,7 @@ const Messages: NextLayout = () => {
 
 	return (
 		<Box minH={'500px'} pos="relative" height={'calc( 100vh - 130px )'}>
-			<Head>
-				<title>Huprom - Messages</title>
-				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
-			</Head>
+			<Head title="Messages" />
 			<HStack spacing={8} height={'100%'}>
 				<VStack
 					w="350px"

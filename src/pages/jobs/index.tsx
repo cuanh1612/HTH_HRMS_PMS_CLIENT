@@ -1,9 +1,9 @@
 import { Box, Button, useDisclosure, VStack } from '@chakra-ui/react'
-import { AlertDialog, Func, FuncCollapse, Table } from 'components/common'
+import { AlertDialog, Func, FuncCollapse, Head, Table } from 'components/common'
 import { Drawer } from 'components/Drawer'
 import { ClientLayout } from 'components/layouts'
 import { AuthContext } from 'contexts/AuthContext'
-import Head from 'next/head'
+
 import { useRouter } from 'next/router'
 import { allJobsQuery } from 'queries/job'
 import { useContext, useEffect, useState } from 'react'
@@ -97,7 +97,7 @@ const Job: NextLayout = () => {
 					id: job.id,
 					starts_on_date: job.starts_on_date,
 					ends_on_date: job.ends_on_date,
-					status: job.status ? "Open" : "Close",
+					status: job.status ? 'Open' : 'Close',
 				}))
 
 				setDataCSV(dataCSV)
@@ -157,10 +157,7 @@ const Job: NextLayout = () => {
 
 	return (
 		<Box pb={8}>
-			<Head>
-				<title>Huprom - Jobs</title>
-				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
-			</Head>
+			<Head title="Jobs" />
 			<FuncCollapse>
 				{currentUser && currentUser.role === 'Admin' && (
 					<>

@@ -23,8 +23,8 @@ import { allInterviewsNewQuery, allInterviewsQuery, IOptionInterview } from 'que
 import React, { useContext, useEffect, useState } from 'react'
 import { NextLayout } from 'type/element/layout'
 import { IFilter } from 'type/tableTypes'
-import Head from 'next/head'
-import { AlertDialog, ButtonIcon, Func, FuncCollapse, NewInterview } from 'components/common'
+
+import { AlertDialog, ButtonIcon, Func, FuncCollapse, Head, NewInterview } from 'components/common'
 import { MdOutlineNavigateBefore, MdOutlineNavigateNext } from 'react-icons/md'
 import { Drawer } from 'components/Drawer'
 import UpdateInterview from './[interviewId]/update'
@@ -187,10 +187,7 @@ const calendar: NextLayout = () => {
 
 	return (
 		<Box pb={8}>
-			<Head>
-				<title>Huprom - Interview schedule calendar</title>
-				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
-			</Head>
+			<Head title="Interview calendar" />
 			<HStack alignItems={'flex-start'} spacing={5} w={'full'}>
 				<Box paddingBlock={'5'} maxW={'300px'} minW={'300px'}>
 					<Text mb={'35px'} fontSize={'20px'} fontWeight={'semibold'}>

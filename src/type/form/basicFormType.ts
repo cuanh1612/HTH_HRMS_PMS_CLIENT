@@ -622,6 +622,9 @@ export type updateCompanyInfoForm = {
 	email: string
 	phone: string
 	website: string
+	logo_name?: string
+	logo_public_id?: string
+	logo_url?: string
 }
 
 export interface createSkillsForm {

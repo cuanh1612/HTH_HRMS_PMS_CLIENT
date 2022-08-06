@@ -1,29 +1,87 @@
-import { Box, Button, Grid, GridItem, HStack, Input, Text, VStack } from '@chakra-ui/react'
+import { Box, Button, Grid, GridItem, HStack, Text, VStack } from '@chakra-ui/react'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { Loading } from 'components/common'
+import { Input, UploadAvatar } from 'components/form'
 import { ClientLayout } from 'components/layouts'
 import { AuthContext } from 'contexts/AuthContext'
 import { updateCompanyInfoMutation } from 'mutations/companyInfo'
 import { useRouter } from 'next/router'
 import { companyInfoQuery } from 'queries/companyInfo'
 import { useContext, useEffect, useState } from 'react'
-import { AiOutlineCheck } from 'react-icons/ai'
+import { useForm } from 'react-hook-form'
+import { AiOutlineCheck, AiOutlineMail, AiOutlinePhone } from 'react-icons/ai'
+import { MdDriveFileRenameOutline } from 'react-icons/md'
 import { NextLayout } from 'type/element/layout'
+import { ICloudinaryImg, IImg } from 'type/fileType'
+import { updateCompanyInfoForm } from 'type/form/basicFormType'
+import { uploadFile } from 'utils/uploadFile'
+import { UpdateCompanyInfoValidate } from 'utils/validate'
 
 const ConfigCompany: NextLayout = () => {
 	const { isAuthenticated, handleLoading, setToast, currentUser } = useContext(AuthContext)
 	const router = useRouter()
 
 	//State ----------------------------------------------------------------------
-	const [name, setName] = useState<string>('')
-	const [email, setEmail] = useState<string>('')
-	const [phone, setPhone] = useState<string>('')
-	const [website, setWebsite] = useState<string>('')
+	const [infoImg, setInfoImg] = useState<IImg>() // state data image upload
+	const [loadingImg, setLoadingImg] = useState<boolean>(false) // state loading when image upload
 
 	//Query ----------------------------------------------------------------------
 	const { data: dataCompanyInfo, mutate: refetchCompanyInfo } = companyInfoQuery()
+	console.log(dataCompanyInfo);
+	
 
 	//mutation -------------------------------------------------------------------
 	const [mutateUpCompanyInfo, { status: statusUpCompanyInfo, data: dataUpCompanyInfo }] =
 		updateCompanyInfoMutation(setToast)
+
+	// setForm and submit form update company info --------------------------------
+	const formSetting = useForm<updateCompanyInfoForm>({
+		defaultValues: {
+			name: '',
+			email: '',
+			phone: '',
+			website: '',
+			logo_name: '',
+			logo_public_id: '',
+			logo_url: '',
+		},
+		resolver: yupResolver(UpdateCompanyInfoValidate),
+	})
+
+	const { handleSubmit } = formSetting
+
+	//function-------------------------------------------------------------------
+	const handleUploadAvatar = async () => {
+		if (infoImg) {
+			setLoadingImg(true)
+			const dataUploadAvatar: Array<ICloudinaryImg> = await uploadFile({
+				files: infoImg.files,
+				raw: false,
+				tags: ['avatar'],
+				options: infoImg.options,
+				upload_preset: 'huprom-avatar',
+			})
+
+			setLoadingImg(false)
+			return dataUploadAvatar[0]
+		}
+
+		return null
+	}
+
+	const onSubmit = async (values: updateCompanyInfoForm) => {
+		//Upload logo
+		const dataLogo: ICloudinaryImg | null = await handleUploadAvatar()
+
+		// //Set data logo if upload logo success
+		if (dataLogo) {
+			values.logo_name = dataLogo.name
+			values.logo_public_id = dataLogo.public_id
+			values.logo_url = dataLogo.url
+		}
+
+		mutateUpCompanyInfo(values)
+	}
 
 	//UserEffect -----------------------------------------------------------------
 	//Handle check loged in
@@ -52,103 +110,127 @@ const ConfigCompany: NextLayout = () => {
 	//Set data form when have data company info
 	useEffect(() => {
 		if (dataCompanyInfo?.companyInfo) {
-			setName(dataCompanyInfo.companyInfo.name)
-			setEmail(dataCompanyInfo.companyInfo.email)
-			setPhone(dataCompanyInfo.companyInfo.phone)
-			setWebsite(dataCompanyInfo.companyInfo.website)
+			formSetting.reset({
+				name: dataCompanyInfo.companyInfo.name,
+				phone: dataCompanyInfo.companyInfo.phone,
+				email: dataCompanyInfo.companyInfo.email,
+				website: dataCompanyInfo.companyInfo.website,
+			})
 		}
 	}, [dataCompanyInfo])
 
 	//Function --------------------------------------------
-	//Handle update
-	const handleUpdateInfo = () => {
-		mutateUpCompanyInfo({
-			email,
-			name,
-			phone,
-			website,
-		})
-	}
-
 	//Cancel update or reset data
-	const onCancleUpdate = () => {
+	const onCancelUpdate = () => {
 		if (dataCompanyInfo?.companyInfo) {
-			setName(dataCompanyInfo.companyInfo.name)
-			setEmail(dataCompanyInfo.companyInfo.email)
-			setPhone(dataCompanyInfo.companyInfo.phone)
-			setWebsite(dataCompanyInfo.companyInfo.website)
+			formSetting.reset({
+				name: dataCompanyInfo.companyInfo.name,
+				phone: dataCompanyInfo.companyInfo.phone,
+				email: dataCompanyInfo.companyInfo.email,
+				website: dataCompanyInfo.companyInfo.website,
+			})
 		}
 	}
 
 	return (
-		<Box pb={8}>
+		<Box pb={8} as={'form'} onSubmit={handleSubmit(onSubmit)}>
 			<Box w="full" bgColor={'white'} borderRadius={5}>
 				<Box p={5}>
 					<Grid templateColumns="repeat(2, 1fr)" gap={6}>
-						<GridItem w="100%" colSpan={[2, 1]}>
-							<VStack spacing={2} align={'start'}>
-								<Text color={'gray.400'}>
-									Company Name <span style={{ color: 'red' }}>*</span>
-								</Text>
-								<Input
-									required
-									type={'text'}
-									disabled={currentUser?.role === 'Admin' ? false : true}
-									value={name}
-									onChange={(e: any) => {
-										setName(e.target.value)
+						<GridItem w="100%" colSpan={2}>
+							<VStack align={'start'} spacing={2}>
+								<Text color={'gray.400'}>Company Logo</Text>
+								<UploadAvatar
+									setInfoImg={(data?: IImg) => {
+										setInfoImg(data)
 									}}
+									oldImg={
+										dataCompanyInfo?.companyInfo.logo_url || '/assets/logo1.svg'
+									}
 								/>
 							</VStack>
 						</GridItem>
 
-						<GridItem w="100%" colSpan={[2, 1]}>
+						<GridItem w="100%" colSpan={[2]}>
 							<VStack spacing={2} align={'start'}>
-								<Text color={'gray.400'}>
-									Company Email <span style={{ color: 'red' }}>*</span>
-								</Text>
 								<Input
+									name="name"
+									label="Company Name"
+									icon={
+										<MdDriveFileRenameOutline
+											fontSize={'20px'}
+											color="gray"
+											opacity={0.6}
+										/>
+									}
+									form={formSetting}
+									placeholder="Enter Company Name"
+									type="text"
 									required
-									type={'email'}
 									disabled={currentUser?.role === 'Admin' ? false : true}
-									value={email}
-									onChange={(e: any) => {
-										setEmail(e.target.value)
-									}}
 								/>
 							</VStack>
 						</GridItem>
 
-						<GridItem w="100%" colSpan={[2, 1]}>
+						<GridItem w="100%" colSpan={[2]}>
 							<VStack spacing={2} align={'start'}>
-								<Text color={'gray.400'}>
-									Company Phone <span style={{ color: 'red' }}>*</span>
-								</Text>
 								<Input
+									name="email"
+									label="Company Email"
+									icon={
+										<AiOutlineMail
+											fontSize={'20px'}
+											color="gray"
+											opacity={0.6}
+										/>
+									}
+									form={formSetting}
+									placeholder="Enter Company Email"
+									type="email"
 									required
-									type={'tel'}
 									disabled={currentUser?.role === 'Admin' ? false : true}
-									value={phone}
-									onChange={(e: any) => {
-										setPhone(e.target.value)
-									}}
 								/>
 							</VStack>
 						</GridItem>
 
-						<GridItem w="100%" colSpan={[2, 1]}>
+						<GridItem w="100%" colSpan={[2]}>
 							<VStack spacing={2} align={'start'}>
-								<Text color={'gray.400'}>
-									Company Website <span style={{ color: 'red' }}>*</span>
-								</Text>
 								<Input
+									name="phone"
+									label="Company Phone"
+									icon={
+										<AiOutlinePhone
+											fontSize={'20px'}
+											color="gray"
+											opacity={0.6}
+										/>
+									}
+									form={formSetting}
+									placeholder="Enter Company Phone"
+									type="tel"
 									required
-									type={'text'}
 									disabled={currentUser?.role === 'Admin' ? false : true}
-									value={website}
-									onChange={(e: any) => {
-										setWebsite(e.target.value)
-									}}
+								/>
+							</VStack>
+						</GridItem>
+
+						<GridItem w="100%" colSpan={[2]}>
+							<VStack spacing={2} align={'start'}>
+								<Input
+									name="website"
+									label="Company Website"
+									icon={
+										<MdDriveFileRenameOutline
+											fontSize={'20px'}
+											color="gray"
+											opacity={0.6}
+										/>
+									}
+									form={formSetting}
+									placeholder="Enter Company Website"
+									type="url"
+									required
+									disabled={currentUser?.role === 'Admin' ? false : true}
 								/>
 							</VStack>
 						</GridItem>
@@ -168,7 +250,7 @@ const ConfigCompany: NextLayout = () => {
 										scale: 1,
 									}}
 									leftIcon={<AiOutlineCheck />}
-									onClick={handleUpdateInfo}
+									type="submit"
 									disabled={statusUpCompanyInfo === 'running'}
 								>
 									Save
@@ -181,7 +263,7 @@ const ConfigCompany: NextLayout = () => {
 									_active={{
 										scale: 1,
 									}}
-									onClick={onCancleUpdate}
+									onClick={onCancelUpdate}
 								>
 									Cancel
 								</Button>
@@ -189,6 +271,7 @@ const ConfigCompany: NextLayout = () => {
 						</Box>
 					</>
 				)}
+				{(statusUpCompanyInfo === 'running'|| loadingImg) && <Loading />}
 			</Box>
 		</Box>
 	)

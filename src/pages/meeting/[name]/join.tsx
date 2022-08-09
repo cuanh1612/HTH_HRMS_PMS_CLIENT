@@ -8,6 +8,7 @@ import {
 	useBreakpoint,
 	useColorMode,
 	Stack,
+	Image,
 } from '@chakra-ui/react'
 import { AuthContext } from 'contexts/AuthContext'
 import { useRouter } from 'next/router'
@@ -34,9 +35,8 @@ import { ImessageRoom, ITile } from 'type/basicTypes'
 import copy from 'copy-to-clipboard'
 import { AiOutlineSetting, AiTwotoneSetting } from 'react-icons/ai'
 import RightSide from 'components/room/RightSide'
-import { ButtonMenu } from 'components/common'
-import Head from 'next/head'
-import Image from 'next/image'
+import { ButtonMenu, Head } from 'components/common'
+import { companyInfoQuery } from 'queries/companyInfo'
 
 export default function join() {
 	const layoutSize = useBreakpoint()
@@ -58,6 +58,7 @@ export default function join() {
 
 	// query
 	const { data: dataRoom } = getRoomByTitleQuery(isAuthenticated, name)
+	const {data: dataInfo} = companyInfoQuery()
 	// state
 	const [tiles, setTiles] = useState<ITile[]>([])
 	const [skeletons] = useState([1, 2, 3, 4, 5])
@@ -282,10 +283,7 @@ export default function join() {
 
 	return (
 		<Box bg={'#1b1a1d'} pos={'relative'} w={'100%'} h={'100vh'}>
-			<Head>
-				<title>Huprom - {name} joined</title>
-				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
-			</Head>
+			<Head title={`${name} joined`} />
 			<HStack
 				borderBottom={'1px solid'}
 				borderColor={'gray'}
@@ -296,9 +294,13 @@ export default function join() {
 			>
 				<HStack w={'full'} spacing={5} divider={<StackDivider borderColor="gray" />}>
 					<HStack spacing={5}>
-						<Image src={'/assets/logo1.svg'} width={'50px'} height={'50px'} />
-						<Text fontWeight={'semibold'} fontSize={'xl'} color={'white'}>
-							HUPROM
+						<Image
+							w={'50px'}
+							h={'50px'}
+							src={dataInfo?.companyInfo.logo_url || '/assets/logo1.svg'}
+						/>
+						<Text color={'white'} fontWeight={'bold'} fontSize={'xl'}>
+							{dataInfo?.companyInfo.name}
 						</Text>
 					</HStack>
 					<HStack

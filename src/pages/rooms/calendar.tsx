@@ -15,13 +15,12 @@ import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import listPlugin from '@fullcalendar/list'
 import timeGridPlugin from '@fullcalendar/timegrid'
-import { AlertDialog, ButtonIcon, Func, FuncCollapse } from 'components/common'
+import { AlertDialog, ButtonIcon, Func, FuncCollapse, Head } from 'components/common'
 import { Drawer } from 'components/Drawer'
 import { Select } from 'components/filter'
 import { ClientLayout } from 'components/layouts'
 import { AuthContext } from 'contexts/AuthContext'
 import { deleteRoomMutation } from 'mutations'
-import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { allRoomsQuery } from 'queries'
 import { useContext, useEffect, useState } from 'react'
@@ -176,10 +175,7 @@ const calendar: NextLayout = () => {
 
 	return (
 		<Box pb={8}>
-			<Head>
-				<title>Huprom - Rooms</title>
-				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
-			</Head>
+			<Head title={'Rooms calendar'}/>
 			<FuncCollapse>
 				{currentUser && currentUser.role === 'Admin' && (
 					<>
@@ -383,13 +379,16 @@ const calendar: NextLayout = () => {
 				onClose={onCloseDetailRoom}
 				isOpen={isOpenDetailRoom}
 			>
-				<DetailRoom onOpenUpdate={() => {
+				<DetailRoom
+					onOpenUpdate={() => {
 						onOpenUpRoom()
 					}}
 					onCloseDetailRoom={onCloseDetailRoom}
 					onOpenDl={() => {
 						onOpenDl()
-					}} roomIdProp={roomId} />
+					}}
+					roomIdProp={roomId}
+				/>
 			</Drawer>
 		</Box>
 	)

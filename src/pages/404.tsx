@@ -1,4 +1,5 @@
 import { Box, HStack, Text, VStack } from '@chakra-ui/react'
+import { Head } from 'components/common'
 import { AuthContext } from 'contexts/AuthContext'
 import Link from 'next/link'
 import React, { useContext, useEffect } from 'react'
@@ -10,6 +11,7 @@ export default function notFind() {
 	}, [])
 	return (
 		<VStack>
+			<Head title={'404'}/>
 			<HStack justifyContent={'center'} alignItems={'center'} w={'full'}>
 				<Text fontSize={'400px'} color={'hu-Green.normal'} fontWeight={'bold'}>
 					4

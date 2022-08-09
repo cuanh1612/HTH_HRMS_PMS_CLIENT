@@ -24,9 +24,6 @@ export default class Document extends NextDocument {
 						href="https://fonts.googleapis.com/css2?family=Hind+Madurai:wght@300;400;500;600;700&display=swap"
 						rel="stylesheet"
 					/>
-
-					{/* set icon */}
-					<link rel="icon" href="/assets/logo1.svg" sizes="16x16"></link>
 				</Head>
 				<body>
 					{/* Make Color mode to persists when you refresh the page. */}

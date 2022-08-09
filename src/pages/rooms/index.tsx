@@ -1,12 +1,11 @@
 import { Button, Grid, GridItem, Skeleton, Text, useDisclosure, VStack } from '@chakra-ui/react'
-import { AlertDialog, Func, FuncCollapse } from 'components/common'
+import { AlertDialog, Func, FuncCollapse, Head } from 'components/common'
 import { Drawer } from 'components/Drawer'
 import { DateRange, Input } from 'components/filter'
 import { ClientLayout } from 'components/layouts'
 import { Cards } from 'components/room'
 import { AuthContext } from 'contexts/AuthContext'
 import { deleteRoomMutation } from 'mutations'
-import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { allRoomsQuery } from 'queries'
 import React, { useCallback, useContext, useEffect, useState } from 'react'
@@ -158,11 +157,7 @@ const zoom: NextLayout = () => {
 	}
 	return (
 		<VStack justifyContent={'start'} pb={8} alignItems={'start'} w={'full'} spacing={5}>
-			<Head>
-				<title>Huprom - Rooms</title>
-				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
-			</Head>
-
+			<Head title={'Rooms'} />
 			<FuncCollapse>
 				<Func
 					icon={<IoAdd />}

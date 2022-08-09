@@ -1,6 +1,7 @@
 import {
 	Avatar,
 	Box,
+	Button,
 	HStack,
 	IconButton,
 	Menu,
@@ -18,7 +19,6 @@ import { Drawer } from 'components/Drawer'
 import NotificationItem from 'components/NotificationItem'
 import { AuthContext } from 'contexts/AuthContext'
 import { logoutServerMutation } from 'mutations'
-import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { NotificationByCurrentUserQuery } from 'queries/notification'
 import { useContext, useEffect, useState } from 'react'
@@ -27,6 +27,7 @@ import { BsFillBellSlashFill, BsMoon, BsPerson, BsSun } from 'react-icons/bs'
 import { IoExitOutline, IoSettingsOutline } from 'react-icons/io5'
 import { MdOutlineEditNote } from 'react-icons/md'
 import UpdateClient from 'src/pages/clients/update-clients'
+import ConfigCompany from 'src/pages/config-company-info'
 import UpdateEmployees from 'src/pages/employees/update-employees'
 import StickysNote from 'src/pages/sticky-notes'
 import { notificationType } from 'type/basicTypes'
@@ -53,13 +54,17 @@ export const Header = () => {
 	} = useDisclosure()
 
 	const { isOpen: isOpenNote, onOpen: onOpenNote, onClose: onCloseNote } = useDisclosure()
+	const {
+		isOpen: isOpenConfigPage,
+		onOpen: onOpenConfigPage,
+		onClose: onCloseConfigPage,
+	} = useDisclosure()
 
 	//Query -------------------------------------------------
 	const { data: dataNotification, mutate: refetchNotifications } =
 		NotificationByCurrentUserQuery(isAuthenticated)
 
-	console.log(dataNotification);
-	
+	console.log(dataNotification)
 
 	const [logout, { status: statusLogout }] = logoutServerMutation(setToast)
 
@@ -209,11 +214,12 @@ export const Header = () => {
 							Notice
 						</MenuItem>
 						{currentUser?.role == 'Admin' && (
-							<Link passHref href={'/config-company-info'}>
-								<MenuItem icon={<IoSettingsOutline fontSize={'15px'} />}>
-									Config website
-								</MenuItem>
-							</Link>
+							<MenuItem
+								onClick={onOpenConfigPage}
+								icon={<IoSettingsOutline fontSize={'15px'} />}
+							>
+								Config website
+							</MenuItem>
 						)}
 						<MenuItem
 							onClick={logout}
@@ -250,6 +256,19 @@ export const Header = () => {
 
 			<Drawer size="full" title="Notes" onClose={onCloseNote} isOpen={isOpenNote}>
 				<StickysNote />
+			</Drawer>
+			<Drawer
+				footer={
+					<Button type="submit" form="formSetConfig">
+						Save
+					</Button>
+				}
+				size="xs"
+				title="Config System"
+				onClose={onCloseConfigPage}
+				isOpen={isOpenConfigPage}
+			>
+				<ConfigCompany />
 			</Drawer>
 		</HStack>
 	)

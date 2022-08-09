@@ -10,6 +10,7 @@ import {
 	DrawerBody,
 	CloseButton,
 	useColorMode,
+	Image,
 } from '@chakra-ui/react'
 import { AuthContext } from 'contexts/AuthContext'
 import React, { useState, useEffect, useContext } from 'react'
@@ -41,7 +42,6 @@ import {
 import LinkGroup from './LinkGroup'
 import LinkItem from './LinkItem'
 import { companyInfoQuery } from 'queries/companyInfo'
-import Image from 'next/image'
 import { GiSkills } from 'react-icons/gi'
 import { RiSuitcaseLine } from 'react-icons/ri'
 
@@ -230,7 +230,7 @@ const SideLeft = () => {
 			paddingLeft={5}
 		>
 			<HStack spacing={5} w={'full'} h={'73px'}>
-				<Image src={'/assets/logo1.svg'} width={'50px'} height={'50px'} />
+				<Image w={'50px'} h={'50px'} src={dataCompanyInfo?.companyInfo.logo_url || '/assets/logo1.svg'}/>
 				<Text fontWeight={'bold'} fontSize={'xl'}>
 					{dataCompanyInfo?.companyInfo.name}
 				</Text>
@@ -271,7 +271,7 @@ const SideLeftInDrawer = ({ onClose, isOpen }: { isOpen: boolean; onClose: any }
 						w={'full'}
 						h={'73px'}
 					>
-						<Image src={'/assets/logo1.svg'} width={'50px'} height={'50px'} />
+						<Image w={'50px'} h={'50px'} src={dataCompanyInfo?.companyInfo.logo_url || '/assets/logo1.svg'}/>
 
 						<HStack w={'full'} justifyContent={'space-between'}>
 							<Text fontWeight={'bold'} fontSize={'xl'}>

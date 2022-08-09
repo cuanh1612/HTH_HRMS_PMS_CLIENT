@@ -316,20 +316,27 @@ export const CreateInterviewValidate = yup.object({
 })
 
 export const CreateJobOfferValidate = yup.object({
-	job:  yup.number().required('Please select job'),
-	job_application:  yup.number().required('Please select job application'),
-	exprise_on: yup.date().required('Please select job offer expires on date'),
-	expected_joining_date: yup.date().required('Please select job offer expected joining date'),
-	salary: yup.number().min(1).required('Please enter job offer salary'),
-	rate: yup.string().required('Please select rate')
-})
-
-export const UpdateJobOfferValidate = yup.object({
-	job:  yup.number().required('Please select job'),
-	job_application:  yup.number().required('Please select job application'),
+	job: yup.number().required('Please select job'),
+	job_application: yup.number().required('Please select job application'),
 	exprise_on: yup.date().required('Please select job offer expires on date'),
 	expected_joining_date: yup.date().required('Please select job offer expected joining date'),
 	salary: yup.number().min(1).required('Please enter job offer salary'),
 	rate: yup.string().required('Please select rate'),
-	status: yup.string().required('Please select job offer status')
+})
+
+export const UpdateJobOfferValidate = yup.object({
+	job: yup.number().required('Please select job'),
+	job_application: yup.number().required('Please select job application'),
+	exprise_on: yup.date().required('Please select job offer expires on date'),
+	expected_joining_date: yup.date().required('Please select job offer expected joining date'),
+	salary: yup.number().min(1).required('Please enter job offer salary'),
+	rate: yup.string().required('Please select rate'),
+	status: yup.string().required('Please select job offer status'),
+})
+
+export const UpdateCompanyInfoValidate = yup.object({
+	name: yup.string().required('Please enter field name'),
+	email: yup.string().required('Please enter field email'),
+	phone: yup.string().required('Please enter field phone'),
+	website: yup.string().required('Please enter field website'),
 })

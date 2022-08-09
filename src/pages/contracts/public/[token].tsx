@@ -24,7 +24,7 @@ import {
 	VStack
 } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { Loading } from 'components/common'
+import { Head, Loading } from 'components/common'
 import { Input } from 'components/form'
 import Modal from 'components/modal/Modal'
 import { AuthContext } from 'contexts/AuthContext'
@@ -233,6 +233,7 @@ export default function PublicContract({
 				},
 			}}
 		>
+			<Head title={'Public contract'}/>
 			<Box bgColor={'#f2f4f7'} minHeight={'100vh'} p={10}>
 				<Container maxW="container.xl" bg="white" color="#262626" borderRadius={5} p={5}>
 					<VStack spacing={4} align="start">

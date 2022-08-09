@@ -19,7 +19,7 @@ import {
 	useDisclosure,
 	VStack,
 } from '@chakra-ui/react'
-import { Loading } from 'components/common'
+import { Head, Loading } from 'components/common'
 import { AuthContext } from 'contexts/AuthContext'
 import { useRouter } from 'next/router'
 import { getRoomByTitleQuery } from 'queries/room'
@@ -36,10 +36,12 @@ import { MdLensBlur } from 'react-icons/md'
 import { backgroundBlur, backgroundImage, backgroundNone } from 'utils/RoomUtils'
 import { FiXCircle } from 'react-icons/fi'
 import { createClient, PhotosWithTotalResults } from 'pexels'
-import Head from 'next/head'
+import { companyInfoQuery } from 'queries/companyInfo'
 
 export default function index() {
 	const { colorMode, toggleColorMode } = useColorMode()
+
+	const { data: dataInfo } = companyInfoQuery()
 
 	const { isOpen, onOpen, onClose } = useDisclosure()
 	const { isAuthenticated, handleLoading, currentUser, setToast } = useContext(AuthContext)
@@ -151,12 +153,19 @@ export default function index() {
 
 	return (
 		<Box boxSizing="border-box" padding={5} w={'full'} h={'96vh'}>
-			<Head>
-				<title>Huprom - {name} meeting</title>
-				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
-			</Head>
+			<Head title={`${name} meeting`} />
 			<HStack alignItems={'center'} justifyContent={'space-between'}>
-				<Box border={'1px solid red'} w={'50px'} h={'50px'}></Box>
+				<HStack spacing={5} w={'full'}>
+					<Image
+						w={'50px'}
+						h={'50px'}
+						src={dataInfo?.companyInfo.logo_url || '/assets/logo1.svg'}
+					/>
+					<Text fontWeight={'bold'} fontSize={'xl'}>
+						{dataInfo?.companyInfo.name}
+					</Text>
+				</HStack>
+
 				{currentUser && (
 					<HStack spacing={5}>
 						<Box>

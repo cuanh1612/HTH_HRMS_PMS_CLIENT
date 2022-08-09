@@ -1,7 +1,7 @@
 import { Box, Button, HStack, Tag, TagLabel, Text, VStack } from '@chakra-ui/react'
+import { Head } from 'components/common'
 import { RecruitLayout } from 'components/layouts'
 import { AuthContext } from 'contexts/AuthContext'
-import Head from 'next/head'
 import Link from 'next/link'
 import { allJobsQuery, detailJobQuery } from 'queries/job'
 import React, { useContext, useEffect, useState } from 'react'
@@ -35,10 +35,7 @@ const jobOpening: NextLayout = () => {
 	}, [allJob])
 	return (
 		<HStack h={'calc( 100vh - 180px )'} w={'full'}>
-			<Head>
-				<title>Huprom - Job opening</title>
-				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
-			</Head>
+			<Head title='Job opening'/>
 			<VStack
 				spacing={5}
 				alignItems={'start'}

@@ -9,19 +9,20 @@ import { RiSuitcaseLine } from 'react-icons/ri'
 import copy from 'copy-to-clipboard'
 import { NextLayout } from 'type/element/layout'
 import { RecruitLayout } from 'components/layouts'
-import Head from 'next/head'
+import { companyInfoQuery } from 'queries/companyInfo'
+import { Head } from 'components/common'
 
 const index: NextLayout = () => {
 	const { handleLoading, setToast } = useContext(AuthContext)
+
+	const {data} = companyInfoQuery()
+
 	useEffect(() => {
 		handleLoading(false)
 	}, [])
 	return (
 		<>
-			<Head>
-				<title>Huprom - Recruit</title>
-				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
-			</Head>
+			<Head title='Recruit'/>
 			<Box pos={'relative'} w={'full'}>
 				<Box w={'full'} maxW={'60%'} pos={'relative'} overflow={'hidden'}>
 					<CImage borderRadius={'20px'} src={'./assets/work.jpg'} />
@@ -48,7 +49,7 @@ const index: NextLayout = () => {
 					pos={'absolute'}
 				>
 					<Text fontSize={'40px'} fontWeight={'bold'}>
-						HPROM
+						{data?.companyInfo.name || 'HUPROM'}
 					</Text>
 					<Link passHref href={process.env.NEXT_PUBLIC_UI_URL || ''}>
 						<Text textDecoration={'underline'} cursor={'pointer'} color={'green'}>

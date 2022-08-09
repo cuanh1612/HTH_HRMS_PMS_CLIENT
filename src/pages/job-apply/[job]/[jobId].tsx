@@ -1,6 +1,6 @@
+import { Head } from 'components/common'
 import { RecruitLayout } from 'components/layouts'
 import { AuthContext } from 'contexts/AuthContext'
-import Head from 'next/head'
 import React, { useContext, useEffect } from 'react'
 import { NextLayout } from 'type/element/layout'
 
@@ -11,10 +11,7 @@ const Apply: NextLayout = () => {
 	}, [])
 	return (
 		<>
-			<Head>
-				<title>Huprom - Job apply</title>
-				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
-			</Head>
+			<Head title={'Job apply'}/>
 		</>
 	)
 }

@@ -531,6 +531,9 @@ export interface companyInfoType {
 	phone: string
 	email: string
 	website: string
+	logo_name?: string
+	logo_public_id?: string
+	logo_url?: string
 }
 export interface ITile {
 	id: string

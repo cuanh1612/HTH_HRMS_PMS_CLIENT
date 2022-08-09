@@ -95,7 +95,7 @@ export const UploadAvatar = ({ setInfoImg, oldImg }: { setInfoImg: HandleImg, ol
 							transitions={transitions}
 						/>
 					) : (
-						<Avatar size={'xl'} src={oldImg} />
+						<Avatar border={'2px solid'} borderColor={'#00a991 !important'} size={'xl'} src={oldImg} />
 					)}
 				</Box>
 				<Box bottom={'0'} right={'-10px'} pos={'absolute'} display="block">
@@ -112,13 +112,14 @@ export const UploadAvatar = ({ setInfoImg, oldImg }: { setInfoImg: HandleImg, ol
 					<ButtonIcon
 						htmlFor="upload"
 						as={'label'}
+						color={'hu-Pink.normalA'}
 						handle={() => {}}
 						icon={<MdOutlineFileUpload />}
 						activeBg={'hu-Lam.normal'}
-						bg={'white'}
+						bg={'hu-Pink.lightH'}
 						ariaLabel={'upload'}
-						hoverBg={'hu-Lam.lightA'}
-						hoverColor={'hu-Lam.darkA'}
+						hoverBg={'hu-Pink.normal'}
+						hoverColor={'white'}
 						activeColor={'hu-Lam.darker'}
 						radius
 					/>

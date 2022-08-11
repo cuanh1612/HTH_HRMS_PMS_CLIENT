@@ -46,7 +46,7 @@ export default function AddJobApplication({
 	//Query -------------------------------------------------------------------
 
 	// get all locations
-	const { data: allLocations } = allLocationsQuery(isAuthenticated)
+	const { data: allLocations } = allLocationsQuery()
 	const { data: allJobs } = allJobsQuery()
 
 	// refetch all job application
@@ -99,18 +99,24 @@ export default function AddJobApplication({
 	//Handle crete job
 	const onSubmit = async (values: createJobApplicationForm) => {
 		//Upload avatar
-		const dataUploadAvattar: ICloudinaryImg | null = await handleUploadAvatar()
+		const dataUploadAvatar: ICloudinaryImg | null = await handleUploadAvatar()
 
 		//Check upload avatar success
-		if (dataUploadAvattar) {
+		if (dataUploadAvatar) {
 			values.picture = {
-				name: dataUploadAvattar.name,
-				url: dataUploadAvattar.url,
-				public_id: dataUploadAvattar.public_id,
+				name: dataUploadAvatar.name,
+				url: dataUploadAvatar.url,
+				public_id: dataUploadAvatar.public_id,
 			}
+
+			//create new job application
+			mutateCreJobApplication(values)
+		} else {
+			setToast({
+				type: "warning",
+				msg: "Please select avatar candidate"
+			})
 		}
-		//create new job application
-		mutateCreJobApplication(values)
 	}
 
 	//User effect ---------------------------------------------------------------
@@ -205,7 +211,7 @@ export default function AddJobApplication({
 				cover_leter: undefined,
 				status: undefined,
 				source: undefined,
-				...(dataJob?.job ? { jobs: undefined } : {}),
+				...(dataJob?.job ? { jobs: dataJob.job.id } : {jobs: undefined}),
 				location: undefined,
 			})
 			refetchJobApplications()

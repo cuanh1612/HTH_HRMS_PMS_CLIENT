@@ -625,6 +625,7 @@ export type updateCompanyInfoForm = {
 	logo_name?: string
 	logo_public_id?: string
 	logo_url?: string
+	terms_and_condition_recruit?: string
 }
 
 export interface createSkillsForm {
@@ -713,7 +714,7 @@ export interface createJobApplicationForm {
 	cover_leter?: string
 	status: string
 	source?: string
-	jobs: number
+	jobs: number | string
 	location: number
 	picture: {
 		name: string

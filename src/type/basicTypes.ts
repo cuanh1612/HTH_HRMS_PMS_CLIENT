@@ -534,6 +534,7 @@ export interface companyInfoType {
 	logo_name?: string
 	logo_public_id?: string
 	logo_url?: string
+	terms_and_condition_recruit?: string
 }
 export interface ITile {
 	id: string

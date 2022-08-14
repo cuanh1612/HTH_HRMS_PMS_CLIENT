@@ -35,6 +35,7 @@ export interface ISelect {
 	onOpenModal?: () => void
 	disabled?: boolean
 	onChangeValue?: (value: string | number) => void
+	defaultValue?: string | number
 	[index: string]: any
 }
 

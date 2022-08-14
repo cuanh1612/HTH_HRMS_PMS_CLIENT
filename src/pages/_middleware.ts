@@ -20,6 +20,11 @@ export function middleware(req: NextRequest) {
 			case 'clients':
 			case 'employees':
 			case 'config-company-info':
+			case 'dashboard-jobs':
+			case 'skills':
+			case 'jobs':
+			case 'job-applications':
+			case 'job-offer-letters':
 				if (roleCurrentUser != 'Admin') {
 					return redirect403()
 				}

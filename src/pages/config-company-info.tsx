@@ -1,4 +1,4 @@
-import { Box, Button, Grid, GridItem, HStack, Text, VStack } from '@chakra-ui/react'
+import { Box, Grid, GridItem, Text, VStack } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Loading } from 'components/common'
 import { Input, UploadAvatar } from 'components/form'
@@ -15,6 +15,12 @@ import { ICloudinaryImg, IImg } from 'type/fileType'
 import { updateCompanyInfoForm } from 'type/form/basicFormType'
 import { uploadFile } from 'utils/uploadFile'
 import { UpdateCompanyInfoValidate } from 'utils/validate'
+//CSS
+import dynamic from 'next/dynamic'
+import 'react-quill/dist/quill.bubble.css'
+import 'react-quill/dist/quill.snow.css'
+
+const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
 
 const ConfigCompany: NextLayout = () => {
 	const { isAuthenticated, handleLoading, setToast, currentUser } = useContext(AuthContext)
@@ -23,10 +29,10 @@ const ConfigCompany: NextLayout = () => {
 	//State ----------------------------------------------------------------------
 	const [infoImg, setInfoImg] = useState<IImg>() // state data image upload
 	const [loadingImg, setLoadingImg] = useState<boolean>(false) // state loading when image upload
+	const [note, setNote] = useState<string>('')
 
 	//Query ----------------------------------------------------------------------
 	const { data: dataCompanyInfo, mutate: refetchCompanyInfo } = companyInfoQuery()
-	console.log(dataCompanyInfo)
 
 	//mutation -------------------------------------------------------------------
 	const [mutateUpCompanyInfo, { status: statusUpCompanyInfo, data: dataUpCompanyInfo }] =
@@ -42,6 +48,7 @@ const ConfigCompany: NextLayout = () => {
 			logo_name: '',
 			logo_public_id: '',
 			logo_url: '',
+			terms_and_condition_recruit: '',
 		},
 		resolver: yupResolver(UpdateCompanyInfoValidate),
 	})
@@ -78,7 +85,16 @@ const ConfigCompany: NextLayout = () => {
 			values.logo_url = dataLogo.url
 		}
 
+		if (note) {
+			values.terms_and_condition_recruit = note
+		}
+
 		mutateUpCompanyInfo(values)
+	}
+
+	//Handle change content editor
+	const handleChangeNote = (value: any) => {
+		setNote(value)
 	}
 
 	//UserEffect -----------------------------------------------------------------
@@ -114,6 +130,12 @@ const ConfigCompany: NextLayout = () => {
 				email: dataCompanyInfo.companyInfo.email,
 				website: dataCompanyInfo.companyInfo.website,
 			})
+
+			setNote(
+				dataCompanyInfo?.companyInfo?.terms_and_condition_recruit
+					? dataCompanyInfo?.companyInfo.terms_and_condition_recruit
+					: ''
+			)
 		}
 	}, [dataCompanyInfo])
 
@@ -213,6 +235,38 @@ const ConfigCompany: NextLayout = () => {
 									type="url"
 									required
 									disabled={currentUser?.role === 'Admin' ? false : true}
+								/>
+							</VStack>
+						</GridItem>
+
+						<GridItem w="100%" colSpan={2}>
+							<VStack align={'start'}>
+								<Text>Note</Text>
+								<ReactQuill
+									placeholder="Enter you text"
+									modules={{
+										toolbar: [
+											['bold', 'italic', 'underline', 'strike'], // toggled buttons
+											['blockquote', 'code-block'],
+
+											[{ header: 1 }, { header: 2 }], // custom button values
+											[{ list: 'ordered' }, { list: 'bullet' }],
+											[{ script: 'sub' }, { script: 'super' }], // superscript/subscript
+											[{ indent: '-1' }, { indent: '+1' }], // outdent/indent
+											[{ direction: 'rtl' }], // text direction
+
+											[{ size: ['small', false, 'large', 'huge'] }], // custom dropdown
+											[{ header: [1, 2, 3, 4, 5, 6, false] }],
+
+											[{ color: [] }, { background: [] }], // dropdown with defaults from theme
+											[{ font: [] }],
+											[{ align: [] }],
+
+											['clean'], // remove formatting button
+										],
+									}}
+									value={note}
+									onChange={handleChangeNote}
 								/>
 							</VStack>
 						</GridItem>

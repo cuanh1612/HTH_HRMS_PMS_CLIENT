@@ -3,9 +3,9 @@ import { getLocationRequest } from 'requests/location'
 import useSWR from 'swr'
 import { locationMutationResponse } from 'type/mutationResponses'
 
-export const allLocationsQuery = (isAuthenticated: boolean | null) => {
+export const allLocationsQuery = () => {
 	return useSWR<locationMutationResponse, AxiosError>(
-		isAuthenticated ? 'locations' : null,
+		'locations',
 		getLocationRequest,
 		{
 			errorRetryCount: 2,

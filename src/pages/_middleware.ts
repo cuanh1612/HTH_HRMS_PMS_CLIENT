@@ -51,7 +51,7 @@ export function middleware(req: NextRequest) {
 		}
 		if (paths.includes('projects')) {
 			if (paths.includes('milestones')) {
-				if (roleCurrentUser == 'Client' || roleCurrentUser == 'Employee') {
+				if (roleCurrentUser == 'Client') {
 					return redirect403()
 				}
 			}

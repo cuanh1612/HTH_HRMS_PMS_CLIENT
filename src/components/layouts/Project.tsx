@@ -60,15 +60,13 @@ export const ProjectLayout = ({ children }: { children: JSX.Element }) => {
 					link: `/projects/${projectId}/notes`,
 					title: 'Notes',
 				},
-			]
-
-			if (currentUser?.role == 'Admin') {
-				data.push({
+				{
 					icon: <VscMilestone fontSize={'15'} />,
 					link: `/projects/${projectId}/milestones`,
 					title: 'Milestones',
-				})
-			}
+				}
+			]
+
 			if (currentUser?.role != 'Client') {
 				data.push({
 					icon: <VscCommentDiscussion fontSize={15} />,

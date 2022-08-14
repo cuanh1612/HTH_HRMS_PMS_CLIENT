@@ -363,9 +363,8 @@ const members: NextLayout = () => {
 	return (
 		<Box pb={8}>
 			<Head title={dataDetailProject?.project?.name} />
-
-			<FuncCollapse>
-				{currentUser && currentUser.role === 'Admin' && (
+			{currentUser?.role == 'Admin' && (
+				<FuncCollapse>
 					<>
 						<Func
 							icon={<IoAdd />}
@@ -374,8 +373,8 @@ const members: NextLayout = () => {
 							action={onOpenAdd}
 						/>
 					</>
-				)}
-			</FuncCollapse>
+				</FuncCollapse>
+			)}
 
 			<Table
 				data={projectResponse?.project?.employees || []}

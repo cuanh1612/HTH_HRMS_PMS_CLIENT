@@ -52,6 +52,7 @@ const LinkItems = () => {
 		<>
 			{currentUser?.role == 'Admin' && (
 				<LinkGroup
+					currentUser={currentUser}
 					data={[
 						{
 							icon: <MdOutlineDashboardCustomize fontSize={20} />,
@@ -88,6 +89,7 @@ const LinkItems = () => {
 			)}
 			{currentUser?.role != 'Client' && (
 				<LinkGroup
+					currentUser={currentUser}
 					data={[
 						{
 							icon: <BsPerson fontSize={20} />,
@@ -116,6 +118,7 @@ const LinkItems = () => {
 			)}
 
 			<LinkGroup
+				currentUser={currentUser}
 				data={[
 					{
 						icon: <AiOutlineFile fontSize={20} />,
@@ -162,6 +165,7 @@ const LinkItems = () => {
 						icon={<MdOutlineAttachMoney fontSize={20} />}
 					/>
 					<LinkGroup
+						currentUser={currentUser}
 						data={[
 							{
 								icon: <MdOutlineDashboard fontSize={20} />,
@@ -230,7 +234,11 @@ const SideLeft = () => {
 			paddingLeft={5}
 		>
 			<HStack spacing={5} w={'full'} h={'73px'}>
-				<Image w={'50px'} h={'50px'} src={dataCompanyInfo?.companyInfo.logo_url || '/assets/logo1.svg'}/>
+				<Image
+					w={'50px'}
+					h={'50px'}
+					src={dataCompanyInfo?.companyInfo.logo_url || '/assets/logo1.svg'}
+				/>
 				<Text fontWeight={'bold'} fontSize={'xl'}>
 					{dataCompanyInfo?.companyInfo.name}
 				</Text>
@@ -271,7 +279,11 @@ const SideLeftInDrawer = ({ onClose, isOpen }: { isOpen: boolean; onClose: any }
 						w={'full'}
 						h={'73px'}
 					>
-						<Image w={'50px'} h={'50px'} src={dataCompanyInfo?.companyInfo.logo_url || '/assets/logo1.svg'}/>
+						<Image
+							w={'50px'}
+							h={'50px'}
+							src={dataCompanyInfo?.companyInfo.logo_url || '/assets/logo1.svg'}
+						/>
 
 						<HStack w={'full'} justifyContent={'space-between'}>
 							<Text fontWeight={'bold'} fontSize={'xl'}>

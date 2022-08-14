@@ -1,9 +1,9 @@
 import { Box, Button, Collapse, HStack, Text, useDisclosure, VStack } from '@chakra-ui/react'
-import { AuthContext } from 'contexts/AuthContext'
 import { useRouter } from 'next/router'
 
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { BiChevronRight } from 'react-icons/bi'
+import { employeeType } from 'type/basicTypes'
 import { ILinkItem } from 'type/element/commom'
 import LinkItem from './LinkItem'
 
@@ -11,15 +11,15 @@ interface ILinkGroup {
 	title: string
 	icon: any
 	data: ILinkItem[]
+	currentUser: employeeType | null
 }
 
-export default function LinkGroup({ title, icon, data }: ILinkGroup) {
+export default function LinkGroup({ title, icon, data, currentUser }: ILinkGroup) {
 	const { isOpen, onToggle, onOpen } = useDisclosure()
 	const { pathname } = useRouter()
 	const [currentData, setCurrentData] = useState<ILinkItem[]>([])
 	const [links, setLinks] = useState<string[]>([])
 	const [paths, setPaths] = useState<string[]>([])
-	const { currentUser } = useContext(AuthContext)
 
 	useEffect(() => {
 		if (currentData) {
@@ -28,9 +28,6 @@ export default function LinkGroup({ title, icon, data }: ILinkGroup) {
 		}
 	}, [currentData])
 
-	useEffect(() => {
-		setCurrentData(data)
-	}, [data])
 
 	useEffect(() => {
 		if (currentUser) {
@@ -39,9 +36,13 @@ export default function LinkGroup({ title, icon, data }: ILinkGroup) {
 					return e.title != 'Employees'
 				})
 				setCurrentData(newData)
+			} else {
+				setCurrentData(data)
 			}
+		} else {
+			setCurrentData(data)
 		}
-	}, [ currentUser])
+	}, [ currentUser, data])
 
 	useEffect(() => {
 		if (pathname) {

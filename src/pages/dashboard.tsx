@@ -73,10 +73,11 @@ import { GrDocumentText } from 'react-icons/gr'
 import { clientType } from 'type/basicTypes'
 import 'intro.js/introjs.css'
 import introJs from 'intro.js'
+import { IFilter } from 'type/tableTypes'
+import { Select } from 'components/filter'
 
 const dashboard: NextLayout = () => {
-
-	const [enable, setEnable] = useState(false)
+	const [date, setDate] = useState(new Date())
 
 	const { isAuthenticated, handleLoading, currentUser, setToast } = useContext(AuthContext)
 	const router = useRouter()
@@ -103,21 +104,22 @@ const dashboard: NextLayout = () => {
 	const { data: dataTotalEmployees } = totalEmployeesQuery(isAuthenticated)
 	const { data: dataTotalProjects } = totalProjectsQuery(isAuthenticated)
 	const { data: dataTodayAttendance } = todayAttendanceQuery(isAuthenticated)
-	const { data: dataPendingTasksRaw } = pendingTasksRawQuery(isAuthenticated)
+	const { data: dataPendingTasksRaw } = pendingTasksRawQuery({isAuthenticated, date})
 	const { data: dataPendingLeavesRaw, mutate: refetchDataPendingLeavesRaw } =
-		pendingLeavesRawQuery(isAuthenticated)
-	const { data: dataHoursLooged } = hoursLoggedQuery(isAuthenticated)
+		pendingLeavesRawQuery({isAuthenticated, date})
+	const { data: dataHoursLoged } = hoursLoggedQuery(isAuthenticated)
 	const { data: dataStatusWiseProjects } = statusWiseProjects(isAuthenticated)
 	const { data: dataContractsGenerated } = contractsGeneratedQuery(isAuthenticated)
-	const { data: dataPendingMilestone } = pendingMilestoneQuery(isAuthenticated)
+	const { data: dataPendingMilestone } = pendingMilestoneQuery({isAuthenticated, date})
 	const { data: dataContractsSigned } = contractsSignedQuery(isAuthenticated)
-	const { data: dataClientWiseEarnings } = clientWiseEarningsQuery(isAuthenticated)
-	const { data: dataClientWiseTimeLogs } = clientWiseTimeLogsQuery(isAuthenticated)
-	const { data: dataLastestClients } = lastestClientsQuery(isAuthenticated)
+	const { data: dataClientWiseEarnings } = clientWiseEarningsQuery({isAuthenticated, date})
+	const { data: dataClientWiseTimeLogs } = clientWiseTimeLogsQuery({isAuthenticated, date})
+	const { data: dataLastestClients } = lastestClientsQuery({isAuthenticated, date})
 	const { data: dataProjectsEarning } = projectsEarningQuery(isAuthenticated)
-	const { data: dataCountByDateAttendance } = countByDateAttendanceQuery(isAuthenticated)
-	const { data: dataCountByDateLeave } = countByDateLeaveQuery(isAuthenticated)
+	const { data: dataCountByDateAttendance } = countByDateAttendanceQuery({isAuthenticated, date})
+	const { data: dataCountByDateLeave } = countByDateLeaveQuery({isAuthenticated, date})
 	const { data: dataCountProjectsOverdue } = countProjectsOverdueQuery(isAuthenticated)
+	console.log(dataClientWiseTimeLogs)
 
 	// mutation ----------------------------------------
 	// update status of leave
@@ -149,10 +151,101 @@ const dashboard: NextLayout = () => {
 
 	return (
 		<Box w={'100%'} pb={8} pos={'relative'}>
+			<Select
+				options={[
+					{
+						label: 'January',
+						value: 1,
+					},
+					{
+						label: 'February',
+						value: 2,
+					},
+					{
+						label: 'March',
+						value: 3,
+					},
+					{
+						label: 'April',
+						value: 4,
+					},
+					{
+						label: 'May',
+						value: 5,
+					},
+					{
+						label: 'June',
+						value: 6,
+					},
+					{
+						label: 'July',
+						value: 7,
+					},
+					{
+						label: 'August',
+						value: 8,
+					},
+					{
+						label: 'September',
+						value: 9,
+					},
+					{
+						label: 'October',
+						value: 10,
+					},
+					{
+						label: 'November',
+						value: 11,
+					},
+					{
+						label: 'December',
+						value: 12,
+					},
+				]}
+				handleSearch={(data: IFilter) => {
+					setDate(state => new Date(state.setMonth(data.filterValue - 1)))
+				}}
+				columnId={'day'}
+				label="Month"
+				placeholder="Select month"
+			/>
+
+			<Select
+				options={[
+					{
+						label: `${new Date().getFullYear()}`,
+						value: `${new Date().getFullYear()}`,
+					},
+					{
+						label: `${new Date().getFullYear() - 1}`,
+						value: `${new Date().getFullYear() - 1}`,
+					},
+					{
+						label: `${new Date().getFullYear() - 2}`,
+						value: `${new Date().getFullYear() - 2}`,
+					},
+					{
+						label: `${new Date().getFullYear() - 3}`,
+						value: `${new Date().getFullYear() - 3}`,
+					},
+					{
+						label: `${new Date().getFullYear() - 4}`,
+						value: `${new Date().getFullYear() - 4}`,
+					},
+				]}
+				handleSearch={(data: IFilter) => {
+					setDate(state => new Date(state.setFullYear(data.filterValue)))
+				}}
+				columnId={'holiday_date'}
+				label="Year"
+				placeholder="Select year"
+			/>
 			<Button onClick={() => introJs().start()}>enter</Button>
 			<Head title="Dashboards" />
 			<HStack
-				data-title="Welcome!" data-intro="Hello World! 👋" className="card-demo"
+				data-title="Welcome!"
+				data-intro="Hello World! 👋"
+				className="card-demo"
 				_hover={{
 					textDecoration: 'none',
 				}}
@@ -167,7 +260,11 @@ const dashboard: NextLayout = () => {
 			</HStack>
 			<Collapse in={isOpenCards} animateOpacity>
 				<Grid
-					data-title="Welcome!" data-intro={'<img src="https://i.giphy.com/media/ujUdrdpX7Ok5W/giphy.webp" onerror="this.onerror=null;this.src=\'https://i.giphy.com/ujUdrdpX7Ok5W.gif\';" alt="">'} className="card-demo"
+					data-title="Welcome!"
+					data-intro={
+						'<img src="https://i.giphy.com/media/ujUdrdpX7Ok5W/giphy.webp" onerror="this.onerror=null;this.src=\'https://i.giphy.com/ujUdrdpX7Ok5W.gif\';" alt="">'
+					}
+					className="card-demo"
 					overflow={'hidden'}
 					templateColumns={[
 						'repeat(1, 1fr)',
@@ -217,7 +314,7 @@ const dashboard: NextLayout = () => {
 						title={'Hours logged'}
 						bg={'hu-Green.lightH'}
 						borderColor={'hu-Green.normal'}
-						text={`${dataHoursLooged?.hoursLogged || 0} Hrs`}
+						text={`${dataHoursLoged?.hoursLogged || 0} Hrs`}
 					/>
 					<Card
 						link={'/tasks'}

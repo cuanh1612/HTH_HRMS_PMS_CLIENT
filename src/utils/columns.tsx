@@ -1750,7 +1750,7 @@ export const projectMembersColumn = ({
 										)}
 									</Text>
 									<Text isTruncated w={'full'} fontSize={'sm'} color={'gray.400'}>
-										{row.original['department'].name || '--'}
+										{row.original['department']?.name || '--'}
 									</Text>
 								</VStack>
 							</HStack>
@@ -2055,7 +2055,7 @@ export const projectTimeLogsColumn = ({
 												fontSize={'sm'}
 												color={'gray.400'}
 											>
-												{row.original['department'].name || '--'}
+												{row.original['department']?.name || '--'}
 											</Text>
 										</VStack>
 									</HStack>
@@ -2866,7 +2866,7 @@ export const employeeTimeLogsColumn = ({
 												fontSize={'sm'}
 												color={'gray.400'}
 											>
-												{row.original['department'].name || '--'}
+												{row.original['department']?.name || '--'}
 											</Text>
 										</VStack>
 									</HStack>

@@ -79,11 +79,11 @@ export const todayAttendanceQuery = (
 }
 
 export const pendingTasksRawQuery = (
-	isAuthenticated: boolean | null
+	{isAuthenticated, date}: {isAuthenticated: boolean | null, date: Date}
 ) => {
 	return useSWR<IPendingTasks, AxiosError>(
 		isAuthenticated 
-			? `/pending-tasks-raw`
+			? `/pending-tasks-raw?date=${date}`
 			: null,
 		getDataDashBoardRequest,
 		{
@@ -94,11 +94,11 @@ export const pendingTasksRawQuery = (
 }
 
 export const pendingLeavesRawQuery = (
-	isAuthenticated: boolean | null
+	{isAuthenticated, date}: {isAuthenticated: boolean | null, date: Date}
 ) => {
 	return useSWR<any, AxiosError>(
 		isAuthenticated 
-			? `/pending-leaves-raw`
+			? `/pending-leaves-raw?date=${date}`
 			: null,
 		getDataDashBoardRequest,
 		{
@@ -154,11 +154,11 @@ export const contractsGeneratedQuery = (
 }
 
 export const pendingMilestoneQuery = (
-	isAuthenticated: boolean | null
+	{isAuthenticated, date}: {isAuthenticated: boolean | null, date: Date}
 ) => {
 	return useSWR<any, AxiosError>(
 		isAuthenticated 
-			? `/pending-milestone`
+			? `/pending-milestone?date=${date}`
 			: null,
 		getDataDashBoardRequest,
 		{
@@ -184,11 +184,11 @@ export const contractsSignedQuery = (
 }
 
 export const clientWiseEarningsQuery = (
-	isAuthenticated: boolean | null
+	{isAuthenticated, date}: {isAuthenticated: boolean | null, date: Date}
 ) => {
 	return useSWR<any, AxiosError>(
 		isAuthenticated 
-			? `/client-wise-earnings`
+			? `/client-wise-earnings?date=${date}`
 			: null,
 		getDataDashBoardRequest,
 		{
@@ -199,11 +199,11 @@ export const clientWiseEarningsQuery = (
 }
 
 export const clientWiseTimeLogsQuery = (
-	isAuthenticated: boolean | null
+	{isAuthenticated, date}: {isAuthenticated: boolean | null, date: Date}
 ) => {
 	return useSWR<any, AxiosError>(
 		isAuthenticated 
-			? `/client-wise-time-logs`
+			? `/client-wise-time-logs?date=${date}`
 			: null,
 		getDataDashBoardRequest,
 		{
@@ -214,11 +214,11 @@ export const clientWiseTimeLogsQuery = (
 }
 
 export const lastestClientsQuery = (
-	isAuthenticated: boolean | null
+	{isAuthenticated, date}: {isAuthenticated: boolean | null, date: Date}
 ) => {
 	return useSWR<any, AxiosError>(
 		isAuthenticated 
-			? `/lastest-clients`
+			? `/lastest-clients?date=${date}`
 			: null,
 		getDataDashBoardRequest,
 		{
@@ -259,11 +259,11 @@ export const projectsHoursLoggedQuery = (
 }
 
 export const countByDateAttendanceQuery = (
-	isAuthenticated: boolean | null
+	{isAuthenticated, date}: {isAuthenticated: boolean | null, date: Date}
 ) => {
 	return useSWR<any, AxiosError>(
 		isAuthenticated 
-			? `/count-by-date-attendance`
+			? `/count-by-date-attendance?date=${date}`
 			: null,
 		getDataDashBoardRequest,
 		{
@@ -274,11 +274,11 @@ export const countByDateAttendanceQuery = (
 }
 
 export const countByDateLeaveQuery = (
-	isAuthenticated: boolean | null
+	{isAuthenticated, date}: {isAuthenticated: boolean | null, date: Date}
 ) => {
 	return useSWR<any, AxiosError>(
 		isAuthenticated 
-			? `/count-by-date-leave`
+			? `/count-by-date-leave?date=${date}`
 			: null,
 		getDataDashBoardRequest,
 		{

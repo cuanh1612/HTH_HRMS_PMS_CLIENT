@@ -220,26 +220,28 @@ const milestones: NextLayout = () => {
 		<Box pb={8}>
 			<Head title={dataDetailProject?.project?.name} />
 			<FuncCollapse>
-				{currentUser && currentUser.role === 'Admin' && (
-					<>
-						<Func
-							icon={<IoAdd />}
-							description={'Add new milestone by form'}
-							title={'Add new'}
-							action={() => {
-								formSetting.reset({
-									addtobudget: 1,
-									cost: 1,
-									status: 1,
-									title: '',
-									summary: '',
-								})
-								setIsUpdate(false)
-								onOpenModal()
-							}}
-						/>
-					</>
-				)}
+				{currentUser &&
+					(currentUser.role === 'Admin' ||
+						currentUser.email === dataDetailProject?.project?.project_Admin.email) && (
+						<>
+							<Func
+								icon={<IoAdd />}
+								description={'Add new milestone by form'}
+								title={'Add new'}
+								action={() => {
+									formSetting.reset({
+										addtobudget: 1,
+										cost: 1,
+										status: 1,
+										title: '',
+										summary: '',
+									})
+									setIsUpdate(false)
+									onOpenModal()
+								}}
+							/>
+						</>
+					)}
 			</FuncCollapse>
 			<Table
 				data={allMilestone?.milestones || []}

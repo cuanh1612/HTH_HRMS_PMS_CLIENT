@@ -88,7 +88,7 @@ export const Task = ({
 									>
 										View
 									</MenuItem>
-									{(currentUser?.role === 'Admin' ||
+									{(!isDragDisabled ||
 										(currentUser?.role === 'Employee' &&
 											data?.assignBy?.id === currentUser?.id)) && (
 										<>

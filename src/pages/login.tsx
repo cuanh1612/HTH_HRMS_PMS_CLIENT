@@ -7,7 +7,7 @@ import { AuthContext } from 'contexts/AuthContext'
 import { loginGoogleMutation, loginMutation } from 'mutations'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { useContext, useEffect, useState } from 'react'
+import { useCallback, useContext, useEffect, useState } from 'react'
 // login with google
 import { useGoogleLogin } from 'react-google-login'
 // validate form
@@ -16,6 +16,7 @@ import { BiKey } from 'react-icons/bi'
 import { CgMail } from 'react-icons/cg'
 // icons
 import { ImGoogle } from 'react-icons/im'
+import { employeeType } from 'type/basicTypes'
 // layout
 import { NextLayout } from 'type/element/layout'
 import { loginForm } from 'type/form/basicFormType'
@@ -24,7 +25,8 @@ import { LoginValidate } from 'utils/validate'
 
 const Login: NextLayout = () => {
 	// set authenticated when login success, set toast
-	const { setIsAuthenticated, setToast, isAuthenticated, handleLoading} = useContext(AuthContext)
+	const { setIsAuthenticated, setToast, isAuthenticated, handleLoading, currentUser } =
+		useContext(AuthContext)
 
 	const router = useRouter()
 
@@ -33,7 +35,7 @@ const Login: NextLayout = () => {
 	// loading button
 	const [googleLoad, setGLoad] = useState(false)
 
-	const { signIn} = useGoogleLogin({
+	const { signIn } = useGoogleLogin({
 		onSuccess: (res: any) => {
 			mutateLoginG({
 				token: res.tokenId,
@@ -42,7 +44,7 @@ const Login: NextLayout = () => {
 		onFailure: () => {
 			setGLoad(false)
 		},
-    isSignedIn: false,
+		isSignedIn: false,
 		clientId: '345570644203-tleaq4dh709669ch4tmvbese58q9asbb.apps.googleusercontent.com',
 	})
 
@@ -75,6 +77,12 @@ const Login: NextLayout = () => {
 		resolver: yupResolver(LoginValidate),
 	})
 
+	const redirectPage = (currentUser: employeeType) => {
+		if (currentUser.role.includes('Admin')) router.push('/dashboard')
+		if (currentUser.role.includes('Client')) router.push('/private-dashboard-client')
+		if (currentUser.role.includes('Employee')) router.push('/private-dashboard')
+	}
+
 	const { handleSubmit } = formSetting
 
 	const onSubmit = (values: loginForm) => mutate(values)
@@ -93,7 +101,7 @@ const Login: NextLayout = () => {
 		}
 	}, [status])
 
-	// set loading google button 
+	// set loading google button
 	useEffect(() => {
 		switch (statusLoginG) {
 			case 'running':
@@ -116,15 +124,15 @@ const Login: NextLayout = () => {
 	}, [statusLoginG])
 
 	// check authenticate to redirect to home page
-	useEffect(()=> {
-		if(isAuthenticated) {
-			router.push('/')
+	useEffect(() => {
+		if (isAuthenticated && currentUser) {
+			redirectPage(currentUser)
 		} else {
-			if(isAuthenticated == false) {
+			if (isAuthenticated == false) {
 				handleLoading(false)
 			}
 		}
-	}, [isAuthenticated])
+	}, [isAuthenticated, currentUser])
 
 	return (
 		<VStack spacing={8} minW={'380px'}>

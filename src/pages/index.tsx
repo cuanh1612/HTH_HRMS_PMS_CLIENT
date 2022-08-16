@@ -1,35 +1,28 @@
-import {
-	Box,
-} from '@chakra-ui/react'
+import { Box } from '@chakra-ui/react'
 import { ClientLayout } from 'components/layouts'
 import { AuthContext } from 'contexts/AuthContext'
 import { useRouter } from 'next/router'
 import { useContext, useEffect } from 'react'
 import { NextLayout } from 'type/element/layout'
 
-const index:NextLayout = ()=> {
-	const { isAuthenticated, handleLoading } = useContext(AuthContext)
-	const { push } = useRouter()
+const index: NextLayout = () => {
+	const { isAuthenticated, handleLoading, currentUser } = useContext(AuthContext)
+	const router = useRouter()
 
-
-
-	//Handle check logged in
+	// check authenticate to redirect to home page
 	useEffect(() => {
-		if (isAuthenticated) {
-			handleLoading(false)
+		if (isAuthenticated && currentUser) {
+			if (currentUser.role.includes('Admin')) router.push('/dashboard')
+			if (currentUser.role.includes('Client')) router.push('/private-dashboard-client')
+			if (currentUser.role.includes('Employee')) router.push('/private-dashboard')
 		} else {
-			if (isAuthenticated === false) {
-				push('/login')
+			if (isAuthenticated == false) {
+				handleLoading(false)
 			}
 		}
-	}, [isAuthenticated])
+	}, [isAuthenticated, currentUser])
 
-
-	return (
-		<Box mt={'100px'}>
-	
-		</Box>
-	)
+	return <Box mt={'100px'}></Box>
 }
 index.getLayout = ClientLayout
 

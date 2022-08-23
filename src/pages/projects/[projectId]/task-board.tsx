@@ -466,7 +466,13 @@ const taskBoard: NextLayout = () => {
 						>
 							{columns.map((column, key: number) => (
 								<Column
-									isDragDisabled={currentUser?.role === 'Admin' ? false : true}
+									isDragDisabled={
+										currentUser?.role === 'Admin' ||
+										currentUser?.email ===
+											dataDetailProject?.project?.project_Admin.email
+											? false
+											: true
+									}
 									setEditForm={setEditForm}
 									key={column.id}
 									column={column}

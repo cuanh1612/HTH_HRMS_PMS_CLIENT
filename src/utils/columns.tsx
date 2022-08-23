@@ -559,7 +559,8 @@ export const leaveColumn = ({
 								>
 									View
 								</MenuItem>
-								{row.values.status == 'Pending' && (
+
+								{currentUser?.role == 'Admin' && row.values.status == 'Pending' && (
 									<>
 										<MenuItem
 											onClick={() => {

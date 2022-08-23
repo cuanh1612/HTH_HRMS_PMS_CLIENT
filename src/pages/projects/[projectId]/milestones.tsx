@@ -219,9 +219,10 @@ const milestones: NextLayout = () => {
 	return (
 		<Box pb={8}>
 			<Head title={dataDetailProject?.project?.name} />
-			<FuncCollapse>
-				{currentUser && currentUser.role === 'Admin' && (
-					<>
+			{currentUser &&
+				(currentUser.role === 'Admin' ||
+					currentUser.email === dataDetailProject?.project?.project_Admin.email) && (
+					<FuncCollapse>
 						<Func
 							icon={<IoAdd />}
 							description={'Add new milestone by form'}
@@ -238,9 +239,8 @@ const milestones: NextLayout = () => {
 								onOpenModal()
 							}}
 						/>
-					</>
+					</FuncCollapse>
 				)}
-			</FuncCollapse>
 			<Table
 				data={allMilestone?.milestones || []}
 				columns={columns}

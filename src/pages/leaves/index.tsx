@@ -43,7 +43,6 @@ import DetailLeave from './[leaveId]'
 import { leaveColumn } from 'utils/columns'
 import { dataStatusLeave } from 'utils/basicData'
 
-
 // get current year
 const year = new Date().getFullYear()
 
@@ -255,33 +254,31 @@ const Leaves: NextLayout = () => {
 
 	return (
 		<Box pb={8}>
-			<Head title='Leaves'/>
+			<Head title="Leaves" />
 			<FuncCollapse>
+				<Func
+					icon={<IoAdd />}
+					description={'Add new leave by form'}
+					title={'Add new'}
+					action={onOpenAdd}
+				/>
 				{currentUser && currentUser.role === 'Admin' && (
-					<>
+					<CSVLink filename={'leaves.csv'} headers={headersCSV} data={dataCSV}>
 						<Func
-							icon={<IoAdd />}
-							description={'Add new leave by form'}
-							title={'Add new'}
-							action={onOpenAdd}
+							icon={<BiExport />}
+							description={'export to csv'}
+							title={'export'}
+							action={() => {}}
 						/>
-						<CSVLink filename={'leaves.csv'} headers={headersCSV} data={dataCSV}>
-							<Func
-								icon={<BiExport />}
-								description={'export to csv'}
-								title={'export'}
-								action={() => {}}
-							/>
-						</CSVLink>
-						<Func
-							icon={<AiOutlineDelete />}
-							title={'Delete all'}
-							description={'Delete all leaves you selected'}
-							action={onOpenDlMany}
-							disabled={!dataSl || dataSl.length == 0 ? true : false}
-						/>
-					</>
+					</CSVLink>
 				)}
+				<Func
+					icon={<AiOutlineDelete />}
+					title={'Delete all'}
+					description={'Delete all leaves you selected'}
+					action={onOpenDlMany}
+					disabled={!dataSl || dataSl.length == 0 ? true : false}
+				/>
 				<Func
 					icon={<VscFilter />}
 					description={'Open draw to filter'}
@@ -304,7 +301,7 @@ const Leaves: NextLayout = () => {
 					data={allLeaves?.leaves || []}
 					columns={columns}
 					isLoading={isLoading}
-					isSelect={currentUser.role == 'Admin'}
+					isSelect={true}
 					selectByColumn="id"
 					setSelect={(data: Array<number>) => setDataSl(data)}
 					filter={filter}
@@ -314,7 +311,7 @@ const Leaves: NextLayout = () => {
 			)}
 
 			{/* alert dialog when delete one */}
-			
+
 			<AlertDialog
 				handleDelete={() => {
 					setIsLoading(true)

@@ -235,35 +235,33 @@ const Notes: NextLayout = () => {
 		<Box pb={8}>
 			<Head title={dataDetailProject?.project?.name} />
 
-			<FuncCollapse>
-				{((currentUser && currentUser.role === 'Admin') ||
-					(currentUser &&
-						dataDetailProject?.project?.project_Admin &&
-						currentUser.email === dataDetailProject.project.project_Admin.email)) && (
-					<>
-						<Func
-							icon={<IoAdd />}
-							description={'Add new note by form'}
-							title={'Add new'}
-							action={onOpenAddNote}
-						/>
+			{((currentUser && currentUser.role === 'Admin') ||
+				(currentUser &&
+					dataDetailProject?.project?.project_Admin &&
+					currentUser.email === dataDetailProject.project.project_Admin.email)) && (
+				<FuncCollapse>
+					<Func
+						icon={<IoAdd />}
+						description={'Add new note by form'}
+						title={'Add new'}
+						action={onOpenAddNote}
+					/>
 
-						<Func
-							icon={<VscFilter />}
-							description={'Open draw to filter'}
-							title={'filter'}
-							action={onOpenFilter}
-						/>
-						<Func
-							icon={<AiOutlineDelete />}
-							title={'Delete all'}
-							description={'Delete all notes you selected'}
-							action={onOpenDlMany}
-							disabled={!dataSl || dataSl.length == 0 ? true : false}
-						/>
-					</>
-				)}
-			</FuncCollapse>
+					<Func
+						icon={<VscFilter />}
+						description={'Open draw to filter'}
+						title={'filter'}
+						action={onOpenFilter}
+					/>
+					<Func
+						icon={<AiOutlineDelete />}
+						title={'Delete all'}
+						description={'Delete all notes you selected'}
+						action={onOpenDlMany}
+						disabled={!dataSl || dataSl.length == 0 ? true : false}
+					/>
+				</FuncCollapse>
+			)}
 
 			<Table
 				data={dataAllNotes?.projectNotes || []}

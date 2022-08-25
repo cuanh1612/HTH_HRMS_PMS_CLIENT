@@ -1,4 +1,4 @@
-import { Box, HStack, Text, VStack } from '@chakra-ui/react'
+import { HStack, Text, VStack } from '@chakra-ui/react'
 import { Head } from 'components/common'
 import { AuthContext } from 'contexts/AuthContext'
 import Link from 'next/link'

@@ -80,10 +80,12 @@ const Holiday: NextLayout = () => {
 
 	// mutation
 	// delete holidays
-	const [mutateDeleteHolidays, { status: statusDlHolidays, data: dataDlMany }] = deleteHolidaysMutation(setToast)
+	const [mutateDeleteHolidays, { status: statusDlHolidays, data: dataDlMany }] =
+		deleteHolidaysMutation(setToast)
 
 	// delete holiday
-	const [mutateDeleteHoliday, { status: statusDl, data: dataDl }] = deleteHolidayMutation(setToast)
+	const [mutateDeleteHoliday, { status: statusDl, data: dataDl }] =
+		deleteHolidayMutation(setToast)
 
 	const [mutateCreHolidays, { status: statusCreHolidays, data: dataCreHolidays }] =
 		createHolidaysMutation(setToast)
@@ -213,7 +215,7 @@ const Holiday: NextLayout = () => {
 
 	return (
 		<Box pb={8}>
-			<Head title='Holidays'/>
+			<Head title="Holidays" />
 			<FuncCollapse>
 				{currentUser && currentUser.role === 'Admin' && (
 					<>
@@ -261,6 +263,13 @@ const Holiday: NextLayout = () => {
 								router.push('/holidays/calendar')
 							}}
 						/>
+						<Func
+							icon={<AiOutlineDelete />}
+							title={'Delete all'}
+							description={'Delete all holiday you selected'}
+							action={onOpenDlMany}
+							disabled={!dataSl || dataSl.length == 0 ? true : false}
+						/>
 					</>
 				)}
 				<Func
@@ -268,13 +277,6 @@ const Holiday: NextLayout = () => {
 					description={'Open draw to filter'}
 					title={'filter'}
 					action={onOpenFilter}
-				/>
-				<Func
-					icon={<AiOutlineDelete />}
-					title={'Delete all'}
-					description={'Delete all holiday you selected'}
-					action={onOpenDlMany}
-					disabled={!dataSl || dataSl.length == 0 ? true : false}
 				/>
 			</FuncCollapse>
 

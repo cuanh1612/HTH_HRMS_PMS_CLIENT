@@ -72,20 +72,27 @@ const LinkItems = () => {
 			{currentUser?.role == 'Employee' && (
 				<LinkItem
 					link="/private-dashboard"
-					title="Dashboard"
+					title="Private Dashboard"
 					icon={<AiOutlineHome fontSize={20} />}
 				/>
 			)}
 			{currentUser?.role == 'Client' && (
 				<LinkItem
 					link="/private-dashboard-client"
-					title="Dashboard"
+					title="Private dashboard"
 					icon={<AiOutlineHome fontSize={20} />}
 				/>
 			)}
 
 			{currentUser?.role == 'Admin' && (
-				<LinkItem link="/clients" title="Clients" icon={<BsPerson fontSize={20} />} />
+				<>
+					<LinkItem link="/clients" title="Clients" icon={<BsPerson fontSize={20} />} />
+					<LinkItem
+						link="/salaries"
+						title="Salaries"
+						icon={<MdOutlineAttachMoney fontSize={20} />}
+					/>
+				</>
 			)}
 			{currentUser?.role != 'Client' && (
 				<LinkGroup
@@ -157,57 +164,49 @@ const LinkItems = () => {
 					icon={<BiMessageDots fontSize={20} />}
 				/>
 			)}
-			{currentUser?.role == 'Admin' && (
-				<>
-					<LinkItem
-						link="/salaries"
-						title="Salaries"
-						icon={<MdOutlineAttachMoney fontSize={20} />}
-					/>
-					<LinkGroup
-						currentUser={currentUser}
-						data={[
-							{
-								icon: <MdOutlineDashboard fontSize={20} />,
-								link: '/dashboard-jobs',
-								title: 'Dashboard',
-							},
-							{
-								icon: <GiSkills fontSize={20} />,
-								link: '/skills',
-								title: 'Skills',
-							},
-							{
-								icon: <RiSuitcaseLine fontSize={20} />,
-								link: '/jobs',
-								title: 'Jobs',
-							},
-							{
-								icon: <IoDocumentTextOutline fontSize={20} />,
-								link: '/job-applications',
-								title: 'Job applications',
-							},
-							{
-								icon: <AiOutlineMail fontSize={20} />,
-								link: '/job-offer-letters',
-								title: 'Offer letters',
-							},
-							{
-								icon: <MdOutlineEvent fontSize={20} />,
-								link: '/interviews',
-								title: 'Interview schedule',
-							},
-							{
-								icon: <MdOutlinePreview fontSize={20} />,
-								link: '/recruit',
-								title: 'Front website',
-							},
-						]}
-						title="Recruit"
-						icon={<BsPersonBadge fontSize={20} />}
-					/>
-				</>
-			)}
+
+			<LinkGroup
+				currentUser={currentUser}
+				data={[
+					{
+						icon: <MdOutlineDashboard fontSize={20} />,
+						link: '/dashboard-jobs',
+						title: 'Dashboard',
+					},
+					{
+						icon: <GiSkills fontSize={20} />,
+						link: '/skills',
+						title: 'Skills',
+					},
+					{
+						icon: <RiSuitcaseLine fontSize={20} />,
+						link: '/jobs',
+						title: 'Jobs',
+					},
+					{
+						icon: <IoDocumentTextOutline fontSize={20} />,
+						link: '/job-applications',
+						title: 'Job applications',
+					},
+					{
+						icon: <AiOutlineMail fontSize={20} />,
+						link: '/job-offer-letters',
+						title: 'Offer letters',
+					},
+					{
+						icon: <MdOutlineEvent fontSize={20} />,
+						link: '/interviews',
+						title: 'Interview schedule',
+					},
+					{
+						icon: <MdOutlinePreview fontSize={20} />,
+						link: '/recruit',
+						title: 'Front website',
+					},
+				]}
+				title="Recruit"
+				icon={<BsPersonBadge fontSize={20} />}
+			/>
 
 			{currentUser?.role != 'Client' && (
 				<LinkItem link="/rooms" title="Rooms" icon={<IoVideocamOutline fontSize={20} />} />

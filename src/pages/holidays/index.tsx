@@ -256,14 +256,6 @@ const Holiday: NextLayout = () => {
 							onOpenImportCSV={onOpenImportCSV}
 						/>
 						<Func
-							icon={<MdOutlineEvent />}
-							title={'Calendar'}
-							description={'show holidays as calendar'}
-							action={() => {
-								router.push('/holidays/calendar')
-							}}
-						/>
-						<Func
 							icon={<AiOutlineDelete />}
 							title={'Delete all'}
 							description={'Delete all holiday you selected'}
@@ -277,6 +269,14 @@ const Holiday: NextLayout = () => {
 					description={'Open draw to filter'}
 					title={'filter'}
 					action={onOpenFilter}
+				/>
+				<Func
+					icon={<MdOutlineEvent />}
+					title={'Calendar'}
+					description={'show holidays as calendar'}
+					action={() => {
+						router.push('/holidays/calendar')
+					}}
 				/>
 			</FuncCollapse>
 

@@ -199,8 +199,6 @@ const Notes: NextLayout = () => {
 	//Function -----------------------------------------------------------
 	//handle open detail note
 	const onOpenDetailProjectNote = (ask_re_password: boolean) => {
-		console.log(ask_re_password)
-
 		if (ask_re_password) {
 			onOpenReEnterPassword()
 		} else {
@@ -391,7 +389,6 @@ const Notes: NextLayout = () => {
 							placeholder="Please Enter Your Password"
 							defaultValue={password}
 							handleSearch={(e: IFilter) => {
-								console.log(e.filterValue)
 								onChangePassword(e.filterValue)
 							}}
 							label={'Password'}

@@ -94,7 +94,6 @@ const DetailClient: NextLayout | any = ({
 
 	useEffect(() => {
 		if (allProjects) {
-			console.log(allProjects.projects)
 			setIsLoading(false)
 		}
 	}, [allProjects])

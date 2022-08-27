@@ -92,7 +92,7 @@ export default function AddJob({ onCloseDrawer }: IAddJobProps) {
 	// get all skills
 	const { data: allSkills } = allSkillsQuery(isAuthenticated)
 	// get all locations
-	const { data: allLocations } = allLocationsQuery(isAuthenticated)
+	const { data: allLocations } = allLocationsQuery()
 	// get all employees
 	const { data: allEmployees } = allEmployeesQuery(isAuthenticated)
 	// get all job type

@@ -57,8 +57,6 @@ export default function DetailJobApplication({
 		jobApplicationIdProp || (jobApplicationIdRouter as string)
 	)
 
-	console.log(dataDetailJobApplication)
-
 	// get all skills
 	const { data: allSkills } = allSkillsQuery(isAuthenticated)
 

@@ -15,7 +15,6 @@ const proxy = httpProxy.createProxyServer()
 export default async function handler(req: NextApiRequest, res: NextApiResponse<any>) {
 	//Check method
 	if (req.method !== 'GET') {
-		console.log('nguyen quang hoang')
 		return res.status(400).json({
 			message: 'Method not valid.',
 			code: 400,

@@ -73,7 +73,6 @@ const Contracts: NextLayout = () => {
 	// query and mutation -=------------------------------------------------------
 	// get all contracts
 	const { data: allContracts, mutate: refetchAllContracts } = allContractsQuery(isAuthenticated)
-	console.log(allContracts)
 
 	const { data: allContractTypes } = allContractTypesQuery()
 
@@ -295,7 +294,6 @@ const Contracts: NextLayout = () => {
 
 	useEffect(() => {
 		if (allContracts) {
-			console.log(allContracts)
 			setIsLoading(false)
 
 			if (allContracts.contracts) {
@@ -558,7 +556,6 @@ const Contracts: NextLayout = () => {
 					{clientsFilter && (
 						<SelectCustom
 							handleSearch={(field: any) => {
-								console.log(field)
 								setFilter({
 									columnId: 'client',
 									filterValue: field.value,

@@ -162,11 +162,9 @@ const dashboard: NextLayout = () => {
 		if (calendar) {
 			calendar.render()
 			calendar.on('dateClick', function (info) {
-				console.log(info)
 			})
 
 			calendar.on('select', function (info) {
-				console.log(info)
 			})
 
 			calendar.on('eventClick', (info) => {
@@ -175,7 +173,6 @@ const dashboard: NextLayout = () => {
 			})
 
 			calendar.on('eventDragStop', (info) => {
-				console.log(info)
 			})
 		}
 	}, [calendar])

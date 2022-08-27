@@ -101,8 +101,6 @@ const Apply: NextLayout = () => {
 
 	//Handle crete job
 	const onSubmit = async (values: createJobApplicationForm) => {
-		console.log('asdfasdf')
-
 		if (isAgree) {
 			//Upload avatar
 			const dataUploadAvatar: ICloudinaryImg | null = await handleUploadAvatar()

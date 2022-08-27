@@ -367,8 +367,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 		}
 	).then((e) => e.json())
 
-	console.log(checkAssignedProject)
-
 	if (!checkAssignedProject.success) {
 		return {
 			notFound: true,

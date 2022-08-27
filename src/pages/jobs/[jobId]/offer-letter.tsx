@@ -95,7 +95,6 @@ const offerLetter: NextLayout | any = ({ jobIdProp }: IOfferLetterProps) => {
 
 	useEffect(() => {
 		if (dataOfferLetters) {
-			console.log(dataOfferLetters)
 			setIsLoading(false)
 		}
 	}, [dataOfferLetters])

@@ -217,8 +217,6 @@ export default function UpdateInterview({
 
 			setSelectedOptionInterviewer(newSelectedInterviewer)
 
-			console.log(dataDetailInterview)
-
 			//set data form
 			formSetting.reset({
 				date: dataDetailInterview.interview.date || undefined,

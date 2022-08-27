@@ -39,8 +39,6 @@ export default function DetailRoom({
 		roomIdProp || (roomIdRouter as string)
 	)
 
-	console.log(detailRoom)
-
 	//User effect ---------------------------------------------------------------
 	//Handle check logged in
 	useEffect(() => {

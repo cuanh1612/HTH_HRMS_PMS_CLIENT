@@ -119,7 +119,6 @@ const dashboard: NextLayout = () => {
 	const { data: dataCountByDateAttendance } = countByDateAttendanceQuery({isAuthenticated, date})
 	const { data: dataCountByDateLeave } = countByDateLeaveQuery({isAuthenticated, date})
 	const { data: dataCountProjectsOverdue } = countProjectsOverdueQuery(isAuthenticated)
-	console.log(dataClientWiseTimeLogs)
 
 	// mutation ----------------------------------------
 	// update status of leave

@@ -71,7 +71,7 @@ const jobApplications: NextLayout = () => {
 	const { data: dataAllJobApplications, mutate: refetchAllData } =
 		allJobApplicationsQuery(isAuthenticated)
 
-	const { data: dataAllLocations } = allLocationsQuery(isAuthenticated)
+	const { data: dataAllLocations } = allLocationsQuery()
 	const { data: dataAllJobs } = allJobsQuery()
 
 	// mutate

@@ -45,8 +45,6 @@ const Overview: NextLayout = () => {
 		projectId
 	)
 
-	console.log(allActs)
-
 	//User effect ---------------------------------------------------------------
 	//Handle check logged in
 	useEffect(() => {

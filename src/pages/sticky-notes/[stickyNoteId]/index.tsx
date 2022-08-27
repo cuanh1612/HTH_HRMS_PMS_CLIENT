@@ -22,9 +22,6 @@ export default function DetailStickyNote({
 		stickyNoteIdProp || (stickyNoteRouter as string)
 	)
 
-	console.log(dataDetailStickyNote);
-	
-    
 	//mutation -----------------------------------------------------------
 
 	//User effect ---------------------------------------------------------------

@@ -165,7 +165,6 @@ const TaskCategory: NextLayout = () => {
 
 	// set calendar
 	useEffect(() => {
-		console.log(data)
 		setCalendar(
 			new Calendar(document.getElementById('calendar') as HTMLElement, {
 				plugins: [interactionPlugin, dayGridPlugin, listPlugin, timeGridPlugin],
@@ -196,11 +195,9 @@ const TaskCategory: NextLayout = () => {
 		if (calendar) {
 			calendar.render()
 			calendar.on('dateClick', function (info) {
-				console.log(info)
 			})
 
 			calendar.on('select', function (info) {
-				console.log(info)
 			})
 
 			calendar.on('eventClick', (info) => {
@@ -209,7 +206,6 @@ const TaskCategory: NextLayout = () => {
 			})
 
 			calendar.on('eventDragStop', (info) => {
-				console.log(info)
 			})
 		}
 	}, [calendar])

@@ -105,7 +105,7 @@ export default function UpdateJob({ onCloseDrawer, JobIdProp }: IUpdateJobProps)
 	// get all skills
 	const { data: allSkills } = allSkillsQuery(isAuthenticated)
 	// get all locations
-	const { data: allLocations } = allLocationsQuery(isAuthenticated)
+	const { data: allLocations } = allLocationsQuery()
 	// get all employees
 	const { data: allEmployees } = allEmployeesQuery(isAuthenticated)
 	// get all job type
@@ -156,8 +156,6 @@ export default function UpdateJob({ onCloseDrawer, JobIdProp }: IUpdateJobProps)
 				//Set value submit
 				values.job_description = jobDescription
 				values.status = values.status === 'Open' ? true : false
-
-				console.log(values)
 
 				//create new job
 				await mutateUpJob({

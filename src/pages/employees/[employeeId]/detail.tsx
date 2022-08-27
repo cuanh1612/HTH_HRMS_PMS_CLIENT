@@ -69,8 +69,6 @@ export const DetailEmployee: NextLayout | any = ({
 		employeeId as string
 	)
 
-	console.log(countTasksStatus)
-
 	//User effect ---------------------------------------------------------------
 	//Handle check logged in
 	useEffect(() => {

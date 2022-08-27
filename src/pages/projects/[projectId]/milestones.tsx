@@ -37,7 +37,7 @@ import { TColumn } from 'type/tableTypes'
 import { milestoneValidate } from 'utils/validate'
 import { milestoneType } from 'type/basicTypes'
 import { IoAdd } from 'react-icons/io5'
-import { projecMilestonesColumn } from 'utils/columns'
+import { projectMilestonesColumn } from 'utils/columns'
 
 import { allActivitiesByProjectQuery } from 'queries/ProjectActivity'
 
@@ -154,7 +154,7 @@ const milestones: NextLayout = () => {
 	}
 
 	// header ----------------------------------------
-	const columns: TColumn[] = projecMilestonesColumn({
+	const columns: TColumn[] = projectMilestonesColumn({
 		onDelete: (id: number) => {
 			setIdMilestone(id)
 			onOpenDl()

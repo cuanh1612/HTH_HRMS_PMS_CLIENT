@@ -13,7 +13,7 @@ export interface IDetailHolidayProps {
 }
 var isUseLayout = false
 export default function DetailHoliday({ holidayIdProp, onOpenUpdate, onOpenDl}: IDetailHolidayProps) {
-	const { isAuthenticated, handleLoading } = useContext(AuthContext)
+	const { isAuthenticated, handleLoading, currentUser } = useContext(AuthContext)
 	const router = useRouter()
 	const { holidayId: holidayIdRouter } = router.query
 
@@ -56,10 +56,10 @@ export default function DetailHoliday({ holidayIdProp, onOpenUpdate, onOpenDl}: 
 					</GridItem>
 				</Grid>
 				{
-					onOpenUpdate && <Button onClick={onOpenUpdate}>Update</Button>
+					onOpenUpdate && currentUser?.role == 'Admin' && <Button onClick={onOpenUpdate}>Update</Button>
 				}
 								{
-					onOpenDl && <Button onClick={onOpenDl}>delete</Button>
+					onOpenDl && currentUser?.role == 'Admin' && <Button onClick={onOpenDl}>delete</Button>
 				}
 			</Box>
 		</>

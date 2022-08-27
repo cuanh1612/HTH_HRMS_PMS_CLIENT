@@ -588,15 +588,16 @@ export const leaveColumn = ({
 										</MenuItem>
 									</>
 								)}
-
-								<MenuItem
-									onClick={() => {
-										onDelete(row.values['id'])
-									}}
-									icon={<MdOutlineDeleteOutline fontSize={'15px'} />}
-								>
-									Delete
-								</MenuItem>
+								{row.values['status'] == 'Pending' && (
+									<MenuItem
+										onClick={() => {
+											onDelete(row.values['id'])
+										}}
+										icon={<MdOutlineDeleteOutline fontSize={'15px'} />}
+									>
+										Delete
+									</MenuItem>
+								)}
 							</MenuList>
 						</Menu>
 					),
@@ -2297,10 +2298,11 @@ export const projectNotesColumn = ({
 	]
 }
 
-export const projecMilestonesColumn = ({
+export const projectMilestonesColumn = ({
 	onDelete,
 	onDetail,
 	onUpdate,
+	currentUser,
 }: IOptionColumn): TColumn[] => {
 	return [
 		{
@@ -2361,30 +2363,32 @@ export const projecMilestonesColumn = ({
 							>
 								View
 							</Button>
-							<Menu>
-								<MenuButton as={Button} paddingInline={3}>
-									<MdOutlineMoreVert />
-								</MenuButton>
-								<MenuList>
-									<MenuItem
-										onClick={() => {
-											onUpdate(row.values['id'], row)
-										}}
-										icon={<RiPencilLine fontSize={'15px'} />}
-									>
-										Edit
-									</MenuItem>
+							{currentUser?.role == 'Admin' && (
+								<Menu>
+									<MenuButton as={Button} paddingInline={3}>
+										<MdOutlineMoreVert />
+									</MenuButton>
+									<MenuList>
+										<MenuItem
+											onClick={() => {
+												onUpdate(row.values['id'], row)
+											}}
+											icon={<RiPencilLine fontSize={'15px'} />}
+										>
+											Edit
+										</MenuItem>
 
-									<MenuItem
-										onClick={() => {
-											onDelete(Number(row.values['id']))
-										}}
-										icon={<MdOutlineDeleteOutline fontSize={'15px'} />}
-									>
-										Delete
-									</MenuItem>
-								</MenuList>
-							</Menu>
+										<MenuItem
+											onClick={() => {
+												onDelete(Number(row.values['id']))
+											}}
+											icon={<MdOutlineDeleteOutline fontSize={'15px'} />}
+										>
+											Delete
+										</MenuItem>
+									</MenuList>
+								</Menu>
+							)}
 						</ButtonGroup>
 					),
 				},
@@ -4015,7 +4019,6 @@ export const interviewScheduleColumn = ({
 		},
 	]
 }
-
 
 export const jobInterviewColumn = ({
 	onDelete,

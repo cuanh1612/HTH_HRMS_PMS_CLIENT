@@ -3,7 +3,7 @@ import { deleteLeaveMutation, deleteLeavesMutation, updateStatusMutation } from 
 import { allLeaveQuery, allLeaveTypesQuery } from 'queries'
 
 // components
-import { Box, Button, Image, useDisclosure, VStack } from '@chakra-ui/react'
+import { Box, Button, useDisclosure, VStack } from '@chakra-ui/react'
 import { AlertDialog, Func, FuncCollapse, Head, Table } from 'components/common'
 import { Drawer } from 'components/Drawer'
 import { CSVLink } from 'react-csv'
@@ -263,22 +263,24 @@ const Leaves: NextLayout = () => {
 					action={onOpenAdd}
 				/>
 				{currentUser && currentUser.role === 'Admin' && (
-					<CSVLink filename={'leaves.csv'} headers={headersCSV} data={dataCSV}>
+					<>
+						<CSVLink filename={'leaves.csv'} headers={headersCSV} data={dataCSV}>
+							<Func
+								icon={<BiExport />}
+								description={'export to csv'}
+								title={'export'}
+								action={() => {}}
+							/>
+						</CSVLink>
 						<Func
-							icon={<BiExport />}
-							description={'export to csv'}
-							title={'export'}
-							action={() => {}}
+							icon={<AiOutlineDelete />}
+							title={'Delete all'}
+							description={'Delete all leaves you selected'}
+							action={onOpenDlMany}
+							disabled={!dataSl || dataSl.length == 0 ? true : false}
 						/>
-					</CSVLink>
+					</>
 				)}
-				<Func
-					icon={<AiOutlineDelete />}
-					title={'Delete all'}
-					description={'Delete all leaves you selected'}
-					action={onOpenDlMany}
-					disabled={!dataSl || dataSl.length == 0 ? true : false}
-				/>
 				<Func
 					icon={<VscFilter />}
 					description={'Open draw to filter'}
@@ -301,7 +303,7 @@ const Leaves: NextLayout = () => {
 					data={allLeaves?.leaves || []}
 					columns={columns}
 					isLoading={isLoading}
-					isSelect={true}
+					isSelect={currentUser.role == 'Admin' ? true : false}
 					selectByColumn="id"
 					setSelect={(data: Array<number>) => setDataSl(data)}
 					filter={filter}

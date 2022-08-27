@@ -160,7 +160,6 @@ export default function AddLeaves({ onCloseDrawer }: IAddLeavesProps) {
 							onOpenModal={onOpenLeaveType}
 						/>
 					</GridItem>
-
 					<GridItem w="100%" colSpan={[2, 1]}>
 						<Select
 							name="status"
@@ -168,7 +167,7 @@ export default function AddLeaves({ onCloseDrawer }: IAddLeavesProps) {
 							required
 							form={formSetting}
 							placeholder={'Select Leave Status'}
-							options={dataStatusLeave}
+							options={ dataStatusLeave}
 						/>
 					</GridItem>
 

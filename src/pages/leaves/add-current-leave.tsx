@@ -18,7 +18,7 @@ import Modal from 'components/modal/Modal'
 import { AuthContext } from 'contexts/AuthContext'
 import { createLeaveMutation } from 'mutations'
 import { useRouter } from 'next/router'
-import { allLeaveTypesQuery } from 'queries'
+import { allLeaveQuery, allLeaveTypesQuery } from 'queries'
 import { useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { AiOutlineCheck } from 'react-icons/ai'
@@ -51,6 +51,11 @@ export default function AddCurrentLeave({ onCloseDrawer }: IAddCurrentLeaveProps
 
 	//Query ---------------------------------------------------------------------
 	const { data: dataLeaveTypes } = allLeaveTypesQuery()
+	// get all leaves
+	const {  mutate: refetchAllLeaves } = allLeaveQuery({
+		isAuthenticated,
+		...(currentUser?.role === 'Employee' ? { employee: currentUser?.id } : {}),
+	})
 
 	//mutation ------------------------------------------------------------------
 	const [mutateCreateLeave, { status: statusLeave, data: dataLeave }] =
@@ -115,6 +120,7 @@ export default function AddCurrentLeave({ onCloseDrawer }: IAddCurrentLeaveProps
 				type: statusLeave,
 				msg: dataLeave?.message as string,
 			})
+			refetchAllLeaves()
 		}
 	}, [statusLeave])
 
@@ -151,7 +157,16 @@ export default function AddCurrentLeave({ onCloseDrawer }: IAddCurrentLeaveProps
 							required
 							form={formSetting}
 							placeholder={'Select Leave Status'}
-							options={dataStatusLeave}
+							options={
+								currentUser?.role == 'Admin'
+									? dataStatusLeave
+									: [
+											{
+												value: 'Pending',
+												label: 'Pending',
+											},
+									  ]
+							}
 						/>
 					</GridItem>
 
@@ -202,7 +217,6 @@ export default function AddCurrentLeave({ onCloseDrawer }: IAddCurrentLeaveProps
 					mt={6}
 					type="submit"
 				>
-					
 					Save
 				</Button>
 

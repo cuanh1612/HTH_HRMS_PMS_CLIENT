@@ -23,7 +23,7 @@ export interface IDetailLeaveProps {
 }
 
 export default function DetailLeave({ leaveId: leaveIdProp, onOpenUpdate, onOpenDl}: IDetailLeaveProps) {
-	const { isAuthenticated, handleLoading } = useContext(AuthContext)
+	const { isAuthenticated, handleLoading, currentUser } = useContext(AuthContext)
 	const router = useRouter()
 	const { leaveId: leaveIdRouter } = router.query
 
@@ -125,8 +125,8 @@ export default function DetailLeave({ leaveId: leaveIdProp, onOpenUpdate, onOpen
 						</HStack>
 					</GridItem>
 				</Grid>
-				{onOpenUpdate && <Button onClick={onOpenUpdate}>Update</Button>}{' '}
-				{onOpenDl && <Button onClick={onOpenDl}>Delete</Button>}
+				{onOpenUpdate && currentUser?.role == 'Admin' && <Button onClick={onOpenUpdate}>Update</Button>}{' '}
+				{onOpenDl && dataDetailLeave?.leave?.status == 'Pending' && <Button onClick={onOpenDl}>Delete</Button>}
 			</VStack>
 		</>
 	)

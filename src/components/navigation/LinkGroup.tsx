@@ -1,7 +1,7 @@
 import { Box, Button, Collapse, HStack, Text, useDisclosure, VStack } from '@chakra-ui/react'
 import { useRouter } from 'next/router'
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { BiChevronRight } from 'react-icons/bi'
 import { employeeType } from 'type/basicTypes'
 import { ILinkItem } from 'type/element/commom'
@@ -28,12 +28,16 @@ export default function LinkGroup({ title, icon, data, currentUser }: ILinkGroup
 		}
 	}, [currentData])
 
+	const notViewPages = useMemo(()=> {
+		return ['Employees', 'Skills', 'Jobs', 'Job applications', 'Offer letters', 'Interview schedule', 'Dashboard']
+	}, []) 
+
 
 	useEffect(() => {
 		if (currentUser) {
 			if (currentUser.role == 'Employee') {
 				const newData = currentData.filter(e=> {
-					return e.title != 'Employees'
+					return !notViewPages.includes(e.title)
 				})
 				setCurrentData(newData)
 			} else {

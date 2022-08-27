@@ -44,6 +44,7 @@ export function middleware(req: NextRequest) {
 				}
 				break
 			case 'contracts':
+			case 'salaries':
 				if (roleCurrentUser == 'Employee') {
 					return redirect403()
 				}

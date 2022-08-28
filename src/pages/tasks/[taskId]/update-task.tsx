@@ -13,11 +13,10 @@ import {
 } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Input, Select, SelectCustom, SelectMany } from 'components/form'
-import { Loading } from 'components/common'
+import { Editor, Loading } from 'components/common'
 import Modal from 'components/modal/Modal'
 import { AuthContext } from 'contexts/AuthContext'
 import { updateTaskMutation } from 'mutations/task'
-import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 import {
 	milestonesByProjectNormalQuery,
@@ -32,15 +31,11 @@ import { useForm } from 'react-hook-form'
 import { AiFillCaretDown, AiFillCaretUp, AiOutlineCheck } from 'react-icons/ai'
 import { BsCalendarDate } from 'react-icons/bs'
 import { MdOutlineSubtitles } from 'react-icons/md'
-import 'react-quill/dist/quill.bubble.css'
-import 'react-quill/dist/quill.snow.css'
 import TaskCategory from 'src/pages/task-categories'
 import { IOption } from 'type/basicTypes'
 import { updateProjectTaskForm } from 'type/form/basicFormType'
 import { dataTaskPriority } from 'utils/basicData'
 import { UpdateProjectTaskValidate } from 'utils/validate'
-
-const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
 
 export interface IUpdateTaskProps {
 	onCloseDrawer?: () => void
@@ -395,32 +390,7 @@ export default function UpdateTask({ onCloseDrawer, taskIdProp }: IUpdateTaskPro
 						<Text fontWeight={'normal'} color={'gray.400'}>
 							Description
 						</Text>
-						<ReactQuill
-							placeholder="Enter you text"
-							modules={{
-								toolbar: [
-									['bold', 'italic', 'underline', 'strike'], // toggled buttons
-									['blockquote', 'code-block'],
-
-									[{ header: 1 }, { header: 2 }], // custom button values
-									[{ list: 'ordered' }, { list: 'bullet' }],
-									[{ script: 'sub' }, { script: 'super' }], // superscript/subscript
-									[{ indent: '-1' }, { indent: '+1' }], // outdent/indent
-									[{ direction: 'rtl' }], // text direction
-
-									[{ size: ['small', false, 'large', 'huge'] }], // custom dropdown
-									[{ header: [1, 2, 3, 4, 5, 6, false] }],
-
-									[{ color: [] }, { background: [] }], // dropdown with defaults from theme
-									[{ font: [] }],
-									[{ align: [] }],
-
-									['clean'], // remove formatting button
-								],
-							}}
-							value={description}
-							onChange={onChangeDescription}
-						/>
+						<Editor note={description} onChangeNote={onChangeDescription}/>
 					</VStack>
 				</GridItem>
 			</Grid>

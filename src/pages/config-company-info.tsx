@@ -1,6 +1,6 @@
 import { Box, Grid, GridItem, Text, VStack } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { Loading } from 'components/common'
+import { Editor, Loading } from 'components/common'
 import { Input, UploadAvatar } from 'components/form'
 import { AuthContext } from 'contexts/AuthContext'
 import { updateCompanyInfoMutation } from 'mutations/companyInfo'
@@ -15,12 +15,6 @@ import { ICloudinaryImg, IImg } from 'type/fileType'
 import { updateCompanyInfoForm } from 'type/form/basicFormType'
 import { uploadFile } from 'utils/uploadFile'
 import { UpdateCompanyInfoValidate } from 'utils/validate'
-//CSS
-import dynamic from 'next/dynamic'
-import 'react-quill/dist/quill.bubble.css'
-import 'react-quill/dist/quill.snow.css'
-
-const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
 
 const ConfigCompany: NextLayout = () => {
 	const { isAuthenticated, handleLoading, setToast, currentUser } = useContext(AuthContext)
@@ -242,32 +236,7 @@ const ConfigCompany: NextLayout = () => {
 						<GridItem w="100%" colSpan={2}>
 							<VStack align={'start'}>
 								<Text>Note</Text>
-								<ReactQuill
-									placeholder="Enter you text"
-									modules={{
-										toolbar: [
-											['bold', 'italic', 'underline', 'strike'], // toggled buttons
-											['blockquote', 'code-block'],
-
-											[{ header: 1 }, { header: 2 }], // custom button values
-											[{ list: 'ordered' }, { list: 'bullet' }],
-											[{ script: 'sub' }, { script: 'super' }], // superscript/subscript
-											[{ indent: '-1' }, { indent: '+1' }], // outdent/indent
-											[{ direction: 'rtl' }], // text direction
-
-											[{ size: ['small', false, 'large', 'huge'] }], // custom dropdown
-											[{ header: [1, 2, 3, 4, 5, 6, false] }],
-
-											[{ color: [] }, { background: [] }], // dropdown with defaults from theme
-											[{ font: [] }],
-											[{ align: [] }],
-
-											['clean'], // remove formatting button
-										],
-									}}
-									value={note}
-									onChange={handleChangeNote}
-								/>
+								<Editor note={note}  onChangeNote={handleChangeNote}/>
 							</VStack>
 						</GridItem>
 					</Grid>

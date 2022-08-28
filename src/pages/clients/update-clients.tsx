@@ -11,11 +11,10 @@ import {
 } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { CountrySelector, Input, Select, Textarea, UploadAvatar } from 'components/form'
-import {Loading} from 'components/common'
+import {Editor, Loading} from 'components/common'
 import Modal from 'components/modal/Modal'
 import { AuthContext } from 'contexts/AuthContext'
 import { updateClientMutation } from 'mutations'
-import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 import { detailClientQuery, allClientCategoriesQuery, allClientSubCategoriesQuery } from 'queries'
 import { ChangeEvent, useContext, useEffect, useState } from 'react'
@@ -37,12 +36,7 @@ import { uploadFile } from 'utils/uploadFile'
 import { UpdateClientValidate } from 'utils/validate'
 import ClientCategory from '../client-categories'
 import ClientSubCategory from '../client-sub-categories'
-//CSS
-import 'react-quill/dist/quill.bubble.css'
-import 'react-quill/dist/quill.snow.css'
 import { mutate } from 'swr'
-
-const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
 
 export interface IAddClientProps {
 	onCloseDrawer?: () => void
@@ -594,32 +588,7 @@ export default function UpdateClient({ onCloseDrawer, clientUpdateId }: IAddClie
 					<GridItem w="100%" colSpan={2}>
 						<VStack align={'start'}>
 							<Text>Note</Text>
-							<ReactQuill
-								placeholder="Enter you text"
-								modules={{
-									toolbar: [
-										['bold', 'italic', 'underline', 'strike'], // toggled buttons
-										['blockquote', 'code-block'],
-
-										[{ header: 1 }, { header: 2 }], // custom button values
-										[{ list: 'ordered' }, { list: 'bullet' }],
-										[{ script: 'sub' }, { script: 'super' }], // superscript/subscript
-										[{ indent: '-1' }, { indent: '+1' }], // outdent/indent
-										[{ direction: 'rtl' }], // text direction
-
-										[{ size: ['small', false, 'large', 'huge'] }], // custom dropdown
-										[{ header: [1, 2, 3, 4, 5, 6, false] }],
-
-										[{ color: [] }, { background: [] }], // dropdown with defaults from theme
-										[{ font: [] }],
-										[{ align: [] }],
-
-										['clean'], // remove formatting button
-									],
-								}}
-								value={note}
-								onChange={handleChangeNote}
-							/>
+							<Editor note={note} onChangeNote={handleChangeNote} />
 						</VStack>
 					</GridItem>
 				</Grid>

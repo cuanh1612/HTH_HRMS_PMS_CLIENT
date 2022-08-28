@@ -213,10 +213,12 @@ const Contracts: NextLayout = () => {
 
 	// mutation -------------------------------------------------------------------
 	// delete holidays
-	const [mutateDeleteContracts, { status: statusDlContracts, data: dataDlMany }] = deleteContractsMutation(setToast)
+	const [mutateDeleteContracts, { status: statusDlContracts, data: dataDlMany }] =
+		deleteContractsMutation(setToast)
 
 	// delete holiday
-	const [mutateDeleteContract, { status: statusDl, data: dataDl }] = deleteContractMutation(setToast)
+	const [mutateDeleteContract, { status: statusDl, data: dataDl }] =
+		deleteContractMutation(setToast)
 
 	// get public link
 	const [mutateGetPublic, { data: contractToken, status: statusToken }] =
@@ -385,7 +387,7 @@ const Contracts: NextLayout = () => {
 
 	return (
 		<Box pb={8}>
-			<Head title='Contracts'/>
+			<Head title="Contracts" />
 			<FuncCollapse>
 				{currentUser && currentUser.role === 'Admin' && (
 					<>
@@ -442,6 +444,13 @@ const Contracts: NextLayout = () => {
 							onCloseImportCSV={onCloseImportCSV}
 							onOpenImportCSV={onOpenImportCSV}
 						/>
+						<Func
+							icon={<AiOutlineDelete />}
+							title={'Delete all'}
+							description={'Delete all contracts you selected'}
+							action={onOpenDlMany}
+							disabled={!dataSl || dataSl.length == 0 ? true : false}
+						/>
 					</>
 				)}
 				<Func
@@ -450,20 +459,13 @@ const Contracts: NextLayout = () => {
 					title={'filter'}
 					action={onOpenFilter}
 				/>
-				<Func
-					icon={<AiOutlineDelete />}
-					title={'Delete all'}
-					description={'Delete all contracts you selected'}
-					action={onOpenDlMany}
-					disabled={!dataSl || dataSl.length == 0 ? true : false}
-				/>
 			</FuncCollapse>
 
 			<Table
 				data={allContracts?.contracts || []}
 				columns={columns}
 				isLoading={isLoading}
-				isSelect
+				isSelect={currentUser?.role == 'Admin' ? true : false}
 				selectByColumn="id"
 				setSelect={(data: Array<number>) => setDataSl(data)}
 				filter={filter}

@@ -7,7 +7,7 @@ import { AuthContext } from 'contexts/AuthContext'
 import { loginGoogleMutation, loginMutation } from 'mutations'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { useCallback, useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 // login with google
 import { useGoogleLogin } from 'react-google-login'
 // validate form
@@ -16,22 +16,21 @@ import { BiKey } from 'react-icons/bi'
 import { CgMail } from 'react-icons/cg'
 // icons
 import { ImGoogle } from 'react-icons/im'
-import { employeeType } from 'type/basicTypes'
+
 // layout
 import { NextLayout } from 'type/element/layout'
 import { loginForm } from 'type/form/basicFormType'
 import JWTManager from 'utils/jwt'
+import redirectPage from 'utils/redirect'
 import { LoginValidate } from 'utils/validate'
 
 const Login: NextLayout = () => {
 	// set authenticated when login success, set toast
 	const { setIsAuthenticated, setToast, isAuthenticated, handleLoading, currentUser } =
 		useContext(AuthContext)
-
 	const router = useRouter()
 
 	// login ------------------------------------------------
-
 	// loading button
 	const [googleLoad, setGLoad] = useState(false)
 
@@ -77,12 +76,6 @@ const Login: NextLayout = () => {
 		resolver: yupResolver(LoginValidate),
 	})
 
-	const redirectPage = (currentUser: employeeType) => {
-		if (currentUser.role.includes('Admin')) router.push('/dashboard')
-		if (currentUser.role.includes('Client')) router.push('/private-dashboard-client')
-		if (currentUser.role.includes('Employee')) router.push('/private-dashboard')
-	}
-
 	const { handleSubmit } = formSetting
 
 	const onSubmit = (values: loginForm) => mutate(values)
@@ -126,7 +119,7 @@ const Login: NextLayout = () => {
 	// check authenticate to redirect to home page
 	useEffect(() => {
 		if (isAuthenticated && currentUser) {
-			redirectPage(currentUser)
+			router.push(redirectPage(currentUser))
 		} else {
 			if (isAuthenticated == false) {
 				handleLoading(false)

@@ -155,13 +155,14 @@ export const Header = () => {
 								) : null}
 							</HStack>
 						</MenuButton>
-						<MenuList padding={0} borderRadius={0}>
+						<MenuList mt={'2'} borderRadius={'10px'} padding={0}>
 							<Box
 								width={'400px'}
-								bgColor={'#f2f4f7'}
+
 								minH={'150px'}
 								maxH={'290px'}
 								overflow={'auto'}
+								borderRadius={'10px'}
 							>
 								{dataNotification?.notifications &&
 								dataNotification.notifications.length > 0 ? (
@@ -211,7 +212,7 @@ export const Header = () => {
 							onClick={onOpenNote}
 							icon={<MdOutlineEditNote fontSize={'15px'} />}
 						>
-							Notice
+							Sticky note
 						</MenuItem>
 						{currentUser?.role == 'Admin' && (
 							<MenuItem
@@ -223,7 +224,7 @@ export const Header = () => {
 						)}
 						<MenuItem
 							onClick={logout}
-							color={'red.500'}
+							color={colorMode == 'dark' ? 'red.300': 'red.500'}
 							icon={<IoExitOutline fontSize={'15px'} />}
 						>
 							Logout

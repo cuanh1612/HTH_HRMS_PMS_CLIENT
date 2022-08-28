@@ -1,4 +1,4 @@
-import { FormControl, FormLabel, useColorMode } from '@chakra-ui/react'
+import { FormControl, FormLabel, Text, useColorMode } from '@chakra-ui/react'
 import Select from 'react-select'
 import makeAnimated from 'react-select/animated'
 import { ISelect } from 'type/element/commom'
@@ -6,7 +6,6 @@ import { ISelect } from 'type/element/commom'
 const animatedComponents = makeAnimated()
 
 export const SelectCustom = ({
-	name,
 	label,
 	required = false,
 	options,
@@ -17,9 +16,20 @@ export const SelectCustom = ({
 	return (
 		<>
 			<FormControl isRequired={required}>
-				<FormLabel color={'gray.400'} fontWeight={'normal'} htmlFor={name}>
-					{label}
+			{label && (
+				<FormLabel color={'gray.400'} fontWeight={'normal'}>
+					{label}{' '}
+					{required && (
+						<Text
+							ml={'1'}
+							as="span"
+							color={colorMode == 'dark' ? 'red.300' : 'red.500'}
+						>
+							*
+						</Text>
+					)}
 				</FormLabel>
+			)}
 
 				<Select
 					className={colorMode == 'dark' ? 'select-dark': 'select-light'}

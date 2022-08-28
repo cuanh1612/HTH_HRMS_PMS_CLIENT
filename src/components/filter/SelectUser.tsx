@@ -1,5 +1,14 @@
 import { Listbox } from '@headlessui/react'
-import { Avatar, Box, FormControl, FormLabel, HStack, Text, useColorMode, VStack } from '@chakra-ui/react'
+import {
+	Avatar,
+	Box,
+	FormControl,
+	FormLabel,
+	HStack,
+	Text,
+	useColorMode,
+	VStack,
+} from '@chakra-ui/react'
 import { useState } from 'react'
 import { IPeople } from 'type/element/commom'
 import { BiChevronDown } from 'react-icons/bi'
@@ -16,7 +25,7 @@ export const SelectUser = ({
 	label: string
 	[index: string]: any
 }) => {
-	const {colorMode} = useColorMode()
+	const { colorMode } = useColorMode()
 	const [users] = useState<IPeople[]>([
 		{
 			id: '',
@@ -29,9 +38,20 @@ export const SelectUser = ({
 
 	return (
 		<FormControl isRequired={required}>
-			<FormLabel color={'gray.400'} fontWeight={'normal'}>
-				{label}
-			</FormLabel>
+			{label && (
+				<FormLabel color={'gray.400'} fontWeight={'normal'}>
+					{label}{' '}
+					{required && (
+						<Text
+							ml={'1'}
+							as="span"
+							color={colorMode == 'dark' ? 'red.300' : 'red.500'}
+						>
+							*
+						</Text>
+					)}
+				</FormLabel>
+			)}
 			<Box>
 				<Listbox
 					value={selectedPerson}
@@ -48,9 +68,9 @@ export const SelectUser = ({
 							background={'#ffffff10'}
 							w={'full'}
 							borderWidth={1}
-							borderColor={colorMode == 'light' ? 'gray.200': 'gray.600'}
+							borderColor={colorMode == 'light' ? 'gray.200' : 'gray.600'}
 							_active={{
-								border: 'none'
+								border: 'none',
 							}}
 							h={'40px'}
 							borderRadius={'8px'}
@@ -68,7 +88,7 @@ export const SelectUser = ({
 								<Text isTruncated>{selectedPerson.name}</Text>
 							</HStack>
 
-							<BiChevronDown fontSize={'20px'}/>
+							<BiChevronDown fontSize={'20px'} />
 						</HStack>
 					</Listbox.Button>
 					<Listbox.Options className={'listOps'}>

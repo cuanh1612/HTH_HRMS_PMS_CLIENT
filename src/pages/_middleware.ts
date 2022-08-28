@@ -51,12 +51,11 @@ export function middleware(req: NextRequest) {
 				break
 		}
 		if (paths.includes('projects')) {
-			if (paths.includes('milestones')) {
-				if (roleCurrentUser == 'Client') {
-					return redirect403()
-				}
-			}
-			if (paths.includes('discussions')) {
+			if (
+				paths.includes('discussions') ||
+				paths.includes('files') ||
+				paths.includes('notes')
+			) {
 				if (roleCurrentUser == 'Client') {
 					return redirect403()
 				}

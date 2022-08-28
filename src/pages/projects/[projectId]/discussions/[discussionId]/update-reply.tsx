@@ -1,21 +1,13 @@
-import { Box, Button, Grid, GridItem, Text, VStack } from '@chakra-ui/react'
-import {Loading }from 'components/common'
+import { Box, Button, Grid, GridItem, Text, useColorMode, VStack } from '@chakra-ui/react'
+import { Editor, Loading } from 'components/common'
 import { AuthContext } from 'contexts/AuthContext'
 import { updateProjectDiscussionReplyMutation } from 'mutations'
 import { GetServerSideProps } from 'next'
-import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
-import {
-	allRepliesByDiscussionQuery,
-	detailDiscussionReplyQuery,
-} from 'queries'
+import { allRepliesByDiscussionQuery, detailDiscussionReplyQuery } from 'queries'
 import { useContext, useEffect, useState } from 'react'
 import { AiOutlineCheck } from 'react-icons/ai'
-import 'react-quill/dist/quill.bubble.css'
-import 'react-quill/dist/quill.snow.css'
 import { projectMutationResponse } from 'type/mutationResponses'
-
-const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
 
 export interface IUpdateReplyProps {
 	discussionId: string | number
@@ -25,6 +17,7 @@ export interface IUpdateReplyProps {
 
 export default function UpdateReply({ onCloseModal, replyId, discussionId }: IUpdateReplyProps) {
 	const { isAuthenticated, handleLoading, setToast, socket } = useContext(AuthContext)
+	const {colorMode} = useColorMode()
 	const router = useRouter()
 
 	//State --------------------------------------------------------------
@@ -90,7 +83,7 @@ export default function UpdateReply({ onCloseModal, replyId, discussionId }: IUp
 					if (socket && discussionId) {
 						socket.emit('newProjectDiscussionReply', discussionId)
 					}
-                    
+
 					//Refetch data all replies
 					refetchAllReplies()
 
@@ -120,34 +113,16 @@ export default function UpdateReply({ onCloseModal, replyId, discussionId }: IUp
 						<GridItem w="100%" colSpan={2}>
 							<VStack align={'start'}>
 								<Text fontWeight={'normal'} color={'gray.400'}>
-									Reply <span style={{ color: 'red' }}>*</span>
+									Reply{' '}
+									<Text
+										ml={1}
+										display={'inline-block'}
+										color={colorMode ? 'red.300' : 'red.500'}
+									>
+										*
+									</Text>
 								</Text>
-								<ReactQuill
-									placeholder="Enter you text"
-									modules={{
-										toolbar: [
-											['bold', 'italic', 'underline', 'strike'], // toggled buttons
-											['blockquote', 'code-block'],
-
-											[{ header: 1 }, { header: 2 }], // custom button values
-											[{ list: 'ordered' }, { list: 'bullet' }],
-											[{ script: 'sub' }, { script: 'super' }], // superscript/subscript
-											[{ indent: '-1' }, { indent: '+1' }], // outdent/indent
-											[{ direction: 'rtl' }], // text direction
-
-											[{ size: ['small', false, 'large', 'huge'] }], // custom dropdown
-											[{ header: [1, 2, 3, 4, 5, 6, false] }],
-
-											[{ color: [] }, { background: [] }], // dropdown with defaults from theme
-											[{ font: [] }],
-											[{ align: [] }],
-
-											['clean'], // remove formatting button
-										],
-									}}
-									value={reply}
-									onChange={onChangeReply}
-								/>
+								<Editor note={reply} onChangeNote={onChangeReply} />
 							</VStack>
 						</GridItem>
 					</Grid>

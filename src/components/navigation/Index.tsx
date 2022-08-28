@@ -44,6 +44,8 @@ import LinkItem from './LinkItem'
 import { companyInfoQuery } from 'queries/companyInfo'
 import { GiSkills } from 'react-icons/gi'
 import { RiSuitcaseLine } from 'react-icons/ri'
+import redirectPage from 'utils/redirect'
+import { useRouter } from 'next/router'
 
 const LinkItems = () => {
 	const { currentUser } = useContext(AuthContext)
@@ -219,6 +221,9 @@ const SideLeft = () => {
 	//Get info company
 	const { data: dataCompanyInfo } = companyInfoQuery()
 	const { colorMode } = useColorMode()
+	const { currentUser } = useContext(AuthContext)
+	const { push } = useRouter()
+
 	return (
 		<Box
 			minW={300}
@@ -232,7 +237,17 @@ const SideLeft = () => {
 			}}
 			paddingLeft={5}
 		>
-			<HStack spacing={5} w={'full'} h={'73px'}>
+			<HStack
+				cursor={'pointer'}
+				onClick={() => {
+					if (currentUser) {
+						push(redirectPage(currentUser))
+					}
+				}}
+				spacing={5}
+				w={'full'}
+				h={'73px'}
+			>
 				<Image
 					w={'50px'}
 					h={'50px'}
@@ -257,6 +272,8 @@ const SideLeft = () => {
 }
 
 const SideLeftInDrawer = ({ onClose, isOpen }: { isOpen: boolean; onClose: any }) => {
+	const {currentUser} = useContext(AuthContext)
+	const {push} = useRouter()
 	//Get info company
 	const { data: dataCompanyInfo } = companyInfoQuery()
 	const { colorMode } = useColorMode()
@@ -269,6 +286,11 @@ const SideLeftInDrawer = ({ onClose, isOpen }: { isOpen: boolean; onClose: any }
 			>
 				<DrawerBody padding={4}>
 					<HStack
+						onClick={() => {
+							if (currentUser) {
+								push(redirectPage(currentUser))
+							}
+						}}
 						zIndex={10}
 						style={{
 							top: '0px',

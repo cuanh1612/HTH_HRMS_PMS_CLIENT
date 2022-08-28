@@ -20,12 +20,13 @@ import {
 	Thead,
 	Tooltip,
 	Tr,
+	useColorMode,
 	useDisclosure,
 	VStack,
 } from '@chakra-ui/react'
 
 import { Area, Bar, Donut, Line } from 'components/charts'
-import { Card, Head, ItemDashboard } from 'components/common'
+import { Card, Empty, Head, ItemDashboard } from 'components/common'
 import { Drawer } from 'components/Drawer'
 import { ClientLayout } from 'components/layouts'
 import { AuthContext } from 'contexts/AuthContext'
@@ -81,6 +82,7 @@ const dashboard: NextLayout = () => {
 
 	const { isAuthenticated, handleLoading, currentUser, setToast } = useContext(AuthContext)
 	const router = useRouter()
+	const { colorMode } = useColorMode()
 
 	const [leaveId, setLeaveId] = useState<number | null>(30)
 	const [taskId, setTaskId] = useState<string | number>()
@@ -104,22 +106,24 @@ const dashboard: NextLayout = () => {
 	const { data: dataTotalEmployees } = totalEmployeesQuery(isAuthenticated)
 	const { data: dataTotalProjects } = totalProjectsQuery(isAuthenticated)
 	const { data: dataTodayAttendance } = todayAttendanceQuery(isAuthenticated)
-	const { data: dataPendingTasksRaw } = pendingTasksRawQuery({isAuthenticated, date})
+	const { data: dataPendingTasksRaw } = pendingTasksRawQuery({ isAuthenticated, date })
 	const { data: dataPendingLeavesRaw, mutate: refetchDataPendingLeavesRaw } =
-		pendingLeavesRawQuery({isAuthenticated, date})
+		pendingLeavesRawQuery({ isAuthenticated, date })
 	const { data: dataHoursLoged } = hoursLoggedQuery(isAuthenticated)
 	const { data: dataStatusWiseProjects } = statusWiseProjects(isAuthenticated)
 	const { data: dataContractsGenerated } = contractsGeneratedQuery(isAuthenticated)
-	const { data: dataPendingMilestone } = pendingMilestoneQuery({isAuthenticated, date})
+	const { data: dataPendingMilestone } = pendingMilestoneQuery({ isAuthenticated, date })
 	const { data: dataContractsSigned } = contractsSignedQuery(isAuthenticated)
-	const { data: dataClientWiseEarnings } = clientWiseEarningsQuery({isAuthenticated, date})
-	const { data: dataClientWiseTimeLogs } = clientWiseTimeLogsQuery({isAuthenticated, date})
-	const { data: dataLastestClients } = lastestClientsQuery({isAuthenticated, date})
+	const { data: dataClientWiseEarnings } = clientWiseEarningsQuery({ isAuthenticated, date })
+	const { data: dataClientWiseTimeLogs } = clientWiseTimeLogsQuery({ isAuthenticated, date })
+	const { data: dataLastestClients } = lastestClientsQuery({ isAuthenticated, date })
 	const { data: dataProjectsEarning } = projectsEarningQuery(isAuthenticated)
-	const { data: dataCountByDateAttendance } = countByDateAttendanceQuery({isAuthenticated, date})
-	const { data: dataCountByDateLeave } = countByDateLeaveQuery({isAuthenticated, date})
+	const { data: dataCountByDateAttendance } = countByDateAttendanceQuery({
+		isAuthenticated,
+		date,
+	})
+	const { data: dataCountByDateLeave } = countByDateLeaveQuery({ isAuthenticated, date })
 	const { data: dataCountProjectsOverdue } = countProjectsOverdueQuery(isAuthenticated)
-	console.log(dataClientWiseTimeLogs)
 
 	// mutation ----------------------------------------
 	// update status of leave
@@ -203,7 +207,7 @@ const dashboard: NextLayout = () => {
 					},
 				]}
 				handleSearch={(data: IFilter) => {
-					setDate(state => new Date(state.setMonth(data.filterValue - 1)))
+					setDate((state) => new Date(state.setMonth(data.filterValue - 1)))
 				}}
 				columnId={'day'}
 				label="Month"
@@ -234,7 +238,7 @@ const dashboard: NextLayout = () => {
 					},
 				]}
 				handleSearch={(data: IFilter) => {
-					setDate(state => new Date(state.setFullYear(data.filterValue)))
+					setDate((state) => new Date(state.setFullYear(data.filterValue)))
 				}}
 				columnId={'holiday_date'}
 				label="Year"
@@ -356,63 +360,27 @@ const dashboard: NextLayout = () => {
 				gap={6}
 			>
 				<ItemDashboard title="Earnings">
-					<>
-						{dataProjectsEarning && (
-							<Bar
-								isMoney={true}
-								isShowLabel
-								colors={['#00A991']}
-								labels={dataProjectsEarning.sumEarningLoggedProjects.map(
-									(e: any) => {
-										return e.name
-									}
-								)}
-								data={
-									dataProjectsEarning.sumEarningLoggedProjects.map((e: any) => {
-										return e.sum
-									}) as number[]
-								}
-								height={260}
-							/>
-						)}
-					</>
+					{dataProjectsEarning?.sumEarningLoggedProjects.length > 0 ? (
+						<Bar
+							isMoney={true}
+							isShowLabel
+							colors={['#00A991']}
+							labels={dataProjectsEarning.sumEarningLoggedProjects.map((e: any) => {
+								return e.name
+							})}
+							data={
+								dataProjectsEarning.sumEarningLoggedProjects.map((e: any) => {
+									return e.sum
+								}) as number[]
+							}
+							height={260}
+						/>
+					) : (
+						<Empty height="220px" />
+					)}
 				</ItemDashboard>
 
-				<ItemDashboard title="Status Wise Projects">
-					<>
-						{dataStatusWiseProjects && (
-							<Donut
-								colors={dataStatusWiseProjects.statusWiseProjects.map(
-									(item: { count: number; project_status: string }) => {
-										switch (item.project_status) {
-											case 'Not Started':
-												return '#718096'
-											case 'In Progress':
-												return '#3182ce'
-											case 'On Hold':
-												return '#D69E2E'
-											case 'Canceled':
-												return '#E53E3E'
-											case 'Finished':
-												return '#38A169'
-											default:
-												return ''
-										}
-									}
-								)}
-								data={dataStatusWiseProjects.statusWiseProjects.map((item: any) => {
-									return Number(item.count)
-								})}
-								height={300}
-								labels={dataStatusWiseProjects.statusWiseProjects.map(
-									(item: any) => {
-										return item.project_status
-									}
-								)}
-							/>
-						)}
-					</>
-				</ItemDashboard>
+
 
 				<ItemDashboard
 					title="Client Wise Timelogs"
@@ -445,24 +413,22 @@ const dashboard: NextLayout = () => {
 						new Date().getMonth() + 1
 					}-${new Date().getFullYear()}`}
 				>
-					<>
-						{dataClientWiseEarnings && (
-							<Bar
-								isMoney={true}
-								isShowLabel
-								colors={['#FFAAA7']}
-								labels={dataClientWiseEarnings.clientWiseEarnings.map((e: any) => {
-									return e.name
-								})}
-								data={
-									dataClientWiseEarnings.clientWiseEarnings.map((e: any) => {
-										return e.earnings
-									}) as number[]
-								}
-								height={260}
-							/>
-						)}
-					</>
+					{dataClientWiseEarnings && (
+						<Bar
+							isMoney={true}
+							isShowLabel
+							colors={['#FFAAA7']}
+							labels={dataClientWiseEarnings.clientWiseEarnings.map((e: any) => {
+								return e.name
+							})}
+							data={
+								dataClientWiseEarnings.clientWiseEarnings.map((e: any) => {
+									return e.earnings
+								}) as number[]
+							}
+							height={260}
+						/>
+					)}
 				</ItemDashboard>
 
 				<ItemDashboard
@@ -473,37 +439,35 @@ const dashboard: NextLayout = () => {
 					}-${new Date().getFullYear()}`}
 					title="Attendance and leave"
 				>
-					<>
-						{dataCountByDateAttendance && dataCountByDateLeave && (
-							<Area
-								labels={dataCountByDateAttendance.countBydateAttendance.map(
-									(e: any) => {
-										return e.date
-									}
-								)}
-								height={260}
-								colors={['#00A991', '#FFAAA7']}
-								data={[
-									{
-										name: 'Attendance',
-										data: dataCountByDateAttendance.countBydateAttendance.map(
-											(e: any) => {
-												return e.count
-											}
-										),
-									},
-									{
-										name: 'Leave',
-										data: dataCountByDateLeave.countByLeaveAttendance.map(
-											(e: any) => {
-												return e.count
-											}
-										),
-									},
-								]}
-							/>
-						)}
-					</>
+					{dataCountByDateAttendance && dataCountByDateLeave && (
+						<Area
+							labels={dataCountByDateAttendance.countBydateAttendance.map(
+								(e: any) => {
+									return e.date
+								}
+							)}
+							height={260}
+							colors={['#00A991', '#FFAAA7']}
+							data={[
+								{
+									name: 'Attendance',
+									data: dataCountByDateAttendance.countBydateAttendance.map(
+										(e: any) => {
+											return e.count
+										}
+									),
+								},
+								{
+									name: 'Leave',
+									data: dataCountByDateLeave.countByLeaveAttendance.map(
+										(e: any) => {
+											return e.count
+										}
+									),
+								},
+							]}
+						/>
+					)}
 				</ItemDashboard>
 
 				<ItemDashboard
@@ -681,7 +645,9 @@ const dashboard: NextLayout = () => {
 													</Box>
 												</Link>
 											</Tooltip>
-											<Text color={'red.500'}>
+											<Text
+												color={colorMode == 'dark' ? 'red.300' : 'red.500'}
+											>
 												{' '}
 												{`${new Date(item.deadline).getDate()}-${
 													new Date(item.deadline).getMonth() + 1

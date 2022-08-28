@@ -1,22 +1,17 @@
-import { Box, Button, Grid, GridItem, Text, VStack } from '@chakra-ui/react'
+import { Box, Button, Grid, GridItem, Text, useColorMode, VStack } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { Loading } from 'components/common'
+import { Editor, Loading } from 'components/common'
 import { SelectCustom } from 'components/form'
 import { AuthContext } from 'contexts/AuthContext'
 import { updateStickyNoteMutation } from 'mutations/StickyNote'
-import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 import { allStickyNoteQuery, detailStickyNoteQuery } from 'queries/stickyNote'
 import { useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { AiOutlineCheck } from 'react-icons/ai'
-import 'react-quill/dist/quill.bubble.css'
-import 'react-quill/dist/quill.snow.css'
 import { updateStickyNoteForm } from 'type/form/basicFormType'
 import { dataStickyNoteColor } from 'utils/basicData'
 import { updateStickyNoteValidate } from 'utils/validate'
-
-const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
 
 export interface IUpdateStickyNoteProps {
 	onCloseDrawer?: () => void
@@ -25,9 +20,10 @@ export interface IUpdateStickyNoteProps {
 
 export default function UpdateStickyNote({
 	stickNoteId: stickyNoteIdProp,
-    onCloseDrawer
+	onCloseDrawer,
 }: IUpdateStickyNoteProps) {
 	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
+	const {colorMode} = useColorMode()
 	const router = useRouter()
 	const { stickyNoteId: stickyNoteRouter } = router.query
 
@@ -92,9 +88,9 @@ export default function UpdateStickyNote({
 	//Note when request success
 	useEffect(() => {
 		if (statusUpdateStickyNote === 'success') {
-            if(onCloseDrawer){
-                onCloseDrawer()
-            }
+			if (onCloseDrawer) {
+				onCloseDrawer()
+			}
 
 			refetchAllStickyNote()
 
@@ -105,15 +101,15 @@ export default function UpdateStickyNote({
 		}
 	}, [statusUpdateStickyNote])
 
-    useEffect(() => {
-        if(dataDetailStickyNote?.stickynote){
-            formSetting.reset({
-                color: dataDetailStickyNote.stickynote.color
-            })
+	useEffect(() => {
+		if (dataDetailStickyNote?.stickynote) {
+			formSetting.reset({
+				color: dataDetailStickyNote.stickynote.color,
+			})
 
-            setNote(dataDetailStickyNote.stickynote.note)
-        }
-    }, [dataDetailStickyNote])
+			setNote(dataDetailStickyNote.stickynote.note)
+		}
+	}, [dataDetailStickyNote])
 
 	return (
 		<>
@@ -132,34 +128,16 @@ export default function UpdateStickyNote({
 					<GridItem w="100%" colSpan={2}>
 						<VStack align={'start'}>
 							<Text fontWeight={'normal'} color={'gray.400'}>
-								Note <span style={{ color: 'red' }}>*</span>
+								Note{' '}
+								<Text
+									ml={1}
+									display={'inline-block'}
+									color={colorMode ? 'red.300' : 'red.500'}
+								>
+									*
+								</Text>
 							</Text>
-							<ReactQuill
-								placeholder="Enter you text"
-								modules={{
-									toolbar: [
-										['bold', 'italic', 'underline', 'strike'], // toggled buttons
-										['blockquote', 'code-block'],
-
-										[{ header: 1 }, { header: 2 }], // custom button values
-										[{ list: 'ordered' }, { list: 'bullet' }],
-										[{ script: 'sub' }, { script: 'super' }], // superscript/subscript
-										[{ indent: '-1' }, { indent: '+1' }], // outdent/indent
-										[{ direction: 'rtl' }], // text direction
-
-										[{ size: ['small', false, 'large', 'huge'] }], // custom dropdown
-										[{ header: [1, 2, 3, 4, 5, 6, false] }],
-
-										[{ color: [] }, { background: [] }], // dropdown with defaults from theme
-										[{ font: [] }],
-										[{ align: [] }],
-
-										['clean'], // remove formatting button
-									],
-								}}
-								value={note}
-								onChange={onChangeNote}
-							/>
+							<Editor note={note} onChangeNote={onChangeNote} />
 						</VStack>
 					</GridItem>
 				</Grid>

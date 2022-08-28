@@ -255,7 +255,6 @@ export default function UpdateEvent({ onCloseDrawer, eventIdUpdate }: IUpdateEve
 	}, [dataDetailEvent])
 
 	useEffect(() => {
-		console.log(formSetting.getValues())
 	}, [formSetting])
 
 	//Function -------------------------------------------------------------------

@@ -110,7 +110,6 @@ const NoticeBoard: NextLayout = () => {
 	// set loading == false when get all notices successfully
 	useEffect(() => {
 		if (allNotices) {
-			console.log(allNotices)
 			setIsLoading(false)
 
 			if (allNotices.noticeBoards) {

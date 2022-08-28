@@ -100,7 +100,6 @@ const TimeLog: NextLayout = () => {
 	// when get all data success
 	useEffect(() => {
 		if (allTimeLogs) {
-			console.log(allTimeLogs)
 			setIsLoading(false)
 		}
 	}, [allTimeLogs])

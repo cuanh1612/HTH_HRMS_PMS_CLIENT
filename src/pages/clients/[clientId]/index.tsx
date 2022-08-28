@@ -28,7 +28,7 @@ import { NextLayout } from 'type/element/layout'
 import { ClientLayout } from 'components/layouts'
 import { Donut } from 'components/charts'
 import { TColumn } from 'type/tableTypes'
-import { AlertDialog, Head, Static, Table } from 'components/common'
+import { AlertDialog, Empty, Head, Static, Table } from 'components/common'
 import { deleteProjectMutation } from 'mutations'
 import { Drawer } from 'components/Drawer'
 import UpdateProject from 'src/pages/projects/update-projects'
@@ -94,7 +94,6 @@ const DetailClient: NextLayout | any = ({
 
 	useEffect(() => {
 		if (allProjects) {
-			console.log(allProjects.projects)
 			setIsLoading(false)
 		}
 	}, [allProjects])
@@ -326,14 +325,14 @@ const DetailClient: NextLayout | any = ({
 												borderRadius={'10px'}
 												h={'300px'}
 											>
-												{projectStatic && (
+												{projectStatic?.data && projectStatic.data.length > 0 ? (
 													<Donut
 														labels={projectStatic.titles}
 														colors={projectStatic.colors}
 														data={projectStatic.data}
 														height={280}
 													/>
-												)}
+												): <Empty height='220px'/>}
 											</Box>
 										</VStack>
 									</GridItem>

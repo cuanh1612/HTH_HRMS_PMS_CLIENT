@@ -63,7 +63,6 @@ export default function UpdateOfferLetter({
 		isAuthenticated,
 		jobOfferLetterIdProp || (jobOFferLetterIdRouter as string)
 	)
-	console.log(dataDetailJobOfferLetter)
 
 	// get all jobs
 	const { data: allJobs } = allJobsQuery()

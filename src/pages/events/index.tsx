@@ -107,7 +107,6 @@ const Event: NextLayout = () => {
 	useEffect(() => {
 		if (allEvents) {
 			const newData = allEvents.Events?.map((item): EventInput => {
-				console.log(new Date(item.starts_on_date).getMonth() + 1)
 				return {
 					title: item.name,
 					id: `${item.id}`,
@@ -154,11 +153,9 @@ const Event: NextLayout = () => {
 		if (calendar) {
 			calendar.render()
 			calendar.on('dateClick', function (info) {
-				console.log(info)
 			})
 
 			calendar.on('select', function (info) {
-				console.log(info)
 			})
 
 			calendar.on('eventClick', (info) => {
@@ -167,7 +164,6 @@ const Event: NextLayout = () => {
 			})
 
 			calendar.on('eventDragStop', (info) => {
-				console.log(info)
 			})
 		}
 	}, [calendar])

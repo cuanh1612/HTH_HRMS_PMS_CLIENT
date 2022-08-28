@@ -139,8 +139,6 @@ export default function UpdateEmployees({ onCloseDrawer, employeeId }: IUpdateEm
 
 			//Set data avatar if upload avatar success
 			if (dataAvatar) {
-				console.log(dataAvatar)
-
 				values.avatar = {
 					name: dataAvatar.name,
 					public_id: dataAvatar.public_id,

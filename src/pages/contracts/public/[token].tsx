@@ -128,7 +128,6 @@ export default function PublicContract({
 
 	const onSaveSign = () => {
 		const data = signPad.current.toDataURL()
-		console.log(data)
 	}
 
 	//UseEffect --------------------------------------------------------

@@ -20,7 +20,7 @@ import listPlugin from '@fullcalendar/list'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import { EventInput } from '@fullcalendar/common'
 import { Donut } from 'components/charts'
-import { AlertDialog, ButtonIcon, Card, Head, ItemDashboard } from 'components/common'
+import { AlertDialog, ButtonIcon, Card, Empty, Head, ItemDashboard } from 'components/common'
 import { ClientLayout } from 'components/layouts'
 import { AuthContext } from 'contexts/AuthContext'
 
@@ -161,22 +161,16 @@ const dashboard: NextLayout = () => {
 	useEffect(() => {
 		if (calendar) {
 			calendar.render()
-			calendar.on('dateClick', function (info) {
-				console.log(info)
-			})
+			calendar.on('dateClick', function (info) {})
 
-			calendar.on('select', function (info) {
-				console.log(info)
-			})
+			calendar.on('select', function (info) {})
 
 			calendar.on('eventClick', (info) => {
 				setInterviewId(Number(info.event.id))
 				onOpenDetail()
 			})
 
-			calendar.on('eventDragStop', (info) => {
-				console.log(info)
-			})
+			calendar.on('eventDragStop', (info) => {})
 		}
 	}, [calendar])
 
@@ -265,7 +259,7 @@ const dashboard: NextLayout = () => {
 				gap={6}
 			>
 				<ItemDashboard title="Application sources">
-					{dataApplicationSources && (
+					{dataApplicationSources?.applicationSources.length > 0 ? (
 						<Donut
 							colors={dataApplicationSources.applicationSources.map(
 								(item: { count: number; source: string }) => {
@@ -293,11 +287,13 @@ const dashboard: NextLayout = () => {
 								return item.source
 							})}
 						/>
+					) : (
+						<Empty height="220px" />
 					)}
 				</ItemDashboard>
 
 				<ItemDashboard title="Application status">
-					{dataApplicationStatus && (
+					{dataApplicationStatus?.applicationStatus.length > 0 ? (
 						<Donut
 							colors={dataApplicationStatus.applicationStatus.map(
 								(item: { count: number; status: string }) => {
@@ -325,76 +321,81 @@ const dashboard: NextLayout = () => {
 								return item.status
 							})}
 						/>
+					) : (
+						<Empty height="220px" />
 					)}
 				</ItemDashboard>
 
 				<ItemDashboard isFull title="Open jobs" overflow={'auto'}>
-					<VStack
-						spacing={5}
-						w={'full'}
-						divider={<StackDivider />}
-						alignItems={'start'}
-						justifyContent={'start'}
-					>
-						{dataOpenJobs &&
-							dataOpenJobs.openJobs.map((item: jobType, key: number) => {
-								return (
-									<HStack
-										key={key}
-										spacing={5}
-										w={'full'}
-										pos={'relative'}
-										justifyContent={'space-between'}
-									>
-										<HStack spacing={3}>
-											<Avatar
-												size={'sm'}
-												src={item.recruiter.avatar?.url}
-												name={item.recruiter.name}
-											/>
-											<Box overflow={'hidden'} w={'150px'} minW={'150px'}>
-												<Link
-													passHref
-													href={`/employees/${item.recruiter.id}/detail`}
-												>
-													<Text
-														w={'99%'}
-														isTruncated
-														_hover={{
-															textDecoration: 'underline',
-															cursor: 'pointer',
-														}}
+					{dataOpenJobs?.openJobs.length > 0 ? (
+						<VStack
+							spacing={5}
+							w={'full'}
+							divider={<StackDivider />}
+							alignItems={'start'}
+							justifyContent={'start'}
+						>
+							{dataOpenJobs.openJobs.map((item: jobType, key: number) => {
+									return (
+										<HStack
+											key={key}
+											spacing={5}
+											w={'full'}
+											pos={'relative'}
+											justifyContent={'space-between'}
+										>
+											<HStack spacing={3}>
+												<Avatar
+													size={'sm'}
+													src={item.recruiter.avatar?.url}
+													name={item.recruiter.name}
+												/>
+												<Box overflow={'hidden'} w={'150px'} minW={'150px'}>
+													<Link
+														passHref
+														href={`/employees/${item.recruiter.id}/detail`}
 													>
-														{item.recruiter.name}
+														<Text
+															w={'99%'}
+															isTruncated
+															_hover={{
+																textDecoration: 'underline',
+																cursor: 'pointer',
+															}}
+														>
+															{item.recruiter.name}
+														</Text>
+													</Link>
+													<Text fontSize={'14px'} color={'gray'}>
+														{item.recruiter.department?.name}
 													</Text>
-												</Link>
-												<Text fontSize={'14px'} color={'gray'}>
-													{item.recruiter.department?.name}
+												</Box>
+											</HStack>
+											<Text fontWeight={'semibold'}>{item.title}</Text>
+											<HStack spacing={10}>
+												<Text color={'red'}>
+													{Intl.NumberFormat('en-US', {
+														style: 'currency',
+														currency: 'USD',
+														useGrouping: false,
+													}).format(Number(item.total_openings))}
 												</Text>
-											</Box>
+												<Text color={'gray'}>
+													{new Date(item.ends_on_date).toLocaleDateString(
+														'es-CL'
+													)}
+												</Text>
+												<Link href={`/jobs/${item.id}/profile`}>
+													<Button>View</Button>
+												</Link>
+											</HStack>
 										</HStack>
-										<Text fontWeight={'semibold'}>{item.title}</Text>
-										<HStack spacing={10}>
-											<Text color={'red'}>
-												{Intl.NumberFormat('en-US', {
-													style: 'currency',
-													currency: 'USD',
-													useGrouping: false,
-												}).format(Number(item.total_openings))}
-											</Text>
-											<Text color={'gray'}>
-												{new Date(item.ends_on_date).toLocaleDateString(
-													'es-CL'
-												)}
-											</Text>
-											<Link href={`/jobs/${item.id}/profile`}>
-												<Button>View</Button>
-											</Link>
-										</HStack>
-									</HStack>
-								)
-							})}
-					</VStack>
+									)
+								})}
+						</VStack>
+					) : (
+						<Empty height="220px" />
+					)}
 				</ItemDashboard>
 
 				<ItemDashboard heightAuto isFull title="Today's Interview" overflow={'auto'}>

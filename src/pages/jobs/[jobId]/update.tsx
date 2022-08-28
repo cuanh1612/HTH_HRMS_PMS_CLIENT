@@ -152,8 +152,6 @@ export default function UpdateJob({ onCloseDrawer, JobIdProp }: IUpdateJobProps)
 				values.job_description = jobDescription
 				values.status = values.status === 'Open' ? true : false
 
-				console.log(values)
-
 				//create new job
 				await mutateUpJob({
 					...values,

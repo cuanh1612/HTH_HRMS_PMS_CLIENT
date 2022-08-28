@@ -40,7 +40,6 @@ import { companyInfoQuery } from 'queries/companyInfo'
 
 export default function join() {
 	const layoutSize = useBreakpoint()
-	console.log(layoutSize)
 	const { isAuthenticated, handleLoading, currentUser, setToast } = useContext(AuthContext)
 	const router = useRouter()
 	const { name } = router.query

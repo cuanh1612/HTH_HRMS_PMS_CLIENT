@@ -38,8 +38,7 @@ export default function HistorySalary({ employeeId = 6 }: IHistorySalaryProps) {
 		isAuthenticated,
 		employeeId
 	)
-	console.log(dataHistorySalary)
-
+	
 	//UseEffect ---------------------------------------------------------
 	//Handle check logged in
 	useEffect(() => {

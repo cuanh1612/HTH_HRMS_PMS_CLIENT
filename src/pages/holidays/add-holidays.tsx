@@ -82,8 +82,6 @@ export default function AddHoliday({ onCloseDrawer }: IAddHolidayProps) {
 		event.preventDefault()
 
 		if (holidays.length !== 0) {
-			console.log(holidays)
-
 			mutateCreHolidays({
 				holidays,
 			})

@@ -20,7 +20,6 @@ export default function AddConversations() {
 
 	//Query -------------------------------------------------------------
 	const { data: dataEmployees } = allEmployeesQuery(isAuthenticated)
-	console.log(dataEmployees)
 
 	//mutation ----------------------------------------------------------
 	const [mutateCreConversation, { status: statusCreConversation, data: dataCreConversation }] =

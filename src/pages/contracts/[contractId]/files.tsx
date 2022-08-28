@@ -43,7 +43,6 @@ const Files: NextLayout = () => {
 		isAuthenticated,
 		Number(contractId)
 	)
-	console.log(dataAllContractFiles)
 
 	//mutation -------------------------------------------------------------------
 	const [mutateCreContractFile, { status: statusCreContractFile, data: dataCreContractFile }] =

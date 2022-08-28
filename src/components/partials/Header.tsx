@@ -23,7 +23,7 @@ import { useRouter } from 'next/router'
 import { NotificationByCurrentUserQuery } from 'queries/notification'
 import { useContext, useEffect, useState } from 'react'
 import { AiOutlineBell } from 'react-icons/ai'
-import { BsFillBellSlashFill, BsMoon, BsPerson, BsSun } from 'react-icons/bs'
+import { BsFillBellSlashFill, BsMoon, BsPerson, BsQuestion, BsSun } from 'react-icons/bs'
 import { IoExitOutline, IoSettingsOutline } from 'react-icons/io5'
 import { MdOutlineEditNote } from 'react-icons/md'
 import UpdateClient from 'src/pages/clients/update-clients'
@@ -31,12 +31,15 @@ import ConfigCompany from 'src/pages/config-company-info'
 import UpdateEmployees from 'src/pages/employees/update-employees'
 import StickysNote from 'src/pages/sticky-notes'
 import { notificationType } from 'type/basicTypes'
+import 'intro.js/introjs.css'
+import introJs from 'intro.js'
+import { optionIntro } from 'utils/helper'
 
 export const Header = () => {
 	// set darkMode
 	const { colorMode, toggleColorMode } = useColorMode()
 
-	const { push } = useRouter()
+	const { push, pathname } = useRouter()
 
 	// get user
 	const { currentUser, onOpenMenu, isAuthenticated, socket, setToast, setIsAuthenticated } =
@@ -113,6 +116,16 @@ export const Header = () => {
 			<HStack spacing={5}>
 				<ButtonIcon
 					icon={
+						<BsQuestion fontSize={20}/>
+					}
+					ariaLabel="darkMode"
+					handle={() => {
+						const option = optionIntro(pathname, colorMode)
+						introJs().setOptions(option).start();
+					}}
+				/>
+				<ButtonIcon
+					icon={
 						colorMode != 'light' ? (
 							<BsSun fontSize={'20px'} fontWeight={'semibold'} />
 						) : (
@@ -122,7 +135,6 @@ export const Header = () => {
 					ariaLabel="darkMode"
 					handle={() => toggleColorMode()}
 				/>
-
 				<Box mt={'100px'}>
 					<Menu placement="bottom-end">
 						<MenuButton as={IconButton} position={'relative'}>
@@ -158,7 +170,6 @@ export const Header = () => {
 						<MenuList mt={'2'} borderRadius={'10px'} padding={0}>
 							<Box
 								width={'400px'}
-
 								minH={'150px'}
 								maxH={'290px'}
 								overflow={'auto'}
@@ -189,7 +200,6 @@ export const Header = () => {
 						</MenuList>
 					</Menu>
 				</Box>
-
 				<Menu>
 					<MenuButton>
 						<Avatar
@@ -224,7 +234,7 @@ export const Header = () => {
 						)}
 						<MenuItem
 							onClick={logout}
-							color={colorMode == 'dark' ? 'red.300': 'red.500'}
+							color={colorMode == 'dark' ? 'red.300' : 'red.500'}
 							icon={<IoExitOutline fontSize={'15px'} />}
 						>
 							Logout

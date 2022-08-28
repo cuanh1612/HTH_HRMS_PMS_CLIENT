@@ -283,7 +283,7 @@ td.fc-day-today {
 
 
 
-
+/* quill custom */
 .quillLight {
     border: none;
 }
@@ -345,4 +345,30 @@ td.fc-day-today {
 
 .quillDark .ql-editor::before {
     color: #a7b4c5 !important;
+}
+
+/* intro custom */
+
+.introHighlight {
+
+}
+.introButton {
+    background: red
+}
+
+.introTooltip {
+    
+}
+
+.introHighlight-dark {
+    background: red
+
+}
+.introButton-dark {
+    background: red
+}
+
+.introTooltip-dark {
+    
+
 }

@@ -159,7 +159,6 @@ const tasks: NextLayout = () => {
 
 	useEffect(() => {
 		if (allTasks) {
-			console.log(allTasks)
 			setIsLoading(false)
 
 			if (allTasks.tasks) {

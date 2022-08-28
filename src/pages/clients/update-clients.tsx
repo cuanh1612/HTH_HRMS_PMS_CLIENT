@@ -44,7 +44,6 @@ export interface IAddClientProps {
 }
 
 export default function UpdateClient({ onCloseDrawer, clientUpdateId }: IAddClientProps) {
-	console.log(clientUpdateId)
 	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
 	const router = useRouter()
 
@@ -240,7 +239,6 @@ export default function UpdateClient({ onCloseDrawer, clientUpdateId }: IAddClie
 
 				setOptionSubCategories(newOptionSubCategories)
 			}
-			console.log(dataDetailClient.client)
 		}
 	}, [dataDetailClient])
 

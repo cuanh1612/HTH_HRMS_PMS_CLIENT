@@ -47,7 +47,6 @@ export default function TaskCategory() {
 
 	//Query -------------------------------------------------------------
 	const { data: dataTaskCategories, mutate: refetchTaskCategories } = allTaskCategoriesQuery()
-	console.log(dataTaskCategories);
 	
 
 	//UseEffect ---------------------------------------------------------

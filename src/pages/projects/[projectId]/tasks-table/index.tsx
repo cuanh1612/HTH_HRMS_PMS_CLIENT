@@ -145,7 +145,6 @@ const tasks: NextLayout = () => {
 	// when get all tasks success
 	useEffect(() => {
 		if (allTasks) {
-			console.log(allTasks)
 			setIsLoading(false)
 
 			if (allTasks.tasks) {

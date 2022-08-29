@@ -1079,12 +1079,11 @@ export const projectColumn = ({ currentUser, onDelete, onUpdate }: IOptionColumn
 								<MdOutlineMoreVert />
 							</MenuButton>
 							<MenuList>
-								<MenuItem
-									onClick={() => {}}
-									icon={<IoEyeOutline fontSize={'15px'} />}
-								>
-									View
-								</MenuItem>
+								<Link href={`/projects/${row.values['id']}/overview`} passHref>
+									<MenuItem icon={<IoEyeOutline fontSize={'15px'} />}>
+										View
+									</MenuItem>
+								</Link>
 
 								{currentUser && currentUser.role === 'Admin' && (
 									<>

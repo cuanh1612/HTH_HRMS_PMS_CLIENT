@@ -1,5 +1,5 @@
 import { AuthContext } from 'contexts/AuthContext'
-import { Box, Text } from '@chakra-ui/react'
+import { Box, Text, useColorMode } from '@chakra-ui/react'
 import { deleteNotificationMutation } from 'mutations/notification'
 import { useRouter } from 'next/router'
 import { NotificationByCurrentUserQuery } from 'queries/notification'
@@ -13,6 +13,7 @@ export interface INotificationItemProps {
 export default function NotificationItem({ notification }: INotificationItemProps) {
 	const { isAuthenticated, setToast } = useContext(AuthContext)
 	const router = useRouter()
+	const {colorMode} = useColorMode()
 
 	//Query
 	const { mutate: refetchNotifications } = NotificationByCurrentUserQuery(isAuthenticated)
@@ -20,7 +21,7 @@ export default function NotificationItem({ notification }: INotificationItemProp
 	//Mutate delete notification
 	const [mutateDeleteNotification] = deleteNotificationMutation(setToast)
 
-	//Handle click notfications
+	//Handle click notifications
 	const onClickNotification = () => {
 		mutateDeleteNotification(notification.id)
 		refetchNotifications()
@@ -32,8 +33,8 @@ export default function NotificationItem({ notification }: INotificationItemProp
 			w={'full'}
 			p={4}
 			borderBottom={'1px'}
-			bgColor={'white'}
-			borderColor={'#e8eef3'}
+			bgColor={colorMode == 'dark'? '#2d3748': 'white'}
+			borderColor={colorMode == 'dark' ? 'gray.600' : '#e8eef3'}
 			cursor={'pointer'}
 		>
 			<Text onClick={onClickNotification}>{notification.content}</Text>

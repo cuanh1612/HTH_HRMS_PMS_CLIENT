@@ -17,11 +17,10 @@ import {
 } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Input, InputNumber, Select, SelectCustom } from 'components/form'
-import { Loading } from 'components/common'
+import { Editor, Loading } from 'components/common'
 import Modal from 'components/modal/Modal'
 import { AuthContext } from 'contexts/AuthContext'
 import { updateProjectMutation } from 'mutations'
-import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 import {
 	allProjectsQuery,
@@ -36,16 +35,12 @@ import { useForm } from 'react-hook-form'
 import { AiOutlineCheck } from 'react-icons/ai'
 import { BsCalendarDate } from 'react-icons/bs'
 import { MdOutlineDriveFileRenameOutline } from 'react-icons/md'
-import 'react-quill/dist/quill.bubble.css'
-import 'react-quill/dist/quill.snow.css'
 import { IOption } from 'type/basicTypes'
 import { updateProjectForm } from 'type/form/basicFormType'
 import { dataCurrency, dataProjectStatus } from 'utils/basicData'
 import { createProjectValidate } from 'utils/validate'
 import Department from '../departments'
 import ProjectCategory from '../project-categories'
-
-const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
 
 export interface IUpdateProjectProps {
 	onCloseDrawer?: () => void
@@ -342,32 +337,7 @@ export default function UpdateProject({ onCloseDrawer, projectIdUpdate }: IUpdat
 							<Text fontWeight={'normal'} color={'gray.400'}>
 								Project Summary
 							</Text>
-							<ReactQuill
-								placeholder="Enter you text"
-								modules={{
-									toolbar: [
-										['bold', 'italic', 'underline', 'strike'], // toggled buttons
-										['blockquote', 'code-block'],
-
-										[{ header: 1 }, { header: 2 }], // custom button values
-										[{ list: 'ordered' }, { list: 'bullet' }],
-										[{ script: 'sub' }, { script: 'super' }], // superscript/subscript
-										[{ indent: '-1' }, { indent: '+1' }], // outdent/indent
-										[{ direction: 'rtl' }], // text direction
-
-										[{ size: ['small', false, 'large', 'huge'] }], // custom dropdown
-										[{ header: [1, 2, 3, 4, 5, 6, false] }],
-
-										[{ color: [] }, { background: [] }], // dropdown with defaults from theme
-										[{ font: [] }],
-										[{ align: [] }],
-
-										['clean'], // remove formatting button
-									],
-								}}
-								value={summary}
-								onChange={onChangeSummary}
-							/>
+							<Editor note={summary} onChangeNote={onChangeSummary}/>
 						</VStack>
 					</GridItem>
 
@@ -376,32 +346,7 @@ export default function UpdateProject({ onCloseDrawer, projectIdUpdate }: IUpdat
 							<Text fontWeight={'normal'} color={'gray.400'}>
 								Notes
 							</Text>
-							<ReactQuill
-								placeholder="Enter you text"
-								modules={{
-									toolbar: [
-										['bold', 'italic', 'underline', 'strike'], // toggled buttons
-										['blockquote', 'code-block'],
-
-										[{ header: 1 }, { header: 2 }], // custom button values
-										[{ list: 'ordered' }, { list: 'bullet' }],
-										[{ script: 'sub' }, { script: 'super' }], // superscript/subscript
-										[{ indent: '-1' }, { indent: '+1' }], // outdent/indent
-										[{ direction: 'rtl' }], // text direction
-
-										[{ size: ['small', false, 'large', 'huge'] }], // custom dropdown
-										[{ header: [1, 2, 3, 4, 5, 6, false] }],
-
-										[{ color: [] }, { background: [] }], // dropdown with defaults from theme
-										[{ font: [] }],
-										[{ align: [] }],
-
-										['clean'], // remove formatting button
-									],
-								}}
-								value={notes}
-								onChange={onChangeNotes}
-							/>
+							<Editor note={notes} onChangeNote={onChangeNotes}/>
 						</VStack>
 					</GridItem>
 

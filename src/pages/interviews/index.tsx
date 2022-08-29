@@ -229,59 +229,68 @@ const interviews: NextLayout = () => {
 		<Box pb={8}>
 			<Head title="Interview schedule" />
 
-			<FuncCollapse>
-				{currentUser && currentUser.role === 'Admin' && (
-					<>
-						<Func
-							icon={<IoAdd />}
-							description={'Add new interview schedule by form'}
-							title={'Add new'}
-							action={onOpenAdd}
-						/>
-
-						<CSVLink filename={'interviews.csv'} headers={headersCSV} data={dataCSV}>
+			<Box className="function">
+				<FuncCollapse>
+					{currentUser && currentUser.role === 'Admin' && (
+						<>
 							<Func
-								icon={<BiExport />}
-								description={'export to csv'}
-								title={'export'}
-								action={() => {}}
+								icon={<IoAdd />}
+								description={'Add new interview schedule by form'}
+								title={'Add new'}
+								action={onOpenAdd}
 							/>
-						</CSVLink>
-					</>
-				)}
-				<Func
-					icon={<VscFilter />}
-					description={'Open draw to filter'}
-					title={'filter'}
-					action={onOpenFilter}
-				/>
-				<Func
-					icon={<AiOutlineDelete />}
-					title={'Delete all'}
-					description={'Delete all interview schedules'}
-					action={onOpenDlMany}
-					disabled={!dataSl || dataSl.length == 0 ? true : false}
-				/>
-				<Func
-					icon={<MdOutlineEvent />}
-					title={'Calendar'}
-					description={'show interview schedule as calendar'}
-					action={() => {
-						router.push('/interviews/calendar')
-					}}
-				/>
-			</FuncCollapse>
 
-			<Table
-				data={allInterviewSchedule?.interviews || []}
-				columns={columns}
-				isLoading={isLoading}
-				isSelect
-				selectByColumn="id"
-				setSelect={(data: Array<number>) => setDataSl(data)}
-				filter={filter}
-				isResetFilter={isResetFilter}
-			/>
+							<CSVLink
+								filename={'interviews.csv'}
+								headers={headersCSV}
+								data={dataCSV}
+							>
+								<Func
+									icon={<BiExport />}
+									description={'export to csv'}
+									title={'export'}
+									action={() => {}}
+								/>
+							</CSVLink>
+						</>
+					)}
+					<Func
+						icon={<VscFilter />}
+						description={'Open draw to filter'}
+						title={'filter'}
+						action={onOpenFilter}
+					/>
+					<Func
+						icon={<AiOutlineDelete />}
+						title={'Delete all'}
+						description={'Delete all interview schedules'}
+						action={onOpenDlMany}
+						disabled={!dataSl || dataSl.length == 0 ? true : false}
+					/>
+					<Func
+						icon={<MdOutlineEvent />}
+						title={'Calendar'}
+						description={'show interview schedule as calendar'}
+						action={() => {
+							router.push('/interviews/calendar')
+						}}
+					/>
+				</FuncCollapse>
+			</Box>
+
+			<Box className="table">
+				<Table
+					data={allInterviewSchedule?.interviews || []}
+					columns={columns}
+					isLoading={isLoading}
+					isSelect
+					selectByColumn="id"
+					setSelect={(data: Array<number>) => setDataSl(data)}
+					filter={filter}
+					isResetFilter={isResetFilter}
+				/>
+			</Box>
+			
 			{/* alert dialog when delete one */}
 			<AlertDialog
 				handleDelete={() => {

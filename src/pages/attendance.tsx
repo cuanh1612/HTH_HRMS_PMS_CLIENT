@@ -68,7 +68,6 @@ import { Func, FuncCollapse, Head } from 'components/common'
 import { VscFilter } from 'react-icons/vsc'
 import { Drawer } from 'components/Drawer'
 
-
 const attendance: NextLayout = () => {
 	const { colorMode } = useColorMode()
 
@@ -255,24 +254,26 @@ const attendance: NextLayout = () => {
 
 	return (
 		<Box w={'full'} pb={8}>
-			<Head title='Attendances'/>
-			<FuncCollapse>
-				<Func
-					icon={<VscFilter />}
-					description={'Open draw to filter'}
-					title={'filter'}
-					action={onOpenFilter}
-				/>
-			</FuncCollapse>
+			<Head title="Attendances" />
+			<Box className='function'>
+				<FuncCollapse>
+					<Func
+						icon={<VscFilter />}
+						description={'Open draw to filter'}
+						title={'filter'}
+						action={onOpenFilter}
+					/>
+				</FuncCollapse>
+			</Box>
 			<br />
 			<VStack spacing={8} justifyContent={'flex-start'} pos="relative" alignItems={'normal'}>
-				<HStack spacing={5}>
+				<HStack spacing={5} className="caption">
 					<HStack>
 						<HStack
 							h={'30px'}
 							minW={'30px'}
-							bg={colorMode == 'dark' ? 'hu-Pink.normalA': 'hu-Pink.lightA'}
-							color={colorMode == 'dark' ? 'white': 'hu-Pink.normalA'}
+							bg={colorMode == 'dark' ? 'hu-Pink.normalA' : 'hu-Pink.lightA'}
+							color={colorMode == 'dark' ? 'white' : 'hu-Pink.normalA'}
 							userSelect={'all'}
 							aria-label="Search database"
 							borderRadius={'5px'}
@@ -286,8 +287,8 @@ const attendance: NextLayout = () => {
 						<HStack
 							h={'30px'}
 							minW={'30px'}
-							bg={colorMode == 'dark' ? 'hu-Green.normalA': 'hu-Green.lightA'}
-							color={colorMode == 'dark' ? 'white': 'hu-Green.normalA'}
+							bg={colorMode == 'dark' ? 'hu-Green.normalA' : 'hu-Green.lightA'}
+							color={colorMode == 'dark' ? 'white' : 'hu-Green.normalA'}
 							userSelect={'all'}
 							aria-label="Search database"
 							borderRadius={'5px'}
@@ -301,8 +302,8 @@ const attendance: NextLayout = () => {
 						<HStack
 							h={'30px'}
 							minW={'30px'}
-							bg={ colorMode == 'dark' ? 'gray': 'gray.200'}
-							color={colorMode == 'dark'? 'white': 'gray.500'}
+							bg={colorMode == 'dark' ? 'gray' : 'gray.200'}
+							color={colorMode == 'dark' ? 'white' : 'gray.500'}
 							userSelect={'all'}
 							aria-label="Search database"
 							borderRadius={'5px'}
@@ -316,8 +317,8 @@ const attendance: NextLayout = () => {
 						<HStack
 							h={'30px'}
 							minW={'30px'}
-							bg={colorMode == 'dark' ? 'yellow.400': 'yellow.200'}
-							color={colorMode == 'dark' ? 'white': 'yellow.500'}
+							bg={colorMode == 'dark' ? 'yellow.400' : 'yellow.200'}
+							color={colorMode == 'dark' ? 'white' : 'yellow.500'}
 							userSelect={'all'}
 							aria-label="Search database"
 							borderRadius={'5px'}
@@ -328,7 +329,7 @@ const attendance: NextLayout = () => {
 						<Text color={'gray'}>Holiday</Text>
 					</HStack>
 				</HStack>
-				<VStack paddingBottom={'30px'} spacing={5} alignItems={'start'} overflow={'auto'}>
+				<VStack className='table' paddingBottom={'30px'} spacing={5} alignItems={'start'} overflow={'auto'}>
 					<HStack spacing={10} alignItems="center" justifyContent={'space-between'}>
 						<HStack spacing={10}>
 							<Text
@@ -429,7 +430,10 @@ const attendance: NextLayout = () => {
 										>
 											{attendances.length}
 										</Text>
-										<Text color={colorMode == 'dark'? 'gray.200': 'gray.500'} as={'span'}>
+										<Text
+											color={colorMode == 'dark' ? 'gray.200' : 'gray.500'}
+											as={'span'}
+										>
 											{' '}
 											/{lastDate}
 										</Text>

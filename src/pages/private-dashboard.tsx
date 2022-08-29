@@ -28,7 +28,7 @@ import {
 	VStack,
 } from '@chakra-ui/react'
 import { Donut } from 'components/charts'
-import { ButtonIcon, Card, Head, ItemDashboard } from 'components/common'
+import { ButtonIcon, Card, Empty, Head, ItemDashboard } from 'components/common'
 import { Drawer } from 'components/Drawer'
 import { ClientLayout } from 'components/layouts'
 import { AuthContext } from 'contexts/AuthContext'
@@ -194,19 +194,16 @@ const TaskCategory: NextLayout = () => {
 	useEffect(() => {
 		if (calendar) {
 			calendar.render()
-			calendar.on('dateClick', function (info) {
-			})
+			calendar.on('dateClick', function (info) {})
 
-			calendar.on('select', function (info) {
-			})
+			calendar.on('select', function (info) {})
 
 			calendar.on('eventClick', (info) => {
 				setEventId(Number(info.event.id))
 				onOpenDetail()
 			})
 
-			calendar.on('eventDragStop', (info) => {
-			})
+			calendar.on('eventDragStop', (info) => {})
 		}
 	}, [calendar])
 
@@ -238,6 +235,7 @@ const TaskCategory: NextLayout = () => {
 					]}
 					gap={6}
 					mb={'30px'}
+					className={'information'}
 				>
 					<Card
 						link={'/'}
@@ -291,8 +289,9 @@ const TaskCategory: NextLayout = () => {
 				templateColumns={['repeat(1, 1fr)', null, null, 'repeat(2, 1fr)']}
 				gap={6}
 			>
-				<ItemDashboard title="Notices" overflow={'auto'}>
+				<ItemDashboard title="Basic information" overflow={'auto'}>
 					<VStack
+						className="basic-info"
 						spacing={5}
 						w={'full'}
 						divider={<StackDivider />}
@@ -330,53 +329,54 @@ const TaskCategory: NextLayout = () => {
 					</VStack>
 				</ItemDashboard>
 				<ItemDashboard title="Status project">
-					<>
-						{countStatusProjects?.countStatusProjects && (
-							<Donut
-								colors={countStatusProjects.countStatusProjects.map((e) => {
-									switch (e.project_status) {
-										case 'Not Started':
-											return '#718096'
-										case 'In Progress':
-											return '#3182ce'
-										case 'On Hold':
-											return '#D69E2E'
-										case 'Canceled':
-											return '#E53E3E'
-										case 'Finished':
-											return '#38A169'
-										default:
-											return ''
-									}
-								})}
-								labels={countStatusProjects.countStatusProjects.map((e) => {
-									return e.project_status
-								})}
-								data={
-									countStatusProjects.countStatusProjects.map((e) => {
-										return Number(e.count)
-									}) as number[]
+					{countStatusProjects?.countStatusProjects &&
+					countStatusProjects?.countStatusProjects.length > 0 ? (
+						<Donut
+							colors={countStatusProjects.countStatusProjects.map((e) => {
+								switch (e.project_status) {
+									case 'Not Started':
+										return '#718096'
+									case 'In Progress':
+										return '#3182ce'
+									case 'On Hold':
+										return '#D69E2E'
+									case 'Canceled':
+										return '#E53E3E'
+									case 'Finished':
+										return '#38A169'
+									default:
+										return ''
 								}
-								height={280}
-							/>
-						)}
-					</>
+							})}
+							labels={countStatusProjects.countStatusProjects.map((e) => {
+								return e.project_status
+							})}
+							data={
+								countStatusProjects.countStatusProjects.map((e) => {
+									return Number(e.count)
+								}) as number[]
+							}
+							height={280}
+						/>
+					) : (
+						<Empty height="220px" />
+					)}
 				</ItemDashboard>
 
 				<ItemDashboard title="Pending Milestone" overflow={'auto'}>
 					<TableContainer w={'full'}>
-						<Table w={'full'} variant="simple">
-							<Thead>
-								<Tr>
-									<Th>#</Th>
-									<Th>Task</Th>
-									<Th>Status</Th>
-									<Th isNumeric>Due Date</Th>
-								</Tr>
-							</Thead>
-							<Tbody w={'full'}>
-								{dataAllTasks?.tasks &&
-									dataAllTasks.tasks.map((item, key: number) => {
+						{dataAllTasks?.tasks && dataAllTasks?.tasks?.length > 0 ? (
+							<Table w={'full'} variant="simple">
+								<Thead>
+									<Tr>
+										<Th>#</Th>
+										<Th>Task</Th>
+										<Th>Status</Th>
+										<Th isNumeric>Due Date</Th>
+									</Tr>
+								</Thead>
+								<Tbody w={'full'}>
+									{dataAllTasks.tasks.map((item, key: number) => {
 										return (
 											<Tr key={key}>
 												<Td>{item.id}</Td>
@@ -421,49 +421,60 @@ const TaskCategory: NextLayout = () => {
 											</Tr>
 										)
 									})}
-							</Tbody>
-						</Table>
+								</Tbody>
+							</Table>
+						) : (
+							<Empty height="220px" />
+						)}
 					</TableContainer>
 				</ItemDashboard>
 
 				<ItemDashboard title="Notices" overflow={'auto'}>
-					<VStack
-						spacing={5}
-						w={'full'}
-						divider={<StackDivider />}
-						alignItems={'start'}
-						justifyContent={'start'}
-					>
-						{allNotices &&
-							allNotices.noticeBoards?.map((item, key) => (
-								<HStack
-									spacing={5}
-									justifyContent={'start'}
-									alignItems={'start'}
-									key={key}
-								>
-									<Badge variant="subtle" colorScheme="green">
-										{`${new Date(item.createdAt).getDate()}-${
-											new Date(item.createdAt).getMonth() + 1
-										}-${new Date(item.createdAt).getFullYear()}`}
-									</Badge>
-									<Link href={'/notice-boards'} passHref>
-										<Text
-											cursor={'pointer'}
-											_hover={{
-												textDecoration: 'underline',
-											}}
-										>
-											{item.heading}
-										</Text>
-									</Link>
-								</HStack>
-							))}
-					</VStack>
+					{allNotices?.noticeBoards && allNotices.noticeBoards.length > 0 ? (
+						<VStack
+							spacing={5}
+							w={'full'}
+							divider={<StackDivider />}
+							alignItems={'start'}
+							justifyContent={'start'}
+						>
+							{allNotices &&
+								allNotices.noticeBoards?.map((item, key) => (
+									<HStack
+										spacing={5}
+										justifyContent={'start'}
+										alignItems={'start'}
+										key={key}
+									>
+										<Badge variant="subtle" colorScheme="green">
+											{`${new Date(item.createdAt).getDate()}-${
+												new Date(item.createdAt).getMonth() + 1
+											}-${new Date(item.createdAt).getFullYear()}`}
+										</Badge>
+										<Link href={'/notice-boards'} passHref>
+											<Text
+												cursor={'pointer'}
+												_hover={{
+													textDecoration: 'underline',
+												}}
+											>
+												{item.heading}
+											</Text>
+										</Link>
+									</HStack>
+								))}
+						</VStack>
+					) : (
+						<Empty height="220px" />
+					)}
 				</ItemDashboard>
 
-				<ItemDashboard heightAuto isFull title="Notices" overflow={'auto'}>
-					<HStack paddingBlock={'5'} justifyContent={'space-between'}>
+				<ItemDashboard heightAuto isFull title="Events" overflow={'auto'}>
+					<HStack
+						className="card-demo"
+						paddingBlock={'5'}
+						justifyContent={'space-between'}
+					>
 						<ButtonGroup spacing={4}>
 							<Button
 								color={'white'}

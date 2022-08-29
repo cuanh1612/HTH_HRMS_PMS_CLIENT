@@ -10,12 +10,11 @@ import {
 	VStack,
 } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { Loading } from 'components/common'
+import { Editor, Loading } from 'components/common'
 import { Input, InputNumber, SelectCustom, SelectMany } from 'components/form'
 import Modal from 'components/modal/Modal'
 import { AuthContext } from 'contexts/AuthContext'
 import { updateJobMutation } from 'mutations/job'
-import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 import { allDepartmentsQuery, allEmployeesQuery } from 'queries'
 import { allJobsQuery, detailJobQuery } from 'queries/job'
@@ -28,8 +27,6 @@ import { useForm } from 'react-hook-form'
 import { AiOutlineCheck } from 'react-icons/ai'
 import { BsCalendarDate } from 'react-icons/bs'
 import { MdDriveFileRenameOutline } from 'react-icons/md'
-import 'react-quill/dist/quill.bubble.css'
-import 'react-quill/dist/quill.snow.css'
 import Department from 'src/pages/departments'
 import JobTypes from 'src/pages/jobTypes'
 import Locations from 'src/pages/locations'
@@ -39,8 +36,6 @@ import { IOption } from 'type/basicTypes'
 import { updateJobForm } from 'type/form/basicFormType'
 import { dataJobRate, dataJobStatus } from 'utils/basicData'
 import { UpdateJobValidate } from 'utils/validate'
-
-const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
 
 export interface IUpdateJobProps {
 	onCloseDrawer?: () => void
@@ -584,32 +579,7 @@ export default function UpdateJob({ onCloseDrawer, JobIdProp }: IUpdateJobProps)
 							<Text fontWeight={'normal'} color={'gray.400'}>
 								Description
 							</Text>
-							<ReactQuill
-								placeholder="Enter you text"
-								modules={{
-									toolbar: [
-										['bold', 'italic', 'underline', 'strike'], // toggled buttons
-										['blockquote', 'code-block'],
-
-										[{ header: 1 }, { header: 2 }], // custom button values
-										[{ list: 'ordered' }, { list: 'bullet' }],
-										[{ script: 'sub' }, { script: 'super' }], // superscript/subscript
-										[{ indent: '-1' }, { indent: '+1' }], // outdent/indent
-										[{ direction: 'rtl' }], // text direction
-
-										[{ size: ['small', false, 'large', 'huge'] }], // custom dropdown
-										[{ header: [1, 2, 3, 4, 5, 6, false] }],
-
-										[{ color: [] }, { background: [] }], // dropdown with defaults from theme
-										[{ font: [] }],
-										[{ align: [] }],
-
-										['clean'], // remove formatting button
-									],
-								}}
-								value={jobDescription}
-								onChange={onChangeDescription}
-							/>
+							<Editor note={jobDescription} onChangeNote={onChangeDescription}/>
 						</VStack>
 					</GridItem>
 				</Grid>

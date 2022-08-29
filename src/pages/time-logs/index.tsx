@@ -21,7 +21,6 @@ import { BiExport } from 'react-icons/bi'
 import { VscFilter } from 'react-icons/vsc'
 import { timeLogsColumn } from 'utils/columns'
 
-
 const TimeLogs: NextLayout = () => {
 	const { isAuthenticated, handleLoading, setToast, currentUser, socket } =
 		useContext(AuthContext)
@@ -231,59 +230,63 @@ const TimeLogs: NextLayout = () => {
 	return (
 		<Box w={'full'} pb={8}>
 			<Head title="Time logs" />
-			<FuncCollapse>
-				{currentUser && currentUser.role === 'Admin' && (
-					<>
-						<Func
-							icon={<IoAdd />}
-							description={'Add new time log by form'}
-							title={'Add new'}
-							action={onOpenAddTimeLog}
-						/>
-						<CSVLink filename={'timelogs.csv'} headers={headersCSV} data={dataCSV}>
+			<Box className="function">
+				<FuncCollapse>
+					{currentUser && currentUser.role === 'Admin' && (
+						<>
 							<Func
-								icon={<BiExport />}
-								description={'export to csv'}
-								title={'export'}
-								action={() => {}}
+								icon={<IoAdd />}
+								description={'Add new time log by form'}
+								title={'Add new'}
+								action={onOpenAddTimeLog}
 							/>
-						</CSVLink>
-						<Func
-							icon={<AiOutlineDelete />}
-							title={'Delete all'}
-							description={'Delete all time logs you selected'}
-							action={onOpenDlMany}
-							disabled={!dataSl || dataSl.length == 0 ? true : false}
-						/>
-					</>
-				)}
-				<Func
-					icon={<VscFilter />}
-					description={'Open draw to filter'}
-					title={'filter'}
-					action={onOpenFilter}
-				/>
-				<Func
-					icon={<MdOutlineEvent />}
-					title={'Calendar'}
-					description={'show time logs as calendar'}
-					action={() => {
-						router.push('/time-logs/calendar')
-					}}
-				/>
-			</FuncCollapse>
+							<CSVLink filename={'timelogs.csv'} headers={headersCSV} data={dataCSV}>
+								<Func
+									icon={<BiExport />}
+									description={'export to csv'}
+									title={'export'}
+									action={() => {}}
+								/>
+							</CSVLink>
+							<Func
+								icon={<AiOutlineDelete />}
+								title={'Delete all'}
+								description={'Delete all time logs you selected'}
+								action={onOpenDlMany}
+								disabled={!dataSl || dataSl.length == 0 ? true : false}
+							/>
+						</>
+					)}
+					<Func
+						icon={<VscFilter />}
+						description={'Open draw to filter'}
+						title={'filter'}
+						action={onOpenFilter}
+					/>
+					<Func
+						icon={<MdOutlineEvent />}
+						title={'Calendar'}
+						description={'show time logs as calendar'}
+						action={() => {
+							router.push('/time-logs/calendar')
+						}}
+					/>
+				</FuncCollapse>
+			</Box>
 
-			<Table
-				data={allTimeLogs?.timeLogs || []}
-				columns={columns}
-				isLoading={isLoading}
-				isSelect={currentUser?.role === 'Admin' ? true : false}
-				selectByColumn="id"
-				setSelect={(data: Array<number>) => setDataSl(data)}
-				filter={filter}
-				disableColumns={['project']}
-				isResetFilter={isResetFilter}
-			/>
+			<Box className='table'>
+				<Table
+					data={allTimeLogs?.timeLogs || []}
+					columns={columns}
+					isLoading={isLoading}
+					isSelect={currentUser?.role === 'Admin' ? true : false}
+					selectByColumn="id"
+					setSelect={(data: Array<number>) => setDataSl(data)}
+					filter={filter}
+					disableColumns={['project']}
+					isResetFilter={isResetFilter}
+				/>
+			</Box>
 
 			{/* drawer to add project time log */}
 			<Drawer

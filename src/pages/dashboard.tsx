@@ -20,12 +20,13 @@ import {
 	Thead,
 	Tooltip,
 	Tr,
+	useColorMode,
 	useDisclosure,
 	VStack,
 } from '@chakra-ui/react'
 
 import { Area, Bar, Donut, Line } from 'components/charts'
-import { Card, Head, ItemDashboard } from 'components/common'
+import { Card, Empty, Head, ItemDashboard } from 'components/common'
 import { Drawer } from 'components/Drawer'
 import { ClientLayout } from 'components/layouts'
 import { AuthContext } from 'contexts/AuthContext'
@@ -71,8 +72,6 @@ import DetailLeave from './leaves/[leaveId]'
 import DetailTask from './tasks/[taskId]'
 import { GrDocumentText } from 'react-icons/gr'
 import { clientType } from 'type/basicTypes'
-import 'intro.js/introjs.css'
-import introJs from 'intro.js'
 import { IFilter } from 'type/tableTypes'
 import { Select } from 'components/filter'
 
@@ -81,6 +80,7 @@ const dashboard: NextLayout = () => {
 
 	const { isAuthenticated, handleLoading, currentUser, setToast } = useContext(AuthContext)
 	const router = useRouter()
+	const { colorMode } = useColorMode()
 
 	const [leaveId, setLeaveId] = useState<number | null>(30)
 	const [taskId, setTaskId] = useState<string | number>()
@@ -104,20 +104,23 @@ const dashboard: NextLayout = () => {
 	const { data: dataTotalEmployees } = totalEmployeesQuery(isAuthenticated)
 	const { data: dataTotalProjects } = totalProjectsQuery(isAuthenticated)
 	const { data: dataTodayAttendance } = todayAttendanceQuery(isAuthenticated)
-	const { data: dataPendingTasksRaw } = pendingTasksRawQuery({isAuthenticated, date})
+	const { data: dataPendingTasksRaw } = pendingTasksRawQuery({ isAuthenticated, date })
 	const { data: dataPendingLeavesRaw, mutate: refetchDataPendingLeavesRaw } =
-		pendingLeavesRawQuery({isAuthenticated, date})
+		pendingLeavesRawQuery({ isAuthenticated, date })
 	const { data: dataHoursLoged } = hoursLoggedQuery(isAuthenticated)
 	const { data: dataStatusWiseProjects } = statusWiseProjects(isAuthenticated)
 	const { data: dataContractsGenerated } = contractsGeneratedQuery(isAuthenticated)
-	const { data: dataPendingMilestone } = pendingMilestoneQuery({isAuthenticated, date})
+	const { data: dataPendingMilestone } = pendingMilestoneQuery({ isAuthenticated, date })
 	const { data: dataContractsSigned } = contractsSignedQuery(isAuthenticated)
-	const { data: dataClientWiseEarnings } = clientWiseEarningsQuery({isAuthenticated, date})
-	const { data: dataClientWiseTimeLogs } = clientWiseTimeLogsQuery({isAuthenticated, date})
-	const { data: dataLastestClients } = lastestClientsQuery({isAuthenticated, date})
+	const { data: dataClientWiseEarnings } = clientWiseEarningsQuery({ isAuthenticated, date })
+	const { data: dataClientWiseTimeLogs } = clientWiseTimeLogsQuery({ isAuthenticated, date })
+	const { data: dataLastestClients } = lastestClientsQuery({ isAuthenticated, date })
 	const { data: dataProjectsEarning } = projectsEarningQuery(isAuthenticated)
-	const { data: dataCountByDateAttendance } = countByDateAttendanceQuery({isAuthenticated, date})
-	const { data: dataCountByDateLeave } = countByDateLeaveQuery({isAuthenticated, date})
+	const { data: dataCountByDateAttendance } = countByDateAttendanceQuery({
+		isAuthenticated,
+		date,
+	})
+	const { data: dataCountByDateLeave } = countByDateLeaveQuery({ isAuthenticated, date })
 	const { data: dataCountProjectsOverdue } = countProjectsOverdueQuery(isAuthenticated)
 
 	// mutation ----------------------------------------
@@ -202,7 +205,7 @@ const dashboard: NextLayout = () => {
 					},
 				]}
 				handleSearch={(data: IFilter) => {
-					setDate(state => new Date(state.setMonth(data.filterValue - 1)))
+					setDate((state) => new Date(state.setMonth(data.filterValue - 1)))
 				}}
 				columnId={'day'}
 				label="Month"
@@ -233,17 +236,14 @@ const dashboard: NextLayout = () => {
 					},
 				]}
 				handleSearch={(data: IFilter) => {
-					setDate(state => new Date(state.setFullYear(data.filterValue)))
+					setDate((state) => new Date(state.setFullYear(data.filterValue)))
 				}}
 				columnId={'holiday_date'}
 				label="Year"
 				placeholder="Select year"
 			/>
-			<Button onClick={() => introJs().start()}>enter</Button>
 			<Head title="Dashboards" />
 			<HStack
-				data-title="Welcome!"
-				data-intro="Hello World! 👋"
 				className="card-demo"
 				_hover={{
 					textDecoration: 'none',
@@ -259,11 +259,7 @@ const dashboard: NextLayout = () => {
 			</HStack>
 			<Collapse in={isOpenCards} animateOpacity>
 				<Grid
-					data-title="Welcome!"
-					data-intro={
-						'<img src="https://i.giphy.com/media/ujUdrdpX7Ok5W/giphy.webp" onerror="this.onerror=null;this.src=\'https://i.giphy.com/ujUdrdpX7Ok5W.gif\';" alt="">'
-					}
-					className="card-demo"
+					className="information"
 					overflow={'hidden'}
 					templateColumns={[
 						'repeat(1, 1fr)',
@@ -355,62 +351,58 @@ const dashboard: NextLayout = () => {
 				gap={6}
 			>
 				<ItemDashboard title="Earnings">
-					<>
-						{dataProjectsEarning && (
-							<Bar
-								isMoney={true}
-								isShowLabel
-								colors={['#00A991']}
-								labels={dataProjectsEarning.sumEarningLoggedProjects.map(
-									(e: any) => {
-										return e.name
-									}
-								)}
-								data={
-									dataProjectsEarning.sumEarningLoggedProjects.map((e: any) => {
-										return e.sum
-									}) as number[]
-								}
-								height={260}
-							/>
-						)}
-					</>
+					{dataProjectsEarning?.sumEarningLoggedProjects.length > 0 ? (
+						<Bar
+							isMoney={true}
+							isShowLabel
+							colors={['#00A991']}
+							labels={dataProjectsEarning.sumEarningLoggedProjects.map((e: any) => {
+								return e.name
+							})}
+							data={
+								dataProjectsEarning.sumEarningLoggedProjects.map((e: any) => {
+									return e.sum
+								}) as number[]
+							}
+							height={260}
+						/>
+					) : (
+						<Empty height="220px" />
+					)}
 				</ItemDashboard>
 
 				<ItemDashboard title="Status Wise Projects">
-					<>
-						{dataStatusWiseProjects && (
-							<Donut
-								colors={dataStatusWiseProjects.statusWiseProjects.map(
-									(item: { count: number; project_status: string }) => {
-										switch (item.project_status) {
-											case 'Not Started':
-												return '#718096'
-											case 'In Progress':
-												return '#3182ce'
-											case 'On Hold':
-												return '#D69E2E'
-											case 'Canceled':
-												return '#E53E3E'
-											case 'Finished':
-												return '#38A169'
-											default:
-												return ''
-										}
+					{dataStatusWiseProjects?.statusWiseProjects.length > 0 ? (
+						<Donut
+							colors={dataStatusWiseProjects.statusWiseProjects.map(
+								(item: { count: number; project_status: string }) => {
+									switch (item.project_status) {
+										case 'Not Started':
+											return '#718096'
+										case 'In Progress':
+											return '#3182ce'
+										case 'On Hold':
+											return '#D69E2E'
+										case 'Canceled':
+											return '#E53E3E'
+										case 'Finished':
+											return '#38A169'
+										default:
+											return ''
 									}
-								)}
-								data={dataStatusWiseProjects.statusWiseProjects.map((item: any) => {
-									return Number(item.count)
-								})}
-								height={300}
-								labels={dataStatusWiseProjects.statusWiseProjects.map(
-									(item: any) => {
-										return item.project_status
-									}
-								)}
-							/>
-						)}
-					</>
+								}
+							)}
+							data={dataStatusWiseProjects.statusWiseProjects.map((item: any) => {
+								return Number(item.count)
+							})}
+							height={300}
+							labels={dataStatusWiseProjects.statusWiseProjects.map((item: any) => {
+								return item.project_status
+							})}
+						/>
+					) : (
+						<Empty height="220px" />
+					)}
 				</ItemDashboard>
 
 				<ItemDashboard
@@ -421,7 +413,7 @@ const dashboard: NextLayout = () => {
 						new Date().getMonth() + 1
 					}-${new Date().getFullYear()}`}
 				>
-					{dataClientWiseTimeLogs && (
+					{dataClientWiseTimeLogs?.clientWiseTimeLogs.length > 0 ? (
 						<Line
 							height={280}
 							data={dataClientWiseTimeLogs.clientWiseTimeLogs.map((item: any) =>
@@ -433,6 +425,8 @@ const dashboard: NextLayout = () => {
 							colors={['#00A991']}
 							title={'Time log'}
 						/>
+					) : (
+						<Empty height="220px" />
 					)}
 				</ItemDashboard>
 
@@ -444,24 +438,24 @@ const dashboard: NextLayout = () => {
 						new Date().getMonth() + 1
 					}-${new Date().getFullYear()}`}
 				>
-					<>
-						{dataClientWiseEarnings && (
-							<Bar
-								isMoney={true}
-								isShowLabel
-								colors={['#FFAAA7']}
-								labels={dataClientWiseEarnings.clientWiseEarnings.map((e: any) => {
-									return e.name
-								})}
-								data={
-									dataClientWiseEarnings.clientWiseEarnings.map((e: any) => {
-										return e.earnings
-									}) as number[]
-								}
-								height={260}
-							/>
-						)}
-					</>
+					{dataClientWiseEarnings?.clientWiseEarnings.length > 0 ? (
+						<Bar
+							isMoney={true}
+							isShowLabel
+							colors={['#FFAAA7']}
+							labels={dataClientWiseEarnings.clientWiseEarnings.map((e: any) => {
+								return e.name
+							})}
+							data={
+								dataClientWiseEarnings.clientWiseEarnings.map((e: any) => {
+									return e.earnings
+								}) as number[]
+							}
+							height={260}
+						/>
+					) : (
+						<Empty height="220px" />
+					)}
 				</ItemDashboard>
 
 				<ItemDashboard
@@ -472,37 +466,35 @@ const dashboard: NextLayout = () => {
 					}-${new Date().getFullYear()}`}
 					title="Attendance and leave"
 				>
-					<>
-						{dataCountByDateAttendance && dataCountByDateLeave && (
-							<Area
-								labels={dataCountByDateAttendance.countBydateAttendance.map(
-									(e: any) => {
-										return e.date
-									}
-								)}
-								height={260}
-								colors={['#00A991', '#FFAAA7']}
-								data={[
-									{
-										name: 'Attendance',
-										data: dataCountByDateAttendance.countBydateAttendance.map(
-											(e: any) => {
-												return e.count
-											}
-										),
-									},
-									{
-										name: 'Leave',
-										data: dataCountByDateLeave.countByLeaveAttendance.map(
-											(e: any) => {
-												return e.count
-											}
-										),
-									},
-								]}
-							/>
-						)}
-					</>
+					{dataCountByDateAttendance && dataCountByDateLeave && (
+						<Area
+							labels={dataCountByDateAttendance.countBydateAttendance.map(
+								(e: any) => {
+									return e.date
+								}
+							)}
+							height={260}
+							colors={['#00A991', '#FFAAA7']}
+							data={[
+								{
+									name: 'Attendance',
+									data: dataCountByDateAttendance.countBydateAttendance.map(
+										(e: any) => {
+											return e.count
+										}
+									),
+								},
+								{
+									name: 'Leave',
+									data: dataCountByDateLeave.countByLeaveAttendance.map(
+										(e: any) => {
+											return e.count
+										}
+									),
+								},
+							]}
+						/>
+					)}
 				</ItemDashboard>
 
 				<ItemDashboard
@@ -514,19 +506,19 @@ const dashboard: NextLayout = () => {
 					title="Pending Milestone"
 					overflow={'auto'}
 				>
-					<TableContainer w={'full'}>
-						<Table w={'full'} variant="simple">
-							<Thead>
-								<Tr>
-									<Th>#</Th>
-									<Th>Title</Th>
-									<Th>Project</Th>
-									<Th isNumeric>Cost</Th>
-								</Tr>
-							</Thead>
-							<Tbody w={'full'}>
-								{dataPendingMilestone &&
-									dataPendingMilestone.pendingMilestone.map(
+					{dataPendingMilestone?.pendingMilestone.length > 0 ? (
+						<TableContainer w={'full'}>
+							<Table w={'full'} variant="simple">
+								<Thead>
+									<Tr>
+										<Th>#</Th>
+										<Th>Title</Th>
+										<Th>Project</Th>
+										<Th isNumeric>Cost</Th>
+									</Tr>
+								</Thead>
+								<Tbody w={'full'}>
+									{dataPendingMilestone.pendingMilestone.map(
 										(item: any, key: number) => {
 											return (
 												<Tr key={key}>
@@ -538,9 +530,12 @@ const dashboard: NextLayout = () => {
 											)
 										}
 									)}
-							</Tbody>
-						</Table>
-					</TableContainer>
+								</Tbody>
+							</Table>
+						</TableContainer>
+					) : (
+						<Empty height="220px" />
+					)}
 				</ItemDashboard>
 
 				<ItemDashboard
@@ -552,18 +547,18 @@ const dashboard: NextLayout = () => {
 					title="Latest Clients"
 					overflow={'auto'}
 				>
-					<TableContainer w={'full'}>
-						<Table w={'full'} variant="simple">
-							<Thead>
-								<Tr>
-									<Th>Client</Th>
-									<Th>Gender</Th>
-									<Th isNumeric>Create</Th>
-								</Tr>
-							</Thead>
-							<Tbody w={'full'}>
-								{dataLastestClients &&
-									dataLastestClients.lastestClients.map(
+					{dataLastestClients?.lastestClients.length > 0 ? (
+						<TableContainer w={'full'}>
+							<Table w={'full'} variant="simple">
+								<Thead>
+									<Tr>
+										<Th>Client</Th>
+										<Th>Gender</Th>
+										<Th isNumeric>Create</Th>
+									</Tr>
+								</Thead>
+								<Tbody w={'full'}>
+									{dataLastestClients.lastestClients.map(
 										(item: clientType, key: number) => {
 											return (
 												<Tr key={key}>
@@ -600,9 +595,12 @@ const dashboard: NextLayout = () => {
 											)
 										}
 									)}
-							</Tbody>
-						</Table>
-					</TableContainer>
+								</Tbody>
+							</Table>
+						</TableContainer>
+					) : (
+						<Empty height="220px" />
+					)}
 				</ItemDashboard>
 
 				<ItemDashboard
@@ -614,15 +612,15 @@ const dashboard: NextLayout = () => {
 					title="Pending tasks"
 					overflow={'auto'}
 				>
-					<VStack
-						spacing={5}
-						w={'full'}
-						divider={<StackDivider />}
-						alignItems={'start'}
-						justifyContent={'start'}
-					>
-						{dataPendingTasksRaw &&
-							dataPendingTasksRaw.pendingTasksRaw.map((item, key) => {
+					{dataPendingTasksRaw && dataPendingTasksRaw?.pendingTasksRaw.length > 0 ? (
+						<VStack
+							spacing={5}
+							w={'full'}
+							divider={<StackDivider />}
+							alignItems={'start'}
+							justifyContent={'start'}
+						>
+							{dataPendingTasksRaw.pendingTasksRaw.map((item, key) => {
 								return (
 									<HStack
 										key={key}
@@ -680,7 +678,9 @@ const dashboard: NextLayout = () => {
 													</Box>
 												</Link>
 											</Tooltip>
-											<Text color={'red.500'}>
+											<Text
+												color={colorMode == 'dark' ? 'red.300' : 'red.500'}
+											>
 												{' '}
 												{`${new Date(item.deadline).getDate()}-${
 													new Date(item.deadline).getMonth() + 1
@@ -702,7 +702,10 @@ const dashboard: NextLayout = () => {
 									</HStack>
 								)
 							})}
-					</VStack>
+						</VStack>
+					) : (
+						<Empty height="220px" />
+					)}
 				</ItemDashboard>
 
 				<ItemDashboard
@@ -714,15 +717,15 @@ const dashboard: NextLayout = () => {
 					title="Pending leaves"
 					overflow={'auto'}
 				>
-					<VStack
-						spacing={5}
-						w={'full'}
-						divider={<StackDivider />}
-						alignItems={'start'}
-						justifyContent={'start'}
-					>
-						{dataPendingLeavesRaw &&
-							dataPendingLeavesRaw.pendingLeavesRaw.map((item: any, key: number) => {
+					{dataPendingLeavesRaw?.pendingLeavesRaw.length > 0 ? (
+						<VStack
+							spacing={5}
+							w={'full'}
+							divider={<StackDivider />}
+							alignItems={'start'}
+							justifyContent={'start'}
+						>
+							{dataPendingLeavesRaw.pendingLeavesRaw.map((item: any, key: number) => {
 								return (
 									<HStack
 										key={key}
@@ -824,7 +827,10 @@ const dashboard: NextLayout = () => {
 									</HStack>
 								)
 							})}
-					</VStack>
+						</VStack>
+					) : (
+						<Empty height="220px" />
+					)}
 				</ItemDashboard>
 			</Grid>
 			{/* drawer to detail leave */}

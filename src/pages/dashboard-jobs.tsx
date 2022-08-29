@@ -20,7 +20,7 @@ import listPlugin from '@fullcalendar/list'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import { EventInput } from '@fullcalendar/common'
 import { Donut } from 'components/charts'
-import { AlertDialog, ButtonIcon, Card, Head, ItemDashboard } from 'components/common'
+import { AlertDialog, ButtonIcon, Card, Empty, Head, ItemDashboard } from 'components/common'
 import { ClientLayout } from 'components/layouts'
 import { AuthContext } from 'contexts/AuthContext'
 
@@ -161,19 +161,16 @@ const dashboard: NextLayout = () => {
 	useEffect(() => {
 		if (calendar) {
 			calendar.render()
-			calendar.on('dateClick', function (info) {
-			})
+			calendar.on('dateClick', function (info) {})
 
-			calendar.on('select', function (info) {
-			})
+			calendar.on('select', function (info) {})
 
 			calendar.on('eventClick', (info) => {
 				setInterviewId(Number(info.event.id))
 				onOpenDetail()
 			})
 
-			calendar.on('eventDragStop', (info) => {
-			})
+			calendar.on('eventDragStop', (info) => {})
 		}
 	}, [calendar])
 
@@ -193,7 +190,7 @@ const dashboard: NextLayout = () => {
 				<Text fontWeight={'semibold'}>Information</Text>
 				{isOpenCards ? <AiOutlineCaretDown /> : <AiOutlineCaretUp />}
 			</HStack>
-			<Collapse in={isOpenCards} animateOpacity>
+			<Collapse in={isOpenCards} animateOpacity className="information">
 				<Grid
 					overflow={'hidden'}
 					templateColumns={[
@@ -262,39 +259,45 @@ const dashboard: NextLayout = () => {
 				gap={6}
 			>
 				<ItemDashboard title="Application sources">
-					{dataApplicationSources && (
-						<Donut
-							colors={dataApplicationSources.applicationSources.map(
-								(item: { count: number; source: string }) => {
-									switch (item.source) {
-										case 'Linkedin':
-											return '#0a66c2'
-										case 'Facebook':
-											return '#1877f2'
-										case 'Instagram':
-											return '#e4405f'
-										case 'Twitter':
-											return '#1da1f2'
-										case 'Other':
-											return '#f57d00'
-										default:
-											return ''
+					{dataApplicationSources?.applicationSources.length > 0 ? (
+						<Box className='basic-info'>
+							<Donut
+								colors={dataApplicationSources.applicationSources.map(
+									(item: { count: number; source: string }) => {
+										switch (item.source) {
+											case 'Linkedin':
+												return '#0a66c2'
+											case 'Facebook':
+												return '#1877f2'
+											case 'Instagram':
+												return '#e4405f'
+											case 'Twitter':
+												return '#1da1f2'
+											case 'Other':
+												return '#f57d00'
+											default:
+												return ''
+										}
 									}
-								}
-							)}
-							data={dataApplicationSources.applicationSources.map((item: any) => {
-								return Number(item.count)
-							})}
-							height={300}
-							labels={dataApplicationSources.applicationSources.map((item: any) => {
-								return item.source
-							})}
-						/>
+								)}
+								data={dataApplicationSources.applicationSources.map((item: any) => {
+									return Number(item.count)
+								})}
+								height={300}
+								labels={dataApplicationSources.applicationSources.map(
+									(item: any) => {
+										return item.source
+									}
+								)}
+							/>
+						</Box>
+					) : (
+						<Empty height="220px" />
 					)}
 				</ItemDashboard>
 
 				<ItemDashboard title="Application status">
-					{dataApplicationStatus && (
+					{dataApplicationStatus?.applicationStatus.length > 0 ? (
 						<Donut
 							colors={dataApplicationStatus.applicationStatus.map(
 								(item: { count: number; status: string }) => {
@@ -322,19 +325,21 @@ const dashboard: NextLayout = () => {
 								return item.status
 							})}
 						/>
+					) : (
+						<Empty height="220px" />
 					)}
 				</ItemDashboard>
 
 				<ItemDashboard isFull title="Open jobs" overflow={'auto'}>
-					<VStack
-						spacing={5}
-						w={'full'}
-						divider={<StackDivider />}
-						alignItems={'start'}
-						justifyContent={'start'}
-					>
-						{dataOpenJobs &&
-							dataOpenJobs.openJobs.map((item: jobType, key: number) => {
+					{dataOpenJobs?.openJobs.length > 0 ? (
+						<VStack
+							spacing={5}
+							w={'full'}
+							divider={<StackDivider />}
+							alignItems={'start'}
+							justifyContent={'start'}
+						>
+							{dataOpenJobs.openJobs.map((item: jobType, key: number) => {
 								return (
 									<HStack
 										key={key}
@@ -391,7 +396,10 @@ const dashboard: NextLayout = () => {
 									</HStack>
 								)
 							})}
-					</VStack>
+						</VStack>
+					) : (
+						<Empty height="220px" />
+					)}
 				</ItemDashboard>
 
 				<ItemDashboard heightAuto isFull title="Today's Interview" overflow={'auto'}>

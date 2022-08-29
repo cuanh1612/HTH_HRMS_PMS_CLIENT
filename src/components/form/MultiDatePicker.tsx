@@ -26,7 +26,7 @@ export const MultiDatePicker = ({
 	type = 'text',
 }: IInput & { form: UseFormReturn<any, any> }) => {
 	const { colorMode } = useColorMode()
-	const errorColor = useColorModeValue('red.400', 'pink.400')
+	const errorColor = useColorModeValue('red.500', 'red.300')
 
 	const {
 		control,
@@ -54,7 +54,7 @@ export const MultiDatePicker = ({
 						<FormLabel color={'gray.400'} fontWeight={'normal'} htmlFor={name}>
 							{label}{' '}
 							{required && (
-								<Text as="span" color={colorMode == 'dark' ? 'red.400' : 'red'}>
+								<Text ml={'1'} as="span" color={colorMode == 'dark' ? 'red.300': 'red.500'}>
 									*
 								</Text>
 							)}

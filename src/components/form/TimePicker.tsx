@@ -29,7 +29,7 @@ export const TimePicker = ({
 	required = false,
 	timeInit,
 }: IInput & { form: UseFormReturn<any, any>; timeInit?: string }) => {
-	const errorColor = useColorModeValue('red.400', 'pink.400')
+	const errorColor = useColorModeValue('red.500', 'red.300')
 	const {colorMode} = useColorMode()
 	const [timeInitCurrent, setTimeInitCurrent] = useState<string>()
 	const [hours, setHours] = useState({
@@ -141,7 +141,7 @@ export const TimePicker = ({
 						<FormLabel color={'gray.400'} fontWeight={'normal'} htmlFor={name}>
 							{label}{' '}
 							{required && (
-								<Text as="span" color={colorMode == 'dark' ? 'red.400' : 'red'}>
+								<Text ml={'1'} as="span" color={colorMode == 'dark' ? 'red.300': 'red.500'}>
 									*
 								</Text>
 							)}

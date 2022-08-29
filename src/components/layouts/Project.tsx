@@ -23,7 +23,7 @@ export const ProjectLayout = ({ children }: { children: JSX.Element }) => {
 	const [tabs, setTabs] = useState<ITab[]>([])
 	useEffect(() => {
 		if (projectId) {
-			const data = [
+			let data = [
 				{
 					icon: <AiOutlineDashboard fontSize={'15'} />,
 					link: `/projects/${projectId}/overview`,
@@ -33,11 +33,6 @@ export const ProjectLayout = ({ children }: { children: JSX.Element }) => {
 					icon: <AiOutlineUsergroupAdd fontSize={'15'} />,
 					link: `/projects/${projectId}/members`,
 					title: 'Members',
-				},
-				{
-					icon: <AiOutlineFileAdd fontSize={'15'} />,
-					link: `/projects/${projectId}/files`,
-					title: 'Files',
 				},
 				{
 					icon: <VscTasklist fontSize={15} />,
@@ -54,25 +49,33 @@ export const ProjectLayout = ({ children }: { children: JSX.Element }) => {
 					link: `/projects/${projectId}/time-logs-table`,
 					title: 'Time Logs',
 				},
-
-				{
-					icon: <FaRegStickyNote fontSize={15} />,
-					link: `/projects/${projectId}/notes`,
-					title: 'Notes',
-				},
 				{
 					icon: <VscMilestone fontSize={'15'} />,
 					link: `/projects/${projectId}/milestones`,
 					title: 'Milestones',
-				}
+				},
 			]
 
 			if (currentUser?.role != 'Client') {
-				data.push({
-					icon: <VscCommentDiscussion fontSize={15} />,
-					link: `/projects/${projectId}/discussions`,
-					title: 'Discussion',
-				})
+				data = [
+					...data,
+					{
+						icon: <AiOutlineFileAdd fontSize={'15'} />,
+						link: `/projects/${projectId}/files`,
+						title: 'Files',
+					},
+					{
+						icon: <FaRegStickyNote fontSize={15} />,
+						link: `/projects/${projectId}/notes`,
+						title: 'Notes',
+					},
+					{
+						icon: <VscCommentDiscussion fontSize={15} />,
+						link: `/projects/${projectId}/discussions`,
+						title: 'Discussion',
+					},
+					
+				]
 			}
 
 			setTabs(data)
@@ -89,9 +92,9 @@ export const ProjectLayout = ({ children }: { children: JSX.Element }) => {
 			overflow={'auto'}
 		>
 			<Navigation />
-			<Box  w={'full'}>
+			<Box w={'full'}>
 				<Header />
-				<Box  w={'full'} h={'auto'} paddingInline={10}>
+				<Box w={'full'} h={'auto'} paddingInline={10}>
 					<TabsMenu tabs={tabs} />
 					{children}
 				</Box>

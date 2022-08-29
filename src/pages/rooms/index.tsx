@@ -1,4 +1,4 @@
-import { Button, Grid, GridItem, Skeleton, Text, useDisclosure, VStack } from '@chakra-ui/react'
+import { Box, Button, Grid, GridItem, Skeleton, Text, useDisclosure, VStack } from '@chakra-ui/react'
 import { AlertDialog, Func, FuncCollapse, Head } from 'components/common'
 import { Drawer } from 'components/Drawer'
 import { DateRange, Input } from 'components/filter'
@@ -158,28 +158,30 @@ const zoom: NextLayout = () => {
 	return (
 		<VStack justifyContent={'start'} pb={8} alignItems={'start'} w={'full'} spacing={5}>
 			<Head title={'Rooms'} />
-			<FuncCollapse>
-				<Func
-					icon={<IoAdd />}
-					description={'Add new meeting by form'}
-					title={'Add new'}
-					action={onOpenCreRoom}
-				/>
-				<Func
-					icon={<VscFilter />}
-					description={'Open draw to filter'}
-					title={'filter'}
-					action={onOpenFilter}
-				/>
-				<Func
-					icon={<MdOutlineEvent />}
-					title={'Calendar'}
-					description={'show holidays as calendar'}
-					action={() => {
-						router.push('/rooms/calendar')
-					}}
-				/>
-			</FuncCollapse>
+			<Box className="function">
+				<FuncCollapse>
+					<Func
+						icon={<IoAdd />}
+						description={'Add new meeting by form'}
+						title={'Add new'}
+						action={onOpenCreRoom}
+					/>
+					<Func
+						icon={<VscFilter />}
+						description={'Open draw to filter'}
+						title={'filter'}
+						action={onOpenFilter}
+					/>
+					<Func
+						icon={<MdOutlineEvent />}
+						title={'Calendar'}
+						description={'show holidays as calendar'}
+						action={() => {
+							router.push('/rooms/calendar')
+						}}
+					/>
+				</FuncCollapse>
+			</Box>
 
 			<VStack w={'full'} spacing={5}>
 				<Text w={'full'} fontWeight={'bold'} fontSize={'xl'}>

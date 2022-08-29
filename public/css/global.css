@@ -280,3 +280,95 @@ td.fc-day-today {
 .apexcharts-menu {
     color: black !important
 }
+
+
+
+/* quill custom */
+.quillLight {
+    border: none;
+}
+
+.quillLight .ql-toolbar {
+    border: none !important;
+    background: #e2e8f0  !important;
+    margin-bottom: 15px;
+    border-radius: 10px;
+    padding: 10px 8px !important;
+}
+
+.quillLight .ql-formats {
+    margin: 0 !important;
+}
+
+.quillLight .ql-formats button {
+    margin-right: 10px !important;
+    margin-bottom: 10px !important;
+}
+
+.quillLight .ql-container {
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 10px;
+    padding: 10px 2px;
+}
+
+.quillLight .ql-editor::before {
+    color: #a7b4c5 !important;
+}
+
+.quillDark {
+    border: none;
+}
+
+.quillDark .ql-toolbar {
+    border: none !important;
+    background: #e2e8f0  !important;
+    margin-bottom: 15px;
+    border-radius: 10px;
+    padding: 10px 8px !important;
+}
+
+.quillDark .ql-formats {
+    margin: 0 !important;
+}
+
+.quillDark .ql-formats button {
+    margin-right: 10px !important;
+    margin-bottom: 10px !important;
+}
+
+.quillDark .ql-container {
+    border: 1px solid #64686e !important;
+    border-radius: 10px;
+    padding: 10px 2px;
+    background-color: #3a4453!important;
+}
+
+.quillDark .ql-editor::before {
+    color: #a7b4c5 !important;
+}
+
+/* intro custom */
+
+.introHighlight {
+
+}
+.introButton {
+    background: red
+}
+
+.introTooltip {
+    
+}
+
+.introHighlight-dark {
+    background: red
+
+}
+.introButton-dark {
+    background: red
+}
+
+.introTooltip-dark {
+    
+
+}

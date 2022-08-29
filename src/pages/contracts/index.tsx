@@ -212,10 +212,12 @@ const Contracts: NextLayout = () => {
 
 	// mutation -------------------------------------------------------------------
 	// delete holidays
-	const [mutateDeleteContracts, { status: statusDlContracts, data: dataDlMany }] = deleteContractsMutation(setToast)
+	const [mutateDeleteContracts, { status: statusDlContracts, data: dataDlMany }] =
+		deleteContractsMutation(setToast)
 
 	// delete holiday
-	const [mutateDeleteContract, { status: statusDl, data: dataDl }] = deleteContractMutation(setToast)
+	const [mutateDeleteContract, { status: statusDl, data: dataDl }] =
+		deleteContractMutation(setToast)
 
 	// get public link
 	const [mutateGetPublic, { data: contractToken, status: statusToken }] =
@@ -383,91 +385,95 @@ const Contracts: NextLayout = () => {
 
 	return (
 		<Box pb={8}>
-			<Head title='Contracts'/>
-			<FuncCollapse>
-				{currentUser && currentUser.role === 'Admin' && (
-					<>
-						<Func
-							icon={<IoAdd />}
-							description={'Add new contract by form'}
-							title={'Add new'}
-							action={onOpenAdd}
-						/>
-
-						<CSVLink filename={'contracts.csv'} headers={headersCSV} data={dataCSV}>
+			<Head title="Contracts" />
+			<Box className="function">
+				<FuncCollapse>
+					{currentUser && currentUser.role === 'Admin' && (
+						<>
 							<Func
-								icon={<BiExport />}
-								description={'export to csv'}
-								title={'export'}
-								action={() => {}}
+								icon={<IoAdd />}
+								description={'Add new contract by form'}
+								title={'Add new'}
+								action={onOpenAdd}
 							/>
-						</CSVLink>
 
-						<CSVLink
-							filename={'contractsTemplate.csv'}
-							headers={headersCSVTemplate}
-							data={dataCSVTemplate}
-						>
+							<CSVLink filename={'contracts.csv'} headers={headersCSV} data={dataCSV}>
+								<Func
+									icon={<BiExport />}
+									description={'export to csv'}
+									title={'export'}
+									action={() => {}}
+								/>
+							</CSVLink>
+
+							<CSVLink
+								filename={'contractsTemplate.csv'}
+								headers={headersCSVTemplate}
+								data={dataCSVTemplate}
+							>
+								<Func
+									icon={<FaFileCsv />}
+									description={'export csv template'}
+									title={'export csv template'}
+									action={() => {}}
+								/>
+							</CSVLink>
+
+							<ImportCSV
+								fieldsValid={[
+									'alternate_address',
+									'cell',
+									'city',
+									'client',
+									'contract_type',
+									'contract_value',
+									'country',
+									'currency',
+									'notes',
+									'office_phone_number',
+									'postal_code',
+									'state',
+									'subject',
+									'end_date',
+									'start_date',
+								]}
+								handleImportCSV={handleImportCSV}
+								statusImport={statusImportCSV === 'running'}
+								isOpenImportCSV={isOpenImportCSV}
+								onCloseImportCSV={onCloseImportCSV}
+								onOpenImportCSV={onOpenImportCSV}
+							/>
 							<Func
-								icon={<FaFileCsv />}
-								description={'export csv template'}
-								title={'export csv template'}
-								action={() => {}}
+								icon={<AiOutlineDelete />}
+								title={'Delete all'}
+								description={'Delete all contracts you selected'}
+								action={onOpenDlMany}
+								disabled={!dataSl || dataSl.length == 0 ? true : false}
 							/>
-						</CSVLink>
+						</>
+					)}
+					<Func
+						icon={<VscFilter />}
+						description={'Open draw to filter'}
+						title={'filter'}
+						action={onOpenFilter}
+					/>
+				</FuncCollapse>
+			</Box>
 
-						<ImportCSV
-							fieldsValid={[
-								'alternate_address',
-								'cell',
-								'city',
-								'client',
-								'contract_type',
-								'contract_value',
-								'country',
-								'currency',
-								'notes',
-								'office_phone_number',
-								'postal_code',
-								'state',
-								'subject',
-								'end_date',
-								'start_date',
-							]}
-							handleImportCSV={handleImportCSV}
-							statusImport={statusImportCSV === 'running'}
-							isOpenImportCSV={isOpenImportCSV}
-							onCloseImportCSV={onCloseImportCSV}
-							onOpenImportCSV={onOpenImportCSV}
-						/>
-					</>
-				)}
-				<Func
-					icon={<VscFilter />}
-					description={'Open draw to filter'}
-					title={'filter'}
-					action={onOpenFilter}
+			<Box className='table'>
+				<Table
+					data={allContracts?.contracts || []}
+					columns={columns}
+					isLoading={isLoading}
+					isSelect={currentUser?.role == 'Admin' ? true : false}
+					selectByColumn="id"
+					setSelect={(data: Array<number>) => setDataSl(data)}
+					filter={filter}
+					isResetFilter={isResetFilter}
+					disableColumns={['contract_type']}
 				/>
-				<Func
-					icon={<AiOutlineDelete />}
-					title={'Delete all'}
-					description={'Delete all contracts you selected'}
-					action={onOpenDlMany}
-					disabled={!dataSl || dataSl.length == 0 ? true : false}
-				/>
-			</FuncCollapse>
-
-			<Table
-				data={allContracts?.contracts || []}
-				columns={columns}
-				isLoading={isLoading}
-				isSelect
-				selectByColumn="id"
-				setSelect={(data: Array<number>) => setDataSl(data)}
-				filter={filter}
-				isResetFilter={isResetFilter}
-				disableColumns={['contract_type']}
-			/>
+			</Box>
 			<Drawer size="xl" title="Add Contract" onClose={onCloseAdd} isOpen={isOpenAdd}>
 				<AddContract onCloseDrawer={onCloseAdd} />
 			</Drawer>

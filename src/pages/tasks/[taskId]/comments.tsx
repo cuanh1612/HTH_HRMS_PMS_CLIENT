@@ -1,23 +1,17 @@
 import { Avatar, Box, Button, HStack, Text, useDisclosure, VStack } from '@chakra-ui/react'
-import { Loading, TaskCommentItem } from 'components/common'
+import { Editor, Loading, TaskCommentItem } from 'components/common'
 import { AuthContext } from 'contexts/AuthContext'
 import {
 	createTaskCommentMutation,
 	deleteTaskCommentMutation,
 	updateTaskCommentMutation,
 } from 'mutations/taskComment'
-import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 import { detailTaskQuery } from 'queries'
 import { allTaskCommentsQuery } from 'queries/taskComment'
 import { useContext, useEffect, useState } from 'react'
 import { AiOutlinePlusCircle, AiOutlineSend } from 'react-icons/ai'
-import 'react-quill/dist/quill.bubble.css'
-import 'react-quill/dist/quill.snow.css'
 import { updateTaskCommentForm } from 'type/form/basicFormType'
-
-
-const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
 
 export interface ITaskCommentsProps {
 	taskIdProp?: string | number
@@ -213,35 +207,7 @@ export default function TaskComments({ taskIdProp }: ITaskCommentsProps) {
 							{currentUser && (
 								<Avatar name={currentUser.name} src={currentUser.avatar?.url} />
 							)}
-							<ReactQuill
-								style={{
-									width: '100%',
-								}}
-								placeholder="Enter you text"
-								modules={{
-									toolbar: [
-										['bold', 'italic', 'underline', 'strike'], // toggled buttons
-										['blockquote', 'code-block'],
-
-										[{ header: 1 }, { header: 2 }], // custom button values
-										[{ list: 'ordered' }, { list: 'bullet' }],
-										[{ script: 'sub' }, { script: 'super' }], // superscript/subscript
-										[{ indent: '-1' }, { indent: '+1' }], // outdent/indent
-										[{ direction: 'rtl' }], // text direction
-
-										[{ size: ['small', false, 'large', 'huge'] }], // custom dropdown
-										[{ header: [1, 2, 3, 4, 5, 6, false] }],
-
-										[{ color: [] }, { background: [] }], // dropdown with defaults from theme
-										[{ font: [] }],
-										[{ align: [] }],
-
-										['clean'], // remove formatting button
-									],
-								}}
-								value={content}
-								onChange={onChangeContent}
-							/>
+							<Editor note={content} onChangeNote={onChangeContent}/>
 						</HStack>
 
 						<HStack w={'full'} justify={'end'}>

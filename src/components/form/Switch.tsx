@@ -1,4 +1,4 @@
-import { Box, FormHelperText, Switch as CSwitch, useColorModeValue } from '@chakra-ui/react'
+import { Box, FormHelperText, Switch as CSwitch, Text, useColorMode, useColorModeValue } from '@chakra-ui/react'
 import { FormControl, FormLabel } from '@chakra-ui/react'
 import { Controller, UseFormReturn } from 'react-hook-form'
 import { IInput } from 'type/element/commom'
@@ -9,7 +9,8 @@ export const Switch = ({
 	form,
 	required = false,
 }: IInput & { form: UseFormReturn<any, any> }) => {
-	const errorColor = useColorModeValue('red.400', 'pink.400')
+	const {colorMode} = useColorMode()
+	const errorColor = useColorModeValue('red.500', 'red.300')
 
 	return (
 		<Controller
@@ -17,11 +18,14 @@ export const Switch = ({
 			name={name}
 			render={({ field }) => (
 				<FormControl w={'max-content'} color={'gray.400'} isRequired={required}>
-					{label && (
-						<FormLabel fontWeight={'normal'} htmlFor={name}>
-							{label}
-						</FormLabel>
-					)}
+					<FormLabel color={'gray.400'} fontWeight={'normal'} htmlFor={name}>
+						{label}{' '}
+						{required && (
+							<Text ml={'1'} as="span" color={colorMode == 'dark' ? 'red.300': 'red.500'}>
+								*
+							</Text>
+						)}
+					</FormLabel>
 					<Box h={10}>
 						<CSwitch defaultChecked={form.getValues()[name]} id={name} {...field} />
 					</Box>

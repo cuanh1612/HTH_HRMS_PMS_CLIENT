@@ -1,9 +1,8 @@
 import { Box, Button, Divider, Grid, GridItem, Text, useDisclosure, VStack } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
-import {Loading} from 'components/common'
+import {Editor, Loading} from 'components/common'
 import { AuthContext } from 'contexts/AuthContext'
 import { updateContractMutation } from 'mutations'
-import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 import { useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -24,14 +23,10 @@ import {
 import { BsCalendarDate } from 'react-icons/bs'
 import { FaCity } from 'react-icons/fa'
 import { GiMatterStates } from 'react-icons/gi'
-import 'react-quill/dist/quill.bubble.css'
-import 'react-quill/dist/quill.snow.css'
 import { IOption } from 'type/basicTypes'
 import { ICloudinaryImg, IImg } from 'type/fileType'
 import { uploadFile } from 'utils/uploadFile'
 import ContractTypes from '../contract-types'
-
-const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
 
 export interface IUpdateContractProps {
 	onCloseDrawer?: () => void
@@ -251,32 +246,7 @@ export default function UpdateContract({ onCloseDrawer, contractIdUpdate }: IUpd
 							<Text fontWeight={'normal'} color={'gray.400'}>
 								Description
 							</Text>
-							<ReactQuill
-								placeholder="Enter you text"
-								modules={{
-									toolbar: [
-										['bold', 'italic', 'underline', 'strike'], // toggled buttons
-										['blockquote', 'code-block'],
-
-										[{ header: 1 }, { header: 2 }], // custom button values
-										[{ list: 'ordered' }, { list: 'bullet' }],
-										[{ script: 'sub' }, { script: 'super' }], // superscript/subscript
-										[{ indent: '-1' }, { indent: '+1' }], // outdent/indent
-										[{ direction: 'rtl' }], // text direction
-
-										[{ size: ['small', false, 'large', 'huge'] }], // custom dropdown
-										[{ header: [1, 2, 3, 4, 5, 6, false] }],
-
-										[{ color: [] }, { background: [] }], // dropdown with defaults from theme
-										[{ font: [] }],
-										[{ align: [] }],
-
-										['clean'], // remove formatting button
-									],
-								}}
-								value={description}
-								onChange={onChangeDescription}
-							/>
+							<Editor note={description} onChangeNote={onChangeDescription}/>
 						</VStack>
 					</GridItem>
 

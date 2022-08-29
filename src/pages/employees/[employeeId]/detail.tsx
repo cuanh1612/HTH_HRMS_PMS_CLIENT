@@ -1,6 +1,6 @@
 import { Avatar, Box, Grid, GridItem, HStack, Stack, Text, VStack } from '@chakra-ui/react'
 import { Donut } from 'components/charts'
-import { Head, Static } from 'components/common'
+import { Empty, Head, Static } from 'components/common'
 import { EmployeeLayout } from 'components/layouts/Employee'
 import { AuthContext } from 'contexts/AuthContext'
 import { GetServerSideProps } from 'next'
@@ -267,7 +267,7 @@ export const DetailEmployee: NextLayout | any = ({
 												borderRadius={'10px'}
 												h={'300px'}
 											>
-												{countTasksStatus?.countTasksStatus && (
+												{countTasksStatus?.countTasksStatus && countTasksStatus.countTasksStatus.length > 0 ? (
 													<Donut
 														labels={countTasksStatus.countTasksStatus.map(
 															(task: any) => {
@@ -286,7 +286,7 @@ export const DetailEmployee: NextLayout | any = ({
 														)}
 														height={300}
 													/>
-												)}
+												): <Empty height='220px'/>}
 											</Box>
 										</VStack>
 									</GridItem>

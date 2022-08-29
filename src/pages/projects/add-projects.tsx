@@ -13,12 +13,11 @@ import {
 	VStack,
 } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { ItemFileUpload, Loading } from 'components/common'
+import { Editor, ItemFileUpload, Loading } from 'components/common'
 import { Input, InputNumber, Select, SelectCustom, SelectMany } from 'components/form'
 import Modal from 'components/modal/Modal'
 import { AuthContext } from 'contexts/AuthContext'
 import { createProjectMutation } from 'mutations'
-import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 import {
 	allClientsQuery,
@@ -33,8 +32,6 @@ import { useForm } from 'react-hook-form'
 import { AiFillCaretDown, AiFillCaretUp, AiOutlineCheck } from 'react-icons/ai'
 import { BsCalendarDate } from 'react-icons/bs'
 import { MdOutlineDriveFileRenameOutline } from 'react-icons/md'
-import 'react-quill/dist/quill.bubble.css'
-import 'react-quill/dist/quill.snow.css'
 import { IOption } from 'type/basicTypes'
 import { ICloudinaryImg } from 'type/fileType'
 import { createProjectForm } from 'type/form/basicFormType'
@@ -44,8 +41,6 @@ import { uploadFile } from 'utils/uploadFile'
 import { createProjectValidate } from 'utils/validate'
 import Department from '../departments'
 import ProjectCategory from '../project-categories'
-
-const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
 
 export interface IAddProjectProps {
 	onCloseDrawer: () => void
@@ -435,32 +430,7 @@ export default function AddProject({ onCloseDrawer }: IAddProjectProps) {
 							<Text fontWeight={'normal'} color={'gray.400'}>
 								Project Summary
 							</Text>
-							<ReactQuill
-								placeholder="Enter you text"
-								modules={{
-									toolbar: [
-										['bold', 'italic', 'underline', 'strike'], // toggled buttons
-										['blockquote', 'code-block'],
-
-										[{ header: 1 }, { header: 2 }], // custom button values
-										[{ list: 'ordered' }, { list: 'bullet' }],
-										[{ script: 'sub' }, { script: 'super' }], // superscript/subscript
-										[{ indent: '-1' }, { indent: '+1' }], // outdent/indent
-										[{ direction: 'rtl' }], // text direction
-
-										[{ size: ['small', false, 'large', 'huge'] }], // custom dropdown
-										[{ header: [1, 2, 3, 4, 5, 6, false] }],
-
-										[{ color: [] }, { background: [] }], // dropdown with defaults from theme
-										[{ font: [] }],
-										[{ align: [] }],
-
-										['clean'], // remove formatting button
-									],
-								}}
-								value={summary}
-								onChange={onChangeSummary}
-							/>
+							<Editor note={summary} onChangeNote={onChangeSummary}/>
 						</VStack>
 					</GridItem>
 
@@ -469,32 +439,7 @@ export default function AddProject({ onCloseDrawer }: IAddProjectProps) {
 							<Text fontWeight={'normal'} color={'gray.400'}>
 								Notes
 							</Text>
-							<ReactQuill
-								placeholder="Enter you text"
-								modules={{
-									toolbar: [
-										['bold', 'italic', 'underline', 'strike'], // toggled buttons
-										['blockquote', 'code-block'],
-
-										[{ header: 1 }, { header: 2 }], // custom button values
-										[{ list: 'ordered' }, { list: 'bullet' }],
-										[{ script: 'sub' }, { script: 'super' }], // superscript/subscript
-										[{ indent: '-1' }, { indent: '+1' }], // outdent/indent
-										[{ direction: 'rtl' }], // text direction
-
-										[{ size: ['small', false, 'large', 'huge'] }], // custom dropdown
-										[{ header: [1, 2, 3, 4, 5, 6, false] }],
-
-										[{ color: [] }, { background: [] }], // dropdown with defaults from theme
-										[{ font: [] }],
-										[{ align: [] }],
-
-										['clean'], // remove formatting button
-									],
-								}}
-								value={notes}
-								onChange={onChangeNotes}
-							/>
+							<Editor note={notes} onChangeNote={onChangeNotes}/>
 						</VStack>
 					</GridItem>
 

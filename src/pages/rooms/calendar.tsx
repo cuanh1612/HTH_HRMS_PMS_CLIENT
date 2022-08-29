@@ -175,45 +175,47 @@ const calendar: NextLayout = () => {
 
 	return (
 		<Box pb={8}>
-			<Head title={'Rooms calendar'}/>
-			<FuncCollapse>
-				{currentUser && currentUser.role === 'Admin' && (
-					<>
-						<Func
-							icon={<IoAdd />}
-							description={'Add new job by form'}
-							title={'Add new'}
-							action={onOpenCreRoom}
-						/>
-					</>
-				)}
-				<Func
-					icon={<VscFilter />}
-					description={'Open draw to filter'}
-					title={'filter'}
-					action={onOpenFilter}
-				/>
-				<Func
-					icon={<BsCalendar2Day />}
-					description={'Show calendar by day'}
-					title={'Day'}
-					action={() => {
-						calendar?.changeView('timeGridDay')
-					}}
-				/>
-				<Func
-					icon={<BsCalendar2Week />}
-					description={'Show calendar by week'}
-					title={'Week'}
-					action={() => calendar?.changeView('timeGridWeek')}
-				/>
-				<Func
-					icon={<BsCalendar2Month />}
-					description={'Show calendar by month'}
-					title={'Month'}
-					action={() => calendar?.changeView('dayGridMonth')}
-				/>
-			</FuncCollapse>
+			<Head title={'Rooms calendar'} />
+			<Box className="function">
+				<FuncCollapse>
+					{currentUser && currentUser.role === 'Admin' && (
+						<>
+							<Func
+								icon={<IoAdd />}
+								description={'Add new job by form'}
+								title={'Add new'}
+								action={onOpenCreRoom}
+							/>
+						</>
+					)}
+					<Func
+						icon={<VscFilter />}
+						description={'Open draw to filter'}
+						title={'filter'}
+						action={onOpenFilter}
+					/>
+					<Func
+						icon={<BsCalendar2Day />}
+						description={'Show calendar by day'}
+						title={'Day'}
+						action={() => {
+							calendar?.changeView('timeGridDay')
+						}}
+					/>
+					<Func
+						icon={<BsCalendar2Week />}
+						description={'Show calendar by week'}
+						title={'Week'}
+						action={() => calendar?.changeView('timeGridWeek')}
+					/>
+					<Func
+						icon={<BsCalendar2Month />}
+						description={'Show calendar by month'}
+						title={'Month'}
+						action={() => calendar?.changeView('dayGridMonth')}
+					/>
+				</FuncCollapse>
+			</Box>
 			<HStack pb={4} justifyContent={'space-between'}>
 				<Text color={'gray.500'} fontWeight={'semibold'}>
 					Calendar

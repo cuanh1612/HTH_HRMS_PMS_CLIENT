@@ -14,23 +14,18 @@ import {
 } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Input, SelectMany } from 'components/form'
-import { Loading } from 'components/common'
+import { Editor, Loading } from 'components/common'
 import { AuthContext } from 'contexts/AuthContext'
 import { updateProjectNoteMutation } from 'mutations'
-import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 import { detailProjectQuery, allProjectNotesQuery, detailProjectNoteRoomQuery } from 'queries'
 import { useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { AiOutlineCheck } from 'react-icons/ai'
 import { MdOutlineSubtitles } from 'react-icons/md'
-import 'react-quill/dist/quill.bubble.css'
-import 'react-quill/dist/quill.snow.css'
 import { IOption } from 'type/basicTypes'
 import { updateProjectNoteForm } from 'type/form/basicFormType'
 import { UpdateProjectNoteValidate } from 'utils/validate'
-
-const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
 
 export interface IUpdateNoteProps {
 	onCloseDrawer?: () => void
@@ -272,32 +267,7 @@ export default function UpdateNote({ onCloseDrawer, noteIdProp }: IUpdateNotePro
 							<Text fontWeight={'normal'} color={'gray.400'}>
 								Note Detail
 							</Text>
-							<ReactQuill
-								placeholder="Enter you text"
-								modules={{
-									toolbar: [
-										['bold', 'italic', 'underline', 'strike'], // toggled buttons
-										['blockquote', 'code-block'],
-
-										[{ header: 1 }, { header: 2 }], // custom button values
-										[{ list: 'ordered' }, { list: 'bullet' }],
-										[{ script: 'sub' }, { script: 'super' }], // superscript/subscript
-										[{ indent: '-1' }, { indent: '+1' }], // outdent/indent
-										[{ direction: 'rtl' }], // text direction
-
-										[{ size: ['small', false, 'large', 'huge'] }], // custom dropdown
-										[{ header: [1, 2, 3, 4, 5, 6, false] }],
-
-										[{ color: [] }, { background: [] }], // dropdown with defaults from theme
-										[{ font: [] }],
-										[{ align: [] }],
-
-										['clean'], // remove formatting button
-									],
-								}}
-								value={detail}
-								onChange={onChangeDetail}
-							/>
+							<Editor note={detail} onChangeNote={onChangeDetail} />
 						</VStack>
 					</GridItem>
 				</Grid>

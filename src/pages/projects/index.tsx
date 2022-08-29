@@ -248,52 +248,57 @@ const Projects: NextLayout = () => {
 		<Box pb={8}>
 			<Head title="Projects" />
 
-			<FuncCollapse>
-				{currentUser && currentUser.role === 'Admin' && (
-					<>
-						<Func
-							icon={<IoAdd />}
-							description={'Add new project by form'}
-							title={'Add new'}
-							action={onOpenAdd}
-						/>
-
-						<CSVLink filename={'projects.csv'} headers={headersCSV} data={dataCSV}>
+			<Box className="function">
+				<FuncCollapse>
+					{currentUser && currentUser.role === 'Admin' && (
+						<>
 							<Func
-								icon={<BiExport />}
-								description={'export to csv'}
-								title={'export'}
-								action={() => {}}
+								icon={<IoAdd />}
+								description={'Add new project by form'}
+								title={'Add new'}
+								action={onOpenAdd}
 							/>
-						</CSVLink>
-						<Func
-							icon={<AiOutlineDelete />}
-							title={'Delete all'}
-							description={'Delete all projects you selected'}
-							action={onOpenDlMany}
-							disabled={!dataSl || dataSl.length == 0 ? true : false}
-						/>
-					</>
-				)}
-				<Func
-					icon={<VscFilter />}
-					description={'Open draw to filter'}
-					title={'filter'}
-					action={onOpenFilter}
-				/>
-			</FuncCollapse>
 
-			<Table
-				data={allProjects?.projects || []}
-				columns={columns}
-				isLoading={isLoading}
-				isSelect={currentUser && currentUser.role === 'Admin' ? true : false}
-				selectByColumn="id"
-				setSelect={(data: Array<number>) => setDataSl(data)}
-				filter={filter}
-				isResetFilter={isResetFilter}
-				disableColumns={['project_category']}
-			/>
+							<CSVLink filename={'projects.csv'} headers={headersCSV} data={dataCSV}>
+								<Func
+									icon={<BiExport />}
+									description={'export to csv'}
+									title={'export'}
+									action={() => {}}
+								/>
+							</CSVLink>
+							<Func
+								icon={<AiOutlineDelete />}
+								title={'Delete all'}
+								description={'Delete all projects you selected'}
+								action={onOpenDlMany}
+								disabled={!dataSl || dataSl.length == 0 ? true : false}
+							/>
+						</>
+					)}
+					<Func
+						icon={<VscFilter />}
+						description={'Open draw to filter'}
+						title={'filter'}
+						action={onOpenFilter}
+					/>
+				</FuncCollapse>
+			</Box>
+
+			<Box className='table'>
+				<Table
+					data={allProjects?.projects || []}
+					columns={columns}
+					isLoading={isLoading}
+					isSelect={currentUser && currentUser.role === 'Admin' ? true : false}
+					selectByColumn="id"
+					setSelect={(data: Array<number>) => setDataSl(data)}
+					filter={filter}
+					isResetFilter={isResetFilter}
+					disableColumns={['project_category']}
+				/>
+			</Box>
+
 			<Drawer size="xl" title="Add Project" onClose={onCloseAdd} isOpen={isOpenAdd}>
 				<AddProject onCloseDrawer={onCloseAdd} />
 			</Drawer>

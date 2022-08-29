@@ -158,52 +158,57 @@ const Job: NextLayout = () => {
 	return (
 		<Box pb={8}>
 			<Head title="Jobs" />
-			<FuncCollapse>
-				{currentUser && currentUser.role === 'Admin' && (
-					<>
-						<Func
-							icon={<IoAdd />}
-							description={'Add new job by form'}
-							title={'Add new'}
-							action={onOpenAdd}
-						/>
-
-						<CSVLink filename={'jobs.csv'} headers={headersCSV} data={dataCSV}>
+			<Box className="function">
+				<FuncCollapse>
+					{currentUser && currentUser.role === 'Admin' && (
+						<>
 							<Func
-								icon={<BiExport />}
-								description={'export to csv'}
-								title={'export'}
-								action={() => {}}
+								icon={<IoAdd />}
+								description={'Add new job by form'}
+								title={'Add new'}
+								action={onOpenAdd}
 							/>
-						</CSVLink>
 
-						<Func
-							icon={<AiOutlineDelete />}
-							title={'Delete all'}
-							description={'Delete all jobs you selected'}
-							action={onOpenDlMany}
-							disabled={!dataSl || dataSl.length == 0 ? true : false}
-						/>
-					</>
-				)}
-				<Func
-					icon={<VscFilter />}
-					description={'Open draw to filter'}
-					title={'filter'}
-					action={onOpenFilter}
+							<CSVLink filename={'jobs.csv'} headers={headersCSV} data={dataCSV}>
+								<Func
+									icon={<BiExport />}
+									description={'export to csv'}
+									title={'export'}
+									action={() => {}}
+								/>
+							</CSVLink>
+
+							<Func
+								icon={<AiOutlineDelete />}
+								title={'Delete all'}
+								description={'Delete all jobs you selected'}
+								action={onOpenDlMany}
+								disabled={!dataSl || dataSl.length == 0 ? true : false}
+							/>
+						</>
+					)}
+					<Func
+						icon={<VscFilter />}
+						description={'Open draw to filter'}
+						title={'filter'}
+						action={onOpenFilter}
+					/>
+				</FuncCollapse>
+			</Box>
+
+			<Box className="table">
+				<Table
+					data={dataAllJobs?.jobs || []}
+					columns={columns}
+					isLoading={isLoading}
+					isSelect={currentUser?.role == 'Admin'}
+					selectByColumn="id"
+					setSelect={(data: Array<number>) => setDataSl(data)}
+					filter={filter}
+					isResetFilter={isResetFilter}
 				/>
-			</FuncCollapse>
-
-			<Table
-				data={dataAllJobs?.jobs || []}
-				columns={columns}
-				isLoading={isLoading}
-				isSelect={currentUser?.role == 'Admin'}
-				selectByColumn="id"
-				setSelect={(data: Array<number>) => setDataSl(data)}
-				filter={filter}
-				isResetFilter={isResetFilter}
-			/>
+			</Box>
+			
 			<Drawer size="xl" title="Add Jobs" onClose={onCloseAdd} isOpen={isOpenAdd}>
 				<AddJob onCloseDrawer={onCloseAdd} />
 			</Drawer>

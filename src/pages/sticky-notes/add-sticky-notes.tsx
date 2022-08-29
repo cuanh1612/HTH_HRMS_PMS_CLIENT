@@ -1,22 +1,17 @@
-import { Box, Button, Grid, GridItem, Text, VStack } from '@chakra-ui/react'
+import { Box, Button, Grid, GridItem, Text, useColorMode, VStack } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { Loading } from 'components/common'
+import { Editor, Loading } from 'components/common'
 import { SelectCustom } from 'components/form'
 import { AuthContext } from 'contexts/AuthContext'
 import { createStickyNoteMutation } from 'mutations/StickyNote'
-import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 import { allStickyNoteQuery } from 'queries/stickyNote'
 import { useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { AiOutlineCheck } from 'react-icons/ai'
-import 'react-quill/dist/quill.bubble.css'
-import 'react-quill/dist/quill.snow.css'
 import { createStickyNoteForm } from 'type/form/basicFormType'
 import { dataStickyNoteColor } from 'utils/basicData'
 import { createStickyNoteValidate } from 'utils/validate'
-
-const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
 
 export interface IAddStickyNotesProps {
 	onCloseDrawer: () => void
@@ -24,6 +19,7 @@ export interface IAddStickyNotesProps {
 
 export default function AddStickyNotes({ onCloseDrawer }: IAddStickyNotesProps) {
 	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
+	const {colorMode} = useColorMode()
 	const router = useRouter()
 
 	//State ----------------------------------------------------------------------
@@ -109,34 +105,16 @@ export default function AddStickyNotes({ onCloseDrawer }: IAddStickyNotesProps) 
 					<GridItem w="100%" colSpan={2}>
 						<VStack align={'start'}>
 							<Text fontWeight={'normal'} color={'gray.400'}>
-								Note <span style={{ color: 'red' }}>*</span>
+								Note{' '}
+								<Text
+									ml={1}
+									display={'inline-block'}
+									color={colorMode ? 'red.300' : 'red.500'}
+								>
+									*
+								</Text>
 							</Text>
-							<ReactQuill
-								placeholder="Enter you text"
-								modules={{
-									toolbar: [
-										['bold', 'italic', 'underline', 'strike'], // toggled buttons
-										['blockquote', 'code-block'],
-
-										[{ header: 1 }, { header: 2 }], // custom button values
-										[{ list: 'ordered' }, { list: 'bullet' }],
-										[{ script: 'sub' }, { script: 'super' }], // superscript/subscript
-										[{ indent: '-1' }, { indent: '+1' }], // outdent/indent
-										[{ direction: 'rtl' }], // text direction
-
-										[{ size: ['small', false, 'large', 'huge'] }], // custom dropdown
-										[{ header: [1, 2, 3, 4, 5, 6, false] }],
-
-										[{ color: [] }, { background: [] }], // dropdown with defaults from theme
-										[{ font: [] }],
-										[{ align: [] }],
-
-										['clean'], // remove formatting button
-									],
-								}}
-								value={note}
-								onChange={onChangeNote}
-							/>
+							<Editor note={note} onChangeNote={onChangeNote} />
 						</VStack>
 					</GridItem>
 				</Grid>

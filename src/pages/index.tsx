@@ -4,21 +4,18 @@ import { AuthContext } from 'contexts/AuthContext'
 import { useRouter } from 'next/router'
 import { useContext, useEffect } from 'react'
 import { NextLayout } from 'type/element/layout'
+import redirectPage from 'utils/redirect'
 
 const index: NextLayout = () => {
-	const { isAuthenticated, handleLoading, currentUser } = useContext(AuthContext)
+	const { isAuthenticated, currentUser } = useContext(AuthContext)
 	const router = useRouter()
 
 	// check authenticate to redirect to home page
 	useEffect(() => {
 		if (isAuthenticated && currentUser) {
-			if (currentUser.role.includes('Admin')) router.push('/dashboard')
-			if (currentUser.role.includes('Client')) router.push('/private-dashboard-client')
-			if (currentUser.role.includes('Employee')) router.push('/private-dashboard')
+			router.push(redirectPage(currentUser))
 		} else {
-			if (isAuthenticated == false) {
-				handleLoading(false)
-			}
+			router.push('/login')
 		}
 	}, [isAuthenticated, currentUser])
 

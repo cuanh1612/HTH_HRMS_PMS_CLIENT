@@ -45,7 +45,6 @@ import { IPeople } from 'type/element/commom'
 import { VscFilter } from 'react-icons/vsc'
 import { clientColumn } from 'utils/columns'
 
-
 const Clients: NextLayout = () => {
 	const { isAuthenticated, handleLoading, currentUser, setToast } = useContext(AuthContext)
 	const router = useRouter()
@@ -183,10 +182,11 @@ const Clients: NextLayout = () => {
 	const { data: allSubCategories } = allClientSubCategoriesQuery()
 
 	// delete client
-	const [mutateDeleteClient, { status: statusDl, data: dataDl}] = deleteClientMutation(setToast)
+	const [mutateDeleteClient, { status: statusDl, data: dataDl }] = deleteClientMutation(setToast)
 
 	// delete all clients
-	const [mutateDeleteClients, { status: statusDlMany, data: dataDlMany }] = deleteClientsMutation(setToast)
+	const [mutateDeleteClients, { status: statusDlMany, data: dataDlMany }] =
+		deleteClientsMutation(setToast)
 
 	//mutation ------------------------------------------------------------------
 	const [mutateImportCSV, { status: statusImportCSV, data: dataImportCSV }] =
@@ -334,95 +334,99 @@ const Clients: NextLayout = () => {
 
 	return (
 		<Box w={'full'} pb={8}>
-			<Head title='Clients'/>
-			<FuncCollapse>
-				{currentUser && currentUser.role === 'Admin' && (
-					<>
-						<Func
-							icon={<IoAdd />}
-							description={'Add new client by form'}
-							title={'Add new'}
-							action={onOpenAdd}
-						/>
-						<CSVLink filename={'clients.csv'} headers={headersCSV} data={dataCSV}>
+			<Head title="Clients" />
+			<Box className="function">
+				<FuncCollapse>
+					{currentUser && currentUser.role === 'Admin' && (
+						<>
 							<Func
-								icon={<BiExport />}
-								description={'export to csv'}
-								title={'export'}
-								action={() => {}}
+								icon={<IoAdd />}
+								description={'Add new client by form'}
+								title={'Add new'}
+								action={onOpenAdd}
 							/>
-						</CSVLink>
+							<CSVLink filename={'clients.csv'} headers={headersCSV} data={dataCSV}>
+								<Func
+									icon={<BiExport />}
+									description={'export to csv'}
+									title={'export'}
+									action={() => {}}
+								/>
+							</CSVLink>
 
-						<CSVLink
-							filename={'clientsTemplate.csv'}
-							headers={headersCSVTemplate}
-							data={dataCSVTemplate}
-						>
-							<Func
-								icon={<FaFileCsv />}
-								description={'export csv template'}
-								title={'export csv template'}
-								action={() => {}}
+							<CSVLink
+								filename={'clientsTemplate.csv'}
+								headers={headersCSVTemplate}
+								data={dataCSVTemplate}
+							>
+								<Func
+									icon={<FaFileCsv />}
+									description={'export csv template'}
+									title={'export csv template'}
+									action={() => {}}
+								/>
+							</CSVLink>
+
+							<ImportCSV
+								fieldsValid={[
+									'name',
+									'gender',
+									'email',
+									'password',
+									'mobile',
+									'city',
+									'company_address',
+									'company_name',
+									'country',
+									'gst_vat_number',
+									'office_phone_number',
+									'official_website',
+									'postal_code',
+									'shipping_address',
+									'state',
+								]}
+								handleImportCSV={handleImportCSV}
+								statusImport={statusImportCSV === 'running'}
+								isOpenImportCSV={isOpenImportCSV}
+								onCloseImportCSV={onCloseImportCSV}
+								onOpenImportCSV={onOpenImportCSV}
 							/>
-						</CSVLink>
-
-						<ImportCSV
-							fieldsValid={[
-								'name',
-								'gender',
-								'email',
-								'password',
-								'mobile',
-								'city',
-								'company_address',
-								'company_name',
-								'country',
-								'gst_vat_number',
-								'office_phone_number',
-								'official_website',
-								'postal_code',
-								'shipping_address',
-								'state',
-							]}
-							handleImportCSV={handleImportCSV}
-							statusImport={statusImportCSV === 'running'}
-							isOpenImportCSV={isOpenImportCSV}
-							onCloseImportCSV={onCloseImportCSV}
-							onOpenImportCSV={onOpenImportCSV}
-						/>
-					</>
-				)}
-				<Func
-					icon={<VscFilter />}
-					description={'Open draw to filter'}
-					title={'filter'}
-					action={onOpenFilter}
-				/>
-				<Func
-					icon={<AiOutlineDelete />}
-					title={'Delete all'}
-					description={'Delete all client you selected'}
-					action={onOpenDlMany}
-					disabled={!dataSl || dataSl.length == 0 ? true : false}
-				/>
-			</FuncCollapse>
+						</>
+					)}
+					<Func
+						icon={<VscFilter />}
+						description={'Open draw to filter'}
+						title={'filter'}
+						action={onOpenFilter}
+					/>
+					<Func
+						icon={<AiOutlineDelete />}
+						title={'Delete all'}
+						description={'Delete all client you selected'}
+						action={onOpenDlMany}
+						disabled={!dataSl || dataSl.length == 0 ? true : false}
+					/>
+				</FuncCollapse>
+			</Box>
 
 			{currentUser && (
-				<Table
-					data={allClients?.clients || []}
-					columns={columns}
-					isLoading={isLoading}
-					isSelect
-					selectByColumn="id"
-					setSelect={(data: Array<number>) => setDataSl(data)}
-					disableRows={{
-						column: 'email',
-						values: [currentUser.email],
-					}}
-					filter={filter}
-					disableColumns={['category', 'subcategory', 'country']}
-					isResetFilter={isResetFilter}
-				/>
+				<Box className='table'>
+					<Table
+						data={allClients?.clients || []}
+						columns={columns}
+						isLoading={isLoading}
+						isSelect
+						selectByColumn="id"
+						setSelect={(data: Array<number>) => setDataSl(data)}
+						disableRows={{
+							column: 'email',
+							values: [currentUser.email],
+						}}
+						filter={filter}
+						disableColumns={['category', 'subcategory', 'country']}
+						isResetFilter={isResetFilter}
+					/>
+				</Box>
 			)}
 
 			{/* alert dialog when delete one */}

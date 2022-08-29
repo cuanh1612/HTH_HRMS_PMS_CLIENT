@@ -7,26 +7,22 @@ import {
 	RadioGroup,
 	Stack,
 	Text,
+	useColorMode,
 	VStack
 } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Input } from 'components/form'
-import {Loading} from 'components/common'
+import {Editor, Loading} from 'components/common'
 import { AuthContext } from 'contexts/AuthContext'
 import { createNoticeBoardMutation } from 'mutations'
-import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 import { useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { AiOutlineCheck } from 'react-icons/ai'
 import { BsCardHeading } from 'react-icons/bs'
-import 'react-quill/dist/quill.bubble.css'
-import 'react-quill/dist/quill.snow.css'
 import { createNoticeBoardForm } from 'type/form/basicFormType'
 import { createNoticeBoardValidate } from 'utils/validate'
 import { allNoticeBoardQuery } from 'queries'
-
-const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
 
 export interface IAddNoticeBoardProps {
 	onCloseDrawer: () => void
@@ -34,6 +30,7 @@ export interface IAddNoticeBoardProps {
 
 export default function AddNoticeBoard({ onCloseDrawer }: IAddNoticeBoardProps) {
 	const { isAuthenticated, handleLoading, setToast, socket } = useContext(AuthContext)
+	const {colorMode} = useColorMode()
 	const router = useRouter()
 
 	//State ----------------------------------------------------------------------
@@ -150,36 +147,11 @@ export default function AddNoticeBoard({ onCloseDrawer }: IAddNoticeBoardProps) 
 						<VStack align={'start'}>
 							<Text fontWeight={'normal'} color={'gray.400'}>
 								Notice Details{' '}
-								<Text display={'inline-block'} color={'red'}>
+								<Text ml={1} display={'inline-block'} color={colorMode ? 'red.300': 'red.500'}>
 									*
 								</Text>
 							</Text>
-							<ReactQuill
-								placeholder="Enter you text"
-								modules={{
-									toolbar: [
-										['bold', 'italic', 'underline', 'strike'], // toggled buttons
-										['blockquote', 'code-block'],
-
-										[{ header: 1 }, { header: 2 }], // custom button values
-										[{ list: 'ordered' }, { list: 'bullet' }],
-										[{ script: 'sub' }, { script: 'super' }], // superscript/subscript
-										[{ indent: '-1' }, { indent: '+1' }], // outdent/indent
-										[{ direction: 'rtl' }], // text direction
-
-										[{ size: ['small', false, 'large', 'huge'] }], // custom dropdown
-										[{ header: [1, 2, 3, 4, 5, 6, false] }],
-
-										[{ color: [] }, { background: [] }], // dropdown with defaults from theme
-										[{ font: [] }],
-										[{ align: [] }],
-
-										['clean'], // remove formatting button
-									],
-								}}
-								value={detailNotice}
-								onChange={onChangeDetails}
-							/>
+							<Editor note={detailNotice} onChangeNote={onChangeDetails}/>
 						</VStack>
 					</GridItem>
 				</Grid>

@@ -38,7 +38,6 @@ import { VscFilter } from 'react-icons/vsc'
 import { BiExport } from 'react-icons/bi'
 import { TasksColumn } from 'utils/columns'
 
-
 const tasks: NextLayout = () => {
 	const { isAuthenticated, handleLoading, setToast, currentUser, socket } =
 		useContext(AuthContext)
@@ -282,59 +281,63 @@ const tasks: NextLayout = () => {
 	return (
 		<Box pb={8}>
 			<Head title="Tasks" />
-			<FuncCollapse>
-				{currentUser && currentUser.role === 'Admin' && (
-					<>
-						<Func
-							icon={<IoAdd />}
-							description={'Add new task by form'}
-							title={'Add new'}
-							action={onOpenAddTask}
-						/>
-						<CSVLink filename={'tasks.csv'} headers={headersCSV} data={dataCSV}>
+			<Box className="function">
+				<FuncCollapse>
+					{currentUser && currentUser.role === 'Admin' && (
+						<>
 							<Func
-								icon={<BiExport />}
-								description={'export to csv'}
-								title={'export'}
-								action={() => {}}
+								icon={<IoAdd />}
+								description={'Add new task by form'}
+								title={'Add new'}
+								action={onOpenAddTask}
 							/>
-						</CSVLink>
-						<Func
-							icon={<AiOutlineDelete />}
-							title={'Delete all'}
-							description={'Delete all tasks you selected'}
-							action={onOpenDlMany}
-							disabled={!dataSl || dataSl.length == 0 ? true : false}
-						/>
-					</>
-				)}
-				<Func
-					icon={<VscFilter />}
-					description={'Open draw to filter'}
-					title={'filter'}
-					action={onOpenFilter}
-				/>
-				<Func
-					icon={<MdOutlineEvent />}
-					title={'Calendar'}
-					description={'show tasks as calendar'}
-					action={() => {
-						router.push('/tasks/calendar')
-					}}
-				/>
-			</FuncCollapse>
+							<CSVLink filename={'tasks.csv'} headers={headersCSV} data={dataCSV}>
+								<Func
+									icon={<BiExport />}
+									description={'export to csv'}
+									title={'export'}
+									action={() => {}}
+								/>
+							</CSVLink>
+							<Func
+								icon={<AiOutlineDelete />}
+								title={'Delete all'}
+								description={'Delete all tasks you selected'}
+								action={onOpenDlMany}
+								disabled={!dataSl || dataSl.length == 0 ? true : false}
+							/>
+						</>
+					)}
+					<Func
+						icon={<VscFilter />}
+						description={'Open draw to filter'}
+						title={'filter'}
+						action={onOpenFilter}
+					/>
+					<Func
+						icon={<MdOutlineEvent />}
+						title={'Calendar'}
+						description={'show tasks as calendar'}
+						action={() => {
+							router.push('/tasks/calendar')
+						}}
+					/>
+				</FuncCollapse>
+			</Box>
 
-			<Table
-				data={allTasks?.tasks || []}
-				columns={columns}
-				isLoading={isLoading}
-				isSelect={currentUser?.role === 'Admin'}
-				selectByColumn="id"
-				setSelect={(data: Array<number>) => setDataSl(data)}
-				filter={filter}
-				disableColumns={['milestone', 'assignBy', 'task_category']}
-				isResetFilter={isResetFilter}
-			/>
+			<Box className='table'>
+				<Table
+					data={allTasks?.tasks || []}
+					columns={columns}
+					isLoading={isLoading}
+					isSelect={currentUser?.role === 'Admin'}
+					selectByColumn="id"
+					setSelect={(data: Array<number>) => setDataSl(data)}
+					filter={filter}
+					disableColumns={['milestone', 'assignBy', 'task_category']}
+					isResetFilter={isResetFilter}
+				/>
+			</Box>
 
 			<Drawer size="xl" title="Add New Task" onClose={onCloseAddTask} isOpen={isOpenAddTask}>
 				<AddTask onCloseDrawer={onCloseAddTask} />

@@ -21,6 +21,19 @@ export default function LinkGroup({ title, icon, data, currentUser }: ILinkGroup
 	const [links, setLinks] = useState<string[]>([])
 	const [paths, setPaths] = useState<string[]>([])
 
+	const notViewPages = useMemo(() => {
+		return [
+			'Employees',
+			'Skills',
+			'Jobs',
+			'Job applications',
+			'Offer letters',
+			'Interview schedule',
+			'Dashboard',
+			'Contracts',
+		]
+	}, [])
+
 	useEffect(() => {
 		if (currentData) {
 			const result = currentData.map((item) => item.link)
@@ -28,25 +41,17 @@ export default function LinkGroup({ title, icon, data, currentUser }: ILinkGroup
 		}
 	}, [currentData])
 
-	const notViewPages = useMemo(()=> {
-		return ['Employees', 'Skills', 'Jobs', 'Job applications', 'Offer letters', 'Interview schedule', 'Dashboard']
-	}, []) 
-
-
 	useEffect(() => {
-		if (currentUser) {
-			if (currentUser.role == 'Employee') {
-				const newData = currentData.filter(e=> {
-					return !notViewPages.includes(e.title)
-				})
-				setCurrentData(newData)
-			} else {
-				setCurrentData(data)
-			}
+		if (currentUser?.role == 'Employee' || currentUser?.role == 'Client') {
+			const newData = currentData.filter((e) => {
+				if (currentUser?.role == 'Client' && e.title == 'Contracts') return true
+				return !notViewPages.includes(e.title)
+			})
+			setCurrentData(newData)
 		} else {
 			setCurrentData(data)
 		}
-	}, [ currentUser, data])
+	}, [data, currentUser])
 
 	useEffect(() => {
 		if (pathname) {
@@ -107,12 +112,6 @@ export default function LinkGroup({ title, icon, data, currentUser }: ILinkGroup
 						borderColor={'gray.300'}
 					>
 						{currentData.map((item, key) => {
-							if (item.title == 'Contracts') {
-								if (currentUser?.role == 'Employee') {
-									return
-								}
-							}
-
 							return (
 								<LinkItem
 									key={key}

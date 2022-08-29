@@ -1,25 +1,20 @@
 import { Avatar, Box, Button, HStack, Text, useDisclosure, VStack } from '@chakra-ui/react'
-import { Loading, Discussion as CDiscussion, Head } from 'components/common'
+import { Loading, Discussion as CDiscussion, Head, Editor } from 'components/common'
 import { AuthContext } from 'contexts/AuthContext'
 import {
 	createDiscussionMutation,
 	deleteDiscussionMutation,
 	updateDiscussionMutation,
 } from 'mutations'
-import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 import { allDiscussionsQuery } from 'queries'
 import { useContext, useEffect, useState } from 'react'
 import { AiOutlinePlusCircle, AiOutlineSend } from 'react-icons/ai'
-import 'react-quill/dist/quill.bubble.css'
-import 'react-quill/dist/quill.snow.css'
 import { updateDiscussionForm } from 'type/form/basicFormType'
 import { GetStaticPaths, GetStaticProps } from 'next'
 import { contractMutationResponse } from 'type/mutationResponses'
 import { NextLayout } from 'type/element/layout'
 import { ContractLayout } from 'components/layouts/Contract'
-
-const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
 
 const Discussion: NextLayout = () => {
 	const { isAuthenticated, handleLoading, setToast, currentUser, socket } =
@@ -204,35 +199,7 @@ const Discussion: NextLayout = () => {
 								{currentUser && (
 									<Avatar name={currentUser.name} src={currentUser.avatar?.url} />
 								)}
-								<ReactQuill
-									style={{
-										width: '100%',
-									}}
-									placeholder="Enter you text"
-									modules={{
-										toolbar: [
-											['bold', 'italic', 'underline', 'strike'], // toggled buttons
-											['blockquote', 'code-block'],
-
-											[{ header: 1 }, { header: 2 }], // custom button values
-											[{ list: 'ordered' }, { list: 'bullet' }],
-											[{ script: 'sub' }, { script: 'super' }], // superscript/subscript
-											[{ indent: '-1' }, { indent: '+1' }], // outdent/indent
-											[{ direction: 'rtl' }], // text direction
-
-											[{ size: ['small', false, 'large', 'huge'] }], // custom dropdown
-											[{ header: [1, 2, 3, 4, 5, 6, false] }],
-
-											[{ color: [] }, { background: [] }], // dropdown with defaults from theme
-											[{ font: [] }],
-											[{ align: [] }],
-
-											['clean'], // remove formatting button
-										],
-									}}
-									value={content}
-									onChange={onChangeContent}
-								/>
+								<Editor note={content} onChangeNote={onChangeContent} />
 							</HStack>
 
 							<HStack w={'full'} justify={'end'}>

@@ -3,6 +3,8 @@ import {
 	FormLabel,
 	HStack,
 	Select as SelectChakra,
+	Text,
+	useColorMode,
 } from '@chakra-ui/react'
 import { ISelect } from 'type/element/commom'
 
@@ -15,11 +17,23 @@ export const Select = ({
 	handleSearch,
 	columnId,
 }: Partial<ISelect>) => {
+	const {colorMode} = useColorMode()
 	return (
 		<FormControl isRequired={required}>
-			<FormLabel color={'gray.400'} fontWeight={'normal'}>
-				{label}
-			</FormLabel>
+			{label && (
+				<FormLabel color={'gray.400'} fontWeight={'normal'}>
+					{label}{' '}
+					{required && (
+						<Text
+							ml={'1'}
+							as="span"
+							color={colorMode == 'dark' ? 'red.300' : 'red.500'}
+						>
+							*
+						</Text>
+					)}
+				</FormLabel>
+			)}
 			<HStack>
 				<SelectChakra
 					disabled={disabled}

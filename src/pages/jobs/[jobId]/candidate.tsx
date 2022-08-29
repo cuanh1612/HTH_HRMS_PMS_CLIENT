@@ -71,7 +71,7 @@ const Candidate: NextLayout | any = ({ jobIdProp }: ICandidateProps) => {
 		isAuthenticated,
 		jobIdProp || (jobIdRouter as string)
 	)
-	const { data: dataAllLocations } = allLocationsQuery(isAuthenticated)
+	const { data: dataAllLocations } = allLocationsQuery()
 	const { data: dataAllJobs } = allJobsQuery()
 
 	const { data: detailJob } = detailJobQuery(jobIdProp || (jobIdRouter as string))

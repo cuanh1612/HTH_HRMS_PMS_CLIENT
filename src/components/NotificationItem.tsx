@@ -5,25 +5,25 @@ import { useRouter } from 'next/router'
 import { NotificationByCurrentUserQuery } from 'queries/notification'
 import { useContext } from 'react'
 import { notificationType } from 'type/basicTypes'
+import { KeyedMutator } from 'swr'
+import { NotificationMutationResponse } from 'type/mutationResponses'
 
 export interface INotificationItemProps {
 	notification: notificationType
+	refetchNotifications: KeyedMutator<NotificationMutationResponse>
 }
 
-export default function NotificationItem({ notification }: INotificationItemProps) {
-	const { isAuthenticated, setToast } = useContext(AuthContext)
+export default function NotificationItem({ notification, refetchNotifications }: INotificationItemProps) {
+	const { setToast } = useContext(AuthContext)
 	const router = useRouter()
 	const {colorMode} = useColorMode()
-
-	//Query
-	const { mutate: refetchNotifications } = NotificationByCurrentUserQuery(isAuthenticated)
 
 	//Mutate delete notification
 	const [mutateDeleteNotification] = deleteNotificationMutation(setToast)
 
 	//Handle click notifications
-	const onClickNotification = () => {
-		mutateDeleteNotification(notification.id)
+	const onClickNotification = async () => {
+		await mutateDeleteNotification(notification.id)
 		refetchNotifications()
 		router.push(notification.url)
 	}

@@ -147,6 +147,7 @@ const Salaries: NextLayout = () => {
 
 	// header ----------------------------------------
 	const columns: TColumn[] = salariesColumn({
+		colorMode,
 		currentUser,
 		onDetail: (id: number) => {
 			setEmployeeId(id)

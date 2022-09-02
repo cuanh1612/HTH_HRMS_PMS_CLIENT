@@ -1,5 +1,6 @@
 import { Box, Button, useColorModeValue, VStack } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { Head } from 'components/common'
 import { Input } from 'components/form'
 import { AuthLayout } from 'components/layouts'
 import { AuthContext } from 'contexts/AuthContext'
@@ -62,6 +63,7 @@ const recoverPassword: NextLayout = () => {
 
 	return (
 		<VStack spacing={8} minW={'380px'}>
+			<Head title="Recover password" />
 			<VStack w={'full'} spacing={3} alignItems={'start'}>
 				<Box pos={'relative'} as="div">
 					<Box

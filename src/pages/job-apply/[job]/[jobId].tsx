@@ -64,7 +64,7 @@ const Apply: NextLayout = () => {
 	}, [])
 
 	//Query -------------------------------------------------------------------
-	const { data: dataCompanyInfo, mutate: refetchCompanyInfo } = companyInfoQuery()
+	const { data: dataCompanyInfo } = companyInfoQuery()
 	console.log(dataCompanyInfo)
 
 	//mutation ----------------------------------------------------------------

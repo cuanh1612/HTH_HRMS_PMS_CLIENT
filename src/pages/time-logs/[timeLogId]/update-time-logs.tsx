@@ -49,7 +49,6 @@ export default function UpdateTimeLog({ onCloseDrawer, timeLogIdProp }: IUpdateT
 	const [optionEmployees, setOptionEmployees] = useState<IOption[]>([])
 	const [selectedTaskId, setSelectedTaskId] = useState<number | string>()
 	const [selectedEmployeeId, setSelectedEmployeeId] = useState<IOption>()
-	const [selectedTaskIdForSelect, setSelectedTaskIdForSelect] = useState<IOption>()
 	const [projectId, setProjectId] = useState<string | number>()
 
 	//Query -------------------------------------------------------------
@@ -249,13 +248,6 @@ export default function UpdateTimeLog({ onCloseDrawer, timeLogIdProp }: IUpdateT
 				),
 				value: detailTimeLog.timeLog.employee.id,
 			})
-
-			if (detailTimeLog?.timeLog?.task) {
-				setSelectedTaskIdForSelect({
-					label: detailTimeLog.timeLog.task.name,
-					value: detailTimeLog.timeLog.task.id,
-				})
-			}
 		}
 	}, [detailTimeLog])
 

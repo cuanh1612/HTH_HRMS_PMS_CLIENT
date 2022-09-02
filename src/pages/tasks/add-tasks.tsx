@@ -165,7 +165,7 @@ export default function AddTask({ onCloseDrawer }: IAddTaskProps) {
 	}, [isAuthenticated])
 
 	useEffect(() => {
-		const subscription = formSetting.watch((value, { name }) => {
+		const subscription = formSetting.watch((value: any, { name }) => {
 			if (name == 'project') {
 				onChangeProject(value[name] || '')
 			}

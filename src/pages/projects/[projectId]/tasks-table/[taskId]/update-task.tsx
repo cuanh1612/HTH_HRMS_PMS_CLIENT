@@ -54,8 +54,6 @@ export default function UpdateTask({ onCloseDrawer, taskIdProp }: IUpdateTaskPro
 	const [description, setDescription] = useState<string>('')
 	const [selectedOptionEmployees, setSelectedOptionEmployees] = useState<IOption[]>([])
 	const [optionMilestones, setOptionMilestones] = useState<IOption[]>([])
-	const [selectedMilestone, setSelectedMilestone] = useState<IOption>()
-	const [selectedStatus, setSelectedStatus] = useState<IOption>()
 
 	//Setup modal -------------------------------------------------------
 	const {
@@ -167,20 +165,6 @@ export default function UpdateTask({ onCloseDrawer, taskIdProp }: IUpdateTaskPro
 	useEffect(() => {
 		if (dataDetailTask?.task) {
 			setDescription(dataDetailTask.task.description)
-
-			if (dataDetailTask.task.status) {
-				setSelectedStatus({
-					label: dataDetailTask.task.status.title,
-					value: dataDetailTask.task.status.id,
-				})
-			}
-
-			if (dataDetailTask.task.milestone) {
-				setSelectedMilestone({
-					label: dataDetailTask.task.milestone.title,
-					value: dataDetailTask.task.milestone.id,
-				})
-			}
 
 			formSetting.reset({
 				name: dataDetailTask?.task?.name,

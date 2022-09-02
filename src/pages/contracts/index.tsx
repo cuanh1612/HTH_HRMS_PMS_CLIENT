@@ -369,6 +369,7 @@ const Contracts: NextLayout = () => {
 
 	// header ----------------------------------------
 	const columns: TColumn[] = contractColumn({
+		colorMode,
 		currentUser,
 		onUpdate: (id: number) => {
 			setContractIdUpdate(id)

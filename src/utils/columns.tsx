@@ -149,16 +149,22 @@ export const clientColumn = ({ currentUser, onDelete, onUpdate }: IOptionColumn)
 						)
 					},
 				},
+
 				{
-					Header: 'Created',
-					accessor: 'createdAt',
+					Header: 'Root',
+					accessor: 'root',
 					minWidth: 150,
-					filter: dateFilter(['createdAt']),
 					Cell: ({ value }) => {
-						const createdDate = new Date(value).toLocaleDateString('es-CL')
-						return <Text isTruncated>{createdDate}</Text>
+						return (
+							value && (
+								<Tag bg={`hu-Green.normal`} color={'white'} isTruncated>
+									Root
+								</Tag>
+							)
+						)
 					},
 				},
+
 				{
 					Header: 'Category',
 					accessor: 'category',
@@ -175,44 +181,59 @@ export const clientColumn = ({ currentUser, onDelete, onUpdate }: IOptionColumn)
 					filter: selectFilter(['country']),
 				},
 				{
+					Header: 'Created',
+					accessor: 'createdAt',
+					minWidth: 150,
+					filter: dateFilter(['createdAt']),
+					Cell: ({ value }) => {
+						const createdDate = new Date(value).toLocaleDateString('es-CL')
+						return <Text isTruncated>{createdDate}</Text>
+					},
+				},
+				{
 					Header: 'Action',
 					accessor: 'action',
 					disableResizing: true,
 					width: 120,
 					minWidth: 120,
 					disableSortBy: true,
-					Cell: ({ row }) => (
-						<Menu>
-							<MenuButton as={Button} paddingInline={3}>
-								<MdOutlineMoreVert />
-							</MenuButton>
-							<MenuList>
-								<Link href={`/clients/${row.values['id']}`} passHref>
-									<MenuItem icon={<IoEyeOutline fontSize={'15px'} />}>
-										View
-									</MenuItem>
-								</Link>
-								<MenuItem
-									onClick={() => {
-										onUpdate(row.values['id'])
-									}}
-									icon={<RiPencilLine fontSize={'15px'} />}
-								>
-									Edit
-								</MenuItem>
-								{currentUser?.email != row.values['email'] && (
+					Cell: ({ row }) => {
+						if (row.values['root']) {
+							return ''
+						}
+						return (
+							<Menu>
+								<MenuButton as={Button} paddingInline={3}>
+									<MdOutlineMoreVert />
+								</MenuButton>
+								<MenuList>
+									<Link href={`/clients/${row.values['id']}`} passHref>
+										<MenuItem icon={<IoEyeOutline fontSize={'15px'} />}>
+											View
+										</MenuItem>
+									</Link>
 									<MenuItem
 										onClick={() => {
-											onDelete(row.values['id'])
+											onUpdate(row.values['id'])
 										}}
-										icon={<MdOutlineDeleteOutline fontSize={'15px'} />}
+										icon={<RiPencilLine fontSize={'15px'} />}
 									>
-										Delete
+										Edit
 									</MenuItem>
-								)}
-							</MenuList>
-						</Menu>
-					),
+									{currentUser?.email != row.values['email'] && (
+										<MenuItem
+											onClick={() => {
+												onDelete(row.values['id'])
+											}}
+											icon={<MdOutlineDeleteOutline fontSize={'15px'} />}
+										>
+											Delete
+										</MenuItem>
+									)}
+								</MenuList>
+							</Menu>
+						)
+					},
 				},
 			],
 		},
@@ -308,7 +329,7 @@ export const employeeColumn = ({
 					minWidth: 160,
 					filter: selectFilter(['role']),
 					Cell: ({ value, row }) => {
-						if (row.values['email'] == currentUser?.email)
+						if (row.values['email'] == currentUser?.email || row.values['root'])
 							return (
 								<Select
 									bg={colorMode == 'dark' ? '#3a4453' : undefined}
@@ -317,7 +338,7 @@ export const employeeColumn = ({
 										onChangeRole(row.values['id'], event)
 									}}
 								>
-									<option value={'Admin'}>Admin</option>
+									<option value={row.values['role']}>{row.values['role']}</option>
 								</Select>
 							)
 						return (
@@ -356,6 +377,20 @@ export const employeeColumn = ({
 					},
 				},
 				{
+					Header: 'Root',
+					accessor: 'root',
+					minWidth: 150,
+					Cell: ({ value }) => {
+						return (
+							value && (
+								<Tag bg={`hu-Green.normal`} color={'white'} isTruncated>
+									Root
+								</Tag>
+							)
+						)
+					},
+				},
+				{
 					Header: 'Department',
 					accessor: 'department',
 					filter: selectFilter(['department', 'id']),
@@ -374,38 +409,43 @@ export const employeeColumn = ({
 					width: 120,
 					minWidth: 120,
 					disableSortBy: true,
-					Cell: ({ row }) => (
-						<Menu>
-							<MenuButton as={Button} paddingInline={3}>
-								<MdOutlineMoreVert />
-							</MenuButton>
-							<MenuList>
-								<Link href={`/employees/${row.values['id']}/detail`} passHref>
-									<MenuItem icon={<IoEyeOutline fontSize={'15px'} />}>
-										View
-									</MenuItem>
-								</Link>
-								<MenuItem
-									onClick={() => {
-										onUpdate(row.values['id'])
-									}}
-									icon={<RiPencilLine fontSize={'15px'} />}
-								>
-									Edit
-								</MenuItem>
-								{currentUser?.email != row.values['email'] && (
+					Cell: ({ row }) => {
+						if (row.values['root']) {
+							return ''
+						}
+						return (
+							<Menu>
+								<MenuButton as={Button} paddingInline={3}>
+									<MdOutlineMoreVert />
+								</MenuButton>
+								<MenuList>
+									<Link href={`/employees/${row.values['id']}/detail`} passHref>
+										<MenuItem icon={<IoEyeOutline fontSize={'15px'} />}>
+											View
+										</MenuItem>
+									</Link>
 									<MenuItem
 										onClick={() => {
-											onDelete(row.values['id'])
+											onUpdate(row.values['id'])
 										}}
-										icon={<MdOutlineDeleteOutline fontSize={'15px'} />}
+										icon={<RiPencilLine fontSize={'15px'} />}
 									>
-										Delete
+										Edit
 									</MenuItem>
-								)}
-							</MenuList>
-						</Menu>
-					),
+									{currentUser?.email != row.values['email'] && (
+										<MenuItem
+											onClick={() => {
+												onDelete(row.values['id'])
+											}}
+											icon={<MdOutlineDeleteOutline fontSize={'15px'} />}
+										>
+											Delete
+										</MenuItem>
+									)}
+								</MenuList>
+							</Menu>
+						)
+					},
 				},
 			],
 		},
@@ -724,6 +764,7 @@ export const contractColumn = ({
 	onDelete,
 	onUpdate,
 	onPublic,
+	colorMode,
 }: IContractColumn): TColumn[] => {
 	return [
 		{
@@ -803,7 +844,9 @@ export const contractColumn = ({
 					minWidth: 180,
 					width: 180,
 					Cell: ({ row }) => (
-						<Text>{`${row.original.contract_value} ${row.original.currency}`}</Text>
+						<Text
+							color={colorMode == 'dark' ? 'red.300' : 'red.500'}
+						>{`${row.original.contract_value} ${row.original.currency}`}</Text>
 					),
 				},
 				{
@@ -1312,6 +1355,7 @@ export const timeLogsColumn = ({
 	onDelete,
 	onUpdate,
 	onDetail,
+	colorMode,
 }: IOptionColumn): TColumn[] => {
 	return [
 		{
@@ -1439,7 +1483,7 @@ export const timeLogsColumn = ({
 					accessor: 'earnings',
 					Cell: ({ value }) => {
 						return (
-							<Text isTruncated>
+							<Text color={colorMode == 'dark' ? 'red.300' : 'red.500'} isTruncated>
 								{Intl.NumberFormat('en-US', {
 									style: 'currency',
 									currency: 'USD',
@@ -1608,7 +1652,12 @@ export const noticeBoardColumn = ({
 	]
 }
 
-export const salariesColumn = ({ currentUser, onDetail, onUpdate }: IOptionColumn): TColumn[] => {
+export const salariesColumn = ({
+	currentUser,
+	onDetail,
+	onUpdate,
+	colorMode,
+}: IOptionColumn): TColumn[] => {
 	return [
 		{
 			Header: 'Salaries',
@@ -1675,7 +1724,7 @@ export const salariesColumn = ({ currentUser, onDetail, onUpdate }: IOptionColum
 					filter: textFilter(['email']),
 					Cell: ({ value }) => {
 						return (
-							<Text isTruncated color={'red'} fontWeight={'semibold'}>
+							<Text isTruncated color={colorMode == 'dark' ? 'red.300' : 'red.500'}>
 								${value}
 							</Text>
 						)
@@ -1725,7 +1774,7 @@ export const projectMembersColumn = ({
 	onDelete,
 	project_Admin,
 	setAdmin,
-	setHourlyRate
+	setHourlyRate,
 }: IProjectMemberColumn): TColumn[] => {
 	return [
 		{
@@ -2036,6 +2085,7 @@ export const projectTimeLogsColumn = ({
 	onDetail,
 	onUpdate,
 	project_Admin,
+	colorMode,
 }: IProjectTimeLogsColumn): TColumn[] => {
 	return [
 		{
@@ -2165,7 +2215,7 @@ export const projectTimeLogsColumn = ({
 					width: 150,
 					Cell: ({ value }) => {
 						return (
-							<Text isTruncated>
+							<Text color={colorMode == 'dark' ? 'red.300' : 'red.500'} isTruncated>
 								{Intl.NumberFormat('en-US', {
 									style: 'currency',
 									currency: 'USD',
@@ -2352,6 +2402,7 @@ export const projectMilestonesColumn = ({
 	onDetail,
 	onUpdate,
 	currentUser,
+	colorMode,
 }: IOptionColumn): TColumn[] => {
 	return [
 		{
@@ -2378,7 +2429,9 @@ export const projectMilestonesColumn = ({
 					accessor: 'cost',
 					width: 180,
 					minWidth: 180,
-					Cell: ({ value }) => `$${value}`,
+					Cell: ({ value }) => (
+						<Text color={colorMode == 'dark' ? 'red.300' : 'red.500'}>${value}</Text>
+					),
 				},
 				{
 					Header: 'Status',

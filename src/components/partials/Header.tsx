@@ -66,7 +66,6 @@ export const Header = () => {
 	//Query -------------------------------------------------
 	const { data: dataNotification, mutate: refetchNotifications } =
 		NotificationByCurrentUserQuery(isAuthenticated)
-
 	const [logout, { status: statusLogout }] = logoutServerMutation(setToast)
 
 	useEffect(() => {
@@ -113,13 +112,11 @@ export const Header = () => {
 
 			<HStack spacing={5}>
 				<ButtonIcon
-					icon={
-						<BsQuestion fontSize={20}/>
-					}
+					icon={<BsQuestion fontSize={20} />}
 					ariaLabel="darkMode"
 					handle={() => {
 						const option = optionIntro(pathname, colorMode)
-						introJs().setOptions(option).start();
+						introJs().setOptions(option).start()
 					}}
 				/>
 				<ButtonIcon
@@ -178,6 +175,7 @@ export const Header = () => {
 									dataNotification.notifications.map(
 										(notification: notificationType) => (
 											<NotificationItem
+												refetchNotifications={refetchNotifications}
 												key={notification.id}
 												notification={notification}
 											/>

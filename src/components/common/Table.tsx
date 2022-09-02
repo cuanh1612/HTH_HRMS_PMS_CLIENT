@@ -211,7 +211,6 @@ export const Table = memo(
 					<Box position={'sticky'} top="0" as="div">
 						{headerGroups.map((headerGroup: any) => (
 							<Box
-
 								bg={colorMode == 'light' ? 'white' : '#1a202c'}
 								as="div"
 								borderBottomWidth={1}

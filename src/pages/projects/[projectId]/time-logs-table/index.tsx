@@ -1,4 +1,4 @@
-import { Box, Button, useDisclosure, VStack } from '@chakra-ui/react'
+import { Box, Button, useColorMode, useDisclosure, VStack } from '@chakra-ui/react'
 import { AlertDialog, Func, FuncCollapse, Head, Table } from 'components/common'
 import { Drawer } from 'components/Drawer'
 import { DateRange, Input, Select } from 'components/filter'
@@ -26,6 +26,7 @@ const TimeLogs: NextLayout = () => {
 	const { isAuthenticated, handleLoading, currentUser, setToast, socket } =
 		useContext(AuthContext)
 	const router = useRouter()
+	const {colorMode} = useColorMode()
 
 	const { projectId } = router.query
 
@@ -216,6 +217,7 @@ const TimeLogs: NextLayout = () => {
 
 	// header ----------------------------------------
 	const columns: TColumn[] = projectTimeLogsColumn({
+		colorMode,
 		currentUser,
 		onDelete: (id: number) => {
 			setIdTimeLog(Number(id))

@@ -1,19 +1,11 @@
-import {
-	Avatar,
-	Badge,
-	Box,
-	Button,
-	Grid,
-	GridItem,
-	HStack,
-	Text,
-	VStack,
-} from '@chakra-ui/react'
+import { Avatar, Badge, Box, Grid, GridItem, HStack, IconButton, Text, VStack } from '@chakra-ui/react'
 import { AuthContext } from 'contexts/AuthContext'
 import { GetStaticPaths, GetStaticProps } from 'next'
 import { useRouter } from 'next/router'
 import { detailLeaveQuery } from 'queries'
 import { useContext, useEffect } from 'react'
+import { AiFillDelete } from 'react-icons/ai'
+import { GrDocumentUpdate } from 'react-icons/gr'
 import { leaveMutationResponse } from 'type/mutationResponses'
 
 export interface IDetailLeaveProps {
@@ -22,7 +14,11 @@ export interface IDetailLeaveProps {
 	onOpenDl?: any
 }
 
-export default function DetailLeave({ leaveId: leaveIdProp, onOpenUpdate, onOpenDl}: IDetailLeaveProps) {
+export default function DetailLeave({
+	leaveId: leaveIdProp,
+	onOpenUpdate,
+	onOpenDl,
+}: IDetailLeaveProps) {
 	const { isAuthenticated, handleLoading, currentUser } = useContext(AuthContext)
 	const router = useRouter()
 	const { leaveId: leaveIdRouter } = router.query
@@ -113,9 +109,9 @@ export default function DetailLeave({ leaveId: leaveIdProp, onOpenUpdate, onOpen
 								height={'10px'}
 								bgColor={
 									dataDetailLeave?.leave?.status === 'Pending'
-										? 'lightyellow'
+										? 'yellow'
 										: dataDetailLeave?.leave?.status === 'Approved'
-										? 'lightgreen'
+										? 'green'
 										: dataDetailLeave?.leave?.status === 'Rejected'
 										? 'red'
 										: undefined
@@ -125,8 +121,14 @@ export default function DetailLeave({ leaveId: leaveIdProp, onOpenUpdate, onOpen
 						</HStack>
 					</GridItem>
 				</Grid>
-				{onOpenUpdate && currentUser?.role == 'Admin' && <Button onClick={onOpenUpdate}>Update</Button>}{' '}
-				{onOpenDl && dataDetailLeave?.leave?.status == 'Pending' && <Button onClick={onOpenDl}>Delete</Button>}
+				<HStack paddingTop={6}>
+					{onOpenUpdate && currentUser?.role == 'Admin' && (
+						<IconButton aria-label='Update database' icon={<GrDocumentUpdate />} onClick={onOpenUpdate}/>
+					)}{' '}
+					{onOpenDl && dataDetailLeave?.leave?.status == 'Pending' && (
+						<IconButton color={'tomato'} aria-label='Delete database' icon={<AiFillDelete />} onClick={onOpenDl}/>
+					)}
+				</HStack>
 			</VStack>
 		</>
 	)

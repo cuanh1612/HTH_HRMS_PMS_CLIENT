@@ -126,10 +126,6 @@ export default function PublicContract({
 		signPad.current.clear()
 	}
 
-	const onSaveSign = () => {
-		const data = signPad.current.toDataURL()
-	}
-
 	//UseEffect --------------------------------------------------------
 	//Handle loading page
 	useEffect(() => {
@@ -470,7 +466,6 @@ export default function PublicContract({
 
 						<HStack justify={'end'} mt={4}>
 							<Button onClick={onClearSign}>Clear</Button>
-							<Button onClick={onSaveSign}>Clear</Button>
 							<Button
 								color={'white'}
 								bg={'hu-Green.normal'}

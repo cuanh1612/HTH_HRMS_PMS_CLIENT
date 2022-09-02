@@ -1,6 +1,15 @@
 // component and hooks of library
-import { Box, Button, Divider, HStack, useColorModeValue, VStack } from '@chakra-ui/react'
+import {
+	Box,
+	Button,
+	ButtonGroup,
+	Divider,
+	HStack,
+	useColorModeValue,
+	VStack,
+} from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { Head } from 'components/common'
 import { Input } from 'components/form'
 import { AuthLayout } from 'components/layouts'
 import { AuthContext } from 'contexts/AuthContext'
@@ -129,6 +138,7 @@ const Login: NextLayout = () => {
 
 	return (
 		<VStack spacing={8} minW={'380px'}>
+			<Head title="Login" />
 			<VStack w={'full'} spacing={3} alignItems={'start'}>
 				<Box pos={'relative'} as="div">
 					<Box
@@ -174,6 +184,22 @@ const Login: NextLayout = () => {
 						icon={<BiKey fontSize={'20px'} color="gray" opacity={0.6} />}
 					/>
 				</VStack>
+				<ButtonGroup w={'full'} variant="outline" spacing="5">
+					<Button w={'full'} onClick={()=> {
+						formSetting.setValue('email', `${process.env.NEXT_PUBLIC_ADMIN_ACCOUNT}`)
+						formSetting.setValue('password', `${process.env.NEXT_PUBLIC_ADMIN_PASSWORD}`)
+					}} colorScheme="green">
+						Admin
+					</Button>
+					<Button onClick={()=> {
+						formSetting.setValue('email', `${process.env.NEXT_PUBLIC_EMPLOYEE_ACCOUNT}`)
+						formSetting.setValue('password', `${process.env.NEXT_PUBLIC_EMPLOYEE_PASSWORD}`)
+					}} w={'full'}>Employee</Button>
+					<Button onClick={()=> {
+						formSetting.setValue('email', `${process.env.NEXT_PUBLIC_CLIENT_ACCOUNT}`)
+						formSetting.setValue('password', `${process.env.NEXT_PUBLIC_CLIENT_PASSWORD}`)
+					}} w={'full'}>Client</Button>
+				</ButtonGroup>
 				<VStack w={'full'} spacing={5}>
 					<Button
 						isLoading={status == 'running' ? true : false}

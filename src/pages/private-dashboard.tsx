@@ -197,16 +197,11 @@ const TaskCategory: NextLayout = () => {
 	useEffect(() => {
 		if (calendar) {
 			calendar.render()
-			calendar.on('dateClick', function (info) {})
-
-			calendar.on('select', function (info) {})
 
 			calendar.on('eventClick', (info) => {
 				setEventId(Number(info.event.id))
 				onOpenDetail()
 			})
-
-			calendar.on('eventDragStop', (info) => {})
 		}
 	}, [calendar])
 

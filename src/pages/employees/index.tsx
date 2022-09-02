@@ -427,8 +427,8 @@ const Employees: NextLayout = () => {
 					selectByColumn="id"
 					setSelect={(data: Array<number>) => setDataSl(data)}
 					disableRows={{
-						column: 'email',
-						values: [currentUser.email],
+						column: 'root',
+						values: [true],
 					}}
 					filter={filter}
 					disableColumns={['department', 'designation']}

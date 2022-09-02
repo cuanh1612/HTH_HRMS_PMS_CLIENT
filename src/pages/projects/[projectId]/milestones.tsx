@@ -14,6 +14,7 @@ import {
 	Td,
 	Avatar,
 	AvatarGroup,
+	useColorMode,
 } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { AlertDialog, Table, Loading, Func, FuncCollapse, Head } from 'components/common'
@@ -45,6 +46,7 @@ const milestones: NextLayout = () => {
 	const { isAuthenticated, handleLoading, setToast, currentUser } = useContext(AuthContext)
 	const router = useRouter()
 	const { projectId } = router.query
+	const {colorMode} = useColorMode()
 
 	// set loading table
 	const [isLoading, setIsLoading] = useState(true)
@@ -175,6 +177,7 @@ const milestones: NextLayout = () => {
 			setIdDetail(Number(id))
 		},
 		currentUser,
+		colorMode
 	})
 
 	useEffect(() => {

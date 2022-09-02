@@ -1,5 +1,6 @@
 import {
 	Avatar,
+	AvatarGroup,
 	Box,
 	Button,
 	Grid,
@@ -13,8 +14,6 @@ import {
 	Text,
 	Tooltip,
 	useDisclosure,
-	Wrap,
-	WrapItem,
 } from '@chakra-ui/react'
 import Modal from 'components/modal/Modal'
 import { AuthContext } from 'contexts/AuthContext'
@@ -32,11 +31,7 @@ export interface IDetailTaskProps {
 	onOpenUpdate?: any
 }
 
-export default function DetailTask({
-	taskIdProp,
-	onOpenDl,
-	onOpenUpdate,
-}: IDetailTaskProps) {
+export default function DetailTask({ taskIdProp, onOpenDl, onOpenUpdate }: IDetailTaskProps) {
 	const { isAuthenticated, handleLoading, currentUser } = useContext(AuthContext)
 	const router = useRouter()
 	const { taskId: taskIdRouter } = router.query
@@ -103,20 +98,18 @@ export default function DetailTask({
 					Assign To:
 				</GridItem>
 				<GridItem w="100%" colSpan={[2, 1]}>
-					<Wrap>
+					<AvatarGroup size="xs" max={2}>
 						{dataDetailTask?.task?.employees &&
 							dataDetailTask.task.employees.map((employee) => (
-								<WrapItem key={employee.id}>
-									<Tooltip label={employee.email}>
-										<Avatar
-											name={employee.name}
-											src={employee.avatar?.url}
-											size={'xs'}
-										/>
-									</Tooltip>
-								</WrapItem>
+								<Tooltip label={employee.email}>
+									<Avatar
+										name={employee.name}
+										src={employee.avatar?.url}
+										size={'xs'}
+									/>
+								</Tooltip>
 							))}
-					</Wrap>
+					</AvatarGroup>
 				</GridItem>
 
 				<GridItem w="100%" colSpan={[2, 1]} color={'gray.400'}>
@@ -173,20 +166,22 @@ export default function DetailTask({
 				</GridItem>
 			</Grid>
 
-			<Tabs variant="enclosed" mt={6}>
-				<TabList>
-					<Tab>Files</Tab>
-					<Tab>Comments</Tab>
-				</TabList>
-				<TabPanels>
-					<TabPanel>
-						<TaskFiles taskIdProp={taskIdProp || (taskIdRouter as string)} />
-					</TabPanel>
-					<TabPanel>
-						<TaskComments taskIdProp={taskIdProp || (taskIdRouter as string)} />
-					</TabPanel>
-				</TabPanels>
-			</Tabs>
+			{currentUser?.role !== 'Client' && (
+				<Tabs variant="enclosed" mt={6}>
+					<TabList>
+						<Tab>Files</Tab>
+						<Tab>Comments</Tab>
+					</TabList>
+					<TabPanels>
+						<TabPanel>
+							<TaskFiles taskIdProp={taskIdProp || (taskIdRouter as string)} />
+						</TabPanel>
+						<TabPanel>
+							<TaskComments taskIdProp={taskIdProp || (taskIdRouter as string)} />
+						</TabPanel>
+					</TabPanels>
+				</Tabs>
+			)}
 
 			{/* Modal department and designation */}
 			<Modal

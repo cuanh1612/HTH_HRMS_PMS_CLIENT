@@ -188,6 +188,7 @@ export interface clientType {
 	note?: string
 	createdAt: Date
 	updatedAt: Date
+	root: boolean
 }
 
 export interface holidayType {

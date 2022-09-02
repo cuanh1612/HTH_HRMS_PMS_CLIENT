@@ -418,8 +418,8 @@ const Clients: NextLayout = () => {
 					selectByColumn="id"
 					setSelect={(data: Array<number>) => setDataSl(data)}
 					disableRows={{
-						column: 'email',
-						values: [currentUser.email],
+						column: 'root',
+						values: [true],
 					}}
 					filter={filter}
 					disableColumns={['category', 'subcategory', 'country']}

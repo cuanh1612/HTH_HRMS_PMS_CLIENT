@@ -19,7 +19,6 @@ import {
 	VStack,
 	RadioGroup,
 	Box,
-	useColorMode,
 } from '@chakra-ui/react'
 import {
 	assignEmplByDepartmentMutation,

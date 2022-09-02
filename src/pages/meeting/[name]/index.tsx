@@ -9,11 +9,7 @@ import {
 	Input,
 	InputGroup,
 	InputRightElement,
-	Tab,
-	TabList,
-	TabPanel,
-	TabPanels,
-	Tabs,
+	Stack,
 	Text,
 	useColorMode,
 	useDisclosure,
@@ -136,7 +132,11 @@ export default function index() {
 					}`
 				).getTime() <= new Date().getTime()
 			) {
-				co.startCamera()
+				try {
+					co.startCamera()
+				} catch (error) {
+					co.setLocalAudio(true)
+				}
 			}
 		}
 	}, [co, dataRoom])
@@ -337,146 +337,134 @@ export default function index() {
 				isFooter={false}
 				size="6xl"
 			>
-				<Tabs paddingInline={6} isFitted>
-					<TabList>
-						<Tab>Magic</Tab>
-						<Tab>Volume and video</Tab>
-					</TabList>
-
-					<TabPanels>
-						<TabPanel pt={'20px!important'} paddingInline={'0px!important'}>
-							<HStack h={'500px'} spacing={5}>
-								<Box
-									w={'100%'}
-									border={'3px solid'}
-									borderColor={'hu-Green.normalH'}
-									background={'#000000'}
-									borderRadius={15}
-									overflow={'hidden'}
-									h={'100%'}
-									flex={1}
-								>
-									{localParticipant && (
-										<Tile
-											id={localParticipant.session_id}
-											isCurrentUser={true}
-											isCenter={true}
+				<Box pt={'10px!important'} paddingInline={'20px!important'}>
+					<Stack direction={['column', null, 'row']} h={['max-content', null, '500px']} spacing={5}>
+						<Box
+							w={'100%'}
+							border={'3px solid'}
+							borderColor={'hu-Green.normalH'}
+							background={'#000000'}
+							borderRadius={15}
+							overflow={'hidden'}
+							h={'100%'}
+							minH={'300px'}
+							flex={1}
+						>
+							{localParticipant && (
+								<Tile
+									id={localParticipant.session_id}
+									isCurrentUser={true}
+									isCenter={true}
+								/>
+							)}
+						</Box>
+						<VStack spacing={5} alignItems="start" h={'100%'} w={['full', null, '300px']}>
+							<VStack w={'full'} alignItems={'start'} spacing={4}>
+								<Text fontWeight={'semibold'} fontSize={'lg'}>
+									Remove effects and blur
+								</Text>
+								<HStack spacing={4}>
+									<VStack>
+										<IconButton
+											onClick={() => {
+												backgroundNone(co)
+											}}
+											variant={'outline'}
+											colorScheme={'gray'}
+											aria-label="Magic"
+											icon={<FiXCircle />}
 										/>
-									)}
-								</Box>
-								<VStack spacing={5} alignItems="start" h={'100%'} w={'300px'}>
-									<VStack w={'full'} alignItems={'start'} spacing={4}>
-										<Text fontWeight={'semibold'} fontSize={'lg'}>
-											Remove effects and blur
-										</Text>
-										<HStack spacing={4}>
-											<VStack>
-												<IconButton
-													onClick={() => {
-														backgroundNone(co)
-													}}
-													variant={'outline'}
-													colorScheme={'gray'}
-													aria-label="Magic"
-													icon={<FiXCircle />}
-												/>
-												<Text>None</Text>
-											</VStack>
-											<VStack>
-												<IconButton
-													onClick={() => {
-														backgroundBlur(0.5, co)
-													}}
-													variant={'outline'}
-													colorScheme={'gray'}
-													aria-label="Magic"
-													icon={<MdLensBlur />}
-												/>
-												<Text>Blur</Text>
-											</VStack>
-											<VStack>
-												<IconButton
-													onClick={() => {
-														backgroundBlur(1, co)
-													}}
-													variant={'outline'}
-													colorScheme={'gray'}
-													aria-label="Magic"
-													icon={<MdLensBlur fontSize={'20px'} />}
-												/>
-												<Text>Blur</Text>
-											</VStack>
-										</HStack>
+										<Text>None</Text>
 									</VStack>
-
-									<VStack
-										w={'full'}
-										h={'73%'}
-										pos={'relative'}
-										alignItems={'start'}
-										spacing={4}
-									>
-										<Text fontWeight={'semibold'} fontSize={'lg'}>
-											Background
-										</Text>
-
-										<InputGroup size="md">
-											<Input
-												value={query}
-												onChange={(e) => setQuery(e.target.value)}
-												pr="4.5rem"
-												placeholder="Enter name"
-											/>
-											<InputRightElement width="4.5rem">
-												<Button
-													h="1.75rem"
-													size="md"
-													marginRight={'8px'}
-													onClick={getBgs}
-												>
-													Show
-												</Button>
-											</InputRightElement>
-										</InputGroup>
-
-										<VStack flex={1} w={'full'} spacing={4} overflow={'auto'}>
-											{backgrounds &&
-												backgrounds.map((bg, index) => (
-													<Box
-														userSelect={'none'}
-														cursor={'pointer'}
-														onClick={() => {
-															backgroundImage(bg, co)
-														}}
-														w={'full'}
-														height={'max-content'}
-														pos={'relative'}
-													>
-														<Image
-															loading="lazy"
-															borderRadius={10}
-															border={'3px solid'}
-															borderColor={'hu-Lam.normal'}
-															w={'full'}
-															src={bg}
-															key={index}
-														/>
-													</Box>
-												))}
-											{isLoading && <Loading />}
-										</VStack>
+									<VStack>
+										<IconButton
+											onClick={() => {
+												backgroundBlur(0.5, co)
+											}}
+											variant={'outline'}
+											colorScheme={'gray'}
+											aria-label="Magic"
+											icon={<MdLensBlur />}
+										/>
+										<Text>Blur</Text>
 									</VStack>
+									<VStack>
+										<IconButton
+											onClick={() => {
+												backgroundBlur(1, co)
+											}}
+											variant={'outline'}
+											colorScheme={'gray'}
+											aria-label="Magic"
+											icon={<MdLensBlur fontSize={'20px'} />}
+										/>
+										<Text>Blur</Text>
+									</VStack>
+								</HStack>
+							</VStack>
+
+							<VStack
+								w={'full'}
+								h={'73%'}
+								pos={'relative'}
+								alignItems={'start'}
+								spacing={4}
+							>
+								<Text fontWeight={'semibold'} fontSize={'lg'}>
+									Background
+								</Text>
+
+								<InputGroup size="md">
+									<Input
+										value={query}
+										onChange={(e) => setQuery(e.target.value)}
+										pr="4.5rem"
+										placeholder="Enter name"
+									/>
+									<InputRightElement width="4.5rem">
+										<Button
+											h="1.75rem"
+											size="md"
+											marginRight={'8px'}
+											onClick={getBgs}
+										>
+											Show
+										</Button>
+									</InputRightElement>
+								</InputGroup>
+
+								<VStack flex={1} w={'full'} spacing={4} maxH={['300px', null, 'max-content']} overflow={'auto'}>
+									{backgrounds &&
+										backgrounds.map((bg, index) => (
+											<Box
+												userSelect={'none'}
+												cursor={'pointer'}
+												onClick={() => {
+													backgroundImage(bg, co)
+												}}
+												w={'full'}
+												height={'max-content'}
+												pos={'relative'}
+											>
+												<Image
+													loading="lazy"
+													borderRadius={10}
+													border={'3px solid'}
+													borderColor={'hu-Lam.normal'}
+													w={'full'}
+													h={['200px', null, 'max-content']}
+													objectFit={'cover'}
+													src={bg}
+													key={index}
+												/>
+											</Box>
+										))}
+									{isLoading && <Loading />}
 								</VStack>
-							</HStack>
-						</TabPanel>
-						<TabPanel>
-							<p>two!</p>
-						</TabPanel>
-						<TabPanel>
-							<p>three!</p>
-						</TabPanel>
-					</TabPanels>
-				</Tabs>
+							</VStack>
+						</VStack>
+					</Stack>
+				</Box>
 			</Modal>
 		</Box>
 	)

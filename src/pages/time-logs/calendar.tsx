@@ -187,18 +187,10 @@ const calendar: NextLayout = () => {
 	useEffect(() => {
 		if (calendar) {
 			calendar.render()
-			calendar.on('dateClick', function (info) {
-			})
-
-			calendar.on('select', function (info) {
-			})
 
 			calendar.on('eventClick', (info) => {
 				setIdTimeLog(Number(info.event.id))
 				onOpenDetailTimelog()
-			})
-
-			calendar.on('eventDragStop', (info) => {
 			})
 		}
 	}, [calendar])
@@ -412,7 +404,7 @@ const calendar: NextLayout = () => {
 
 					{currentUser?.role === 'Admin' && (
 						<SelectCustom
-							placeholder='Select employee'
+							placeholder="Select employee"
 							handleSearch={(field: any) => {
 								setFilter((state) => ({
 									...state,
@@ -437,7 +429,7 @@ const calendar: NextLayout = () => {
 						/>
 					)}
 					<SelectCustom
-						placeholder='Select client'
+						placeholder="Select client"
 						handleSearch={(field: any) => {
 							setFilter((state) => ({
 								...state,

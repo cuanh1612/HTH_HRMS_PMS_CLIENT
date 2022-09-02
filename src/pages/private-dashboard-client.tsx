@@ -15,7 +15,7 @@ import {
 	useDisclosure,
 } from '@chakra-ui/react'
 import { Donut } from 'components/charts'
-import { Card, Head, ItemDashboard } from 'components/common'
+import { Card, Empty, Head, ItemDashboard } from 'components/common'
 import { ClientLayout } from 'components/layouts'
 import { AuthContext } from 'contexts/AuthContext'
 
@@ -126,62 +126,74 @@ const privateDashboard: NextLayout = () => {
 				templateColumns={['repeat(1, 1fr)', null, null, 'repeat(2, 1fr)']}
 				gap={6}
 			>
-				<ItemDashboard title="Status project">
-					<>
-						{dataCountProjectStatus?.countProjectStatus && (
-							<Donut
-								colors={dataCountProjectStatus.countProjectStatus.map((e) => {
-									switch (e.project_status) {
-										case 'Not Started':
-											return '#718096'
-										case 'In Progress':
-											return '#3182ce'
-										case 'On Hold':
-											return '#D69E2E'
-										case 'Canceled':
-											return '#E53E3E'
-										case 'Finished':
-											return '#38A169'
-										default:
-											return ''
-									}
-								})}
-								labels={dataCountProjectStatus.countProjectStatus.map((e) => {
-									return e.project_status
-								})}
-								data={
-									dataCountProjectStatus.countProjectStatus.map((e) => {
-										return Number(e.count)
-									}) as number[]
+				<ItemDashboard
+					isFull={breakpoint ? !['2xl', 'xl', 'lg'].includes(breakpoint) : false}
+					title="Status project"
+				>
+					{dataCountProjectStatus?.countProjectStatus &&
+					dataCountProjectStatus.countProjectStatus.length > 0 ? (
+						<Donut
+							colors={dataCountProjectStatus.countProjectStatus.map((e) => {
+								switch (e.project_status) {
+									case 'Not Started':
+										return '#718096'
+									case 'In Progress':
+										return '#3182ce'
+									case 'On Hold':
+										return '#D69E2E'
+									case 'Canceled':
+										return '#E53E3E'
+									case 'Finished':
+										return '#38A169'
+									default:
+										return ''
 								}
-								height={280}
-							/>
-						)}
-					</>
+							})}
+							labels={dataCountProjectStatus.countProjectStatus.map((e) => {
+								return e.project_status
+							})}
+							data={
+								dataCountProjectStatus.countProjectStatus.map((e) => {
+									return Number(e.count)
+								}) as number[]
+							}
+							height={280}
+						/>
+					) : (
+						<Empty height="220px" />
+					)}
 				</ItemDashboard>
 
-				<ItemDashboard title="Pending Milestone" overflow={'auto'}>
-					<TableContainer w={'full'}>
-						<Table w={'full'} variant="simple">
-							<Thead>
-								<Tr>
-									{breakpoint && ['xs', 'sm'].includes(breakpoint) && <Th>#</Th>}
-									<Th>Title</Th>
-									<Th>Project</Th>
-									{breakpoint && ['xl', '2xl', 'md'].includes(breakpoint) && (
-										<Th isNumeric>Cost</Th>
-									)}
-								</Tr>
-							</Thead>
-							<Tbody w={'full'}>
-								{dataPendingMilestone?.pendingMilestone &&
-									dataPendingMilestone.pendingMilestone.map(
+				<ItemDashboard
+					isFull={breakpoint ? !['2xl', 'xl', 'lg'].includes(breakpoint) : false}
+					title="Pending Milestone"
+					overflow={'auto'}
+				>
+					{dataPendingMilestone?.pendingMilestone &&
+					dataPendingMilestone.pendingMilestone.length > 0 ? (
+						<TableContainer w={'full'}>
+							<Table w={'full'} variant="simple">
+								<Thead>
+									<Tr>
+										{breakpoint && ['xs', 'sm'].includes(breakpoint) && (
+											<Th>#</Th>
+										)}
+										<Th>Title</Th>
+										<Th>Project</Th>
+										{breakpoint && ['xl', '2xl', 'md'].includes(breakpoint) && (
+											<Th isNumeric>Cost</Th>
+										)}
+									</Tr>
+								</Thead>
+								<Tbody w={'full'}>
+									{dataPendingMilestone.pendingMilestone.map(
 										(item: any, key: number) => {
 											return (
 												<Tr key={key}>
-													{breakpoint && ['xs', 'sm'].includes(breakpoint) && (
-														<Td>{item.id}</Td>
-													)}
+													{breakpoint &&
+														['xs', 'sm'].includes(breakpoint) && (
+															<Td>{item.id}</Td>
+														)}
 													<Td whiteSpace={'normal'}>{item.title}</Td>
 													<Td whiteSpace={'normal'}>{item.name}</Td>
 													{breakpoint &&
@@ -192,9 +204,12 @@ const privateDashboard: NextLayout = () => {
 											)
 										}
 									)}
-							</Tbody>
-						</Table>
-					</TableContainer>
+								</Tbody>
+							</Table>
+						</TableContainer>
+					) : (
+						<Empty height="220px" />
+					)}
 				</ItemDashboard>
 			</Grid>
 		</Box>

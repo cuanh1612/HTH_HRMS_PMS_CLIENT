@@ -5,10 +5,7 @@ import { Header } from 'components/partials'
 import { AuthContext } from 'contexts/AuthContext'
 import { useRouter } from 'next/router'
 import { useContext, useEffect, useState } from 'react'
-import {
-	AiOutlineFileText,
-	AiOutlineProject,
-} from 'react-icons/ai'
+import { AiOutlineFileText, AiOutlineProject } from 'react-icons/ai'
 import { BiTimeFive } from 'react-icons/bi'
 import { IoExitOutline } from 'react-icons/io5'
 import { VscTasklist } from 'react-icons/vsc'
@@ -63,9 +60,9 @@ export const EmployeeLayout = ({ children }: { children: JSX.Element }) => {
 			overflow={'auto'}
 		>
 			<Navigation />
-			<Box  w={'full'}>
+			<Box w={['full', null, null, 'calc( 100% - 300px )']}>
 				<Header />
-				<Box  w={'full'} h={'auto'} paddingInline={10}>
+				<Box w={'full'} h={'auto'} paddingInline={[5, null, null, 10]}>
 					<TabsMenu tabs={tabs} />
 					{children}
 				</Box>

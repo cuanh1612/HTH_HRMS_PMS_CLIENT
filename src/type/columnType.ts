@@ -5,6 +5,7 @@ export interface IOptionColumn {
 	onUpdate?: any
 	onDelete?: any
 	onDetail?: any
+	colorMode?: any
 }
 
 export interface IEmployeeColumn extends IOptionColumn {

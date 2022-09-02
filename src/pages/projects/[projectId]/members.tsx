@@ -19,6 +19,7 @@ import {
 	VStack,
 	RadioGroup,
 	Box,
+	useColorMode,
 } from '@chakra-ui/react'
 import {
 	assignEmplByDepartmentMutation,
@@ -47,6 +48,7 @@ const members: NextLayout = () => {
 	const { isAuthenticated, handleLoading, currentUser, setToast, socket } =
 		useContext(AuthContext)
 	const router = useRouter()
+
 	const { projectId } = router.query
 	const [employeeId, setIdEmployee] = useState<number>()
 	const [projectResponse, setProject] = useState<projectMutationResponse>()
@@ -375,7 +377,7 @@ const members: NextLayout = () => {
 					</>
 				</FuncCollapse>
 			)}
-				<Box overflow={'scroll'}>
+			<Box overflow={'scroll'}>
 				<Table
 					data={projectResponse?.project?.employees || []}
 					columns={columns}
@@ -387,9 +389,7 @@ const members: NextLayout = () => {
 							: ['hourly_rate_project', 'department', 'designation', 'action']
 					}
 				/>
-
-				</Box>
-			
+			</Box>
 
 			{/* alert dialog when delete one */}
 			<AlertDialog

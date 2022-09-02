@@ -4,6 +4,7 @@ import {
 	Box,
 	Button,
 	HStack,
+	Image,
 	Menu,
 	MenuButton,
 	MenuItem,
@@ -31,6 +32,7 @@ export const Task = ({
 	index: number
 	isDragDisabled?: boolean
 }) => {
+	console.log(data)
 	const { colorMode } = useColorMode()
 	const { currentUser } = useContext(AuthContext)
 
@@ -122,7 +124,7 @@ export const Task = ({
 								new Date(data.deadline).getMonth() + 1
 							}-${new Date(data.deadline).getFullYear()}`}
 						</Text>
-						<Box w={'full'} bg={'#3a4f781f'} borderRadius={10} h={'120px'}></Box>
+						<Image borderRadius={10} src={`https://source.unsplash.com/random/280x120?architecture,${data.id}`}/>
 						<Text
 							width={'full'}
 							color={colorMode == 'dark' ? 'white' : 'black'}

@@ -1,4 +1,4 @@
-import { Box, Button, useDisclosure, VStack } from '@chakra-ui/react'
+import { Box, Button, useColorMode, useDisclosure, VStack } from '@chakra-ui/react'
 import { AlertDialog, Func, FuncCollapse, Head, Table } from 'components/common'
 import { Drawer } from 'components/Drawer'
 import { DateRange, Input, Select as FSelect } from 'components/filter'
@@ -32,6 +32,7 @@ import UpdateJobApplication from './[jobApplicationId]/update'
 const jobApplications: NextLayout = () => {
 	const { isAuthenticated, handleLoading, currentUser, setToast } = useContext(AuthContext)
 	const router = useRouter()
+	const {colorMode} = useColorMode()
 
 	// state
 	const [idJobApplication, setIdJobApplication] = useState<number | null>(null)
@@ -170,6 +171,7 @@ const jobApplications: NextLayout = () => {
 	}, [dataAllJobApplications])
 
 	const columns: TColumn[] = jobApplicationColumn({
+		colorMode,
 		currentUser,
 		onChangeStatus: async (id: number, event: any) => {
 			setIsLoading(true)

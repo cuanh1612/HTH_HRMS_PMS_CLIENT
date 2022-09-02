@@ -1,4 +1,4 @@
-import { Box, Button, useDisclosure, VStack } from '@chakra-ui/react'
+import { Box, Button, useColorMode, useDisclosure, VStack } from '@chakra-ui/react'
 import { AlertDialog, Func, FuncCollapse, Head, Table } from 'components/common'
 import { Drawer } from 'components/Drawer'
 import { ClientLayout } from 'components/layouts'
@@ -24,6 +24,7 @@ import { BiExport } from 'react-icons/bi'
 const Job: NextLayout = () => {
 	const { isAuthenticated, handleLoading, currentUser, setToast } = useContext(AuthContext)
 	const router = useRouter()
+	const {colorMode} = useColorMode()
 
 	// state
 	const [idJob, setIdJob] = useState<number | null>(null)
@@ -137,6 +138,7 @@ const Job: NextLayout = () => {
 	}, [statusDlMany])
 
 	const columns: TColumn[] = jobColumn({
+		colorMode,
 		currentUser,
 		onDelete: (id: number) => {
 			setIdJob(id)

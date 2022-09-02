@@ -1,5 +1,5 @@
 // components
-import { Box, Button, useDisclosure, VStack } from '@chakra-ui/react'
+import { Box, Button, useColorMode, useDisclosure, VStack } from '@chakra-ui/react'
 import { AlertDialog, Func, FuncCollapse, Head, Table } from 'components/common'
 import { Drawer } from 'components/Drawer'
 import { CSVLink } from 'react-csv'
@@ -50,6 +50,7 @@ const Employees: NextLayout = () => {
 	///setting for import csv--------------------------------------------------
 	const { isAuthenticated, handleLoading, currentUser, setToast } = useContext(AuthContext)
 	const router = useRouter()
+	const {colorMode} = useColorMode()
 
 	// set filter
 	const [filter, setFilter] = useState<IFilter>({
@@ -323,6 +324,7 @@ const Employees: NextLayout = () => {
 
 	// header ----------------------------------------
 	const columns: TColumn[] = employeeColumn({
+		colorMode,
 		currentUser,
 		onDelete: (id: number) => {
 			setEmployeeId(id)

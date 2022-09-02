@@ -225,11 +225,11 @@ export const employeeColumn = ({
 	onUpdate,
 	onChangeRole,
 	dataRoleEmployee,
+	colorMode,
 }: IEmployeeColumn): TColumn[] => {
 	return [
 		{
 			Header: 'Employees',
-
 			columns: [
 				{
 					Header: 'Id',
@@ -311,6 +311,7 @@ export const employeeColumn = ({
 						if (row.values['email'] == currentUser?.email)
 							return (
 								<Select
+									bg={colorMode == 'dark' ? '#3a4453' : undefined}
 									defaultValue={value}
 									onChange={(event: any) => {
 										onChangeRole(row.values['id'], event)
@@ -321,6 +322,7 @@ export const employeeColumn = ({
 							)
 						return (
 							<Select
+								bg={colorMode == 'dark' ? '#3a4453' : undefined}
 								defaultValue={value}
 								onChange={(event: any) => {
 									onChangeRole(row.values['id'], event)
@@ -1723,7 +1725,7 @@ export const projectMembersColumn = ({
 	onDelete,
 	project_Admin,
 	setAdmin,
-	setHourlyRate,
+	setHourlyRate
 }: IProjectMemberColumn): TColumn[] => {
 	return [
 		{
@@ -1887,7 +1889,7 @@ export const projectTasksColumn = ({
 					},
 					filter: textFilter(['name']),
 					minWidth: 150,
-					width: 150
+					width: 150,
 				},
 				{
 					Header: 'Project',
@@ -1896,7 +1898,7 @@ export const projectTasksColumn = ({
 						return <Text isTruncated>{value.name}</Text>
 					},
 					minWidth: 150,
-					width: 150
+					width: 150,
 				},
 				{
 					Header: 'Deadline',
@@ -1911,7 +1913,7 @@ export const projectTasksColumn = ({
 					},
 					filter: dateFilter(['deadline']),
 					minWidth: 150,
-					width: 150
+					width: 150,
 				},
 				{
 					Header: 'Hours Logged',
@@ -1929,7 +1931,7 @@ export const projectTasksColumn = ({
 						return <Text isTruncated>{result} hrs</Text>
 					},
 					minWidth: 150,
-					width: 150
+					width: 150,
 				},
 				{
 					Header: 'milestone',
@@ -1939,7 +1941,7 @@ export const projectTasksColumn = ({
 					},
 					filter: selectFilter(['milestone', 'id']),
 					minWidth: 150,
-					width: 150
+					width: 150,
 				},
 				{
 					Header: 'Assign to',
@@ -1959,7 +1961,7 @@ export const projectTasksColumn = ({
 						)
 					},
 					minWidth: 150,
-					width: 150
+					width: 150,
 				},
 				{
 					Header: 'Status',
@@ -1972,7 +1974,7 @@ export const projectTasksColumn = ({
 					),
 					filter: selectFilter(['status', 'id']),
 					minWidth: 150,
-					width: 150
+					width: 150,
 				},
 				{
 					Header: 'Action',
@@ -2059,7 +2061,7 @@ export const projectTimeLogsColumn = ({
 					},
 					filter: textFilter(['task', 'name']),
 					minWidth: 150,
-					width: 150
+					width: 150,
 				},
 				{
 					Header: 'Employee',
@@ -2120,7 +2122,7 @@ export const projectTimeLogsColumn = ({
 						)
 					},
 					minWidth: 150,
-					width: 150
+					width: 150,
 				},
 				{
 					Header: 'End Time',
@@ -2693,6 +2695,8 @@ export const employeeTasksColumn = ({
 				{
 					Header: 'Task',
 					accessor: 'name',
+					width: 150,
+					minWidth: 150,
 					Cell: ({ value }) => {
 						return <Text isTruncated>{value}</Text>
 					},
@@ -2701,6 +2705,8 @@ export const employeeTasksColumn = ({
 				{
 					Header: 'Project',
 					accessor: 'project',
+					width: 150,
+					minWidth: 150,
 					Cell: ({ value }) => {
 						return <Text isTruncated>{value.name}</Text>
 					},
@@ -2709,6 +2715,8 @@ export const employeeTasksColumn = ({
 				{
 					Header: 'Deadline',
 					accessor: 'deadline',
+					width: 150,
+					minWidth: 150,
 					Cell: ({ value }) => {
 						const date = new Date(value)
 						return (
@@ -2722,6 +2730,8 @@ export const employeeTasksColumn = ({
 				{
 					Header: 'Hours Logged',
 					accessor: 'time_logs',
+					width: 150,
+					minWidth: 150,
 					Cell: ({ value }) => {
 						var result
 						if (value.length == 0) {
@@ -2738,6 +2748,8 @@ export const employeeTasksColumn = ({
 				{
 					Header: 'milestone',
 					accessor: 'milestone',
+					width: 150,
+					minWidth: 150,
 					Cell: ({ value }) => {
 						return <Text isTruncated>{value?.title}</Text>
 					},
@@ -2746,6 +2758,8 @@ export const employeeTasksColumn = ({
 				{
 					Header: 'Task Category',
 					accessor: 'task_category',
+					width: 150,
+					minWidth: 150,
 					Cell: ({ value }) => {
 						return <Text isTruncated>{value?.name}</Text>
 					},
@@ -2755,6 +2769,8 @@ export const employeeTasksColumn = ({
 				{
 					Header: 'Assign to',
 					accessor: 'employees',
+					width: 150,
+					minWidth: 150,
 					filter: arrayFilter(['employees'], 'id'),
 					Cell: ({ value }) => {
 						return (
@@ -2774,6 +2790,8 @@ export const employeeTasksColumn = ({
 				{
 					Header: 'Assign By',
 					accessor: 'assignBy',
+					width: 150,
+					minWidth: 150,
 					filter: selectFilter(['assignBy', 'id']),
 					Cell: ({ value }) => {
 						return value?.name
@@ -2782,6 +2800,8 @@ export const employeeTasksColumn = ({
 				{
 					Header: 'Status',
 					accessor: 'status',
+					width: 150,
+					minWidth: 150,
 					Cell: ({ value }) => (
 						<HStack alignItems={'center'}>
 							<Box background={value.color} w={'3'} borderRadius={'full'} h={'3'} />
@@ -2871,6 +2891,8 @@ export const employeeTimeLogsColumn = ({
 				{
 					Header: 'Task',
 					accessor: 'task',
+					width: 150,
+					minWidth: 150,
 					Cell: ({ value }) => {
 						return <Text isTruncated>{value.name}</Text>
 					},
@@ -2879,6 +2901,8 @@ export const employeeTimeLogsColumn = ({
 				{
 					Header: 'Project',
 					accessor: 'project',
+					width: 150,
+					minWidth: 150,
 					Cell: ({ value }) => {
 						return <Text isTruncated>{value?.name}</Text>
 					},
@@ -2887,7 +2911,8 @@ export const employeeTimeLogsColumn = ({
 				{
 					Header: 'Employee',
 					accessor: 'employee',
-					minWidth: 250,
+					width: 150,
+					minWidth: 150,
 					Cell: ({ value, row }) => {
 						return (
 							<>
@@ -2932,6 +2957,8 @@ export const employeeTimeLogsColumn = ({
 				{
 					Header: 'Start Time',
 					accessor: 'starts_on_date',
+					width: 150,
+					minWidth: 150,
 					filter: dateFilter(['starts_on_date']),
 					Cell: ({ value, row }) => {
 						const date = new Date(value)
@@ -2945,6 +2972,7 @@ export const employeeTimeLogsColumn = ({
 				{
 					Header: 'End Time',
 					accessor: 'ends_on_date',
+					width: 150,
 					minWidth: 150,
 					filter: dateFilter(['ends_on_date']),
 					Cell: ({ value, row }) => {
@@ -2958,6 +2986,7 @@ export const employeeTimeLogsColumn = ({
 				},
 				{
 					Header: 'Total Hours',
+					width: 150,
 					minWidth: 150,
 					accessor: 'total_hours',
 					Cell: ({ value }) => {
@@ -2967,6 +2996,8 @@ export const employeeTimeLogsColumn = ({
 				{
 					Header: 'Earnings',
 					accessor: 'earnings',
+					width: 150,
+					minWidth: 150,
 					Cell: ({ value }) => {
 						return (
 							<Text isTruncated>
@@ -3523,6 +3554,7 @@ export const jobColumn = ({
 	onUpdate,
 	currentUser,
 	onChangeStatus,
+	colorMode,
 }: IJobColumn): TColumn[] => {
 	return [
 		{
@@ -3592,6 +3624,7 @@ export const jobColumn = ({
 					Cell: ({ value, row }) => {
 						return (
 							<Select
+								bg={colorMode == 'dark' ? '#3a4453' : undefined}
 								onChange={async (event: any) => {
 									await onChangeStatus(row.values['id'], event)
 								}}
@@ -3656,6 +3689,7 @@ export const jobColumn = ({
 }
 
 export const jobApplicationColumn = ({
+	colorMode,
 	onDelete,
 	onUpdate,
 	onDetail,
@@ -3727,6 +3761,7 @@ export const jobApplicationColumn = ({
 					Cell: ({ value, row }) => {
 						return (
 							<Select
+								bg={colorMode == 'dark' ? '#3a4453' : undefined}
 								onChange={async (event) => {
 									await onChangeStatus(row.values['id'], event)
 								}}
@@ -3936,6 +3971,7 @@ export const interviewScheduleColumn = ({
 	onUpdate,
 	onDetail,
 	currentUser,
+	colorMode,
 	onChangeStatus,
 }: IJobColumn): TColumn[] => {
 	return [
@@ -3983,6 +4019,7 @@ export const interviewScheduleColumn = ({
 					Cell: ({ value, row }) => {
 						return (
 							<Select
+								bg={colorMode == 'dark' ? '#3a4453' : undefined}
 								onChange={async (event) => {
 									await onChangeStatus(row.values['id'], event)
 								}}

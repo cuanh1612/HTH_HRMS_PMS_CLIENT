@@ -203,6 +203,7 @@ const interviews: NextLayout = () => {
 	}, [allEmployees, colorMode])
 
 	const columns: TColumn[] = interviewScheduleColumn({
+		colorMode,
 		currentUser,
 		onChangeStatus: async (id: number, event: any) => {
 			setIsLoading(true)

@@ -99,7 +99,7 @@ export const DetailEmployee: NextLayout | any = ({
 							<Avatar
 								name={dataDetailEmployee?.employee?.name}
 								src={dataDetailEmployee?.employee?.avatar?.url}
-								size={'xl'}
+								size={'lg'}
 							/>
 							<VStack spacing={'1px'} align={'start'} height={'full'}>
 								<Text fontSize={'20px'} fontWeight={'semibold'}>
@@ -229,31 +229,31 @@ export const DetailEmployee: NextLayout | any = ({
 											title={'Projects'}
 											text={countProjectsEmployee?.countProjects}
 											icon={<AiOutlineProject fontSize={20} />}
-											color={'GreenN'}
+											color={'Pink'}
 										/>
 										<Static
 											title={'Hours Logged'}
 											text={`${hoursLoggedEmployee?.hoursLogged} Hrs`}
 											icon={<BiTime fontSize={20} />}
-											color={'Pink'}
+											color={'Lam'}
 										/>
 										<Static
 											title={'Late Attendance'}
 											text={countLateAttendancesEmployee?.lateAttendance}
 											icon={<BsCheck2 fontSize={20} />}
-											color={'Lam'}
+											color={'Green'}
 										/>
 
 										<Static
 											title={'Leave taken'}
 											text={countLeavesTakenEmployee?.countLeavesTaken}
 											icon={<AiOutlineProject fontSize={20} />}
-											color={'Green'}
+											color={'Pink'}
 										/>
 									</Grid>
 								</VStack>
 								<Grid templateColumns="repeat(2, 1fr)" gap={6} w={'full'}>
-									<GridItem borderRadius={5}>
+									<GridItem borderRadius={5} colSpan={[2, null, null, null, null, 1]}>
 										<VStack spacing={'4'} alignItems={'start'} w={'full'}>
 											<Text fontWeight={'semibold'} fontSize={'xl'}>
 												Tasks

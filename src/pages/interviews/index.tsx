@@ -278,19 +278,17 @@ const interviews: NextLayout = () => {
 				</FuncCollapse>
 			</Box>
 
-			<Box className="table">
-				<Table
-					data={allInterviewSchedule?.interviews || []}
-					columns={columns}
-					isLoading={isLoading}
-					isSelect
-					selectByColumn="id"
-					setSelect={(data: Array<number>) => setDataSl(data)}
-					filter={filter}
-					isResetFilter={isResetFilter}
-				/>
-			</Box>
-			
+			<Table
+				data={allInterviewSchedule?.interviews || []}
+				columns={columns}
+				isLoading={isLoading}
+				isSelect
+				selectByColumn="id"
+				setSelect={(data: Array<number>) => setDataSl(data)}
+				filter={filter}
+				isResetFilter={isResetFilter}
+			/>
+
 			{/* alert dialog when delete one */}
 			<AlertDialog
 				handleDelete={() => {
@@ -390,6 +388,7 @@ const interviews: NextLayout = () => {
 					/>
 					{employeesFilter && (
 						<SelectCustom
+							placeholder="Select interviewer"
 							handleSearch={(field: any) => {
 								setFilter({
 									columnId: 'interviewer',

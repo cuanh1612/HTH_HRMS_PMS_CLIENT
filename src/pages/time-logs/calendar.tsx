@@ -412,6 +412,7 @@ const calendar: NextLayout = () => {
 
 					{currentUser?.role === 'Admin' && (
 						<SelectCustom
+							placeholder='Select employee'
 							handleSearch={(field: any) => {
 								setFilter((state) => ({
 									...state,
@@ -436,6 +437,7 @@ const calendar: NextLayout = () => {
 						/>
 					)}
 					<SelectCustom
+						placeholder='Select client'
 						handleSearch={(field: any) => {
 							setFilter((state) => ({
 								...state,

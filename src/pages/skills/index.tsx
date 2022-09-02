@@ -131,7 +131,7 @@ const Skill: NextLayout = () => {
 		<Box pb={8}>
 			<Head title="Skills" />
 
-			<Box className='function'>
+			<Box className="function">
 				<FuncCollapse>
 					{currentUser && currentUser.role === 'Admin' && (
 						<>
@@ -167,18 +167,16 @@ const Skill: NextLayout = () => {
 				</FuncCollapse>
 			</Box>
 
-			<Box className="table">
-				<Table
-					data={dataAllSkills?.skills || []}
-					columns={columns}
-					isLoading={isLoading}
-					isSelect={currentUser?.role === 'Admin'}
-					selectByColumn="id"
-					setSelect={(data: Array<number>) => setDataSl(data)}
-					filter={filter}
-					isResetFilter={isResetFilter}
-				/>
-			</Box>
+			<Table
+				data={dataAllSkills?.skills || []}
+				columns={columns}
+				isLoading={isLoading}
+				isSelect={currentUser?.role === 'Admin'}
+				selectByColumn="id"
+				setSelect={(data: Array<number>) => setDataSl(data)}
+				filter={filter}
+				isResetFilter={isResetFilter}
+			/>
 
 			<Drawer size="xl" title="Add Skills" onClose={onCloseAdd} isOpen={isOpenAdd}>
 				<AddSkill onCloseDrawer={onCloseAdd} />

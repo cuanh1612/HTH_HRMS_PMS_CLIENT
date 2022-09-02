@@ -234,18 +234,16 @@ const NoticeBoard: NextLayout = () => {
 				</FuncCollapse>
 			</Box>
 
-			<Box className='table'>
-				<Table
-					data={allNotices?.noticeBoards || []}
-					columns={columns}
-					isLoading={isLoading}
-					isSelect={currentUser?.role === 'Admin'}
-					selectByColumn="id"
-					setSelect={(data: Array<number>) => setDataSl(data)}
-					filter={filter}
-					isResetFilter={isResetFilter}
-				/>
-			</Box>
+			<Table
+				data={allNotices?.noticeBoards || []}
+				columns={columns}
+				isLoading={isLoading}
+				isSelect={currentUser?.role === 'Admin'}
+				selectByColumn="id"
+				setSelect={(data: Array<number>) => setDataSl(data)}
+				filter={filter}
+				isResetFilter={isResetFilter}
+			/>
 
 			{/* alert dialog when delete one */}
 			<AlertDialog

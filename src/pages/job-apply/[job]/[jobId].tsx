@@ -12,7 +12,7 @@ import {
 } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Head, Loading } from 'components/common'
-import { Input, SelectCustom, Textarea, UploadAvatar } from 'components/form'
+import { Input, Select, Textarea, UploadAvatar } from 'components/form'
 import { RecruitLayout } from 'components/layouts'
 import { AuthContext } from 'contexts/AuthContext'
 import { createJobApplicationMutation } from 'mutations/jobApplication'
@@ -65,8 +65,7 @@ const Apply: NextLayout = () => {
 
 	//Query -------------------------------------------------------------------
 	const { data: dataCompanyInfo, mutate: refetchCompanyInfo } = companyInfoQuery()
-	console.log(dataCompanyInfo);
-	
+	console.log(dataCompanyInfo)
 
 	//mutation ----------------------------------------------------------------
 	const [
@@ -162,11 +161,7 @@ const Apply: NextLayout = () => {
 
 			allLocations.locations.map((location) => {
 				newOptionLocations.push({
-					label: (
-						<>
-							<Text>{location.name}</Text>
-						</>
-					),
+					label: location.name,
 					value: location.id,
 				})
 			})
@@ -265,33 +260,36 @@ const Apply: NextLayout = () => {
 
 							<GridItem w="100%" colSpan={[2, 1]}>
 								<HStack>
-									<SelectCustom
+									<Select
 										form={formSetting}
 										label={'Location'}
 										name={'location'}
 										required={true}
 										options={optionLocations}
+										placeholder={'Select location'}
 									/>
 								</HStack>
 							</GridItem>
 
 							<GridItem w="100%" colSpan={[2, 1]}>
-								<SelectCustom
+								<Select
 									name="status"
 									label="status"
 									required={true}
 									form={formSetting}
 									options={dataJobApplicationStatus}
+									placeholder={'Select status'}
 								/>
 							</GridItem>
 
 							<GridItem w="100%" colSpan={[2, 1]}>
-								<SelectCustom
+								<Select
 									name="source"
 									label="Application Source"
 									required={true}
 									form={formSetting}
 									options={dataApplicationSource}
+									placeholder={'Select source'}
 								/>
 							</GridItem>
 

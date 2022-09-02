@@ -381,6 +381,7 @@ const Event: NextLayout = () => {
 
 					{employeesFilter && (
 						<SelectCustom
+							placeholder='Select employee'
 							handleSearch={(field: any) => {
 								setEmployee(String(field.value))
 							}}
@@ -404,6 +405,7 @@ const Event: NextLayout = () => {
 
 					{clientsFilter && (
 						<SelectCustom
+							placeholder='Select client'
 							handleSearch={(field: any) => {
 								setClient(String(field.value))
 							}}

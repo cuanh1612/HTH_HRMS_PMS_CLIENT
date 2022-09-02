@@ -1,7 +1,7 @@
 import { Box, Button, Grid, GridItem, HStack, Text } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Loading } from 'components/common'
-import { Input, SelectCustom, Textarea, UploadAvatar } from 'components/form'
+import { Input, Select, Textarea, UploadAvatar } from 'components/form'
 import { AuthContext } from 'contexts/AuthContext'
 import { updateJobApplicationMutation } from 'mutations/jobApplication'
 import { useRouter } from 'next/router'
@@ -41,10 +41,6 @@ export default function UpdateJobApplication({
 
 	const [infoImg, setInfoImg] = useState<IImg>() // state data image upload
 	const [loadingImg, setLoadingImg] = useState<boolean>(false) // state loading when image upload
-
-	//Selected option
-	const [selectedJob, setSelectedJob] = useState<IOption>()
-	const [selectedLocation, setSelectedLocation] = useState<IOption>()
 
 	//Query -------------------------------------------------------------------
 
@@ -150,11 +146,7 @@ export default function UpdateJobApplication({
 
 			allLocations.locations.map((location) => {
 				newOptionLocations.push({
-					label: (
-						<>
-							<Text>{location.name}</Text>
-						</>
-					),
+					label: location.name,
 					value: location.id,
 				})
 			})
@@ -170,11 +162,7 @@ export default function UpdateJobApplication({
 
 			allJobs.jobs.map((job) => {
 				newOptionJobs.push({
-					label: (
-						<>
-							<Text>{job.title}</Text>
-						</>
-					),
+					label: job.title,
 					value: job.id,
 				})
 			})
@@ -219,32 +207,6 @@ export default function UpdateJobApplication({
 	//Change data form when have data detail event
 	useEffect(() => {
 		if (dataDetailJobApplication && dataDetailJobApplication.jobApplication) {
-			//Set data selected option job
-			if (dataDetailJobApplication.jobApplication.jobs) {
-				const newSelectedJob: IOption = {
-					label: (
-						<>
-							<Text>{dataDetailJobApplication.jobApplication.jobs.title}</Text>
-						</>
-					),
-					value: dataDetailJobApplication.jobApplication.jobs.id,
-				}
-				setSelectedJob(newSelectedJob)
-			}
-
-			//Set data selected option location
-			if (dataDetailJobApplication.jobApplication.location) {
-				const newSelectedLocation: IOption = {
-					label: (
-						<>
-							<Text>{dataDetailJobApplication.jobApplication.location.name}</Text>
-						</>
-					),
-					value: dataDetailJobApplication.jobApplication.location.id,
-				}
-				setSelectedLocation(newSelectedLocation)
-			}
-
 			//set data form
 			formSetting.reset({
 				name: dataDetailJobApplication.jobApplication.name || undefined,
@@ -277,13 +239,13 @@ export default function UpdateJobApplication({
 
 					<GridItem w="100%" colSpan={[2, 1]}>
 						<HStack>
-							<SelectCustom
+							<Select
 								form={formSetting}
-								label={'Jobs'}
+								label={'Job'}
 								name={'jobs'}
 								required={true}
 								options={optionJobs}
-								selectedOption={selectedJob}
+								placeholder={'Select job'}
 							/>
 						</HStack>
 					</GridItem>
@@ -332,34 +294,36 @@ export default function UpdateJobApplication({
 
 					<GridItem w="100%" colSpan={[2, 1]}>
 						<HStack>
-							<SelectCustom
+							<Select
 								form={formSetting}
 								label={'Location'}
 								name={'location'}
 								required={true}
 								options={optionLocations}
-								selectedOption={selectedLocation}
+								placeholder={'Select location'}
 							/>
 						</HStack>
 					</GridItem>
 
 					<GridItem w="100%" colSpan={[2, 1]}>
-						<SelectCustom
+						<Select
 							name="status"
 							label="status"
 							required={true}
 							form={formSetting}
 							options={dataJobApplicationStatus}
+							placeholder={'Select status'}
 						/>
 					</GridItem>
 
 					<GridItem w="100%" colSpan={[2, 1]}>
-						<SelectCustom
+						<Select
 							name="source"
 							label="Application Source"
 							required={true}
 							form={formSetting}
 							options={dataApplicationSource}
+							placeholder={'Select source'}
 						/>
 					</GridItem>
 

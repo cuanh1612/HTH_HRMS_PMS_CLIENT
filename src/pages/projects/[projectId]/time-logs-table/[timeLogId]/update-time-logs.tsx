@@ -11,7 +11,7 @@ import {
 } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Loading } from 'components/common'
-import { Input, SelectCustom, TimePicker } from 'components/form'
+import { Input, Select, SelectCustom, TimePicker } from 'components/form'
 import { AuthContext } from 'contexts/AuthContext'
 import { updateTimeLogMutation } from 'mutations/timeLog'
 import { GetServerSideProps } from 'next'
@@ -51,7 +51,6 @@ export default function UpdateTimeLog({ onCloseDrawer, timeLogIdProp }: IUpdateT
 	const [optionEmployees, setOptionEmployees] = useState<IOption[]>([])
 	const [selectedTaskId, setSelectedTaskId] = useState<number | string>()
 	const [selectedEmployeeId, setSelectedEmployeeId] = useState<IOption>()
-	const [selectedTaskIdForSelect, setSelectedTaskIdForSelect] = useState<IOption>()
 
 	//Query -------------------------------------------------------------
 	// get data detail project
@@ -133,6 +132,15 @@ export default function UpdateTimeLog({ onCloseDrawer, timeLogIdProp }: IUpdateT
 			}
 		}
 	}, [isAuthenticated])
+
+	useEffect(() => {
+		const subscription = formSetting.watch((value, { name }) => {
+			if (name == 'task') {
+				onChangeTask(value[name] || '')
+			}
+		})
+		return () => subscription.unsubscribe()
+	}, [formSetting.watch])
 
 	//Set data option tasks state
 	useEffect(() => {
@@ -232,13 +240,6 @@ export default function UpdateTimeLog({ onCloseDrawer, timeLogIdProp }: IUpdateT
 				),
 				value: detailTimeLog.timeLog.employee.id,
 			})
-
-			if (detailTimeLog?.timeLog?.task) {
-				setSelectedTaskIdForSelect({
-					label: detailTimeLog.timeLog.task.name,
-					value: detailTimeLog.timeLog.task.id,
-				})
-			}
 		}
 	}, [detailTimeLog])
 
@@ -258,19 +259,18 @@ export default function UpdateTimeLog({ onCloseDrawer, timeLogIdProp }: IUpdateT
 					</GridItem>
 
 					<GridItem w="100%" colSpan={[2, 1]}>
-						<SelectCustom
+						<Select
 							name="task"
 							label="task"
 							form={formSetting}
 							options={optionTasks}
 							required={true}
-							onChangeValue={onChangeTask}
-							selectedOption={selectedTaskIdForSelect}
 						/>
 					</GridItem>
 
 					<GridItem w="100%" colSpan={[2, 1]}>
 						<SelectCustom
+							placeholder='Select employee'
 							name="employee"
 							label="employee"
 							form={formSetting}

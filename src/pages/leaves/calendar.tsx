@@ -301,6 +301,7 @@ const calendar: NextLayout = () => {
 				<VStack p={6} spacing={5}>
 					{employeesFilter && (
 						<SelectCustom
+							placeholder='Select employee'
 							handleSearch={(field: any) => {
 								setEmployee(String(field.value))
 							}}

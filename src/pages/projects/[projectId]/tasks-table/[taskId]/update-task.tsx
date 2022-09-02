@@ -12,7 +12,7 @@ import {
 	VStack,
 } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { Input, Select, SelectCustom, SelectMany } from 'components/form'
+import { Input, Select, SelectMany } from 'components/form'
 import { Editor, Loading } from 'components/common'
 import Modal from 'components/modal/Modal'
 import { AuthContext } from 'contexts/AuthContext'
@@ -330,11 +330,7 @@ export default function UpdateTask({ onCloseDrawer, taskIdProp }: IUpdateTaskPro
 				<GridItem w="100%" colSpan={[2, 1]}>
 					<VStack align={'start'}>
 						<Text color={'gray.400'}>Project</Text>
-						<CInput
-							type={'text'}
-							value={dataDetailTask?.task?.project.name}
-							disabled
-						/>
+						<CInput type={'text'} value={dataDetailTask?.task?.project.name} disabled />
 					</VStack>
 				</GridItem>
 
@@ -361,20 +357,21 @@ export default function UpdateTask({ onCloseDrawer, taskIdProp }: IUpdateTaskPro
 				</GridItem>
 
 				<GridItem w="100%" colSpan={[2, 1]}>
-					<SelectCustom
+					<Select
 						name="status"
 						label="Status"
 						form={formSetting}
 						options={optionStatus}
 						required
-						selectedOption={selectedStatus}
+						placeholder="Select status"
 					/>
 				</GridItem>
 
 				<GridItem w="100%" colSpan={[2]}>
 					<SelectMany
+						placeholder='Select employees'
 						form={formSetting}
-						label={'Select Employee'}
+						label={'Employees'}
 						name={'employees'}
 						required={true}
 						options={optionEmployees}
@@ -387,7 +384,7 @@ export default function UpdateTask({ onCloseDrawer, taskIdProp }: IUpdateTaskPro
 						<Text fontWeight={'normal'} color={'gray.400'}>
 							Description
 						</Text>
-						<Editor note={description} onChangeNote={onChangeDescription}/>
+						<Editor note={description} onChangeNote={onChangeDescription} />
 					</VStack>
 				</GridItem>
 			</Grid>
@@ -403,24 +400,24 @@ export default function UpdateTask({ onCloseDrawer, taskIdProp }: IUpdateTaskPro
 			{isOpenOtherDetails && (
 				<Grid templateColumns="repeat(2, 1fr)" gap={6} mt={6}>
 					<GridItem w="100%" colSpan={[2, 1]}>
-						<SelectCustom
+						<Select
 							name="milestone"
 							label="Milestone"
 							required={false}
 							form={formSetting}
 							placeholder={'Select Milestone'}
 							options={optionMilestones}
-							selectedOption={selectedMilestone}
 						/>
 					</GridItem>
 
 					<GridItem w="100%" colSpan={[2, 1]}>
-						<SelectCustom
+						<Select
 							name="priority"
 							label="Priority"
 							form={formSetting}
 							options={dataTaskPriority}
 							required={false}
+							placeholder={'Select priority'}
 						/>
 					</GridItem>
 				</Grid>

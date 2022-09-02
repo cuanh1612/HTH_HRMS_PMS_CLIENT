@@ -28,11 +28,6 @@ export const TabsMenu = ({ tabs }: { tabs: ITab[] }) => {
 	const [menuSl, setMenuSl] = useState(-1)
 
 	useEffect(() => {
-		setTabProjects(tabs.slice(0, 7))
-		setTabMenus(tabs.slice(7, tabs.length))
-	}, [tabs])
-
-	useEffect(() => {
 		tabProjects.map((item, key) => {
 			if (pathname.includes(item.link.split('/')[item.link.split('/').length - 1])) {
 				setTabSl(key)
@@ -50,6 +45,7 @@ export const TabsMenu = ({ tabs }: { tabs: ITab[] }) => {
 	}, [tabMenus, pathname])
 
 	useEffect(() => {
+		console.log(breakpoint)
 		switch (breakpoint) {
 			case '2xl':
 				setTabProjects(tabs.slice(0, 7))
@@ -57,29 +53,28 @@ export const TabsMenu = ({ tabs }: { tabs: ITab[] }) => {
 
 				break
 			case 'xl':
-				setTabProjects(tabs.slice(0, 6))
-				setTabMenus(tabs.slice(6, tabs.length))
-
-				break
-			case 'lg':
 				setTabProjects(tabs.slice(0, 5))
 				setTabMenus(tabs.slice(5, tabs.length))
 
 				break
-			case 'md':
+			case 'lg':
 				setTabProjects(tabs.slice(0, 4))
 				setTabMenus(tabs.slice(4, tabs.length))
 
 				break
-			case 'sm':
+			case 'md':
 				setTabProjects(tabs.slice(0, 3))
 				setTabMenus(tabs.slice(3, tabs.length))
 
 				break
-			case 'base':
+			case 'sm':
 				setTabProjects(tabs.slice(0, 2))
 				setTabMenus(tabs.slice(2, tabs.length))
 
+				break
+			case 'base':
+				setTabProjects(tabs.slice(0, 1))
+				setTabMenus(tabs.slice(1, tabs.length))
 				break
 		}
 	}, [breakpoint])

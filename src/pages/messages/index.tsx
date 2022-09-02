@@ -290,7 +290,7 @@ const Messages: NextLayout = () => {
 	return (
 		<Box minH={'500px'} pos="relative" height={'calc( 100vh - 130px )'}>
 			<Head title="Messages" />
-			<HStack spacing={8} height={'100%'}>
+			<HStack spacing={[0,null, null, null, 8]} height={'100%'}>
 				<VStack
 					w="350px"
 					minW={'350px'}

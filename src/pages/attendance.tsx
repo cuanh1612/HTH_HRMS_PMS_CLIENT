@@ -255,7 +255,7 @@ const attendance: NextLayout = () => {
 	return (
 		<Box w={'full'} pb={8}>
 			<Head title="Attendances" />
-			<Box className='function'>
+			<Box className="function">
 				<FuncCollapse>
 					<Func
 						icon={<VscFilter />}
@@ -266,9 +266,9 @@ const attendance: NextLayout = () => {
 				</FuncCollapse>
 			</Box>
 			<br />
-			<VStack spacing={8} justifyContent={'flex-start'} pos="relative" alignItems={'normal'}>
-				<HStack spacing={5} className="caption">
-					<HStack>
+			<VStack spacing={2} justifyContent={'flex-start'} pos="relative" alignItems={'normal'}>
+				<HStack flexWrap={'wrap'} spacing={0} className="caption">
+					<HStack mr={'20px !important'} mb={'20px !important'}>
 						<HStack
 							h={'30px'}
 							minW={'30px'}
@@ -283,7 +283,7 @@ const attendance: NextLayout = () => {
 						</HStack>
 						<Text color={'gray'}>Leave</Text>
 					</HStack>
-					<HStack>
+					<HStack mr={'20px !important'} mb={'20px !important'}>
 						<HStack
 							h={'30px'}
 							minW={'30px'}
@@ -298,7 +298,7 @@ const attendance: NextLayout = () => {
 						</HStack>
 						<Text color={'gray'}>Attended</Text>
 					</HStack>
-					<HStack>
+					<HStack mr={'20px !important'} mb={'20px !important'}>
 						<HStack
 							h={'30px'}
 							minW={'30px'}
@@ -313,7 +313,7 @@ const attendance: NextLayout = () => {
 						</HStack>
 						<Text color={'gray'}>Not attended yet</Text>
 					</HStack>
-					<HStack>
+					<HStack mr={'20px !important'} mb={'20px !important'}>
 						<HStack
 							h={'30px'}
 							minW={'30px'}
@@ -329,7 +329,13 @@ const attendance: NextLayout = () => {
 						<Text color={'gray'}>Holiday</Text>
 					</HStack>
 				</HStack>
-				<VStack className='table' paddingBottom={'30px'} spacing={5} alignItems={'start'} overflow={'auto'}>
+				<VStack
+					className="table"
+					paddingBottom={'30px'}
+					spacing={5}
+					alignItems={'start'}
+					overflow={'auto'}
+				>
 					<HStack spacing={10} alignItems="center" justifyContent={'space-between'}>
 						<HStack spacing={10}>
 							<Text
@@ -690,6 +696,7 @@ const attendance: NextLayout = () => {
 						)}
 						{currentUser?.role === 'Admin' && employees && (
 							<SelectCustom
+								placeholder="Select employee"
 								handleSearch={(field: any) => {
 									setEmployeeSl(field.value)
 								}}

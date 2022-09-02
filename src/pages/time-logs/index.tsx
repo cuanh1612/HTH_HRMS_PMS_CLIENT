@@ -274,19 +274,17 @@ const TimeLogs: NextLayout = () => {
 				</FuncCollapse>
 			</Box>
 
-			<Box className='table'>
-				<Table
-					data={allTimeLogs?.timeLogs || []}
-					columns={columns}
-					isLoading={isLoading}
-					isSelect={currentUser?.role === 'Admin' ? true : false}
-					selectByColumn="id"
-					setSelect={(data: Array<number>) => setDataSl(data)}
-					filter={filter}
-					disableColumns={['project']}
-					isResetFilter={isResetFilter}
-				/>
-			</Box>
+			<Table
+				data={allTimeLogs?.timeLogs || []}
+				columns={columns}
+				isLoading={isLoading}
+				isSelect={currentUser?.role === 'Admin' ? true : false}
+				selectByColumn="id"
+				setSelect={(data: Array<number>) => setDataSl(data)}
+				filter={filter}
+				disableColumns={['project']}
+				isResetFilter={isResetFilter}
+			/>
 
 			{/* drawer to add project time log */}
 			<Drawer

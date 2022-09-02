@@ -10,7 +10,7 @@ import {
 	Table,
 	TableContainer,
 	Tbody,
-	Td,
+	Td, 
 	Text,
 	Th,
 	Thead,

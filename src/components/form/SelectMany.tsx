@@ -25,10 +25,11 @@ export const SelectMany = ({
 	options,
 	selectedOptions,
 	isModal,
+	placeholder,
 	onOpenModal,
 }: ISelect & { form: UseFormReturn<any, any> }) => {
 	const errorColor = useColorModeValue('red.500', 'red.300')
-	const {colorMode} = useColorMode()
+	const { colorMode } = useColorMode()
 
 	const [selectedOptionsState, setSelectedOptionsState] = useState<IOption[]>([])
 
@@ -69,7 +70,11 @@ export const SelectMany = ({
 					<FormLabel color={'gray.400'} fontWeight={'normal'} htmlFor={name}>
 						{label}{' '}
 						{required && (
-							<Text ml={'1'} as="span" color={colorMode == 'dark' ? 'red.300': 'red.500'}>
+							<Text
+								ml={'1'}
+								as="span"
+								color={colorMode == 'dark' ? 'red.300' : 'red.500'}
+							>
 								*
 							</Text>
 						)}
@@ -78,6 +83,68 @@ export const SelectMany = ({
 
 				<HStack w={'full'} position={'relative'}>
 					<Select
+						styles={{
+							placeholder: (provided) => ({
+								...provided,
+								color: '#68707b',
+								fontSize: '16px',
+							}),
+							menu: (provided) => ({
+								...provided,
+								background: colorMode == 'dark' ? '#2d3748' : 'white',
+								border: `1px solid ${colorMode == 'dark' ? '#5a626f' : '#e2e8f0'}`,
+								borderRadius: '10px',
+							}),
+							menuPortal: (provided) => ({
+								...provided,
+								background: 'red',
+							}),
+							input: (provided) => {
+								return {
+									...provided,
+									background: colorMode == 'dark' ? '#3a4453' : 'white',
+									color: 'black!important',
+									gridArea: '1',
+								}
+							},
+							control: (provided) => ({
+								...provided,
+								background: colorMode == 'dark' ? '#3a4453' : 'white',
+								border: `1px solid ${colorMode == 'dark' ? '#5a626f' : '#e2e8f0'}`,
+								borderRadius: '6px',
+								height: '40px',
+							}),
+							option: (provided, state) => ({
+								...provided,
+								background:
+									colorMode == 'dark'
+										? state.isFocused
+											? '#3a4458'
+											: state.isSelected
+											? '#3a4472'
+											: 'transparent'
+										: state.isFocused
+										? '#e2e8f0'
+										: state.isSelected
+										? '#bcc4cf40'
+										: 'transparent',
+								color: colorMode == 'dark' ? 'white' : 'black',
+							}),
+							multiValue: (provided) => ({
+								...provided,
+								background: colorMode == 'dark' ? '#2d3748' : provided.background,
+								color: 'white',
+							}),
+							multiValueLabel: (provided) => ({
+								...provided,
+								color: colorMode == 'dark' ? 'white' : provided.color,
+							}),
+							multiValueRemove: (provided) => ({
+								...provided,
+								color: colorMode == 'dark' ? 'white' : 'gray',
+							}),
+						}}
+						placeholder={placeholder}
 						options={options}
 						value={selectedOptionsState}
 						closeMenuOnSelect={false}

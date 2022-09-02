@@ -230,6 +230,7 @@ export default function DetailJobApplication({
 					<GridItem w="100%" colSpan={2}>
 						<HStack mt={2}>
 							<SelectMany
+								placeholder='Select skills'
 								form={formSetting}
 								name={'skills'}
 								required={true}

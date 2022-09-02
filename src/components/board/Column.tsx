@@ -113,7 +113,6 @@ export const Column = ({
 							>
 								{column.tasks &&
 									column.tasks.map((value, key: number) => {
-										console.log(value)
 										return (
 											<Task
 												isDragDisabled={

@@ -237,19 +237,17 @@ const jobApplications: NextLayout = () => {
 				</FuncCollapse>
 			</Box>
 
-			<Box className="table">
-				<Table
-					data={dataAllJobApplications?.jobApplications || []}
-					columns={columns}
-					isLoading={isLoading}
-					isSelect={currentUser?.role == 'Admin'}
-					selectByColumn="id"
-					setSelect={(data: Array<number>) => setDataSl(data)}
-					filter={filter}
-					isResetFilter={isResetFilter}
-				/>
-			</Box>
-			
+			<Table
+				data={dataAllJobApplications?.jobApplications || []}
+				columns={columns}
+				isLoading={isLoading}
+				isSelect={currentUser?.role == 'Admin'}
+				selectByColumn="id"
+				setSelect={(data: Array<number>) => setDataSl(data)}
+				filter={filter}
+				isResetFilter={isResetFilter}
+			/>
+
 			<Drawer size="xl" title="Add Job Application" onClose={onCloseAdd} isOpen={isOpenAdd}>
 				<AddJobApplications onCloseDrawer={onCloseAdd} />
 			</Drawer>

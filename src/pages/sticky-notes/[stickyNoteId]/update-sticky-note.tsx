@@ -1,7 +1,7 @@
 import { Box, Button, Grid, GridItem, Text, useColorMode, VStack } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Editor, Loading } from 'components/common'
-import { SelectCustom } from 'components/form'
+import { Select } from 'components/form'
 import { AuthContext } from 'contexts/AuthContext'
 import { updateStickyNoteMutation } from 'mutations/StickyNote'
 import { useRouter } from 'next/router'
@@ -23,7 +23,7 @@ export default function UpdateStickyNote({
 	onCloseDrawer,
 }: IUpdateStickyNoteProps) {
 	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
-	const {colorMode} = useColorMode()
+	const { colorMode } = useColorMode()
 	const router = useRouter()
 	const { stickyNoteId: stickyNoteRouter } = router.query
 
@@ -116,12 +116,13 @@ export default function UpdateStickyNote({
 			<Box pos="relative" p={6} as={'form'} h="auto" onSubmit={handleSubmit(onSubmit)}>
 				<Grid templateColumns="repeat(2, 1fr)" gap={6}>
 					<GridItem w="100%" colSpan={[2, 1]}>
-						<SelectCustom
+						<Select
 							required={true}
 							form={formSetting}
 							label={'Color'}
 							name={'color'}
 							options={dataStickyNoteColor}
+							placeholder={'Select color'}
 						/>
 					</GridItem>
 

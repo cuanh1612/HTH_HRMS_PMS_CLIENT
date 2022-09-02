@@ -1,7 +1,7 @@
 import { Avatar, Box, Button, Grid, GridItem, HStack, Text } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Loading } from 'components/common'
-import { Input, SelectCustom, SelectMany, Textarea, TimePicker } from 'components/form'
+import { Input, Select, SelectCustom, SelectMany, Textarea, TimePicker } from 'components/form'
 import { AuthContext } from 'contexts/AuthContext'
 import { updateInterviewMutation } from 'mutations/interview'
 import { useRouter } from 'next/router'
@@ -251,8 +251,9 @@ export default function UpdateInterview({
 					<GridItem w="100%" colSpan={[2, 1]}>
 						<HStack>
 							<SelectMany
+								placeholder='Select interviewers'
 								form={formSetting}
-								label={'Select Interview'}
+								label={'Interviewer'}
 								name={'interviewer'}
 								required={true}
 								options={optionsInterviews}
@@ -262,12 +263,13 @@ export default function UpdateInterview({
 					</GridItem>
 
 					<GridItem w="100%" colSpan={[2, 1]}>
-						<SelectCustom
+						<Select
 							name="type"
 							label="Interview Type"
 							required={true}
 							form={formSetting}
 							options={dataInterviewType}
+							placeholder={'Select type'}
 						/>
 					</GridItem>
 
@@ -293,7 +295,8 @@ export default function UpdateInterview({
 					</GridItem>
 
 					<GridItem w="100%" colSpan={[2, 1]}>
-						<SelectCustom
+						<Select
+							placeholder="Select status"
 							name="status"
 							label="Interview Status"
 							required={true}

@@ -301,19 +301,17 @@ const Leaves: NextLayout = () => {
 			</Box>
 
 			{currentUser && (
-				<Box className="table">
-					<Table
-						data={allLeaves?.leaves || []}
-						columns={columns}
-						isLoading={isLoading}
-						isSelect={currentUser.role == 'Admin' ? true : false}
-						selectByColumn="id"
-						setSelect={(data: Array<number>) => setDataSl(data)}
-						filter={filter}
-						disableColumns={['year']}
-						isResetFilter={isResetFilter}
-					/>
-				</Box>
+				<Table
+					data={allLeaves?.leaves || []}
+					columns={columns}
+					isLoading={isLoading}
+					isSelect={currentUser.role == 'Admin' ? true : false}
+					selectByColumn="id"
+					setSelect={(data: Array<number>) => setDataSl(data)}
+					filter={filter}
+					disableColumns={['year']}
+					isResetFilter={isResetFilter}
+				/>
 			)}
 
 			{/* alert dialog when delete one */}

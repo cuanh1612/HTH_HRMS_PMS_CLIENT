@@ -1,7 +1,7 @@
 import { Box, Button, Grid, GridItem, HStack, Text } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Loading } from 'components/common'
-import { Input, SelectCustom, Textarea, UploadAvatar } from 'components/form'
+import { Input, Select, Textarea, UploadAvatar } from 'components/form'
 import { AuthContext } from 'contexts/AuthContext'
 import { createJobApplicationMutation } from 'mutations/jobApplication'
 import { useRouter } from 'next/router'
@@ -38,7 +38,6 @@ export default function AddJobApplication({
 	// all departments
 	const [optionJobs, setOptionJobs] = useState<IOption[]>([])
 	const [optionLocations, setOptionLocations] = useState<IOption[]>([])
-	const [selectedJobOption, setSelectedJobOption] = useState<IOption>()
 
 	const [infoImg, setInfoImg] = useState<IImg>() // state data image upload
 	const [loadingImg, setLoadingImg] = useState<boolean>(false) // state loading when image upload
@@ -113,8 +112,8 @@ export default function AddJobApplication({
 			mutateCreJobApplication(values)
 		} else {
 			setToast({
-				type: "warning",
-				msg: "Please select avatar candidate"
+				type: 'warning',
+				msg: 'Please select avatar candidate',
 			})
 		}
 	}
@@ -139,11 +138,7 @@ export default function AddJobApplication({
 
 			allLocations.locations.map((location) => {
 				newOptionLocations.push({
-					label: (
-						<>
-							<Text>{location.name}</Text>
-						</>
-					),
+					label: location.name,
 					value: location.id,
 				})
 			})
@@ -159,31 +154,12 @@ export default function AddJobApplication({
 
 			allJobs.jobs.map((job) => {
 				newOptionJobs.push({
-					label: (
-						<>
-							<Text>{job.title}</Text>
-						</>
-					),
+					label: job.title,
 					value: job.id,
 				})
 			})
 
 			setOptionJobs(newOptionJobs)
-
-			if (dataJob?.job) {
-				allJobs.jobs.map((job) => {
-					if (job.id === dataJob.job?.id) {
-						setSelectedJobOption({
-							label: (
-								<>
-									<Text>{job.title}</Text>
-								</>
-							),
-							value: job.id,
-						})
-					}
-				})
-			}
 		}
 	}, [allJobs])
 
@@ -211,7 +187,7 @@ export default function AddJobApplication({
 				cover_leter: undefined,
 				status: undefined,
 				source: undefined,
-				...(dataJob?.job ? { jobs: dataJob.job.id } : {jobs: undefined}),
+				...(dataJob?.job ? { jobs: dataJob.job.id } : { jobs: undefined }),
 				location: undefined,
 			})
 			refetchJobApplications()
@@ -236,13 +212,13 @@ export default function AddJobApplication({
 
 					<GridItem w="100%" colSpan={[2, 1]}>
 						<HStack>
-							<SelectCustom
+							<Select
 								form={formSetting}
 								label={'Jobs'}
 								name={'jobs'}
 								required={true}
 								options={optionJobs}
-								selectedOption={selectedJobOption}
+								placeholder={'Select job'}
 								disabled={dataJob?.job ? true : false}
 							/>
 						</HStack>
@@ -292,28 +268,31 @@ export default function AddJobApplication({
 
 					<GridItem w="100%" colSpan={[2, 1]}>
 						<HStack>
-							<SelectCustom
+							<Select
 								form={formSetting}
 								label={'Location'}
 								name={'location'}
 								required={true}
 								options={optionLocations}
+								placeholder={'Select location'}
 							/>
 						</HStack>
 					</GridItem>
 
 					<GridItem w="100%" colSpan={[2, 1]}>
-						<SelectCustom
+						<Select
 							name="status"
 							label="status"
 							required={true}
 							form={formSetting}
 							options={dataJobApplicationStatus}
+							placeholder={'Select status'}
 						/>
 					</GridItem>
 
 					<GridItem w="100%" colSpan={[2, 1]}>
-						<SelectCustom
+						<Select
+							placeholder={'Select source'}
 							name="source"
 							label="Application Source"
 							required={true}

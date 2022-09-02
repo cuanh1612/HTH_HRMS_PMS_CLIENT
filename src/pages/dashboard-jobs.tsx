@@ -8,6 +8,7 @@ import {
 	HStack,
 	StackDivider,
 	Text,
+	useBreakpoint,
 	useColorMode,
 	useColorModeValue,
 	useDisclosure,
@@ -53,6 +54,7 @@ const dashboard: NextLayout = () => {
 	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
 	const router = useRouter()
 	const { colorMode } = useColorMode()
+	const breakpoint = useBreakpoint()
 
 	// style
 	const dayHeader = useColorModeValue('dayHeader', 'dayHeader--dark')
@@ -161,16 +163,11 @@ const dashboard: NextLayout = () => {
 	useEffect(() => {
 		if (calendar) {
 			calendar.render()
-			calendar.on('dateClick', function (info) {})
-
-			calendar.on('select', function (info) {})
 
 			calendar.on('eventClick', (info) => {
 				setInterviewId(Number(info.event.id))
 				onOpenDetail()
 			})
-
-			calendar.on('eventDragStop', (info) => {})
 		}
 	}, [calendar])
 
@@ -258,7 +255,7 @@ const dashboard: NextLayout = () => {
 				templateColumns={['repeat(1, 1fr)', null, null, 'repeat(2, 1fr)']}
 				gap={6}
 			>
-				<ItemDashboard title="Application sources">
+				<ItemDashboard isFull={breakpoint ? !['2xl', 'xl', 'lg'].includes(breakpoint): false} title="Application sources">
 					{dataApplicationSources?.applicationSources.length > 0 ? (
 						<Box className='basic-info'>
 							<Donut
@@ -296,7 +293,7 @@ const dashboard: NextLayout = () => {
 					)}
 				</ItemDashboard>
 
-				<ItemDashboard title="Application status">
+				<ItemDashboard isFull={breakpoint ? !['2xl', 'xl', 'lg'].includes(breakpoint): false} title="Application status">
 					{dataApplicationStatus?.applicationStatus.length > 0 ? (
 						<Donut
 							colors={dataApplicationStatus.applicationStatus.map(
@@ -375,16 +372,16 @@ const dashboard: NextLayout = () => {
 												</Text>
 											</Box>
 										</HStack>
-										<Text fontWeight={'semibold'}>{item.title}</Text>
-										<HStack spacing={10}>
-											<Text color={'red'}>
+										<Text fontWeight={'semibold'} whiteSpace={'nowrap'}>{item.title}</Text>
+										<HStack spacing={10} pr={['20px!important', null, null, '0px']}>
+											<Text whiteSpace={'nowrap'} color={'red'}>
 												{Intl.NumberFormat('en-US', {
 													style: 'currency',
 													currency: 'USD',
 													useGrouping: false,
 												}).format(Number(item.total_openings))}
 											</Text>
-											<Text color={'gray'}>
+											<Text whiteSpace={'nowrap'} color={'gray'}>
 												{new Date(item.ends_on_date).toLocaleDateString(
 													'es-CL'
 												)}

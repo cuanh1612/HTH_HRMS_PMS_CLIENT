@@ -335,6 +335,7 @@ const Interview: NextLayout | any = ({ jobIdProp }: ICandidateProps) => {
 					/>
 					{employeesFilter && (
 						<SelectCustom
+							placeholder='Select interviewer'
 							handleSearch={(field: any) => {
 								setFilter({
 									columnId: 'interviewer',

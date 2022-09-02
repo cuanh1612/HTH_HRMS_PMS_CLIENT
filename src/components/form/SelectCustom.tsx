@@ -28,9 +28,10 @@ export const SelectCustom = ({
 	isModal,
 	onOpenModal,
 	disabled,
+	placeholder
 }: ISelect & { form: UseFormReturn<any, any> }) => {
 	const errorColor = useColorModeValue('red.500', 'red.300')
-	const {colorMode} = useColorMode()
+	const { colorMode } = useColorMode()
 
 	//Sate
 	const [optionSelect, setOptionSelect] = useState<IOption | undefined>(undefined)
@@ -73,7 +74,11 @@ export const SelectCustom = ({
 					<FormLabel color={'gray.400'} fontWeight={'normal'} htmlFor={name}>
 						{label}{' '}
 						{required && (
-							<Text ml={'1'} as="span" color={colorMode == 'dark' ? 'red.300': 'red.500'}>
+							<Text
+								ml={'1'}
+								as="span"
+								color={colorMode == 'dark' ? 'red.300' : 'red.500'}
+							>
 								*
 							</Text>
 						)}
@@ -82,6 +87,55 @@ export const SelectCustom = ({
 
 				<HStack w={'full'} position={'relative'}>
 					<Select
+						styles={{
+							placeholder: (provided)=> ({
+								...provided,
+								color: "#68707b",
+								fontSize: '16px'
+							}),
+							menu: (provided) => ({
+								...provided,
+								background: colorMode == 'dark' ? '#2d3748' : 'white',
+								border: `1px solid ${colorMode == 'dark' ? '#5a626f' : '#e2e8f0'}`,
+								borderRadius: '10px',
+							}),
+							menuPortal: (provided) => ({
+								...provided,
+								background: 'red',
+							}),
+							input: (provided) => {
+								return {
+									...provided,
+									background: colorMode == 'dark' ? '#3a4453' : 'white',
+									color: colorMode != 'dark' ? 'black!important': 'white!important',
+									gridArea: '1',
+								}
+							},
+							control: (provided) => ({
+								...provided,
+								background: colorMode == 'dark' ? '#3a4453' : 'white',
+								border: `1px solid ${colorMode == 'dark' ? '#5a626f' : '#e2e8f0'}`,
+								borderRadius: '6px',
+								height: '40px',
+							}),
+							option: (provided, state) => ({
+								...provided,
+								background:
+									colorMode == 'dark'
+										? state.isFocused
+											? '#3a4458'
+											: state.isSelected
+											? '#3a4472'
+											: 'transparent'
+										: state.isFocused
+										? '#e2e8f0'
+										: state.isSelected
+										? '#bcc4cf40'
+										: 'transparent',
+								color: colorMode == 'dark' ? 'white' : 'black',
+							}),
+						}}
+						placeholder={placeholder}
 						value={optionSelect ? optionSelect : selectedOption}
 						options={options}
 						closeMenuOnSelect={false}

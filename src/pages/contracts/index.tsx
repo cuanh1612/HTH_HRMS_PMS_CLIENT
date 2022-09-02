@@ -461,19 +461,18 @@ const Contracts: NextLayout = () => {
 				</FuncCollapse>
 			</Box>
 
-			<Box className='table'>
-				<Table
-					data={allContracts?.contracts || []}
-					columns={columns}
-					isLoading={isLoading}
-					isSelect={currentUser?.role == 'Admin' ? true : false}
-					selectByColumn="id"
-					setSelect={(data: Array<number>) => setDataSl(data)}
-					filter={filter}
-					isResetFilter={isResetFilter}
-					disableColumns={['contract_type']}
-				/>
-			</Box>
+			<Table
+				data={allContracts?.contracts || []}
+				columns={columns}
+				isLoading={isLoading}
+				isSelect={currentUser?.role == 'Admin' ? true : false}
+				selectByColumn="id"
+				setSelect={(data: Array<number>) => setDataSl(data)}
+				filter={filter}
+				isResetFilter={isResetFilter}
+				disableColumns={['contract_type']}
+			/>
+
 			<Drawer size="xl" title="Add Contract" onClose={onCloseAdd} isOpen={isOpenAdd}>
 				<AddContract onCloseDrawer={onCloseAdd} />
 			</Drawer>
@@ -561,6 +560,7 @@ const Contracts: NextLayout = () => {
 					/>
 					{clientsFilter && (
 						<SelectCustom
+							placeholder='Select client'
 							handleSearch={(field: any) => {
 								setFilter({
 									columnId: 'client',

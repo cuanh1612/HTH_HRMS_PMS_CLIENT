@@ -410,23 +410,21 @@ const Clients: NextLayout = () => {
 			</Box>
 
 			{currentUser && (
-				<Box className='table'>
-					<Table
-						data={allClients?.clients || []}
-						columns={columns}
-						isLoading={isLoading}
-						isSelect
-						selectByColumn="id"
-						setSelect={(data: Array<number>) => setDataSl(data)}
-						disableRows={{
-							column: 'email',
-							values: [currentUser.email],
-						}}
-						filter={filter}
-						disableColumns={['category', 'subcategory', 'country']}
-						isResetFilter={isResetFilter}
-					/>
-				</Box>
+				<Table
+					data={allClients?.clients || []}
+					columns={columns}
+					isLoading={isLoading}
+					isSelect
+					selectByColumn="id"
+					setSelect={(data: Array<number>) => setDataSl(data)}
+					disableRows={{
+						column: 'email',
+						values: [currentUser.email],
+					}}
+					filter={filter}
+					disableColumns={['category', 'subcategory', 'country']}
+					isResetFilter={isResetFilter}
+				/>
 			)}
 
 			{/* alert dialog when delete one */}

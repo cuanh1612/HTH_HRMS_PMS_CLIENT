@@ -11,7 +11,7 @@ import {
 } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Loading } from 'components/common'
-import { Input, SelectCustom, SelectMany, Textarea, TimePicker } from 'components/form'
+import { Input, Select, SelectCustom, SelectMany, Textarea, TimePicker } from 'components/form'
 import { AuthContext } from 'contexts/AuthContext'
 import { createInterviewMutation } from 'mutations/interview'
 import { useRouter } from 'next/router'
@@ -191,8 +191,9 @@ export default function AddJob({ onCloseDrawer, onUpdateInterview}: IAddJobProps
 					<GridItem w="100%" colSpan={[2, 1]}>
 						<HStack>
 							<SelectMany
+								placeholder='Select interviewers'
 								form={formSetting}
-								label={'Select Interview'}
+								label={'Interview'}
 								name={'interviewer'}
 								required={true}
 								options={optionsInterviews}
@@ -201,7 +202,8 @@ export default function AddJob({ onCloseDrawer, onUpdateInterview}: IAddJobProps
 					</GridItem>
 
 					<GridItem w="100%" colSpan={[2, 1]}>
-						<SelectCustom
+						<Select
+							placeholder='Select type'
 							name="type"
 							label="Interview Type"
 							required={true}

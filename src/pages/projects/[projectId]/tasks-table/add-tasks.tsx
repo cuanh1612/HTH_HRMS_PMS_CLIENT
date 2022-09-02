@@ -13,7 +13,7 @@ import {
 } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Editor, Loading } from 'components/common'
-import { Input, Select, SelectCustom, SelectMany } from 'components/form'
+import { Input, Select, SelectMany } from 'components/form'
 import Modal from 'components/modal/Modal'
 import { AuthContext } from 'contexts/AuthContext'
 import { createTaskMutation } from 'mutations'
@@ -24,7 +24,6 @@ import {
 	allTaskCategoriesQuery,
 	allTasksByProjectQuery,
 	detailProjectQuery,
-	detailStatusQuery,
 	milestonesByProjectNormalQuery,
 } from 'queries'
 import { allActivitiesByProjectQuery } from 'queries/ProjectActivity'
@@ -55,7 +54,6 @@ export default function AddTask({ onCloseDrawer, statusId }: IAddTaskProps) {
 	const [optionEmployees, setOptionEmployees] = useState<IOption[]>([])
 	const [description, setDescription] = useState<string>('')
 	const [optionStatus, setOptionStatus] = useState<IOption[]>([])
-	const [selectedOptionStatus, setSelectedOptionStatus] = useState<IOption>()
 	const [optionMilestones, setOptionMilestones] = useState<IOption[]>([])
 
 	//Setup modal -------------------------------------------------------
@@ -76,8 +74,7 @@ export default function AddTask({ onCloseDrawer, statusId }: IAddTaskProps) {
 	const { data: dataDetailProject } = detailProjectQuery(isAuthenticated, projectId as string)
 
 	const { data: dataAllStatus } = allStatusQuery(isAuthenticated, projectId)
-	const { data: dataDetailStatus } = detailStatusQuery(isAuthenticated, statusId)
-
+	
 	const { data: dataAllMilestones } = milestonesByProjectNormalQuery(isAuthenticated, projectId)
 	// get all status tasks
 	const { mutate: refetchStatusTasks } = allStatusTasksQuery(isAuthenticated, projectId)
@@ -149,16 +146,6 @@ export default function AddTask({ onCloseDrawer, statusId }: IAddTaskProps) {
 			}
 		}
 	}, [isAuthenticated])
-
-	//Set data selected status
-	useEffect(() => {
-		if (dataDetailStatus?.status) {
-			setSelectedOptionStatus({
-				label: dataDetailStatus.status.title,
-				value: dataDetailStatus.status.id,
-			})
-		}
-	}, [dataDetailStatus])
 
 	//Set option select status when have data all status
 	useEffect(() => {
@@ -300,11 +287,7 @@ export default function AddTask({ onCloseDrawer, statusId }: IAddTaskProps) {
 				<GridItem w="100%" colSpan={[2, 1]}>
 					<VStack align={'start'}>
 						<Text color={'gray.400'}>Project</Text>
-						<CInput
-							type={'text'}
-							value={dataDetailProject?.project?.name}
-							disabled
-						/>
+						<CInput type={'text'} value={dataDetailProject?.project?.name} disabled />
 					</VStack>
 				</GridItem>
 
@@ -331,20 +314,21 @@ export default function AddTask({ onCloseDrawer, statusId }: IAddTaskProps) {
 				</GridItem>
 
 				<GridItem w="100%" colSpan={[2, 1]}>
-					<SelectCustom
+					<Select
 						name="status"
 						label="Status"
 						form={formSetting}
 						options={optionStatus}
 						required={false}
-						selectedOption={selectedOptionStatus}
+						placeholder={'Select status'}
 					/>
 				</GridItem>
 
 				<GridItem w="100%" colSpan={[2]}>
 					<SelectMany
+						placeholder='Select employees'
 						form={formSetting}
-						label={'Select Employee'}
+						label={'Employee'}
 						name={'employees'}
 						required={true}
 						options={optionEmployees}
@@ -356,7 +340,7 @@ export default function AddTask({ onCloseDrawer, statusId }: IAddTaskProps) {
 						<Text fontWeight={'normal'} color={'gray.400'}>
 							Description
 						</Text>
-						<Editor note={description} onChangeNote={onChangeDescription}/>
+						<Editor note={description} onChangeNote={onChangeDescription} />
 					</VStack>
 				</GridItem>
 			</Grid>
@@ -372,7 +356,7 @@ export default function AddTask({ onCloseDrawer, statusId }: IAddTaskProps) {
 			{isOpenOtherDetails && (
 				<Grid templateColumns="repeat(2, 1fr)" gap={6} mt={6}>
 					<GridItem w="100%" colSpan={[2, 1]}>
-						<SelectCustom
+						<Select
 							name="milestone"
 							label="Milestone"
 							required={false}
@@ -383,12 +367,13 @@ export default function AddTask({ onCloseDrawer, statusId }: IAddTaskProps) {
 					</GridItem>
 
 					<GridItem w="100%" colSpan={[2, 1]}>
-						<SelectCustom
+						<Select
 							name="priority"
 							label="Priority"
 							form={formSetting}
 							options={dataTaskPriority}
 							required={false}
+							placeholder={'Select priority'}
 						/>
 					</GridItem>
 				</Grid>

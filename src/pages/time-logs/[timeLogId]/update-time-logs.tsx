@@ -7,18 +7,20 @@ import {
 	HStack,
 	Input as CInput,
 	Text,
-	VStack
+	VStack,
 } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Loading } from 'components/common'
-import { Input, SelectCustom, TimePicker } from 'components/form'
+import { Input, Select, SelectCustom, TimePicker } from 'components/form'
 import { AuthContext } from 'contexts/AuthContext'
 import { updateTimeLogMutation } from 'mutations/timeLog'
 import { useRouter } from 'next/router'
 import {
-	allTasksByProjectQuery, detailTaskQuery,
-	detailTimeLogQuery, timeLogsCalendarQuery,
-	timeLogsQuery
+	allTasksByProjectQuery,
+	detailTaskQuery,
+	detailTimeLogQuery,
+	timeLogsCalendarQuery,
+	timeLogsQuery,
 } from 'queries'
 import { useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -64,7 +66,7 @@ export default function UpdateTimeLog({ onCloseDrawer, timeLogIdProp }: IUpdateT
 	const { mutate: refetchTimeLogs } = timeLogsQuery(isAuthenticated)
 
 	// refetch time logs in calendar
-	const { mutate: refetchTimeLogsCalendar } = timeLogsCalendarQuery({isAuthenticated})
+	const { mutate: refetchTimeLogsCalendar } = timeLogsCalendarQuery({ isAuthenticated })
 
 	//mutation -----------------------------------------------------------
 	const [mutateUpdateTimeLog, { status: statusUpdateTimeLog, data: dataUpdateTimeLog }] =
@@ -130,6 +132,15 @@ export default function UpdateTimeLog({ onCloseDrawer, timeLogIdProp }: IUpdateT
 			}
 		}
 	}, [isAuthenticated])
+
+	useEffect(() => {
+		const subscription = formSetting.watch((value, { name }) => {
+			if (name == 'task') {
+				onChangeTask(value[name] || '')
+			}
+		})
+		return () => subscription.unsubscribe()
+	}, [formSetting.watch])
 
 	//Set project id
 	useEffect(() => {
@@ -264,19 +275,18 @@ export default function UpdateTimeLog({ onCloseDrawer, timeLogIdProp }: IUpdateT
 					</GridItem>
 
 					<GridItem w="100%" colSpan={[2, 1]}>
-						<SelectCustom
+						<Select
 							name="task"
 							label="task"
 							form={formSetting}
 							options={optionTasks}
 							required={true}
-							onChangeValue={onChangeTask}
-							selectedOption={selectedTaskIdForSelect}
 						/>
 					</GridItem>
 
 					<GridItem w="100%" colSpan={[2, 1]}>
 						<SelectCustom
+							placeholder='Select employee'
 							name="employee"
 							label="employee"
 							form={formSetting}

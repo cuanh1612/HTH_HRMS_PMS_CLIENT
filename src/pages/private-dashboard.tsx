@@ -22,6 +22,7 @@ import {
 	Th,
 	Thead,
 	Tr,
+	useBreakpoint,
 	useColorMode,
 	useColorModeValue,
 	useDisclosure,
@@ -61,6 +62,8 @@ const TaskCategory: NextLayout = () => {
 	const { isAuthenticated, handleLoading, currentUser } = useContext(AuthContext)
 	const router = useRouter()
 	const { colorMode } = useColorMode()
+	const breakpoint = useBreakpoint()
+
 	// style
 	const dayHeader = useColorModeValue('dayHeader', 'dayHeader--dark')
 
@@ -289,7 +292,11 @@ const TaskCategory: NextLayout = () => {
 				templateColumns={['repeat(1, 1fr)', null, null, 'repeat(2, 1fr)']}
 				gap={6}
 			>
-				<ItemDashboard title="Basic information" overflow={'auto'}>
+				<ItemDashboard
+					isFull={breakpoint ? !['2xl', 'xl', 'lg'].includes(breakpoint) : false}
+					title="Basic information"
+					overflow={'auto'}
+				>
 					<VStack
 						className="basic-info"
 						spacing={5}
@@ -328,7 +335,10 @@ const TaskCategory: NextLayout = () => {
 						</HStack>
 					</VStack>
 				</ItemDashboard>
-				<ItemDashboard title="Status project">
+				<ItemDashboard
+					isFull={breakpoint ? !['2xl', 'xl', 'lg'].includes(breakpoint) : false}
+					title="Status project"
+				>
 					{countStatusProjects?.countStatusProjects &&
 					countStatusProjects?.countStatusProjects.length > 0 ? (
 						<Donut
@@ -363,15 +373,22 @@ const TaskCategory: NextLayout = () => {
 					)}
 				</ItemDashboard>
 
-				<ItemDashboard title="Pending Milestone" overflow={'auto'}>
+				<ItemDashboard
+					isFull={breakpoint ? !['2xl', 'xl', 'lg'].includes(breakpoint) : false}
+					title="Pending Milestone"
+					overflow={'auto'}
+				>
 					<TableContainer w={'full'}>
 						{dataAllTasks?.tasks && dataAllTasks?.tasks?.length > 0 ? (
 							<Table w={'full'} variant="simple">
 								<Thead>
 									<Tr>
-										<Th>#</Th>
+										{breakpoint && ['sm'].includes(breakpoint) && <Th>#</Th>}
+
 										<Th>Task</Th>
-										<Th>Status</Th>
+										{breakpoint && ['xl', '2xl', 'md'].includes(breakpoint) && (
+											<Th>Status</Th>
+										)}
 										<Th isNumeric>Due Date</Th>
 									</Tr>
 								</Thead>
@@ -379,7 +396,10 @@ const TaskCategory: NextLayout = () => {
 									{dataAllTasks.tasks.map((item, key: number) => {
 										return (
 											<Tr key={key}>
-												<Td>{item.id}</Td>
+												{breakpoint && ['sm'].includes(breakpoint) && (
+													<Td>{item.id}</Td>
+												)}
+
 												<Td
 													onClick={() => {
 														setTaskId(item.id)
@@ -393,20 +413,20 @@ const TaskCategory: NextLayout = () => {
 												>
 													{item.name}
 												</Td>
-												<Td whiteSpace={'normal'}>
-													<HStack
-														display={['none', null, null, null, 'flex']}
-														alignItems={'center'}
-													>
-														<Box
-															w={'10px'}
-															borderRadius={'full'}
-															h={'10px'}
-															bg={item.status.color}
-														/>
-														<Text>{item.status.title}</Text>
-													</HStack>
-												</Td>
+												{breakpoint &&
+													['xl', '2xl', 'md'].includes(breakpoint) && (
+														<Td whiteSpace={'normal'}>
+															<HStack alignItems={'center'}>
+																<Box
+																	w={'10px'}
+																	borderRadius={'full'}
+																	h={'10px'}
+																	bg={item.status.color}
+																/>
+																<Text>{item.status.title}</Text>
+															</HStack>
+														</Td>
+													)}
 												<Td
 													color={
 														new Date(item.deadline).getTime() <=
@@ -429,7 +449,11 @@ const TaskCategory: NextLayout = () => {
 					</TableContainer>
 				</ItemDashboard>
 
-				<ItemDashboard title="Notices" overflow={'auto'}>
+				<ItemDashboard
+					isFull={breakpoint ? !['2xl', 'xl', 'lg'].includes(breakpoint) : false}
+					title="Notices"
+					overflow={'auto'}
+				>
 					{allNotices?.noticeBoards && allNotices.noticeBoards.length > 0 ? (
 						<VStack
 							spacing={5}

@@ -325,19 +325,17 @@ const tasks: NextLayout = () => {
 				</FuncCollapse>
 			</Box>
 
-			<Box className='table'>
-				<Table
-					data={allTasks?.tasks || []}
-					columns={columns}
-					isLoading={isLoading}
-					isSelect={currentUser?.role === 'Admin'}
-					selectByColumn="id"
-					setSelect={(data: Array<number>) => setDataSl(data)}
-					filter={filter}
-					disableColumns={['milestone', 'assignBy', 'task_category']}
-					isResetFilter={isResetFilter}
-				/>
-			</Box>
+			<Table
+				data={allTasks?.tasks || []}
+				columns={columns}
+				isLoading={isLoading}
+				isSelect={currentUser?.role === 'Admin'}
+				selectByColumn="id"
+				setSelect={(data: Array<number>) => setDataSl(data)}
+				filter={filter}
+				disableColumns={['milestone', 'assignBy', 'task_category']}
+				isResetFilter={isResetFilter}
+			/>
 
 			<Drawer size="xl" title="Add New Task" onClose={onCloseAddTask} isOpen={isOpenAddTask}>
 				<AddTask onCloseDrawer={onCloseAddTask} />
@@ -463,6 +461,7 @@ const tasks: NextLayout = () => {
 					/>
 
 					<SelectCustom
+						placeholder='Select assign to'
 						handleSearch={(field: any) => {
 							setFilter({
 								columnId: 'employees',
@@ -486,6 +485,7 @@ const tasks: NextLayout = () => {
 					/>
 					{(currentUser?.role === 'Admin' || currentUser?.role === 'Client') && (
 						<SelectCustom
+							placeholder='Select assign by'
 							handleSearch={(field: any) => {
 								setFilter({
 									columnId: 'assignBy',

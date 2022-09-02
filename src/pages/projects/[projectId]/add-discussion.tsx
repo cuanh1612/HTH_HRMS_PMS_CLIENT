@@ -1,6 +1,6 @@
 import { Box, Button, Grid, GridItem, Text, VStack } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { Input, SelectCustom } from 'components/form'
+import { Input, Select } from 'components/form'
 import {Loading }from 'components/common'
 import { AuthContext } from 'contexts/AuthContext'
 import { createProjectDiscussionRoomMutation } from 'mutations'
@@ -142,7 +142,8 @@ export default function AddDiscussion({onCloseModal}: IAddDiscussionProps) {
 				>
 					<Grid templateColumns="repeat(2, 1fr)" gap={6}>
 						<GridItem w="100%" colSpan={[2]}>
-							<SelectCustom
+							<Select
+							
 								name="project_discussion_category"
 								label="Discussion Category"
 								required={true}

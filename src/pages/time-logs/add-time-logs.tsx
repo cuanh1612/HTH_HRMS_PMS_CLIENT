@@ -1,7 +1,7 @@
 import { Avatar, Box, Button, Grid, GridItem, HStack, Text } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Loading } from 'components/common'
-import { Input, SelectCustom, TimePicker } from 'components/form'
+import { Input, Select, SelectCustom, TimePicker } from 'components/form'
 import { AuthContext } from 'contexts/AuthContext'
 import { createTimeLogMutation } from 'mutations/timeLog'
 import { useRouter } from 'next/router'
@@ -38,7 +38,6 @@ export default function AddTimeLog({ onCloseDrawer }: IAddTimeLogProps) {
 	const [optionEmployees, setOptionEmployees] = useState<IOption[]>([])
 	const [selectedTaskId, setSelectedTaskId] = useState<number | string>()
 	const [selectedEmployeeId, setSelectedEmployeeId] = useState<IOption>()
-	const [selectedTask, setSelectedTask] = useState<IOption>()
 	const [optionProjects, setOptionProjects] = useState<IOption[]>([])
 	const [selectProjectId, setSelectProjectId] = useState<string | number>()
 
@@ -117,11 +116,6 @@ export default function AddTimeLog({ onCloseDrawer }: IAddTimeLogProps) {
 			value: undefined,
 		})
 
-		setSelectedTask({
-			label: <Text color={'gray.400'}>Select...</Text>,
-			value: undefined,
-		})
-
 		formSetting.setValue('employee', undefined)
 		formSetting.setValue('task', undefined)
 	}
@@ -140,6 +134,20 @@ export default function AddTimeLog({ onCloseDrawer }: IAddTimeLogProps) {
 			setOptionProjects(newOptionProject)
 		}
 	}, [dataAllProjects])
+
+	useEffect(() => {
+		const subscription = formSetting.watch((value, { name }) => {
+			switch (name) {
+				case 'project':
+					onChangeProject(value[name] || '')
+					break
+				case 'task':
+					onChangeTask(value[name] || '')
+					break
+			}
+		})
+		return () => subscription.unsubscribe()
+	}, [formSetting.watch])
 
 	//Handle check logged in
 	useEffect(() => {
@@ -217,7 +225,7 @@ export default function AddTimeLog({ onCloseDrawer }: IAddTimeLogProps) {
 			refetchTimeLogs()
 			refetchTimeLogsCalendar()
 			refetchActivitiesProject()
-			
+
 			if (socket) {
 				socket.emit('newTimeLog')
 				socket.emit('newTimeLogNotification', dataCreTimeLog?.timeLog?.employee?.id)
@@ -230,14 +238,13 @@ export default function AddTimeLog({ onCloseDrawer }: IAddTimeLogProps) {
 			<Box pos="relative" p={6} as={'form'} h="auto" onSubmit={handleSubmit(onSubmit)}>
 				<Grid templateColumns="repeat(2, 1fr)" gap={6}>
 					<GridItem w="100%" colSpan={[2, 1]}>
-						<SelectCustom
+						<Select
 							name="project"
 							label="Project"
 							required={true}
 							form={formSetting}
 							placeholder={'Select Project'}
 							options={optionProjects}
-							onChangeValue={onChangeProject}
 						/>
 					</GridItem>
 
@@ -294,19 +301,19 @@ export default function AddTimeLog({ onCloseDrawer }: IAddTimeLogProps) {
 					</GridItem>
 
 					<GridItem w="100%" colSpan={[2, 1]}>
-						<SelectCustom
+						<Select
 							name="task"
 							label="task"
 							form={formSetting}
 							options={optionTasks}
 							required={true}
-							onChangeValue={onChangeTask}
-							selectedOption={selectedTask}
+							placeholder={'Select task'}
 						/>
 					</GridItem>
 
 					<GridItem w="100%" colSpan={[2, 1]}>
 						<SelectCustom
+							placeholder='Select employee'
 							name="employee"
 							label="employee"
 							form={formSetting}

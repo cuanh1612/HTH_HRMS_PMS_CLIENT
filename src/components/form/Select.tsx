@@ -36,7 +36,11 @@ export const Select = ({
 						<FormLabel color={'gray.400'} fontWeight={'normal'} htmlFor={name}>
 							{label}{' '}
 							{required && (
-								<Text ml={'1'} as="span" color={colorMode == 'dark' ? 'red.300': 'red.500'}>
+								<Text
+									ml={'1'}
+									as="span"
+									color={colorMode == 'dark' ? 'red.300' : 'red.500'}
+								>
 									*
 								</Text>
 							)}

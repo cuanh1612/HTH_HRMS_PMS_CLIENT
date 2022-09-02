@@ -27,11 +27,7 @@ export const ItemDashboard = ({
 						</Text>
 						<Tooltip
 							hasArrow
-							label={`1-${
-								new Date().getMonth() + 1
-							}-${new Date().getFullYear()} to ${new Date().getDate()}-${
-								new Date().getMonth() + 1
-							}-${new Date().getFullYear()}`}
+							label={alert}
 							bg="gray.300"
 							color="black"
 						>

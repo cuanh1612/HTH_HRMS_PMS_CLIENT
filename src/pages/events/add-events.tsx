@@ -263,7 +263,7 @@ export default function AddEvent({ onCloseDrawer }: IAddEventProps) {
 							<Text fontWeight={'normal'} color={'gray.400'}>
 								Description
 							</Text>
-							<Editor note={description} onChangeNote={onChangeDescription}/>
+							<Editor note={description} onChangeNote={onChangeDescription} />
 						</VStack>
 					</GridItem>
 
@@ -309,8 +309,9 @@ export default function AddEvent({ onCloseDrawer }: IAddEventProps) {
 
 					<GridItem w="100%" colSpan={[2]}>
 						<SelectMany
+							placeholder="Select employees"
 							form={formSetting}
-							label={'Select Employee'}
+							label={'Employee'}
 							name={'employeeEmails'}
 							required={true}
 							options={optionEmployees}
@@ -319,8 +320,9 @@ export default function AddEvent({ onCloseDrawer }: IAddEventProps) {
 
 					<GridItem w="100%" colSpan={[2]}>
 						<SelectMany
+							placeholder="Select clients"
 							form={formSetting}
-							label={'Select Client'}
+							label={'Client'}
 							name={'clientEmails'}
 							required={true}
 							options={optionClients}

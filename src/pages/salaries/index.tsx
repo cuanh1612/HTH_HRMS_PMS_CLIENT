@@ -205,15 +205,13 @@ const Salaries: NextLayout = () => {
 				<UpdateSalary employeeId={employeeId} />
 			</Modal>
 
-			<Box className='table'>
-				<Table
-					data={dataSalaries?.salaries || []}
-					columns={columns}
-					isLoading={isLoading}
-					filter={filter}
-					isResetFilter={isResetFilter}
-				/>
-			</Box>
+			<Table
+				data={dataSalaries?.salaries || []}
+				columns={columns}
+				isLoading={isLoading}
+				filter={filter}
+				isResetFilter={isResetFilter}
+			/>
 
 			<Drawer
 				size="xs"
@@ -247,6 +245,7 @@ const Salaries: NextLayout = () => {
 
 					{employeesFilter && (
 						<SelectCustom
+							placeholder='Select employee'
 							handleSearch={(field: any) => {
 								setFilter({
 									columnId: 'id',

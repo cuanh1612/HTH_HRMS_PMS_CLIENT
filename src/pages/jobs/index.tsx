@@ -196,19 +196,17 @@ const Job: NextLayout = () => {
 				</FuncCollapse>
 			</Box>
 
-			<Box className="table">
-				<Table
-					data={dataAllJobs?.jobs || []}
-					columns={columns}
-					isLoading={isLoading}
-					isSelect={currentUser?.role == 'Admin'}
-					selectByColumn="id"
-					setSelect={(data: Array<number>) => setDataSl(data)}
-					filter={filter}
-					isResetFilter={isResetFilter}
-				/>
-			</Box>
-			
+			<Table
+				data={dataAllJobs?.jobs || []}
+				columns={columns}
+				isLoading={isLoading}
+				isSelect={currentUser?.role == 'Admin'}
+				selectByColumn="id"
+				setSelect={(data: Array<number>) => setDataSl(data)}
+				filter={filter}
+				isResetFilter={isResetFilter}
+			/>
+
 			<Drawer size="xl" title="Add Jobs" onClose={onCloseAdd} isOpen={isOpenAdd}>
 				<AddJob onCloseDrawer={onCloseAdd} />
 			</Drawer>

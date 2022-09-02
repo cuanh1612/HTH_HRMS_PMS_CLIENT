@@ -272,8 +272,8 @@ const SideLeft = () => {
 }
 
 const SideLeftInDrawer = ({ onClose, isOpen }: { isOpen: boolean; onClose: any }) => {
-	const {currentUser} = useContext(AuthContext)
-	const {push} = useRouter()
+	const { currentUser } = useContext(AuthContext)
+	const { push } = useRouter()
 	//Get info company
 	const { data: dataCompanyInfo } = companyInfoQuery()
 	const { colorMode } = useColorMode()
@@ -286,11 +286,7 @@ const SideLeftInDrawer = ({ onClose, isOpen }: { isOpen: boolean; onClose: any }
 			>
 				<DrawerBody padding={4}>
 					<HStack
-						onClick={() => {
-							if (currentUser) {
-								push(redirectPage(currentUser))
-							}
-						}}
+						cursor={'pointer'}
 						zIndex={10}
 						style={{
 							top: '0px',
@@ -301,13 +297,26 @@ const SideLeftInDrawer = ({ onClose, isOpen }: { isOpen: boolean; onClose: any }
 						h={'73px'}
 					>
 						<Image
+							onClick={() => {
+								if (currentUser) {
+									push(redirectPage(currentUser))
+								}
+							}}
 							w={'50px'}
 							h={'50px'}
 							src={dataCompanyInfo?.companyInfo.logo_url || '/assets/logo1.svg'}
 						/>
 
 						<HStack w={'full'} justifyContent={'space-between'}>
-							<Text fontWeight={'bold'} fontSize={'xl'}>
+							<Text
+								onClick={() => {
+									if (currentUser) {
+										push(redirectPage(currentUser))
+									}
+								}}
+								fontWeight={'bold'}
+								fontSize={'xl'}
+							>
 								{dataCompanyInfo?.companyInfo.name}
 							</Text>
 							<CloseButton onClick={onClose} />

@@ -285,19 +285,17 @@ const Projects: NextLayout = () => {
 				</FuncCollapse>
 			</Box>
 
-			<Box className='table'>
-				<Table
-					data={allProjects?.projects || []}
-					columns={columns}
-					isLoading={isLoading}
-					isSelect={currentUser && currentUser.role === 'Admin' ? true : false}
-					selectByColumn="id"
-					setSelect={(data: Array<number>) => setDataSl(data)}
-					filter={filter}
-					isResetFilter={isResetFilter}
-					disableColumns={['project_category']}
-				/>
-			</Box>
+			<Table
+				data={allProjects?.projects || []}
+				columns={columns}
+				isLoading={isLoading}
+				isSelect={currentUser && currentUser.role === 'Admin' ? true : false}
+				selectByColumn="id"
+				setSelect={(data: Array<number>) => setDataSl(data)}
+				filter={filter}
+				isResetFilter={isResetFilter}
+				disableColumns={['project_category']}
+			/>
 
 			<Drawer size="xl" title="Add Project" onClose={onCloseAdd} isOpen={isOpenAdd}>
 				<AddProject onCloseDrawer={onCloseAdd} />
@@ -409,6 +407,7 @@ const Projects: NextLayout = () => {
 
 					{clientsFilter && (
 						<SelectCustom
+							placeholder='Select client'
 							handleSearch={(field: any) => {
 								setFilter({
 									columnId: 'client',
@@ -435,6 +434,7 @@ const Projects: NextLayout = () => {
 
 					{employeesFilter && (
 						<SelectCustom
+							placeholder='Select employee'
 							handleSearch={(field: any) => {
 								setFilter({
 									columnId: 'employees',

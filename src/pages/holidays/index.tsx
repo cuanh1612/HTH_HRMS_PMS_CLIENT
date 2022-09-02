@@ -282,18 +282,16 @@ const Holiday: NextLayout = () => {
 				</FuncCollapse>
 			</Box>
 
-			<Box className='table'>
-				<Table
-					data={allHolidays?.holidays || []}
-					columns={columns}
-					isLoading={isLoading}
-					isSelect={currentUser?.role == 'Admin'}
-					selectByColumn="id"
-					setSelect={(data: Array<number>) => setDataSl(data)}
-					filter={filter}
-					isResetFilter={isResetFilter}
-				/>
-			</Box>
+			<Table
+				data={allHolidays?.holidays || []}
+				columns={columns}
+				isLoading={isLoading}
+				isSelect={currentUser?.role == 'Admin'}
+				selectByColumn="id"
+				setSelect={(data: Array<number>) => setDataSl(data)}
+				filter={filter}
+				isResetFilter={isResetFilter}
+			/>
 
 			{/* alert dialog when delete many */}
 			<AlertDialog

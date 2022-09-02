@@ -290,7 +290,7 @@ td.fc-day-today {
 
 .quillLight .ql-toolbar {
     border: none !important;
-    background: #e2e8f0  !important;
+    background: #e2e8f0 !important;
     margin-bottom: 15px;
     border-radius: 10px;
     padding: 10px 8px !important;
@@ -321,7 +321,7 @@ td.fc-day-today {
 
 .quillDark .ql-toolbar {
     border: none !important;
-    background: #e2e8f0  !important;
+    background: #e2e8f0 !important;
     margin-bottom: 15px;
     border-radius: 10px;
     padding: 10px 8px !important;
@@ -340,7 +340,7 @@ td.fc-day-today {
     border: 1px solid #64686e !important;
     border-radius: 10px;
     padding: 10px 2px;
-    background-color: #3a4453!important;
+    background-color: #3a4453 !important;
 }
 
 .quillDark .ql-editor::before {
@@ -348,27 +348,22 @@ td.fc-day-today {
 }
 
 /* intro custom */
+.introHighlight {}
 
-.introHighlight {
-
-}
 .introButton {
     background: red
 }
 
-.introTooltip {
-    
-}
+.introTooltip {}
 
 .introHighlight-dark {
     background: red
-
 }
+
 .introButton-dark {
     background: red
 }
 
 .introTooltip-dark {
     
-
 }

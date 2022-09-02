@@ -60,6 +60,9 @@ export const Bar = ({
 					categories: labels,
 					labels: {
 						show: isShowLabel,
+						style: {
+							colors: colorMode == 'dark' ? ['white'] : ['black'],
+						}
 					},
 				},
 				grid: {
@@ -73,7 +76,7 @@ export const Bar = ({
 					labels: {
 						style: {
 							fontSize: '12px',
-							colors: colorMode == 'dark' ? ['white'] : ['black'],
+							colors: colorMode == 'dark' ? ['gray'] : ['black'],
 						},
 					},
 				},

@@ -327,7 +327,7 @@ export default function UpdateProject({ onCloseDrawer, projectIdUpdate }: IUpdat
 							label="Client"
 							required={false}
 							form={formSetting}
-							placeholder={'Select Project Category'}
+							placeholder={'Select client'}
 							options={optionClients}
 						/>
 					</GridItem>
@@ -337,7 +337,7 @@ export default function UpdateProject({ onCloseDrawer, projectIdUpdate }: IUpdat
 							<Text fontWeight={'normal'} color={'gray.400'}>
 								Project Summary
 							</Text>
-							<Editor note={summary} onChangeNote={onChangeSummary}/>
+							<Editor note={summary} onChangeNote={onChangeSummary} />
 						</VStack>
 					</GridItem>
 
@@ -346,12 +346,12 @@ export default function UpdateProject({ onCloseDrawer, projectIdUpdate }: IUpdat
 							<Text fontWeight={'normal'} color={'gray.400'}>
 								Notes
 							</Text>
-							<Editor note={notes} onChangeNote={onChangeNotes}/>
+							<Editor note={notes} onChangeNote={onChangeNotes} />
 						</VStack>
 					</GridItem>
 
 					<GridItem zIndex={20} w="100%" colSpan={[2, 1]}>
-						<SelectCustom
+						<Select
 							name="project_status"
 							label="Project Status"
 							required={false}
@@ -407,7 +407,7 @@ export default function UpdateProject({ onCloseDrawer, projectIdUpdate }: IUpdat
 
 				<Grid templateColumns="repeat(2, 1fr)" gap={6}>
 					<GridItem w="100%" colSpan={[2, 1]}>
-						<SelectCustom
+						<Select
 							name="currency"
 							label="Currency"
 							required={false}

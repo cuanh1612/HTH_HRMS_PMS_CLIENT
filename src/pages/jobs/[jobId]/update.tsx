@@ -11,7 +11,7 @@ import {
 } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Editor, Loading } from 'components/common'
-import { Input, InputNumber, SelectCustom, SelectMany } from 'components/form'
+import { Input, InputNumber, Select, SelectCustom, SelectMany } from 'components/form'
 import Modal from 'components/modal/Modal'
 import { AuthContext } from 'contexts/AuthContext'
 import { updateJobMutation } from 'mutations/job'
@@ -86,7 +86,6 @@ export default function UpdateJob({ onCloseDrawer, JobIdProp }: IUpdateJobProps)
 	//State selected
 	const [selectedOptionSkills, setSelectedSkills] = useState<IOption[]>([])
 	const [selectedOptionLocations, setSelectedLocations] = useState<IOption[]>([])
-	const [selectedOptionDepartment, setSelectedDepartment] = useState<IOption>()
 
 	//query ----------------------------------------------------------------------
 	// get detail job Id
@@ -213,11 +212,7 @@ export default function UpdateJob({ onCloseDrawer, JobIdProp }: IUpdateJobProps)
 
 			allJobType.jobTypes.map((jobType) => {
 				newOptionJobTypes.push({
-					label: (
-						<>
-							<Text>{jobType.name}</Text>
-						</>
-					),
+					label: jobType.name,
 					value: jobType.id,
 				})
 			})
@@ -233,11 +228,7 @@ export default function UpdateJob({ onCloseDrawer, JobIdProp }: IUpdateJobProps)
 
 			allWorkExperience.workExperiences.map((workExperience) => {
 				newOptionWorkExperiences.push({
-					label: (
-						<>
-							<Text>{workExperience.name}</Text>
-						</>
-					),
+					label: workExperience.name,
 					value: workExperience.id,
 				})
 			})
@@ -371,19 +362,6 @@ export default function UpdateJob({ onCloseDrawer, JobIdProp }: IUpdateJobProps)
 				setSelectedLocations(newSelectedOptionLocations)
 			}
 
-			//Set data selected option department
-			if (dataDetailJob.job.department) {
-				const newSelectedDepartment: IOption = {
-					label: (
-						<>
-							<Text>{dataDetailJob.job.department.name}</Text>
-						</>
-					),
-					value: dataDetailJob.job.department.id,
-				}
-				setSelectedDepartment(newSelectedDepartment)
-			}
-
 			//Set date description
 			setJobDescription(dataDetailJob.job.job_description || '')
 
@@ -438,7 +416,7 @@ export default function UpdateJob({ onCloseDrawer, JobIdProp }: IUpdateJobProps)
 					</GridItem>
 
 					<GridItem w="100%" colSpan={[2, 1]}>
-						<SelectCustom
+						<Select
 							form={formSetting}
 							label={'Department'}
 							name={'department'}
@@ -447,15 +425,15 @@ export default function UpdateJob({ onCloseDrawer, JobIdProp }: IUpdateJobProps)
 							isModal={true}
 							onOpenModal={onOpenDepartment}
 							placeholder={'Select department'}
-							selectedOption={selectedOptionDepartment}
 						/>
 					</GridItem>
 
 					<GridItem w="100%" colSpan={[2, 1]}>
 						<HStack>
 							<SelectMany
+								placeholder='Select skills'
 								form={formSetting}
-								label={'Select Skills'}
+								label={'Skills'}
 								name={'skills'}
 								required={true}
 								options={optionSkills}
@@ -469,8 +447,9 @@ export default function UpdateJob({ onCloseDrawer, JobIdProp }: IUpdateJobProps)
 					<GridItem w="100%" colSpan={[2, 1]}>
 						<HStack>
 							<SelectMany
+								placeholder='Select locations'
 								form={formSetting}
-								label={'Select Locations'}
+								label={'Locations'}
 								name={'locations'}
 								required={true}
 								options={optionLocations}
@@ -516,7 +495,7 @@ export default function UpdateJob({ onCloseDrawer, JobIdProp }: IUpdateJobProps)
 					</GridItem>
 
 					<GridItem w="100%" colSpan={[2, 1]}>
-						<SelectCustom
+						<Select
 							name="status"
 							label="status"
 							required={true}
@@ -538,9 +517,10 @@ export default function UpdateJob({ onCloseDrawer, JobIdProp }: IUpdateJobProps)
 
 					<GridItem w="100%" colSpan={[2, 1]}>
 						<HStack>
-							<SelectCustom
+							<Select
 								form={formSetting}
-								label={'Select Job Type'}
+								label={'Job Type'}
+								placeholder={'Select Job Type'}
 								name={'job_type'}
 								required={true}
 								options={optionJobTypes}
@@ -552,7 +532,7 @@ export default function UpdateJob({ onCloseDrawer, JobIdProp }: IUpdateJobProps)
 
 					<GridItem w="100%" colSpan={[2, 1]}>
 						<HStack>
-							<SelectCustom
+							<Select
 								form={formSetting}
 								label={'Work Experience'}
 								name={'work_experience'}
@@ -560,17 +540,19 @@ export default function UpdateJob({ onCloseDrawer, JobIdProp }: IUpdateJobProps)
 								options={optionWorkExperiences}
 								isModal={true}
 								onOpenModal={onOpenWorkExperience}
+								placeholder={'Select experience'}
 							/>
 						</HStack>
 					</GridItem>
 
 					<GridItem w="100%" colSpan={[2, 1]}>
-						<SelectCustom
+						<Select
 							name="rate"
 							label="Rate"
 							required={true}
 							form={formSetting}
 							options={dataJobRate}
+							placeholder={'Select rate'}
 						/>
 					</GridItem>
 
@@ -579,7 +561,7 @@ export default function UpdateJob({ onCloseDrawer, JobIdProp }: IUpdateJobProps)
 							<Text fontWeight={'normal'} color={'gray.400'}>
 								Description
 							</Text>
-							<Editor note={jobDescription} onChangeNote={onChangeDescription}/>
+							<Editor note={jobDescription} onChangeNote={onChangeDescription} />
 						</VStack>
 					</GridItem>
 				</Grid>

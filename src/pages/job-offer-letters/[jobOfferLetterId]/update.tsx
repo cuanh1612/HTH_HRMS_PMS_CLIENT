@@ -1,7 +1,7 @@
-import { Box, Button, Grid, GridItem, Text } from '@chakra-ui/react'
+import { Box, Button, Grid, GridItem } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Loading } from 'components/common'
-import { Input, InputNumber, SelectCustom } from 'components/form'
+import { Input, InputNumber, Select } from 'components/form'
 import { AuthContext } from 'contexts/AuthContext'
 import { updateJobOfferLetterMutation } from 'mutations/jobOfferLetter'
 import { useRouter } from 'next/router'
@@ -26,7 +26,7 @@ export interface IUpdateJobOfferLettersProps {
 export default function UpdateOfferLetter({
 	onCloseDrawer,
 	jobOfferLetterId: jobOfferLetterIdProp,
-	onUpdateOffer
+	onUpdateOffer,
 }: IUpdateJobOfferLettersProps) {
 	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
 	const router = useRouter()
@@ -37,23 +37,6 @@ export default function UpdateOfferLetter({
 	const [optionJobApplications, setOptionJobApplications] = useState<IOption[]>([])
 
 	const [optionSelectedJobId, setOptionSelectedJobId] = useState<number | string>()
-	const [optionSelectedJob, setOptionSelectedJob] = useState<IOption>()
-	const [optionSelectedJobApplication, setOptionSelectedJobApplication] = useState<IOption>({
-		label: (
-			<>
-				<Text color={'gray.400'}>Select Job Application</Text>
-			</>
-		),
-		value: undefined,
-	})
-	const [optionSelectedRate, setOptionSelectedRate] = useState<IOption>({
-		label: (
-			<>
-				<Text color={'gray.400'}>Select...</Text>
-			</>
-		),
-		value: undefined,
-	})
 
 	//Setup modal -------------------------------------------------------
 
@@ -104,7 +87,7 @@ export default function UpdateOfferLetter({
 				type: 'error',
 			})
 		} else {
-			values.jobOfferLetterId = jobOfferLetterIdProp || jobOFferLetterIdRouter as string
+			values.jobOfferLetterId = jobOfferLetterIdProp || (jobOFferLetterIdRouter as string)
 			await mutateUpJobOffer(values)
 		}
 	}
@@ -112,16 +95,6 @@ export default function UpdateOfferLetter({
 	//Handle change job select
 	const onChangeJob = (jobId: string | number) => {
 		setOptionSelectedJobId(jobId)
-
-		//Clear data when change job
-		setOptionSelectedJobApplication({
-			label: (
-				<>
-					<Text color={'gray.400'}>Select Job Application</Text>
-				</>
-			),
-			value: undefined,
-		})
 
 		//Reset data form
 		formSetting.setValue('job_application', undefined)
@@ -140,36 +113,21 @@ export default function UpdateOfferLetter({
 		}
 	}, [isAuthenticated])
 
+	useEffect(() => {
+		const subscription = formSetting.watch((value, { name }) => {
+			if (name == 'job') {
+				onChangeJob(value[name] || '')
+			}
+		})
+		return () => subscription.unsubscribe()
+	}, [formSetting.watch])
+
 	//Set data form when have data detail job offer letter
 	useEffect(() => {
 		if (dataDetailJobOfferLetter && dataDetailJobOfferLetter.jobOfferLetter) {
 			//Set data selected option job
 			if (dataDetailJobOfferLetter.jobOfferLetter.job) {
-				const newSelectedJob: IOption = {
-					label: (
-						<>
-							<Text>{dataDetailJobOfferLetter.jobOfferLetter.job.title}</Text>
-						</>
-					),
-					value: dataDetailJobOfferLetter.jobOfferLetter.job.id,
-				}
-				setOptionSelectedJob(newSelectedJob)
 				setOptionSelectedJobId(dataDetailJobOfferLetter.jobOfferLetter.job.id)
-			}
-
-			//Set data selected option job_application
-			if (dataDetailJobOfferLetter.jobOfferLetter.job_application) {
-				const newSelectedJobApplication: IOption = {
-					label: (
-						<>
-							<Text>
-								{dataDetailJobOfferLetter.jobOfferLetter.job_application.name}
-							</Text>
-						</>
-					),
-					value: dataDetailJobOfferLetter.jobOfferLetter.job_application.id,
-				}
-				setOptionSelectedJobApplication(newSelectedJobApplication)
 			}
 
 			//set data form
@@ -190,15 +148,6 @@ export default function UpdateOfferLetter({
 	//Set data option rate when have data detail job
 	useEffect(() => {
 		if (dataDetailJob && dataDetailJob.job) {
-			setOptionSelectedRate({
-				label: (
-					<>
-						<Text>{dataDetailJob.job.rate}</Text>
-					</>
-				),
-				value: dataDetailJob.job.rate,
-			})
-
 			//Reset data form
 			formSetting.setValue('rate', dataDetailJob.job.rate)
 		}
@@ -211,11 +160,7 @@ export default function UpdateOfferLetter({
 
 			allJobs.jobs.map((job) => {
 				newOptionJobs.push({
-					label: (
-						<>
-							<Text>{job.title}</Text>
-						</>
-					),
+					label: job.title,
 					value: job.id,
 				})
 			})
@@ -231,11 +176,7 @@ export default function UpdateOfferLetter({
 
 			allJobApplicationsByJob.jobApplications.map((jobApplication) => {
 				newOptionJobs.push({
-					label: (
-						<>
-							<Text>{jobApplication.name}</Text>
-						</>
-					),
+					label: jobApplication.name,
 					value: jobApplication.id,
 				})
 			})
@@ -270,7 +211,7 @@ export default function UpdateOfferLetter({
 			})
 
 			refetchAllJobOfferLetters()
-			if(onUpdateOffer) {
+			if (onUpdateOffer) {
 				onUpdateOffer()
 			}
 		}
@@ -281,25 +222,22 @@ export default function UpdateOfferLetter({
 			<Box pos="relative" p={6} as={'form'} h="auto" onSubmit={handleSubmit(onSubmit)}>
 				<Grid templateColumns="repeat(2, 1fr)" gap={6}>
 					<GridItem w="100%" colSpan={[2, 1]}>
-						<SelectCustom
+						<Select
 							form={formSetting}
 							label={'Job'}
 							name={'job'}
 							required={true}
 							options={optionJobs}
-							onChangeValue={onChangeJob}
-							selectedOption={optionSelectedJob}
 						/>
 					</GridItem>
 
 					<GridItem w="100%" colSpan={[2, 1]}>
-						<SelectCustom
+						<Select
 							form={formSetting}
 							label={'Job Application'}
 							name={'job_application'}
 							required={true}
 							options={optionJobApplications}
-							selectedOption={optionSelectedJobApplication}
 						/>
 					</GridItem>
 
@@ -338,24 +276,25 @@ export default function UpdateOfferLetter({
 					</GridItem>
 
 					<GridItem w="100%" colSpan={[2, 1]}>
-						<SelectCustom
+						<Select
 							name="rate"
+							placeholder="Select rate"
 							label="Rate"
 							required={true}
 							form={formSetting}
 							options={dataJobRate}
-							selectedOption={optionSelectedRate}
 							disabled={true}
 						/>
 					</GridItem>
 
 					<GridItem w="100%" colSpan={[2, 1]}>
-						<SelectCustom
+						<Select
 							name="status"
 							label="Status"
 							required={true}
 							form={formSetting}
 							options={dataJobOfferStatus}
+							placeholder={'Select status'}
 						/>
 					</GridItem>
 				</Grid>

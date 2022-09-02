@@ -67,8 +67,6 @@ export const Header = () => {
 	const { data: dataNotification, mutate: refetchNotifications } =
 		NotificationByCurrentUserQuery(isAuthenticated)
 
-	console.log(dataNotification)
-
 	const [logout, { status: statusLogout }] = logoutServerMutation(setToast)
 
 	useEffect(() => {
@@ -103,7 +101,7 @@ export const Header = () => {
 		<HStack
 			bg={colorMode == 'light' ? 'white' : '#1a202c'}
 			marginBottom={'30px'}
-			paddingInline={10}
+			paddingInline={[5, null, null, 10]}
 			zIndex={10}
 			top={0}
 			position={'sticky'}
@@ -169,7 +167,7 @@ export const Header = () => {
 						</MenuButton>
 						<MenuList mt={'2'} borderRadius={'10px'} padding={0}>
 							<Box
-								width={'400px'}
+								width={'300px'}
 								minH={'150px'}
 								maxH={'290px'}
 								overflow={'auto'}

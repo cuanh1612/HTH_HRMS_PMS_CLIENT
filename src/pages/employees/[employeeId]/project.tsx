@@ -327,6 +327,7 @@ const Projects: NextLayout = () => {
 
 					{clientsFilter && (
 						<SelectCustom
+							placeholder='Select client'
 							handleSearch={(field: any) => {
 								setFilter({
 									columnId: 'client',
@@ -353,6 +354,7 @@ const Projects: NextLayout = () => {
 
 					{employeesFilter && (
 						<SelectCustom
+							placeholder='Select employee'
 							handleSearch={(field: any) => {
 								setFilter({
 									columnId: 'employees',

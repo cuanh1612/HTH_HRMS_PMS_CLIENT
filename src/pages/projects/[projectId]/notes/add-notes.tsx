@@ -185,8 +185,9 @@ export default function AddNote({ onCloseDrawer }: IAddNoteProps) {
 						<>
 							<GridItem w="100%" colSpan={[2]}>
 								<SelectMany
+									placeholder='Select employees'
 									form={formSetting}
-									label={'Select Employee'}
+									label={'Employees'}
 									name={'employees'}
 									required={true}
 									options={optionEmployees}

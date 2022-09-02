@@ -295,8 +295,9 @@ export default function UpdateRoom({ roomId: RoomIdProp, onCloseDrawer }: IUpdat
 
 					<GridItem w="100%" colSpan={[2]}>
 						<SelectMany
+							placeholder='Select employees'
 							form={formSetting}
-							label={'Select Employee'}
+							label={'Employees'}
 							name={'employees'}
 							required={true}
 							options={optionEmployees}
@@ -306,8 +307,9 @@ export default function UpdateRoom({ roomId: RoomIdProp, onCloseDrawer }: IUpdat
 
 					<GridItem w="100%" colSpan={[2]}>
 						<SelectMany
+							placeholder='Select clients'
 							form={formSetting}
-							label={'Select Client'}
+							label={'Clients'}
 							name={'clients'}
 							required={true}
 							options={optionClients}

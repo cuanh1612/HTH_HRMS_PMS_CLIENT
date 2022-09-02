@@ -375,18 +375,21 @@ const members: NextLayout = () => {
 					</>
 				</FuncCollapse>
 			)}
+				<Box overflow={'scroll'}>
+				<Table
+					data={projectResponse?.project?.employees || []}
+					columns={columns}
+					isLoading={isLoading}
+					isSelect={false}
+					disableColumns={
+						currentUser?.role === 'Admin'
+							? ['department', 'designation']
+							: ['hourly_rate_project', 'department', 'designation', 'action']
+					}
+				/>
 
-			<Table
-				data={projectResponse?.project?.employees || []}
-				columns={columns}
-				isLoading={isLoading}
-				isSelect={false}
-				disableColumns={
-					currentUser?.role === 'Admin'
-						? ['department', 'designation']
-						: ['hourly_rate_project', 'department', 'designation', 'action']
-				}
-			/>
+				</Box>
+			
 
 			{/* alert dialog when delete one */}
 			<AlertDialog
@@ -436,18 +439,20 @@ const members: NextLayout = () => {
 							>
 								{radioFormVl == 1 ? (
 									<SelectMany
+										placeholder="Select employees"
 										key={1}
 										form={formSetting}
-										label={'Select Employee'}
+										label={'Employees'}
 										name={'employees'}
 										required={true}
 										options={optionEmployees}
 									/>
 								) : (
 									<SelectMany
+										placeholder="Select departments"
 										key={2}
 										form={formSetting2}
-										label={'Select department'}
+										label={'Departments'}
 										name={'departments'}
 										required={true}
 										options={optionDepartments}

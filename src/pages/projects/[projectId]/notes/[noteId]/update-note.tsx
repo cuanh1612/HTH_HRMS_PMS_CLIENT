@@ -233,8 +233,9 @@ export default function UpdateNote({ onCloseDrawer, noteIdProp }: IUpdateNotePro
 						<>
 							<GridItem w="100%" colSpan={[2]}>
 								<SelectMany
+									placeholder='Select employees'
 									form={formSetting}
-									label={'Select Employee'}
+									label={'Employees'}
 									name={'employees'}
 									required={true}
 									options={optionEmployees}

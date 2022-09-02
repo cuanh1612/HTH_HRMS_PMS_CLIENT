@@ -644,7 +644,7 @@ export const holidayColumn = ({
 					Header: 'Occasion',
 					filter: textFilter(['occasion']),
 					accessor: 'occasion',
-					minWidth: 250,
+					minWidth: 500,
 					width: 500,
 				},
 				{
@@ -1141,6 +1141,8 @@ export const TasksColumn = ({
 						return <Text isTruncated>{value}</Text>
 					},
 					filter: textFilter(['name']),
+					width: 150,
+					minWidth: 150,
 				},
 				{
 					Header: 'Project',
@@ -1149,6 +1151,8 @@ export const TasksColumn = ({
 						return <Text isTruncated>{value.name}</Text>
 					},
 					filter: selectFilter(['project', 'id']),
+					width: 150,
+					minWidth: 150,
 				},
 				{
 					Header: 'Deadline',
@@ -1165,6 +1169,8 @@ export const TasksColumn = ({
 						)
 					},
 					filter: dateFilter(['deadline']),
+					width: 150,
+					minWidth: 150,
 				},
 				{
 					Header: 'Hours Logged',
@@ -1181,6 +1187,8 @@ export const TasksColumn = ({
 
 						return <Text isTruncated>{result} hrs</Text>
 					},
+					width: 150,
+					minWidth: 150,
 				},
 				{
 					Header: 'milestone',
@@ -1217,6 +1225,8 @@ export const TasksColumn = ({
 							</AvatarGroup>
 						)
 					},
+					width: 150,
+					minWidth: 150,
 				},
 				{
 					Header: 'Assign By',
@@ -1236,6 +1246,8 @@ export const TasksColumn = ({
 						</HStack>
 					),
 					filter: selectFilter(['status', 'id']),
+					width: 150,
+					minWidth: 150,
 				},
 				{
 					Header: 'Action',
@@ -1322,6 +1334,8 @@ export const timeLogsColumn = ({
 						return <Text isTruncated>{value.name}</Text>
 					},
 					filter: textFilter(['task', 'name']),
+					width: 150,
+					minWidth: 150,
 				},
 				{
 					Header: 'Project',
@@ -1330,11 +1344,12 @@ export const timeLogsColumn = ({
 						return <Text isTruncated>{value?.name}</Text>
 					},
 					filter: selectFilter(['project', 'id']),
+					width: 150,
+					minWidth: 150,
 				},
 				{
 					Header: 'Employee',
 					accessor: 'employee',
-					minWidth: 250,
 					Cell: ({ value, row }) => {
 						return (
 							<>
@@ -1375,6 +1390,8 @@ export const timeLogsColumn = ({
 							</>
 						)
 					},
+					width: 150,
+					minWidth: 150,
 				},
 				{
 					Header: 'Start Time',
@@ -1388,11 +1405,12 @@ export const timeLogsColumn = ({
 							}-${date.getFullYear()} ${row.original['starts_on_time']}`}</Text>
 						)
 					},
+					width: 150,
+					minWidth: 150,
 				},
 				{
 					Header: 'End Time',
 					accessor: 'ends_on_date',
-					minWidth: 150,
 					filter: dateFilter(['ends_on_date']),
 					Cell: ({ value, row }) => {
 						const date = new Date(value)
@@ -1402,14 +1420,17 @@ export const timeLogsColumn = ({
 							}-${date.getFullYear()} ${row.original['ends_on_time']}`}</Text>
 						)
 					},
+					width: 150,
+					minWidth: 150,
 				},
 				{
 					Header: 'Total Hours',
-					minWidth: 150,
 					accessor: 'total_hours',
 					Cell: ({ value }) => {
 						return <Text isTruncated>{value} hrs</Text>
 					},
+					width: 150,
+					minWidth: 150,
 				},
 				{
 					Header: 'Earnings',
@@ -1425,6 +1446,8 @@ export const timeLogsColumn = ({
 							</Text>
 						)
 					},
+					width: 150,
+					minWidth: 150,
 				},
 				{
 					Header: 'Action',
@@ -1501,7 +1524,7 @@ export const noticeBoardColumn = ({
 					Header: 'Notice',
 					accessor: 'heading',
 					filter: textFilter(['heading']),
-					minWidth: 80,
+					minWidth: 500,
 					Cell: ({ value }) => {
 						return <Text isTruncated>{value}</Text>
 					},
@@ -1863,6 +1886,8 @@ export const projectTasksColumn = ({
 						return <Text isTruncated>{value}</Text>
 					},
 					filter: textFilter(['name']),
+					minWidth: 150,
+					width: 150
 				},
 				{
 					Header: 'Project',
@@ -1870,6 +1895,8 @@ export const projectTasksColumn = ({
 					Cell: ({ value }) => {
 						return <Text isTruncated>{value.name}</Text>
 					},
+					minWidth: 150,
+					width: 150
 				},
 				{
 					Header: 'Deadline',
@@ -1883,6 +1910,8 @@ export const projectTasksColumn = ({
 						)
 					},
 					filter: dateFilter(['deadline']),
+					minWidth: 150,
+					width: 150
 				},
 				{
 					Header: 'Hours Logged',
@@ -1899,6 +1928,8 @@ export const projectTasksColumn = ({
 
 						return <Text isTruncated>{result} hrs</Text>
 					},
+					minWidth: 150,
+					width: 150
 				},
 				{
 					Header: 'milestone',
@@ -1907,6 +1938,8 @@ export const projectTasksColumn = ({
 						return <Text isTruncated>{value?.title}</Text>
 					},
 					filter: selectFilter(['milestone', 'id']),
+					minWidth: 150,
+					width: 150
 				},
 				{
 					Header: 'Assign to',
@@ -1925,6 +1958,8 @@ export const projectTasksColumn = ({
 							</AvatarGroup>
 						)
 					},
+					minWidth: 150,
+					width: 150
 				},
 				{
 					Header: 'Status',
@@ -1936,6 +1971,8 @@ export const projectTasksColumn = ({
 						</HStack>
 					),
 					filter: selectFilter(['status', 'id']),
+					minWidth: 150,
+					width: 150
 				},
 				{
 					Header: 'Action',
@@ -2021,11 +2058,14 @@ export const projectTimeLogsColumn = ({
 						return <Text isTruncated>{value.name}</Text>
 					},
 					filter: textFilter(['task', 'name']),
+					minWidth: 150,
+					width: 150
 				},
 				{
 					Header: 'Employee',
 					accessor: 'employee',
-					minWidth: 250,
+					minWidth: 150,
+					width: 150,
 					Cell: ({ value, row }) => {
 						return (
 							<>
@@ -2079,11 +2119,14 @@ export const projectTimeLogsColumn = ({
 							}-${date.getFullYear()} ${row.original['starts_on_time']}`}</Text>
 						)
 					},
+					minWidth: 150,
+					width: 150
 				},
 				{
 					Header: 'End Time',
 					accessor: 'ends_on_date',
 					minWidth: 150,
+					width: 150,
 					filter: dateFilter(['ends_on_date']),
 					Cell: ({ value, row }) => {
 						const date = new Date(value)
@@ -2097,6 +2140,7 @@ export const projectTimeLogsColumn = ({
 				{
 					Header: 'Status',
 					minWidth: 150,
+					width: 150,
 					accessor: 'status',
 					filter: selectFilter(['task', 'status', 'id']),
 					Cell: ({ row }) => {
@@ -2106,6 +2150,7 @@ export const projectTimeLogsColumn = ({
 				{
 					Header: 'Total Hours',
 					minWidth: 150,
+					width: 150,
 					accessor: 'total_hours',
 					Cell: ({ value }) => {
 						return <Text isTruncated>{value} hrs</Text>
@@ -2114,6 +2159,8 @@ export const projectTimeLogsColumn = ({
 				{
 					Header: 'Earnings',
 					accessor: 'earnings',
+					minWidth: 150,
+					width: 150,
 					Cell: ({ value }) => {
 						return (
 							<Text isTruncated>
@@ -2202,7 +2249,8 @@ export const projectNotesColumn = ({
 				{
 					Header: 'Note title',
 					accessor: 'title',
-					minWidth: 150,
+					minWidth: 500,
+					width: 500,
 					filter: textFilter(['title']),
 					Cell: ({ value }) => {
 						return <Text isTruncated>{value}</Text>
@@ -3196,7 +3244,7 @@ export const SkillsColumn = ({ onDelete, onUpdate, currentUser }: IOptionColumn)
 					Header: 'Name',
 					accessor: 'name',
 					filter: textFilter(['heading']),
-					minWidth: 80,
+					minWidth: 500,
 					Cell: ({ value }) => {
 						return <Text isTruncated>{value}</Text>
 					},
@@ -3494,7 +3542,7 @@ export const jobColumn = ({
 					Header: 'Title',
 					accessor: 'title',
 					filter: textFilter(['title']),
-					minWidth: 80,
+					minWidth: 200,
 					Cell: ({ value }) => {
 						return <Text isTruncated>{value}</Text>
 					},
@@ -3632,7 +3680,8 @@ export const jobApplicationColumn = ({
 					Header: 'Name',
 					accessor: 'name',
 					filter: textFilter(['title']),
-					minWidth: 80,
+					minWidth: 150,
+					width: 150,
 					Cell: ({ value }) => {
 						return <Text isTruncated>{value}</Text>
 					},
@@ -3641,7 +3690,8 @@ export const jobApplicationColumn = ({
 					Header: 'Job',
 					accessor: 'jobs',
 					filter: textFilter(['jobs', 'id']),
-					minWidth: 80,
+					minWidth: 150,
+					width: 150,
 					Cell: ({ value }) => {
 						return <Text isTruncated>{value.title}</Text>
 					},
@@ -3650,7 +3700,8 @@ export const jobApplicationColumn = ({
 					Header: 'Location',
 					accessor: 'location',
 					filter: selectFilter(['location', 'name']),
-					minWidth: 80,
+					minWidth: 150,
+					width: 150,
 					Cell: ({ value }) => {
 						return <Text isTruncated>{value.name}</Text>
 					},
@@ -3659,7 +3710,8 @@ export const jobApplicationColumn = ({
 					Header: 'Date',
 					accessor: 'createdAt',
 					filter: dateFilter(['createdAt']),
-					minWidth: 80,
+					minWidth: 150,
+					width: 150,
 					Cell: ({ value }) => {
 						return (
 							<Text isTruncated>{new Date(value).toLocaleDateString('es-CL')}</Text>
@@ -3670,8 +3722,8 @@ export const jobApplicationColumn = ({
 					Header: 'Status',
 					accessor: 'status',
 					filter: selectFilter(['status']),
-
-					minWidth: 160,
+					minWidth: 150,
+					width: 150,
 					Cell: ({ value, row }) => {
 						return (
 							<Select
@@ -4044,7 +4096,8 @@ export const jobInterviewColumn = ({
 					Header: 'Candidate',
 					accessor: 'candidate',
 					filter: textFilter(['candidate', 'name']),
-					minWidth: 80,
+					minWidth: 150,
+					width: 150,
 					Cell: ({ value }) => {
 						return <Text isTruncated>{value.name}</Text>
 					},
@@ -4053,7 +4106,8 @@ export const jobInterviewColumn = ({
 					Header: 'Schedule date and time',
 					accessor: 'date',
 					filter: dateFilter(['date']),
-					minWidth: 80,
+					minWidth: 150,
+					width: 150,
 					Cell: ({ value, row }) => {
 						return (
 							<Text isTruncated>{`${new Date(value).toLocaleDateString('es-CL')} ${
@@ -4066,8 +4120,8 @@ export const jobInterviewColumn = ({
 					Header: 'Status',
 					accessor: 'status',
 					filter: selectFilter(['status']),
-					minWidth: 160,
-					width: 160,
+					minWidth: 150,
+					width: 150,
 					Cell: ({ value, row }) => {
 						return (
 							<Select
@@ -4182,7 +4236,8 @@ export const offerLettersColumn = ({
 					Header: 'Job',
 					accessor: 'job',
 					filter: selectFilter(['job', 'id']),
-					minWidth: 80,
+					minWidth: 150,
+					width: 150,
 					Cell: ({ value }) => {
 						return <Text isTruncated>{value.title}</Text>
 					},
@@ -4190,7 +4245,8 @@ export const offerLettersColumn = ({
 				{
 					Header: 'Job applicant',
 					accessor: 'job_application',
-					minWidth: 80,
+					minWidth: 150,
+					width: 150,
 					Cell: ({ value }) => {
 						return <Text isTruncated>{value.name}</Text>
 					},
@@ -4200,7 +4256,8 @@ export const offerLettersColumn = ({
 					Header: 'Expected joining date',
 					accessor: 'expected_joining_date',
 					filter: dateFilter(['date']),
-					minWidth: 80,
+					minWidth: 150,
+					width: 150,
 					Cell: ({ value }) => {
 						return (
 							<Text
@@ -4221,7 +4278,8 @@ export const offerLettersColumn = ({
 					Header: 'Offer expire on',
 					accessor: 'exprise_on',
 					filter: dateFilter(['date']),
-					minWidth: 80,
+					minWidth: 150,
+					width: 150,
 					Cell: ({ value }) => {
 						return (
 							<Text
@@ -4242,7 +4300,8 @@ export const offerLettersColumn = ({
 					Header: 'Status',
 					accessor: 'status',
 					filter: selectFilter(['status']),
-					minWidth: 80,
+					minWidth: 150,
+					width: 150,
 					Cell: ({ value }) => {
 						return (
 							<HStack spacing={3}>

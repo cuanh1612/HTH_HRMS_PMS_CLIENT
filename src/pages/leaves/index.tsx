@@ -255,48 +255,50 @@ const Leaves: NextLayout = () => {
 	return (
 		<Box pb={8}>
 			<Head title="Leaves" />
-			<FuncCollapse>
-				<Func
-					icon={<IoAdd />}
-					description={'Add new leave by form'}
-					title={'Add new'}
-					action={onOpenAdd}
-				/>
-				{currentUser && currentUser.role === 'Admin' && (
-					<>
-						<CSVLink filename={'leaves.csv'} headers={headersCSV} data={dataCSV}>
+			<Box className="function">
+				<FuncCollapse>
+					<Func
+						icon={<IoAdd />}
+						description={'Add new leave by form'}
+						title={'Add new'}
+						action={onOpenAdd}
+					/>
+					{currentUser && currentUser.role === 'Admin' && (
+						<>
+							<CSVLink filename={'leaves.csv'} headers={headersCSV} data={dataCSV}>
+								<Func
+									icon={<BiExport />}
+									description={'export to csv'}
+									title={'export'}
+									action={() => {}}
+								/>
+							</CSVLink>
 							<Func
-								icon={<BiExport />}
-								description={'export to csv'}
-								title={'export'}
-								action={() => {}}
+								icon={<AiOutlineDelete />}
+								title={'Delete all'}
+								description={'Delete all leaves you selected'}
+								action={onOpenDlMany}
+								disabled={!dataSl || dataSl.length == 0 ? true : false}
 							/>
-						</CSVLink>
-						<Func
-							icon={<AiOutlineDelete />}
-							title={'Delete all'}
-							description={'Delete all leaves you selected'}
-							action={onOpenDlMany}
-							disabled={!dataSl || dataSl.length == 0 ? true : false}
-						/>
-					</>
-				)}
-				<Func
-					icon={<VscFilter />}
-					description={'Open draw to filter'}
-					title={'filter'}
-					action={onOpenFilter}
-				/>
+						</>
+					)}
+					<Func
+						icon={<VscFilter />}
+						description={'Open draw to filter'}
+						title={'filter'}
+						action={onOpenFilter}
+					/>
 
-				<Func
-					icon={<MdOutlineEvent />}
-					title={'Calendar'}
-					description={'show leaves as calendar'}
-					action={() => {
-						router.push('/leaves/calendar')
-					}}
-				/>
-			</FuncCollapse>
+					<Func
+						icon={<MdOutlineEvent />}
+						title={'Calendar'}
+						description={'show leaves as calendar'}
+						action={() => {
+							router.push('/leaves/calendar')
+						}}
+					/>
+				</FuncCollapse>
+			</Box>
 
 			{currentUser && (
 				<Table

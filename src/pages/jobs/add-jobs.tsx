@@ -11,7 +11,7 @@ import {
 } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Editor, Loading } from 'components/common'
-import { Input, InputNumber, SelectCustom, SelectMany } from 'components/form'
+import { Input, InputNumber, Select, SelectCustom, SelectMany } from 'components/form'
 import Modal from 'components/modal/Modal'
 import { AuthContext } from 'contexts/AuthContext'
 import { createJobMutation } from 'mutations/job'
@@ -192,11 +192,7 @@ export default function AddJob({ onCloseDrawer }: IAddJobProps) {
 
 			allJobType.jobTypes.map((jobType) => {
 				newOptionJobTypes.push({
-					label: (
-						<>
-							<Text>{jobType.name}</Text>
-						</>
-					),
+					label: jobType.name,
 					value: jobType.id,
 				})
 			})
@@ -212,11 +208,7 @@ export default function AddJob({ onCloseDrawer }: IAddJobProps) {
 
 			allWorkExperience.workExperiences.map((workExperience) => {
 				newOptionWorkExperiences.push({
-					label: (
-						<>
-							<Text>{workExperience.name}</Text>
-						</>
-					),
+					label: workExperience.name,
 					value: workExperience.id,
 				})
 			})
@@ -351,7 +343,7 @@ export default function AddJob({ onCloseDrawer }: IAddJobProps) {
 					</GridItem>
 
 					<GridItem w="100%" colSpan={[2, 1]}>
-						<SelectCustom
+						<Select
 							form={formSetting}
 							label={'Department'}
 							name={'department'}
@@ -366,8 +358,9 @@ export default function AddJob({ onCloseDrawer }: IAddJobProps) {
 					<GridItem w="100%" colSpan={[2, 1]}>
 						<HStack>
 							<SelectMany
+								placeholder='Select skills'
 								form={formSetting}
-								label={'Select Skills'}
+								label={'Skills'}
 								name={'skills'}
 								required={true}
 								options={optionSkills}
@@ -380,8 +373,9 @@ export default function AddJob({ onCloseDrawer }: IAddJobProps) {
 					<GridItem w="100%" colSpan={[2, 1]}>
 						<HStack>
 							<SelectMany
+								placeholder='Select locations'
 								form={formSetting}
-								label={'Select Locations'}
+								label={'Locations'}
 								name={'locations'}
 								required={true}
 								options={optionLocations}
@@ -426,7 +420,7 @@ export default function AddJob({ onCloseDrawer }: IAddJobProps) {
 					</GridItem>
 
 					<GridItem w="100%" colSpan={[2, 1]}>
-						<SelectCustom
+						<Select
 							name="status"
 							label="status"
 							required={true}
@@ -448,7 +442,7 @@ export default function AddJob({ onCloseDrawer }: IAddJobProps) {
 
 					<GridItem w="100%" colSpan={[2, 1]}>
 						<HStack>
-							<SelectCustom
+							<Select
 								form={formSetting}
 								label={'Select Job Type'}
 								name={'job_type'}
@@ -462,11 +456,12 @@ export default function AddJob({ onCloseDrawer }: IAddJobProps) {
 
 					<GridItem w="100%" colSpan={[2, 1]}>
 						<HStack>
-							<SelectCustom
+							<Select
 								form={formSetting}
 								label={'Work Experience'}
 								name={'work_experience'}
 								required={true}
+								placeholder={'Select experience'}
 								options={optionWorkExperiences}
 								isModal={true}
 								onOpenModal={onOpenWorkExperience}
@@ -475,7 +470,7 @@ export default function AddJob({ onCloseDrawer }: IAddJobProps) {
 					</GridItem>
 
 					<GridItem w="100%" colSpan={[2, 1]}>
-						<SelectCustom
+						<Select
 							name="rate"
 							label="Rate"
 							required={true}
@@ -489,7 +484,7 @@ export default function AddJob({ onCloseDrawer }: IAddJobProps) {
 							<Text fontWeight={'normal'} color={'gray.400'}>
 								Description
 							</Text>
-							<Editor note={jobDescription} onChangeNote={onChangeDescription}/>
+							<Editor note={jobDescription} onChangeNote={onChangeDescription} />
 						</VStack>
 					</GridItem>
 				</Grid>

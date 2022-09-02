@@ -9,6 +9,8 @@ import {
 	Stack,
 	Text,
 	Tooltip as CTooltip,
+	useBreakpoint,
+	useColorMode,
 	VStack,
 } from '@chakra-ui/react'
 import { AuthContext } from 'contexts/AuthContext'
@@ -32,6 +34,8 @@ const Overview: NextLayout = () => {
 	const { isAuthenticated, handleLoading } = useContext(AuthContext)
 	const router = useRouter()
 	const { projectId } = router.query
+	const { colorMode } = useColorMode()
+	const breakpoint = useBreakpoint()
 
 	//query ----------------------------------------------------------------------
 	// get detail project
@@ -55,7 +59,13 @@ const Overview: NextLayout = () => {
 	}, [isAuthenticated])
 
 	return (
-		<Stack pb={8} direction={'row'} spacing={'30px'}>
+		<Stack
+			pb={8}
+			direction={
+				breakpoint && ['2xl', 'xl', 'lg', 'md'].includes(breakpoint) ? 'row' : 'column'
+			}
+			spacing={'30px'}
+		>
 			<Head title={dataDetailProject?.project?.name} />
 			<VStack spacing={5} flex={1}>
 				<VStack spacing={'4'} w={'full'} alignItems={'start'}>
@@ -83,7 +93,11 @@ const Overview: NextLayout = () => {
 					</SimpleGrid>
 				</VStack>
 				<Grid w={'full'} templateColumns="repeat(2, 1fr)" gap={5}>
-					<GridItem pos={'relative'} overflow={'hidden'} colSpan={1}>
+					<GridItem
+						pos={'relative'}
+						overflow={'hidden'}
+						colSpan={[2, null, null, null, null, 1]}
+					>
 						<VStack spacing={'4'} alignItems={'start'} w={'full'}>
 							<Text fontWeight={'semibold'} fontSize={'xl'}>
 								Tasks
@@ -97,7 +111,9 @@ const Overview: NextLayout = () => {
 								borderRadius={'10px'}
 								h={'300px'}
 							>
-								{dataCountStatus?.countstatusTasks.some(value => value.count != 0) ? (
+								{dataCountStatus?.countstatusTasks.some(
+									(value) => value.count != 0
+								) ? (
 									<Donut
 										labels={dataCountStatus.countstatusTasks.map(
 											(e) => e.title
@@ -112,11 +128,17 @@ const Overview: NextLayout = () => {
 										}
 										height={280}
 									/>
-								): <Empty height={'220px '}/>}
+								) : (
+									<Empty height={'220px '} />
+								)}
 							</Box>
 						</VStack>
 					</GridItem>
-					<GridItem pos={'relative'} overflow={'hidden'} colSpan={1}>
+					<GridItem
+						pos={'relative'}
+						colSpan={[2, null, null, null, null, 1]}
+						overflow={'hidden'}
+					>
 						<VStack spacing={'4'} alignItems={'start'} w={'full'}>
 							<Text fontWeight={'semibold'} fontSize={'xl'}>
 								Info project
@@ -156,12 +178,7 @@ const Overview: NextLayout = () => {
 									</HStack>
 								</VStack>
 
-								<VStack
-									w={'full'}
-									minW={'300px'}
-									spacing={'4'}
-									alignItems={'start'}
-								>
+								<VStack w={'full'} spacing={'4'} alignItems={'start'}>
 									<Text fontSize={'md'} color={'hu-Green.normal'}>
 										Progress
 									</Text>
@@ -188,7 +205,7 @@ const Overview: NextLayout = () => {
 											}
 										>
 											<HStack w={'full'} justifyContent={'space-between'}>
-												<Text>
+												<Text color={'black'}>
 													{dataDetailProject?.project?.start_date &&
 														`${new Date(
 															dataDetailProject.project.start_date
@@ -200,7 +217,7 @@ const Overview: NextLayout = () => {
 															dataDetailProject.project.start_date
 														).getFullYear()}`}
 												</Text>
-												<Text>
+												<Text color={'black'}>
 													{dataDetailProject?.project?.deadline &&
 														`${new Date(
 															dataDetailProject.project.deadline
@@ -237,7 +254,7 @@ const Overview: NextLayout = () => {
 							</VStack>
 						</VStack>
 					</GridItem>
-					<GridItem overflow={'hidden'} colSpan={1}>
+					<GridItem colSpan={[2, null, null, null, null, 1]} overflow={'hidden'}>
 						<VStack spacing={'4'} alignItems={'start'} w={'full'}>
 							<Text fontWeight={'semibold'} fontSize={'xl'}>
 								Hours Logged
@@ -271,7 +288,7 @@ const Overview: NextLayout = () => {
 							</Box>
 						</VStack>
 					</GridItem>
-					<GridItem overflow={'hidden'} colSpan={1}>
+					<GridItem colSpan={[2, null, null, null, null, 1]} overflow={'hidden'}>
 						<VStack spacing={'4'} alignItems={'start'} w={'full'}>
 							<Text fontWeight={'semibold'} fontSize={'xl'}>
 								Project Budget
@@ -310,7 +327,7 @@ const Overview: NextLayout = () => {
 					</GridItem>
 				</Grid>
 			</VStack>
-			<VStack spacing={5} w={'300px'}>
+			<VStack spacing={5} w={['full', null, '300px']}>
 				<VStack spacing={'4'} alignItems={'start'} w={'full'}>
 					<Text fontWeight={'semibold'} fontSize={'xl'}>
 						Detail
@@ -328,7 +345,13 @@ const Overview: NextLayout = () => {
 						Active
 					</Text>
 
-					<VStack overflow={'auto'} h={'calc( 100vh - 245px )'} w={'full'} spacing={5}>
+					<VStack
+						overflow={'auto'}
+						maxH={['500px', '500px', 'max-content']}
+						height={['auto', 'auto', 'calc( 100vh - 245px )']}
+						w={'full'}
+						spacing={5}
+					>
 						{allActs?.projectActivity?.map((item, key) => (
 							<HStack
 								p={4}
@@ -337,7 +360,7 @@ const Overview: NextLayout = () => {
 								w={'full'}
 								alignItems={'start'}
 								key={key}
-								bg={'#f4f6f8'}
+								bg={colorMode == 'dark' ? '#1e2636' : '#f4f6f8'}
 							>
 								<Box color={'hu-Green.normal'} pt={'4px'}>
 									<FiGitCommit fontSize={'16px'} />

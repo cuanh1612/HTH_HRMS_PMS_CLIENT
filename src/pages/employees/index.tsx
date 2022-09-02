@@ -345,74 +345,76 @@ const Employees: NextLayout = () => {
 	return (
 		<Box pb={8}>
 			<Head title={'Employees'} />
-			<FuncCollapse>
-				{currentUser && currentUser.role === 'Admin' && (
-					<>
-						<Func
-							icon={<IoAdd />}
-							description={'Add new employees by form'}
-							title={'Add new'}
-							action={onOpenAdd}
-						/>
-						<CSVLink filename={'employees.csv'} headers={headersCSV} data={dataCSV}>
+			<Box className="function">
+				<FuncCollapse>
+					{currentUser && currentUser.role === 'Admin' && (
+						<>
 							<Func
-								icon={<BiExport />}
-								description={'export to csv'}
-								title={'export'}
-								action={() => {}}
+								icon={<IoAdd />}
+								description={'Add new employees by form'}
+								title={'Add new'}
+								action={onOpenAdd}
 							/>
-						</CSVLink>
+							<CSVLink filename={'employees.csv'} headers={headersCSV} data={dataCSV}>
+								<Func
+									icon={<BiExport />}
+									description={'export to csv'}
+									title={'export'}
+									action={() => {}}
+								/>
+							</CSVLink>
 
-						<CSVLink
-							filename={'employeesTemplate.csv'}
-							headers={headersCSVTemplate}
-							data={dataCSVTemplate}
-						>
-							<Func
-								icon={<FaFileCsv />}
-								description={'export csv template'}
-								title={'export csv template'}
-								action={() => {}}
+							<CSVLink
+								filename={'employeesTemplate.csv'}
+								headers={headersCSVTemplate}
+								data={dataCSVTemplate}
+							>
+								<Func
+									icon={<FaFileCsv />}
+									description={'export csv template'}
+									title={'export csv template'}
+									action={() => {}}
+								/>
+							</CSVLink>
+
+							<ImportCSV
+								fieldsValid={[
+									'employeeId',
+									'name',
+									'gender',
+									'email',
+									'password',
+									'mobile',
+									'address',
+									'date_of_birth',
+									'department',
+									'designation',
+									'hourly_rate',
+									'joining_date',
+								]}
+								handleImportCSV={handleImportCSV}
+								statusImport={statusImportCSV === 'running'}
+								isOpenImportCSV={isOpenImportCSV}
+								onCloseImportCSV={onCloseImportCSV}
+								onOpenImportCSV={onOpenImportCSV}
 							/>
-						</CSVLink>
-
-						<ImportCSV
-							fieldsValid={[
-								'employeeId',
-								'name',
-								'gender',
-								'email',
-								'password',
-								'mobile',
-								'address',
-								'date_of_birth',
-								'department',
-								'designation',
-								'hourly_rate',
-								'joining_date',
-							]}
-							handleImportCSV={handleImportCSV}
-							statusImport={statusImportCSV === 'running'}
-							isOpenImportCSV={isOpenImportCSV}
-							onCloseImportCSV={onCloseImportCSV}
-							onOpenImportCSV={onOpenImportCSV}
-						/>
-					</>
-				)}
-				<Func
-					icon={<VscFilter />}
-					description={'Open draw to filter'}
-					title={'filter'}
-					action={onOpenFilter}
-				/>
-				<Func
-					icon={<AiOutlineDelete />}
-					title={'Delete all'}
-					description={'Delete all employees you selected'}
-					action={onOpenDlMany}
-					disabled={!dataSl || dataSl.length == 0 ? true : false}
-				/>
-			</FuncCollapse>
+						</>
+					)}
+					<Func
+						icon={<VscFilter />}
+						description={'Open draw to filter'}
+						title={'filter'}
+						action={onOpenFilter}
+					/>
+					<Func
+						icon={<AiOutlineDelete />}
+						title={'Delete all'}
+						description={'Delete all employees you selected'}
+						action={onOpenDlMany}
+						disabled={!dataSl || dataSl.length == 0 ? true : false}
+					/>
+				</FuncCollapse>
+			</Box>
 
 			{currentUser && (
 				<Table

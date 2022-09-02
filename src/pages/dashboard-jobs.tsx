@@ -8,6 +8,7 @@ import {
 	HStack,
 	StackDivider,
 	Text,
+	useBreakpoint,
 	useColorMode,
 	useColorModeValue,
 	useDisclosure,
@@ -53,6 +54,7 @@ const dashboard: NextLayout = () => {
 	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
 	const router = useRouter()
 	const { colorMode } = useColorMode()
+	const breakpoint = useBreakpoint()
 
 	// style
 	const dayHeader = useColorModeValue('dayHeader', 'dayHeader--dark')
@@ -161,16 +163,11 @@ const dashboard: NextLayout = () => {
 	useEffect(() => {
 		if (calendar) {
 			calendar.render()
-			calendar.on('dateClick', function (info) {})
-
-			calendar.on('select', function (info) {})
 
 			calendar.on('eventClick', (info) => {
 				setInterviewId(Number(info.event.id))
 				onOpenDetail()
 			})
-
-			calendar.on('eventDragStop', (info) => {})
 		}
 	}, [calendar])
 
@@ -190,7 +187,7 @@ const dashboard: NextLayout = () => {
 				<Text fontWeight={'semibold'}>Information</Text>
 				{isOpenCards ? <AiOutlineCaretDown /> : <AiOutlineCaretUp />}
 			</HStack>
-			<Collapse in={isOpenCards} animateOpacity>
+			<Collapse in={isOpenCards} animateOpacity className="information">
 				<Grid
 					overflow={'hidden'}
 					templateColumns={[
@@ -258,41 +255,45 @@ const dashboard: NextLayout = () => {
 				templateColumns={['repeat(1, 1fr)', null, null, 'repeat(2, 1fr)']}
 				gap={6}
 			>
-				<ItemDashboard title="Application sources">
+				<ItemDashboard isFull={breakpoint ? !['2xl', 'xl', 'lg'].includes(breakpoint): false} title="Application sources">
 					{dataApplicationSources?.applicationSources.length > 0 ? (
-						<Donut
-							colors={dataApplicationSources.applicationSources.map(
-								(item: { count: number; source: string }) => {
-									switch (item.source) {
-										case 'Linkedin':
-											return '#0a66c2'
-										case 'Facebook':
-											return '#1877f2'
-										case 'Instagram':
-											return '#e4405f'
-										case 'Twitter':
-											return '#1da1f2'
-										case 'Other':
-											return '#f57d00'
-										default:
-											return ''
+						<Box className='basic-info'>
+							<Donut
+								colors={dataApplicationSources.applicationSources.map(
+									(item: { count: number; source: string }) => {
+										switch (item.source) {
+											case 'Linkedin':
+												return '#0a66c2'
+											case 'Facebook':
+												return '#1877f2'
+											case 'Instagram':
+												return '#e4405f'
+											case 'Twitter':
+												return '#1da1f2'
+											case 'Other':
+												return '#f57d00'
+											default:
+												return ''
+										}
 									}
-								}
-							)}
-							data={dataApplicationSources.applicationSources.map((item: any) => {
-								return Number(item.count)
-							})}
-							height={300}
-							labels={dataApplicationSources.applicationSources.map((item: any) => {
-								return item.source
-							})}
-						/>
+								)}
+								data={dataApplicationSources.applicationSources.map((item: any) => {
+									return Number(item.count)
+								})}
+								height={300}
+								labels={dataApplicationSources.applicationSources.map(
+									(item: any) => {
+										return item.source
+									}
+								)}
+							/>
+						</Box>
 					) : (
 						<Empty height="220px" />
 					)}
 				</ItemDashboard>
 
-				<ItemDashboard title="Application status">
+				<ItemDashboard isFull={breakpoint ? !['2xl', 'xl', 'lg'].includes(breakpoint): false} title="Application status">
 					{dataApplicationStatus?.applicationStatus.length > 0 ? (
 						<Donut
 							colors={dataApplicationStatus.applicationStatus.map(
@@ -336,62 +337,62 @@ const dashboard: NextLayout = () => {
 							justifyContent={'start'}
 						>
 							{dataOpenJobs.openJobs.map((item: jobType, key: number) => {
-									return (
-										<HStack
-											key={key}
-											spacing={5}
-											w={'full'}
-											pos={'relative'}
-											justifyContent={'space-between'}
-										>
-											<HStack spacing={3}>
-												<Avatar
-													size={'sm'}
-													src={item.recruiter.avatar?.url}
-													name={item.recruiter.name}
-												/>
-												<Box overflow={'hidden'} w={'150px'} minW={'150px'}>
-													<Link
-														passHref
-														href={`/employees/${item.recruiter.id}/detail`}
+								return (
+									<HStack
+										key={key}
+										spacing={5}
+										w={'full'}
+										pos={'relative'}
+										justifyContent={'space-between'}
+									>
+										<HStack spacing={3}>
+											<Avatar
+												size={'sm'}
+												src={item.recruiter.avatar?.url}
+												name={item.recruiter.name}
+											/>
+											<Box overflow={'hidden'} w={'150px'} minW={'150px'}>
+												<Link
+													passHref
+													href={`/employees/${item.recruiter.id}/detail`}
+												>
+													<Text
+														w={'99%'}
+														isTruncated
+														_hover={{
+															textDecoration: 'underline',
+															cursor: 'pointer',
+														}}
 													>
-														<Text
-															w={'99%'}
-															isTruncated
-															_hover={{
-																textDecoration: 'underline',
-																cursor: 'pointer',
-															}}
-														>
-															{item.recruiter.name}
-														</Text>
-													</Link>
-													<Text fontSize={'14px'} color={'gray'}>
-														{item.recruiter.department?.name}
+														{item.recruiter.name}
 													</Text>
-												</Box>
-											</HStack>
-											<Text fontWeight={'semibold'}>{item.title}</Text>
-											<HStack spacing={10}>
-												<Text color={'red'}>
-													{Intl.NumberFormat('en-US', {
-														style: 'currency',
-														currency: 'USD',
-														useGrouping: false,
-													}).format(Number(item.total_openings))}
-												</Text>
-												<Text color={'gray'}>
-													{new Date(item.ends_on_date).toLocaleDateString(
-														'es-CL'
-													)}
-												</Text>
-												<Link href={`/jobs/${item.id}/profile`}>
-													<Button>View</Button>
 												</Link>
-											</HStack>
+												<Text fontSize={'14px'} color={'gray'}>
+													{item.recruiter.department?.name}
+												</Text>
+											</Box>
 										</HStack>
-									)
-								})}
+										<Text fontWeight={'semibold'} whiteSpace={'nowrap'}>{item.title}</Text>
+										<HStack spacing={10} pr={['20px!important', null, null, '0px']}>
+											<Text whiteSpace={'nowrap'} color={'red'}>
+												{Intl.NumberFormat('en-US', {
+													style: 'currency',
+													currency: 'USD',
+													useGrouping: false,
+												}).format(Number(item.total_openings))}
+											</Text>
+											<Text whiteSpace={'nowrap'} color={'gray'}>
+												{new Date(item.ends_on_date).toLocaleDateString(
+													'es-CL'
+												)}
+											</Text>
+											<Link href={`/jobs/${item.id}/profile`}>
+												<Button>View</Button>
+											</Link>
+										</HStack>
+									</HStack>
+								)
+							})}
 						</VStack>
 					) : (
 						<Empty height="220px" />

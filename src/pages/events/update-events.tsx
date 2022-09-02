@@ -1,7 +1,7 @@
 import { Avatar, Box, Button, Grid, GridItem, HStack, Text, VStack } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Input, SelectMany, TimePicker } from 'components/form'
-import {Editor, Loading }from 'components/common'
+import { Editor, Loading } from 'components/common'
 import { AuthContext } from 'contexts/AuthContext'
 import { updateEventMutation } from 'mutations'
 import { allClientsQuery, allEmployeesNormalQuery, allEventsQuery, detailEventQuery } from 'queries'
@@ -76,7 +76,7 @@ export default function UpdateEvent({ onCloseDrawer, eventIdUpdate }: IUpdateEve
 				await mutateUpEvent({
 					eventId: eventIdUpdate,
 					inputUpdate: {
-						...values
+						...values,
 					},
 				})
 			} else {
@@ -254,8 +254,7 @@ export default function UpdateEvent({ onCloseDrawer, eventIdUpdate }: IUpdateEve
 		}
 	}, [dataDetailEvent])
 
-	useEffect(() => {
-	}, [formSetting])
+	useEffect(() => {}, [formSetting])
 
 	//Function -------------------------------------------------------------------
 	const onChangeDescription = (value: string) => {
@@ -314,7 +313,7 @@ export default function UpdateEvent({ onCloseDrawer, eventIdUpdate }: IUpdateEve
 							<Text fontWeight={'normal'} color={'gray.400'}>
 								Description
 							</Text>
-							<Editor note={description} onChangeNote={onChangeDescription}/>
+							<Editor note={description} onChangeNote={onChangeDescription} />
 						</VStack>
 					</GridItem>
 
@@ -362,8 +361,9 @@ export default function UpdateEvent({ onCloseDrawer, eventIdUpdate }: IUpdateEve
 
 					<GridItem w="100%" colSpan={[2]}>
 						<SelectMany
+							placeholder="Select employees"
 							form={formSetting}
-							label={'Select Employee'}
+							label={'Employee'}
 							name={'employeeEmails'}
 							required={true}
 							options={optionEmployees}
@@ -374,8 +374,9 @@ export default function UpdateEvent({ onCloseDrawer, eventIdUpdate }: IUpdateEve
 
 					<GridItem w="100%" colSpan={[2]}>
 						<SelectMany
+							placeholder='Select clients'
 							form={formSetting}
-							label={'Select Client'}
+							label={'Client'}
 							name={'clientEmails'}
 							required={true}
 							options={optionClients}

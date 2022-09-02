@@ -66,7 +66,6 @@ const Event: NextLayout = () => {
 
 	const [name, setName] = useState<string>()
 
-
 	//Setup drawer --------------------------------------------------------------
 	const { isOpen: isOpenAdd, onOpen: onOpenAdd, onClose: onCloseAdd } = useDisclosure()
 	const { isOpen: isOpenUpdate, onOpen: onOpenUpdate, onClose: onCloseUpdate } = useDisclosure()
@@ -152,19 +151,16 @@ const Event: NextLayout = () => {
 	useEffect(() => {
 		if (calendar) {
 			calendar.render()
-			calendar.on('dateClick', function (info) {
-			})
+			calendar.on('dateClick', function (info) {})
 
-			calendar.on('select', function (info) {
-			})
+			calendar.on('select', function (info) {})
 
 			calendar.on('eventClick', (info) => {
 				setEventId(Number(info.event.id))
 				onOpenDetail()
 			})
 
-			calendar.on('eventDragStop', (info) => {
-			})
+			calendar.on('eventDragStop', (info) => {})
 		}
 	}, [calendar])
 
@@ -251,68 +247,73 @@ const Event: NextLayout = () => {
 	return (
 		<Box w={'full'} pb={8}>
 			<Head title="Events" />
-			<FuncCollapse>
-				{currentUser && currentUser.role === 'Admin' && (
-					<>
-						<Func
-							icon={<IoAdd />}
-							description={'Add new job by form'}
-							title={'Add new'}
-							action={onOpenAdd}
+			<Box className="function">
+				<FuncCollapse>
+					{currentUser && currentUser.role === 'Admin' && (
+						<>
+							<Func
+								icon={<IoAdd />}
+								description={'Add new job by form'}
+								title={'Add new'}
+								action={onOpenAdd}
+							/>
+						</>
+					)}
+					<Func
+						icon={<VscFilter />}
+						description={'Open draw to filter'}
+						title={'filter'}
+						action={onOpenFilter}
+					/>
+					<Func
+						icon={<BsCalendar2Day />}
+						description={'Show calendar by day'}
+						title={'Day'}
+						action={() => {
+							calendar?.changeView('timeGridDay')
+						}}
+					/>
+					<Func
+						icon={<BsCalendar2Week />}
+						description={'Show calendar by week'}
+						title={'Week'}
+						action={() => calendar?.changeView('timeGridWeek')}
+					/>
+					<Func
+						icon={<BsCalendar2Month />}
+						description={'Show calendar by month'}
+						title={'Month'}
+						action={() => calendar?.changeView('dayGridMonth')}
+					/>
+				</FuncCollapse>
+			</Box>
+
+			<Box className='table'>
+				<HStack pb={4} justifyContent={'space-between'}>
+					<Text color={'gray.500'} fontWeight={'semibold'}>
+						Calendar
+					</Text>
+					<ButtonGroup spacing={4}>
+						<ButtonIcon
+							handle={() => calendar?.prev()}
+							ariaLabel={'first page'}
+							icon={<MdOutlineNavigateBefore />}
 						/>
-					</>
-				)}
-				<Func
-					icon={<VscFilter />}
-					description={'Open draw to filter'}
-					title={'filter'}
-					action={onOpenFilter}
-				/>
-				<Func
-					icon={<BsCalendar2Day />}
-					description={'Show calendar by day'}
-					title={'Day'}
-					action={() => {
-						calendar?.changeView('timeGridDay')
-					}}
-				/>
-				<Func
-					icon={<BsCalendar2Week />}
-					description={'Show calendar by week'}
-					title={'Week'}
-					action={() => calendar?.changeView('timeGridWeek')}
-				/>
-				<Func
-					icon={<BsCalendar2Month />}
-					description={'Show calendar by month'}
-					title={'Month'}
-					action={() => calendar?.changeView('dayGridMonth')}
-				/>
-			</FuncCollapse>
-			<HStack pb={4} justifyContent={'space-between'}>
-				<Text color={'gray.500'} fontWeight={'semibold'}>
-					Calendar
-				</Text>
-				<ButtonGroup spacing={4}>
-					<ButtonIcon
-						handle={() => calendar?.prev()}
-						ariaLabel={'first page'}
-						icon={<MdOutlineNavigateBefore />}
-					/>
-					<Button
-						color={'white'}
-						bg={'hu-Green.normal'}
-						onClick={() => calendar?.today()}
-					>
-						today
-					</Button>
-					<ButtonIcon
-						handle={() => calendar?.next()}
-						ariaLabel={'next page'}
-						icon={<MdOutlineNavigateNext />}
-					/>
-				</ButtonGroup>
-			</HStack>
+						<Button
+							color={'white'}
+							bg={'hu-Green.normal'}
+							onClick={() => calendar?.today()}
+						>
+							today
+						</Button>
+						<ButtonIcon
+							handle={() => calendar?.next()}
+							ariaLabel={'next page'}
+							icon={<MdOutlineNavigateNext />}
+						/>
+					</ButtonGroup>
+				</HStack>
+			</Box>
 
 			<Box id={'calendar'} />
 
@@ -380,6 +381,7 @@ const Event: NextLayout = () => {
 
 					{employeesFilter && (
 						<SelectCustom
+							placeholder='Select employee'
 							handleSearch={(field: any) => {
 								setEmployee(String(field.value))
 							}}
@@ -403,6 +405,7 @@ const Event: NextLayout = () => {
 
 					{clientsFilter && (
 						<SelectCustom
+							placeholder='Select client'
 							handleSearch={(field: any) => {
 								setClient(String(field.value))
 							}}

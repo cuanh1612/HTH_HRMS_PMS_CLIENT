@@ -1,6 +1,6 @@
 import { Avatar, Box, Button, Grid, GridItem, HStack, Text, VStack } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { Input, InputNumber, SelectCustom } from 'components/form'
+import { Input, InputNumber, Select } from 'components/form'
 import { AuthContext } from 'contexts/AuthContext'
 import { updateSalaryMutation } from 'mutations'
 import { useRouter } from 'next/router'
@@ -160,7 +160,7 @@ export default function UpdateSalary({ employeeId = 6 }: IUpdateSalaryProps) {
 						</GridItem>
 
 						<GridItem w="100%" colSpan={[3, 1]}>
-							<SelectCustom
+							<Select
 								form={formSetting}
 								label={'Value Type'}
 								required={true}

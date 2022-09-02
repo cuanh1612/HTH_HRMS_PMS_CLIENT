@@ -216,69 +216,71 @@ const Holiday: NextLayout = () => {
 	return (
 		<Box pb={8}>
 			<Head title="Holidays" />
-			<FuncCollapse>
-				{currentUser && currentUser.role === 'Admin' && (
-					<>
-						<Func
-							icon={<IoAdd />}
-							description={'Add new holiday by form'}
-							title={'Add new'}
-							action={onOpenAdd}
-						/>
-						<CSVLink filename={'holidays.csv'} headers={headersCSV} data={dataCSV}>
+			<Box className="function">
+				<FuncCollapse>
+					{currentUser && currentUser.role === 'Admin' && (
+						<>
 							<Func
-								icon={<BiExport />}
-								description={'export to csv'}
-								title={'export'}
-								action={() => {}}
+								icon={<IoAdd />}
+								description={'Add new holiday by form'}
+								title={'Add new'}
+								action={onOpenAdd}
 							/>
-						</CSVLink>
+							<CSVLink filename={'holidays.csv'} headers={headersCSV} data={dataCSV}>
+								<Func
+									icon={<BiExport />}
+									description={'export to csv'}
+									title={'export'}
+									action={() => {}}
+								/>
+							</CSVLink>
 
-						<CSVLink
-							filename={'holidaysTemplate.csv'}
-							headers={headersCSVTemplate}
-							data={dataCSVTemplate}
-						>
+							<CSVLink
+								filename={'holidaysTemplate.csv'}
+								headers={headersCSVTemplate}
+								data={dataCSVTemplate}
+							>
+								<Func
+									icon={<FaFileCsv />}
+									description={'export csv template'}
+									title={'export csv template'}
+									action={() => {}}
+								/>
+							</CSVLink>
+
+							<ImportCSV
+								fieldsValid={['holiday_date', 'occasion']}
+								handleImportCSV={handleImportCSV}
+								statusImport={statusCreHolidays === 'running'}
+								isOpenImportCSV={isOpenImportCSV}
+								onCloseImportCSV={onCloseImportCSV}
+								onOpenImportCSV={onOpenImportCSV}
+							/>
 							<Func
-								icon={<FaFileCsv />}
-								description={'export csv template'}
-								title={'export csv template'}
-								action={() => {}}
+								icon={<AiOutlineDelete />}
+								title={'Delete all'}
+								description={'Delete all holiday you selected'}
+								action={onOpenDlMany}
+								disabled={!dataSl || dataSl.length == 0 ? true : false}
 							/>
-						</CSVLink>
-
-						<ImportCSV
-							fieldsValid={['holiday_date', 'occasion']}
-							handleImportCSV={handleImportCSV}
-							statusImport={statusCreHolidays === 'running'}
-							isOpenImportCSV={isOpenImportCSV}
-							onCloseImportCSV={onCloseImportCSV}
-							onOpenImportCSV={onOpenImportCSV}
-						/>
-						<Func
-							icon={<AiOutlineDelete />}
-							title={'Delete all'}
-							description={'Delete all holiday you selected'}
-							action={onOpenDlMany}
-							disabled={!dataSl || dataSl.length == 0 ? true : false}
-						/>
-					</>
-				)}
-				<Func
-					icon={<VscFilter />}
-					description={'Open draw to filter'}
-					title={'filter'}
-					action={onOpenFilter}
-				/>
-				<Func
-					icon={<MdOutlineEvent />}
-					title={'Calendar'}
-					description={'show holidays as calendar'}
-					action={() => {
-						router.push('/holidays/calendar')
-					}}
-				/>
-			</FuncCollapse>
+						</>
+					)}
+					<Func
+						icon={<VscFilter />}
+						description={'Open draw to filter'}
+						title={'filter'}
+						action={onOpenFilter}
+					/>
+					<Func
+						icon={<MdOutlineEvent />}
+						title={'Calendar'}
+						description={'show holidays as calendar'}
+						action={() => {
+							router.push('/holidays/calendar')
+						}}
+					/>
+				</FuncCollapse>
+			</Box>
 
 			<Table
 				data={allHolidays?.holidays || []}

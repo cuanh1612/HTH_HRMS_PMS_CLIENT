@@ -386,78 +386,80 @@ const Contracts: NextLayout = () => {
 	return (
 		<Box pb={8}>
 			<Head title="Contracts" />
-			<FuncCollapse>
-				{currentUser && currentUser.role === 'Admin' && (
-					<>
-						<Func
-							icon={<IoAdd />}
-							description={'Add new contract by form'}
-							title={'Add new'}
-							action={onOpenAdd}
-						/>
-
-						<CSVLink filename={'contracts.csv'} headers={headersCSV} data={dataCSV}>
+			<Box className="function">
+				<FuncCollapse>
+					{currentUser && currentUser.role === 'Admin' && (
+						<>
 							<Func
-								icon={<BiExport />}
-								description={'export to csv'}
-								title={'export'}
-								action={() => {}}
+								icon={<IoAdd />}
+								description={'Add new contract by form'}
+								title={'Add new'}
+								action={onOpenAdd}
 							/>
-						</CSVLink>
 
-						<CSVLink
-							filename={'contractsTemplate.csv'}
-							headers={headersCSVTemplate}
-							data={dataCSVTemplate}
-						>
+							<CSVLink filename={'contracts.csv'} headers={headersCSV} data={dataCSV}>
+								<Func
+									icon={<BiExport />}
+									description={'export to csv'}
+									title={'export'}
+									action={() => {}}
+								/>
+							</CSVLink>
+
+							<CSVLink
+								filename={'contractsTemplate.csv'}
+								headers={headersCSVTemplate}
+								data={dataCSVTemplate}
+							>
+								<Func
+									icon={<FaFileCsv />}
+									description={'export csv template'}
+									title={'export csv template'}
+									action={() => {}}
+								/>
+							</CSVLink>
+
+							<ImportCSV
+								fieldsValid={[
+									'alternate_address',
+									'cell',
+									'city',
+									'client',
+									'contract_type',
+									'contract_value',
+									'country',
+									'currency',
+									'notes',
+									'office_phone_number',
+									'postal_code',
+									'state',
+									'subject',
+									'end_date',
+									'start_date',
+								]}
+								handleImportCSV={handleImportCSV}
+								statusImport={statusImportCSV === 'running'}
+								isOpenImportCSV={isOpenImportCSV}
+								onCloseImportCSV={onCloseImportCSV}
+								onOpenImportCSV={onOpenImportCSV}
+							/>
 							<Func
-								icon={<FaFileCsv />}
-								description={'export csv template'}
-								title={'export csv template'}
-								action={() => {}}
+								icon={<AiOutlineDelete />}
+								title={'Delete all'}
+								description={'Delete all contracts you selected'}
+								action={onOpenDlMany}
+								disabled={!dataSl || dataSl.length == 0 ? true : false}
 							/>
-						</CSVLink>
-
-						<ImportCSV
-							fieldsValid={[
-								'alternate_address',
-								'cell',
-								'city',
-								'client',
-								'contract_type',
-								'contract_value',
-								'country',
-								'currency',
-								'notes',
-								'office_phone_number',
-								'postal_code',
-								'state',
-								'subject',
-								'end_date',
-								'start_date',
-							]}
-							handleImportCSV={handleImportCSV}
-							statusImport={statusImportCSV === 'running'}
-							isOpenImportCSV={isOpenImportCSV}
-							onCloseImportCSV={onCloseImportCSV}
-							onOpenImportCSV={onOpenImportCSV}
-						/>
-						<Func
-							icon={<AiOutlineDelete />}
-							title={'Delete all'}
-							description={'Delete all contracts you selected'}
-							action={onOpenDlMany}
-							disabled={!dataSl || dataSl.length == 0 ? true : false}
-						/>
-					</>
-				)}
-				<Func
-					icon={<VscFilter />}
-					description={'Open draw to filter'}
-					title={'filter'}
-					action={onOpenFilter}
-				/>
-			</FuncCollapse>
+						</>
+					)}
+					<Func
+						icon={<VscFilter />}
+						description={'Open draw to filter'}
+						title={'filter'}
+						action={onOpenFilter}
+					/>
+				</FuncCollapse>
+			</Box>
 
 			<Table
 				data={allContracts?.contracts || []}
@@ -470,6 +472,7 @@ const Contracts: NextLayout = () => {
 				isResetFilter={isResetFilter}
 				disableColumns={['contract_type']}
 			/>
+
 			<Drawer size="xl" title="Add Contract" onClose={onCloseAdd} isOpen={isOpenAdd}>
 				<AddContract onCloseDrawer={onCloseAdd} />
 			</Drawer>
@@ -557,6 +560,7 @@ const Contracts: NextLayout = () => {
 					/>
 					{clientsFilter && (
 						<SelectCustom
+							placeholder='Select client'
 							handleSearch={(field: any) => {
 								setFilter({
 									columnId: 'client',

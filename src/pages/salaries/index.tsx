@@ -28,7 +28,6 @@ import { VscFilter } from 'react-icons/vsc'
 import { IOption } from 'type/basicTypes'
 import { salariesColumn } from 'utils/columns'
 
-
 const Salaries: NextLayout = () => {
 	const { isAuthenticated, handleLoading, currentUser } = useContext(AuthContext)
 	const router = useRouter()
@@ -162,26 +161,28 @@ const Salaries: NextLayout = () => {
 	return (
 		<Box pb={8} w={'full'}>
 			<Head title="Salaries" />
-			<FuncCollapse>
-				{currentUser && currentUser.role === 'Admin' && (
-					<>
-						<CSVLink filename={'salaries.csv'} headers={headersCSV} data={dataCSV}>
-							<Func
-								icon={<BiExport />}
-								description={'export to csv'}
-								title={'export'}
-								action={() => {}}
-							/>
-						</CSVLink>
-					</>
-				)}
-				<Func
-					icon={<VscFilter />}
-					description={'Open draw to filter'}
-					title={'filter'}
-					action={onOpenFilter}
-				/>
-			</FuncCollapse>
+			<Box className="function">
+				<FuncCollapse>
+					{currentUser && currentUser.role === 'Admin' && (
+						<>
+							<CSVLink filename={'salaries.csv'} headers={headersCSV} data={dataCSV}>
+								<Func
+									icon={<BiExport />}
+									description={'export to csv'}
+									title={'export'}
+									action={() => {}}
+								/>
+							</CSVLink>
+						</>
+					)}
+					<Func
+						icon={<VscFilter />}
+						description={'Open draw to filter'}
+						title={'filter'}
+						action={onOpenFilter}
+					/>
+				</FuncCollapse>
+			</Box>
 
 			{/* Modal project category and designation */}
 			<Modal
@@ -244,6 +245,7 @@ const Salaries: NextLayout = () => {
 
 					{employeesFilter && (
 						<SelectCustom
+							placeholder='Select employee'
 							handleSearch={(field: any) => {
 								setFilter({
 									columnId: 'id',

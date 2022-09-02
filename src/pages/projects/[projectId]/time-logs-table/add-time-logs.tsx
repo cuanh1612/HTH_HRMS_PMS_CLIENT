@@ -11,7 +11,7 @@ import {
 } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Loading } from 'components/common'
-import { Input, SelectCustom, TimePicker } from 'components/form'
+import { Input, Select, SelectCustom, TimePicker } from 'components/form'
 import { AuthContext } from 'contexts/AuthContext'
 import { createTimeLogMutation } from 'mutations/timeLog'
 import { GetServerSideProps } from 'next'
@@ -130,6 +130,15 @@ export default function AddTimeLog({ onCloseDrawer }: IAddTimeLogProps) {
 		}
 	}, [isAuthenticated])
 
+	useEffect(() => {
+		const subscription = formSetting.watch((value, { name }) => {
+			if (name == 'task') {
+				onChangeTask(value[name] || '')
+			}
+		})
+		return () => subscription.unsubscribe()
+	}, [formSetting.watch])
+
 	//Set data option tasks state
 	useEffect(() => {
 		if (allTasksProject && allTasksProject.tasks) {
@@ -218,18 +227,19 @@ export default function AddTimeLog({ onCloseDrawer }: IAddTimeLogProps) {
 					</GridItem>
 
 					<GridItem w="100%" colSpan={[2, 1]}>
-						<SelectCustom
+						<Select
 							name="task"
 							label="task"
 							form={formSetting}
 							options={optionTasks}
 							required={true}
-							onChangeValue={onChangeTask}
+							placeholder={'Select task'}
 						/>
 					</GridItem>
 
 					<GridItem w="100%" colSpan={[2, 1]}>
 						<SelectCustom
+							placeholder='Select employee'
 							name="employee"
 							label="employee"
 							form={formSetting}

@@ -450,6 +450,7 @@ const calendar: NextLayout = () => {
 
 							{employeesFilter && (
 								<SelectCustom
+									placeholder='Select interviewer'
 									handleSearch={(field: any) => {
 										setFilter((state) => ({
 											...state,

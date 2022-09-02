@@ -420,7 +420,7 @@ export default function AddProject({ onCloseDrawer }: IAddProjectProps) {
 							label="Client"
 							required={false}
 							form={formSetting}
-							placeholder={'Select Project Category'}
+							placeholder={'Select client'}
 							options={optionClients}
 						/>
 					</GridItem>
@@ -430,7 +430,7 @@ export default function AddProject({ onCloseDrawer }: IAddProjectProps) {
 							<Text fontWeight={'normal'} color={'gray.400'}>
 								Project Summary
 							</Text>
-							<Editor note={summary} onChangeNote={onChangeSummary}/>
+							<Editor note={summary} onChangeNote={onChangeSummary} />
 						</VStack>
 					</GridItem>
 
@@ -439,14 +439,15 @@ export default function AddProject({ onCloseDrawer }: IAddProjectProps) {
 							<Text fontWeight={'normal'} color={'gray.400'}>
 								Notes
 							</Text>
-							<Editor note={notes} onChangeNote={onChangeNotes}/>
+							<Editor note={notes} onChangeNote={onChangeNotes} />
 						</VStack>
 					</GridItem>
 
 					<GridItem w="100%" colSpan={[2]}>
 						<SelectMany
+							placeholder='Select employees'
 							form={formSetting}
-							label={'Select Employee'}
+							label={'Employees'}
 							name={'employees'}
 							required={true}
 							options={optionEmployees}
@@ -525,12 +526,13 @@ export default function AddProject({ onCloseDrawer }: IAddProjectProps) {
 						</GridItem>
 
 						<GridItem w="100%" colSpan={[2, 1]}>
-							<SelectCustom
+							<Select
 								name="currency"
 								label="Currency"
 								required={false}
 								form={formSetting}
 								options={dataCurrency}
+								placeholder={'Select currency'}
 							/>
 						</GridItem>
 

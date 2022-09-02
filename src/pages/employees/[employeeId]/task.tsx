@@ -389,6 +389,7 @@ const TasksEmployee: NextLayout = () => {
 					/>
 
 					<SelectCustom
+						placeholder='Select employee'
 						handleSearch={(field: any) => {
 							setFilter({
 								columnId: 'employees',
@@ -412,6 +413,7 @@ const TasksEmployee: NextLayout = () => {
 					/>
 					{(currentUser?.role === 'Admin' || currentUser?.role === 'Client') && (
 						<SelectCustom
+							placeholder='Select assign by'
 							handleSearch={(field: any) => {
 								setFilter({
 									columnId: 'assignBy',

@@ -185,7 +185,6 @@ export const Table = memo(
 				dataSelect = dataSelect.map((row: Row) => {
 					return row.values[String(selectByColumn)]
 				})
-				console.log(dataSelect)
 
 				if (setSelect) setSelect(dataSelect)
 

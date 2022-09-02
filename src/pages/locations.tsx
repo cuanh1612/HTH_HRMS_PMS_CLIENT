@@ -46,7 +46,7 @@ export default function Locations() {
 		updateLocationsMutation(setToast)
 
 	//Query -------------------------------------------------------------
-	const { data: dataLocations, mutate: refetchLocations } = allLocationsQuery(isAuthenticated)
+	const { data: dataLocations, mutate: refetchLocations } = allLocationsQuery()
 
 	//UseEffect ---------------------------------------------------------
 	//Handle check logged in

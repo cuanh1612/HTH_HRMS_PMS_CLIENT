@@ -11,6 +11,7 @@ import {
 	Th,
 	Thead,
 	Tr,
+	useBreakpoint,
 	useDisclosure,
 } from '@chakra-ui/react'
 import { Donut } from 'components/charts'
@@ -33,6 +34,7 @@ import { NextLayout } from 'type/element/layout'
 const privateDashboard: NextLayout = () => {
 	const { isAuthenticated, handleLoading, currentUser } = useContext(AuthContext)
 	const router = useRouter()
+	const breakpoint = useBreakpoint()
 
 	const { onToggle: onToggleCards, isOpen: isOpenCards } = useDisclosure({
 		defaultIsOpen: true,
@@ -163,10 +165,12 @@ const privateDashboard: NextLayout = () => {
 						<Table w={'full'} variant="simple">
 							<Thead>
 								<Tr>
-									<Th>#</Th>
+									{breakpoint && ['xs', 'sm'].includes(breakpoint) && <Th>#</Th>}
 									<Th>Title</Th>
 									<Th>Project</Th>
-									<Th isNumeric>Cost</Th>
+									{breakpoint && ['xl', '2xl', 'md'].includes(breakpoint) && (
+										<Th isNumeric>Cost</Th>
+									)}
 								</Tr>
 							</Thead>
 							<Tbody w={'full'}>
@@ -175,10 +179,15 @@ const privateDashboard: NextLayout = () => {
 										(item: any, key: number) => {
 											return (
 												<Tr key={key}>
-													<Td>{key}</Td>
+													{breakpoint && ['xs', 'sm'].includes(breakpoint) && (
+														<Td>{item.id}</Td>
+													)}
 													<Td whiteSpace={'normal'}>{item.title}</Td>
 													<Td whiteSpace={'normal'}>{item.name}</Td>
-													<Td isNumeric>{item.cost}</Td>
+													{breakpoint &&
+														['xl', '2xl', 'md'].includes(
+															breakpoint
+														) && <Td isNumeric>{item.cost}</Td>}
 												</Tr>
 											)
 										}

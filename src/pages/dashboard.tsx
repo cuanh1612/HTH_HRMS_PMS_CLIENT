@@ -259,7 +259,7 @@ const dashboard: NextLayout = () => {
 			</HStack>
 			<Collapse in={isOpenCards} animateOpacity>
 				<Grid
-					className="card-demo1"
+					className="information"
 					overflow={'hidden'}
 					templateColumns={[
 						'repeat(1, 1fr)',
@@ -407,11 +407,7 @@ const dashboard: NextLayout = () => {
 
 				<ItemDashboard
 					title="Client Wise Timelogs"
-					alert={`1-${
-						new Date().getMonth() + 1
-					}-${new Date().getFullYear()} to ${new Date().getDate()}-${
-						new Date().getMonth() + 1
-					}-${new Date().getFullYear()}`}
+					alert={`${date.getMonth() + 1}-${date.getFullYear()}`}
 				>
 					{dataClientWiseTimeLogs?.clientWiseTimeLogs.length > 0 ? (
 						<Line
@@ -432,11 +428,7 @@ const dashboard: NextLayout = () => {
 
 				<ItemDashboard
 					title="Client Wise Earnings"
-					alert={`1-${
-						new Date().getMonth() + 1
-					}-${new Date().getFullYear()} to ${new Date().getDate()}-${
-						new Date().getMonth() + 1
-					}-${new Date().getFullYear()}`}
+					alert={`${date.getMonth() + 1}-${date.getFullYear()}`}
 				>
 					{dataClientWiseEarnings?.clientWiseEarnings.length > 0 ? (
 						<Bar
@@ -459,11 +451,7 @@ const dashboard: NextLayout = () => {
 				</ItemDashboard>
 
 				<ItemDashboard
-					alert={`1-${
-						new Date().getMonth() + 1
-					}-${new Date().getFullYear()} to ${new Date().getDate()}-${
-						new Date().getMonth() + 1
-					}-${new Date().getFullYear()}`}
+					alert={`${date.getMonth() + 1}-${date.getFullYear()}`}
 					title="Attendance and leave"
 				>
 					{dataCountByDateAttendance && dataCountByDateLeave && (
@@ -498,11 +486,7 @@ const dashboard: NextLayout = () => {
 				</ItemDashboard>
 
 				<ItemDashboard
-					alert={`1-${
-						new Date().getMonth() + 1
-					}-${new Date().getFullYear()} to ${new Date().getDate()}-${
-						new Date().getMonth() + 1
-					}-${new Date().getFullYear()}`}
+					alert={`${date.getMonth() + 1}-${date.getFullYear()}`}
 					title="Pending Milestone"
 					overflow={'auto'}
 				>
@@ -539,11 +523,7 @@ const dashboard: NextLayout = () => {
 				</ItemDashboard>
 
 				<ItemDashboard
-					alert={`1-${
-						new Date().getMonth() + 1
-					}-${new Date().getFullYear()} to ${new Date().getDate()}-${
-						new Date().getMonth() + 1
-					}-${new Date().getFullYear()}`}
+					alert={`${date.getMonth() + 1}-${date.getFullYear()}`}
 					title="Latest Clients"
 					overflow={'auto'}
 				>
@@ -604,11 +584,7 @@ const dashboard: NextLayout = () => {
 				</ItemDashboard>
 
 				<ItemDashboard
-					alert={`1-${
-						new Date().getMonth() + 1
-					}-${new Date().getFullYear()} to ${new Date().getDate()}-${
-						new Date().getMonth() + 1
-					}-${new Date().getFullYear()}`}
+					alert={`${date.getMonth() + 1}-${date.getFullYear()}`}
 					title="Pending tasks"
 					overflow={'auto'}
 				>
@@ -709,11 +685,7 @@ const dashboard: NextLayout = () => {
 				</ItemDashboard>
 
 				<ItemDashboard
-					alert={`1-${
-						new Date().getMonth() + 1
-					}-${new Date().getFullYear()} to ${new Date().getDate()}-${
-						new Date().getMonth() + 1
-					}-${new Date().getFullYear()}`}
+					alert={`${date.getMonth() + 1}-${date.getFullYear()}`}
 					title="Pending leaves"
 					overflow={'auto'}
 				>

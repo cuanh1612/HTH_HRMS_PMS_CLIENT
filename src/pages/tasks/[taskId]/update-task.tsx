@@ -12,7 +12,7 @@ import {
 	VStack,
 } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { Input, Select, SelectCustom, SelectMany } from 'components/form'
+import { Input, Select, SelectMany } from 'components/form'
 import { Editor, Loading } from 'components/common'
 import Modal from 'components/modal/Modal'
 import { AuthContext } from 'contexts/AuthContext'
@@ -51,12 +51,10 @@ export default function UpdateTask({ onCloseDrawer, taskIdProp }: IUpdateTaskPro
 	const [optionTaskCategories, setOptionTaskCategories] = useState<IOption[]>([])
 	const [optionEmployees, setOptionEmployees] = useState<IOption[]>([])
 	const [optionStatus, setOptionStatus] = useState<IOption[]>([])
-	const [selectedStatus, setSelectedStatus] = useState<IOption>()
 	const [description, setDescription] = useState<string>('')
 	const [selectedOptionEmployees, setSelectedOptionEmployees] = useState<IOption[]>([])
 	const [optionMilestones, setOptionMilestones] = useState<IOption[]>([])
 	const [projectId, setProjectId] = useState<number | string>()
-	const [selectedMilestone, setSelectedMilestone] = useState<IOption>()
 
 	//Setup modal -------------------------------------------------------
 	const {
@@ -85,7 +83,7 @@ export default function UpdateTask({ onCloseDrawer, taskIdProp }: IUpdateTaskPro
 	const { mutate: refetchTasks } = allTasksQuery(isAuthenticated)
 
 	// refetch task in calendar
-	const { mutate: refetchTasksCalendar } = allTasksCalendarQuery({isAuthenticated})
+	const { mutate: refetchTasksCalendar } = allTasksCalendarQuery({ isAuthenticated })
 
 	//mutation -----------------------------------------------------------
 	const [mutateUpTask, { status: statusUpTask, data: dataUpTask }] = updateTaskMutation(setToast)
@@ -149,6 +147,7 @@ export default function UpdateTask({ onCloseDrawer, taskIdProp }: IUpdateTaskPro
 		}
 	}, [isAuthenticated])
 
+
 	//Set option select milestones when have data all milestones
 	useEffect(() => {
 		if (dataAllMilestones?.milestones) {
@@ -171,18 +170,6 @@ export default function UpdateTask({ onCloseDrawer, taskIdProp }: IUpdateTaskPro
 		if (dataDetailTask?.task) {
 			setDescription(dataDetailTask.task.description)
 			setProjectId(dataDetailTask.task.project.id)
-			if (dataDetailTask.task.status) {
-				setSelectedStatus({
-					label: dataDetailTask.task.status.title,
-					value: dataDetailTask.task.status.id,
-				})
-			}
-			if (dataDetailTask.task.milestone) {
-				setSelectedMilestone({
-					label: dataDetailTask.task.milestone.title,
-					value: dataDetailTask.task.milestone.id,
-				})
-			}
 
 			formSetting.reset({
 				name: dataDetailTask?.task?.name,
@@ -333,11 +320,7 @@ export default function UpdateTask({ onCloseDrawer, taskIdProp }: IUpdateTaskPro
 				<GridItem w="100%" colSpan={[2, 1]}>
 					<VStack align={'start'}>
 						<Text color={'gray.400'}>Project</Text>
-						<CInput
-							type={'text'}
-							value={dataDetailTask?.task?.project.name}
-							disabled
-						/>
+						<CInput type={'text'} value={dataDetailTask?.task?.project.name} disabled />
 					</VStack>
 				</GridItem>
 
@@ -364,20 +347,20 @@ export default function UpdateTask({ onCloseDrawer, taskIdProp }: IUpdateTaskPro
 				</GridItem>
 
 				<GridItem w="100%" colSpan={[2, 1]}>
-					<SelectCustom
+					<Select
 						name="status"
 						label="Status"
 						form={formSetting}
 						options={optionStatus}
 						required
-						selectedOption={selectedStatus}
 					/>
 				</GridItem>
 
 				<GridItem w="100%" colSpan={[2]}>
 					<SelectMany
+						placeholder='Select employees'
 						form={formSetting}
-						label={'Select Employee'}
+						label={'Employees'}
 						name={'employees'}
 						required={true}
 						options={optionEmployees}
@@ -390,7 +373,7 @@ export default function UpdateTask({ onCloseDrawer, taskIdProp }: IUpdateTaskPro
 						<Text fontWeight={'normal'} color={'gray.400'}>
 							Description
 						</Text>
-						<Editor note={description} onChangeNote={onChangeDescription}/>
+						<Editor note={description} onChangeNote={onChangeDescription} />
 					</VStack>
 				</GridItem>
 			</Grid>
@@ -406,19 +389,18 @@ export default function UpdateTask({ onCloseDrawer, taskIdProp }: IUpdateTaskPro
 			{isOpenOtherDetails && (
 				<Grid templateColumns="repeat(2, 1fr)" gap={6} mt={6}>
 					<GridItem w="100%" colSpan={[2, 1]}>
-						<SelectCustom
+						<Select
 							name="milestone"
 							label="Milestone"
 							required={false}
 							form={formSetting}
 							placeholder={'Select Milestone'}
 							options={optionMilestones}
-							selectedOption={selectedMilestone}
 						/>
 					</GridItem>
 
 					<GridItem w="100%" colSpan={[2, 1]}>
-						<SelectCustom
+						<Select
 							name="priority"
 							label="Priority"
 							form={formSetting}

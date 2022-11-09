@@ -1,4 +1,4 @@
-import { Box, GridItem, HStack, Text, Tooltip, VStack } from '@chakra-ui/react'
+import { Box, GridItem, HStack, Text, Tooltip, useColorMode, VStack } from '@chakra-ui/react'
 import React, { ReactNode } from 'react'
 import { BsInfoCircle } from 'react-icons/bs'
 
@@ -17,6 +17,7 @@ export const ItemDashboard = ({
 	isFull?: boolean
 	heightAuto?: boolean
 }) => {
+	const {colorMode} = useColorMode()
 	return (
 		<GridItem colSpan={isFull ? 2: 1} pos={'relative'}>
 			<VStack spacing={'4'} alignItems={'start'} w={'full'}>
@@ -45,8 +46,7 @@ export const ItemDashboard = ({
 				<Box
 					w={'full'}
 					padding={'20px'}
-					border={'2px solid'}
-					borderColor={'hu-Green.normal'}
+					bg={colorMode == 'light'? '#fafafa': '#1e2636'}
 					borderRadius={'10px'}
 					h={heightAuto ? 'auto': '300px'}
 					overflow={overflow}

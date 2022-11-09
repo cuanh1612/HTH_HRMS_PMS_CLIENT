@@ -1,12 +1,10 @@
 import { Box } from '@chakra-ui/react'
-import { ClientLayout } from 'components/layouts'
 import { AuthContext } from 'contexts/AuthContext'
 import { useRouter } from 'next/router'
 import { useContext, useEffect } from 'react'
-import { NextLayout } from 'type/element/layout'
 import redirectPage from 'utils/redirect'
 
-const index: NextLayout = () => {
+const index = () => {
 	const { isAuthenticated, currentUser } = useContext(AuthContext)
 	const router = useRouter()
 
@@ -21,6 +19,5 @@ const index: NextLayout = () => {
 
 	return <Box mt={'100px'}></Box>
 }
-index.getLayout = ClientLayout
 
 export default index

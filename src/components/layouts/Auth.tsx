@@ -1,4 +1,5 @@
 import { Box, Center, Flex, HStack, Image, useColorModeValue, VStack } from '@chakra-ui/react'
+import { AnimateChangePage } from 'components/common'
 import { companyInfoQuery } from 'queries/companyInfo'
 
 export const AuthLayout = ({ children }: { children: JSX.Element }) => {
@@ -44,7 +45,7 @@ export const AuthLayout = ({ children }: { children: JSX.Element }) => {
 				/>
 			</VStack>
 			<Center minW={['max-content', null, null, '600px']} flex={1}>
-				{children}
+				<AnimateChangePage>{children}</AnimateChangePage>
 			</Center>
 		</Flex>
 	)

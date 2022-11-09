@@ -99,11 +99,12 @@ export const Header = () => {
 	return (
 		<HStack
 			bg={colorMode == 'light' ? 'white' : '#1a202c'}
-			marginBottom={'30px'}
 			paddingInline={[5, null, null, 10]}
 			zIndex={10}
 			top={0}
-			position={'sticky'}
+			borderBottom={`1px solid ${colorMode == 'dark' ? '#2e2e2e' : '#f1f1f1'}`}
+			w={'calc(100% - 300px)'}
+			position={'fixed'}
 			alignItems={'center'}
 			justify={'space-between'}
 			paddingBlock={4}

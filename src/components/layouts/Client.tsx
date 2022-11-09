@@ -1,6 +1,8 @@
 import { Box, HStack } from '@chakra-ui/react'
+import { AnimateChangePage } from 'components/common'
 import Navigation from 'components/navigation/Index'
 import { Header } from 'components/partials'
+
 export const ClientLayout = ({ children }: { children: JSX.Element }) => {
 	return (
 		<HStack
@@ -13,11 +15,13 @@ export const ClientLayout = ({ children }: { children: JSX.Element }) => {
 			overflow={'auto'}
 		>
 			<Navigation />
-			<Box w={['full', null, null, 'calc( 100% - 300px )']}>
+			<Box pos={'relative'} overflowX={'hidden'} w={['full', null, null, 'calc( 100% - 300px )']}>
 				<Header />
-				<Box w={'full'} h={'auto'} paddingInline={[5, null, null, 10]}>
-					{children}
-				</Box>
+				<AnimateChangePage>
+					<Box w={'full'} h={'auto'} pt={'102px'} paddingInline={[5, null, null, 10]}>
+						{children}
+					</Box>
+				</AnimateChangePage>
 			</Box>
 		</HStack>
 	)

@@ -348,22 +348,35 @@ td.fc-day-today {
 }
 
 /* intro custom */
+/* intro custom */
 .introHighlight {}
 
 .introButton {
-    background: red
+    background: #009883;
+    color: white;
+    font-size: 16px;
+    padding: 5px 16px !important;
+    border-radius: 5px;
+    padding: 2px;
 }
 
 .introTooltip {}
 
+.introjs-tooltiptext {
+    color: black !important;
+    font-family: 'Hind Madurai', sans-serif !important;
+}
+
+
 .introHighlight-dark {
-    background: red
+    background: #4f5869
 }
 
 .introButton-dark {
-    background: red
-}
-
-.introTooltip-dark {
-    
+    background: #009883;
+    color: white;
+    font-size: 16px;
+    padding: 5px 16px !important;
+    border-radius: 5px;
+    padding: 2px;
 }

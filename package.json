@@ -36,7 +36,7 @@
     "copy-to-clipboard": "^3.3.1",
     "date-fns": "^2.28.0",
     "emoji.json": "^13.1.0",
-    "framer-motion": "^4.0.3",
+    "framer-motion": "4.1.17",
     "html-to-text": "^8.2.0",
     "http-proxy": "^1.18.1",
     "intro.js": "^6.0.0",

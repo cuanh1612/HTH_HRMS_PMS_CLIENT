@@ -74,7 +74,6 @@ export const ProjectLayout = ({ children }: { children: JSX.Element }) => {
 						link: `/projects/${projectId}/discussions`,
 						title: 'Discussion',
 					},
-					
 				]
 			}
 
@@ -82,7 +81,6 @@ export const ProjectLayout = ({ children }: { children: JSX.Element }) => {
 		}
 	}, [projectId, currentUser])
 	return (
-
 		<HStack
 			minHeight={'100vh'}
 			height={'100px'}
@@ -95,8 +93,8 @@ export const ProjectLayout = ({ children }: { children: JSX.Element }) => {
 			<Navigation />
 			<Box w={['full', null, null, 'calc( 100% - 300px )']}>
 				<Header />
-				<Box w={'full'} h={'auto'} paddingInline={[5, null, null, 10]}>
-				<TabsMenu tabs={tabs} />
+				<Box pt={'102px'} w={'full'} h={'auto'} paddingInline={[5, null, null, 10]}>
+					<TabsMenu tabs={tabs} />
 					{children}
 				</Box>
 			</Box>

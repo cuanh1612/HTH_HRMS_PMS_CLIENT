@@ -1,4 +1,4 @@
-import { Box, Center, useDisclosure, useToast } from '@chakra-ui/react'
+import { Box, useDisclosure, useToast } from '@chakra-ui/react'
 import { currentUserQuery } from 'queries/auth'
 import {
 	createContext,
@@ -7,21 +7,12 @@ import {
 	SetStateAction,
 	useCallback,
 	useEffect,
-	useState,
+	useState
 } from 'react'
 import { employeeType, IContractUrls, TToast } from 'type/basicTypes'
 import JWTManager from 'utils/jwt'
 
-// custom loading
-import { css } from '@emotion/react'
-import ClipLoader from 'react-spinners/BarLoader'
 import io, { Socket } from 'socket.io-client'
-
-const override = css`
-	display: block;
-	margin: 0 auto;
-	border-color: red;
-`
 
 interface DefaultEventsMap {
 	[event: string]: (...args: any[]) => void
@@ -40,9 +31,8 @@ interface IAuthContext {
 	setContractUrls: (id: string | number) => void
 	contractUrls?: IContractUrls
 	isOpenMenu: boolean
-	onOpenMenu: ()=> void
-	onCloseMenu: ()=> void
-
+	onOpenMenu: () => void
+	onCloseMenu: () => void
 }
 
 const defaultIsAuthenticated = null
@@ -59,13 +49,13 @@ export const AuthContext = createContext<IAuthContext>({
 	socket: null,
 	setContractUrls: () => {},
 	isOpenMenu: false,
-	onOpenMenu: ()=> {},
-	onCloseMenu: ()=> {},
+	onOpenMenu: () => {},
+	onCloseMenu: () => {},
 })
 
 const AuthContextProvider = ({ children }: { children: ReactNode }) => {
 	// set open menu
-	const {isOpen, onOpen, onClose} = useDisclosure()
+	const { isOpen, onOpen, onClose } = useDisclosure()
 	// use toast
 	const toast = useToast()
 	const setToast: TToast = ({ type, msg }) => {
@@ -179,7 +169,7 @@ const AuthContextProvider = ({ children }: { children: ReactNode }) => {
 		setContractUrls: ContractUrlsHandle,
 		isOpenMenu: isOpen,
 		onOpenMenu: onOpen,
-		onCloseMenu: onClose
+		onCloseMenu: onClose,
 	}
 
 	return (
@@ -192,24 +182,6 @@ const AuthContextProvider = ({ children }: { children: ReactNode }) => {
 					overflow={loadingPage ? 'hidden' : 'auto'}
 				>
 					{children}
-					{loadingPage && (
-						<Center
-							zIndex={'100'}
-							w={'full'}
-							top="0"
-							h="full"
-							left={'0'}
-							bg="#FFFFFF"
-							pos="absolute"
-						>
-							<ClipLoader
-								color={'green'}
-								loading={true}
-								css={override}
-								width="200px"
-							/>
-						</Center>
-					)}
 				</Box>
 			</AuthContext.Provider>
 		</>

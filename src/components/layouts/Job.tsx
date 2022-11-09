@@ -56,7 +56,7 @@ export const JobLayout = ({ children }: { children: JSX.Element }) => {
 			<Navigation />
 			<Box  w={'full'}>
 				<Header />
-				<Box  w={'full'} h={'auto'} paddingInline={10}>
+				<Box pt={'102px'}  w={'full'} h={'auto'} paddingInline={10}>
 					<TabsMenu tabs={tabs} />
 					{children}
 				</Box>

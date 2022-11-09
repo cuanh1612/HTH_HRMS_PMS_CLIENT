@@ -20,13 +20,5 @@ module.exports =withPWA({
             skipWaiting: true,
 
         },
-        ...withTM(),
-        async rewrites() {
-            return [
-              {
-                source: '/api/:path*',
-                destination: 'https://huprom-hrms-pms-server.vercel.app/:path*',
-              },
-            ]
-          },
+        ...withTM()
     })

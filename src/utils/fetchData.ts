@@ -16,7 +16,7 @@ export const postData = async <T = any>({ url, body }: IPropsFetchData) => {
 	return await axios
 		.post(url, body, {
 			headers: {
-				'Content-Type': 'application/x-www-form-urlencoded',
+				'Content-Type': 'application/json',
 				Authorization: token ? `Bearer ${token}` : '',
 			},
 		})
@@ -34,7 +34,7 @@ export const putData = async <T = any>({ url, body }: IPropsFetchData) => {
 	return await axios
 		.put(url, body, {
 			headers: {
-				'Content-Type': 'application/x-www-form-urlencoded',
+				'Content-Type': 'application/json',
 				Authorization: token ? `Bearer ${token}` : '',
 			},
 		})
@@ -52,7 +52,7 @@ export const getData = async <T = any>({ url, params }: IPropsFetchData) => {
 	return await axios
 		.get<any, AxiosResponse<T>>(url, {
 			headers: {
-				'Content-Type': 'application/x-www-form-urlencoded',
+				'Content-Type': 'application/json',
 				Authorization: token ? `Bearer ${token}` : '',
 			},
 			params,
@@ -71,7 +71,7 @@ export const deleteData = async <T = any>({ url }: IPropsFetchData) => {
 	return await axios
 		.delete(url, {
 			headers: {
-				'Content-Type': 'application/x-www-form-urlencoded',
+				'Content-Type': 'application/json',
 				Authorization: token ? `Bearer ${token}` : '',
 			},
 		})

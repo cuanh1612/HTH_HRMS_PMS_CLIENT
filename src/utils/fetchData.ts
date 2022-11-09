@@ -7,7 +7,7 @@ export interface IPropsFetchData {
 }
 
 //Config default axios 
-axios.defaults.withCredentials = true
+// axios.defaults.withCredentials = true
 
 //Post api
 export const postData = async <T = any>({ url, body }: IPropsFetchData) => {

@@ -103,7 +103,7 @@ export const Header = () => {
 			zIndex={10}
 			top={0}
 			borderBottom={`1px solid ${colorMode == 'dark' ? '#2e2e2e' : '#f1f1f1'}`}
-			w={'calc(100% - 300px)'}
+			w={['full', null, null,'calc(100% - 300px)']}
 			position={'fixed'}
 			alignItems={'center'}
 			justify={'space-between'}

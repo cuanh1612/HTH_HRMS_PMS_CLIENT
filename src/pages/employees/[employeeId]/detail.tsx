@@ -300,34 +300,35 @@ export const DetailEmployee: NextLayout | any = ({
 	)
 }
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-	const res: authMutationResponse = await fetch(
-		`${process.env.NEXT_PUBLIC_API_URL}/api/auth/refresh_token`,
-		{
-			headers: context.req.headers as HeadersInit,
-		}
-	).then((result) => result.json())
+// export const getServerSideProps: GetServerSideProps = async (context) => {
+// 	const res: authMutationResponse = await fetch(
+// 		`${process.env.NEXT_PUBLIC_API_URL}/api/auth/refresh_token`,
+// 		{
+// 			headers: context.req.headers as HeadersInit,
+// 		}
+// 	).then((result) => result.json())
 
-	//get detail employee
-	const queryEmployee: employeeMutationResponse = await fetch(
-		`${process.env.NEXT_PUBLIC_API_URL}/api/employees/${context.query.employeeId}`,
-		{
-			headers: {
-				Authorization: `bearer ${res.accessToken}`,
-				...(context.req.headers as HeadersInit),
-			},
-		}
-	).then((result) => result.json())
+// 	//get detail employee
+// 	const queryEmployee: employeeMutationResponse = await fetch(
+// 		`${process.env.NEXT_PUBLIC_API_URL}/api/employees/${context.query.employeeId}`,
+// 		{
+// 			headers: {
+// 				Authorization: `bearer ${res.accessToken}`,
+// 				...(context.req.headers as HeadersInit),
+// 			},
+// 		}
+// 	).then((result) => result.json())
 
-	if (!queryEmployee.employee) {
-		return {
-			notFound: true,
-		}
-	}
+// 	if (!queryEmployee.employee) {
+// 		return {
+// 			notFound: true,
+// 		}
+// 	}
 
-	return {
-		props: { dataDetailEmployee: queryEmployee }, // will be passed to the page component as props
-	}
-}
+// 	return {
+// 		props: { dataDetailEmployee: queryEmployee }, // will be passed to the page component as props
+// 	}
+// }
+
 DetailEmployee.getLayout = EmployeeLayout
 export default DetailEmployee

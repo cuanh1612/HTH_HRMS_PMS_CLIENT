@@ -44,11 +44,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 				body += chunk
 			})
 
-			proxyRes.on('end', function () {
+			proxyRes.on('end',  function () {
+				console.log(process.env.NEXT_PUBLIC_API_URL)
 				try {
-					const { code, success, message, user, accessToken, refreshToken } =
-						JSON.parse(body)
+					console.log('nguyen quang hoang',  JSON.parse(body))
 
+					const { code, success, message, user, accessToken, refreshToken } =
+						 JSON.parse(body)
+						
 					if (code === 200) {
 						//Save refresh token to cookie
 						cookies.set('jwt-auth-cookie', refreshToken, {
@@ -68,6 +71,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 						resolve(true)
 					}
 				} catch (error) {
+					console.log(error)
 					;(res as NextApiResponse).status(500).json({
 						message: 'Something went wrong.',
 						code: 500,

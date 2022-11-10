@@ -13,6 +13,7 @@ interface IChart {
 
 export const Area = ({height, data, colors, labels}: IChart) => {
 	return (
+		
 		<Chart
 			width={'100%'}
 			height={height}

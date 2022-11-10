@@ -14,7 +14,6 @@ import { Drawer } from 'components/Drawer'
 import { ClientLayout } from 'components/layouts'
 import { AuthContext } from 'contexts/AuthContext'
 import { deleteProjectMutation } from 'mutations'
-import { GetServerSideProps } from 'next'
 import { useRouter } from 'next/router'
 import {
 	allProjectsByCurrentUserQuery, clientCountProjectStatusQuery, clientTotalEarningQuery,

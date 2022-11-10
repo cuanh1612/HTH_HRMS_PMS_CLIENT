@@ -104,7 +104,6 @@ export const clientColumn = ({ currentUser, onDelete, onUpdate }: IOptionColumn)
 													It's you
 												</Badge>
 											)}
-											
 										</Text>
 									</Link>
 									{row.original.company_name && (

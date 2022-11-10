@@ -3,7 +3,6 @@ import { Donut } from 'components/charts'
 import { Empty, Head, Static } from 'components/common'
 import { EmployeeLayout } from 'components/layouts/Employee'
 import { AuthContext } from 'contexts/AuthContext'
-import { GetServerSideProps } from 'next'
 
 import { useRouter } from 'next/router'
 import {
@@ -13,7 +12,7 @@ import {
 	hoursLoggedEmployeeQuery,
 	lateAttendanceEmployeeQuery,
 	leavesTakenEmployeeQuery,
-	openTasksEmployeeQuery,
+	openTasksEmployeeQuery
 } from 'queries'
 import { useContext, useEffect } from 'react'
 import { AiOutlineProject } from 'react-icons/ai'
@@ -22,7 +21,7 @@ import { BsCheck2 } from 'react-icons/bs'
 import { VscTasklist } from 'react-icons/vsc'
 import { SWRConfig } from 'swr'
 import { NextLayout } from 'type/element/layout'
-import { authMutationResponse, employeeMutationResponse } from 'type/mutationResponses'
+import { employeeMutationResponse } from 'type/mutationResponses'
 
 export const DetailEmployee: NextLayout | any = ({
 	dataDetailEmployee,

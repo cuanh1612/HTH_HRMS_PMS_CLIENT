@@ -156,7 +156,7 @@ const DetailClient: NextLayout | any = ({
 					fallback: { [urlDetailClient]: dataDetailClientServer },
 				}}
 			>
-				<Head title={dataDetailClient?.client?.name}/>
+				<Head title={dataDetailClient?.client?.name} />
 				<Box w="full" pb={8}>
 					<VStack spacing={5} alignItems={'start'} w={'full'}>
 						<HStack spacing={5} h={'full'} w={'full'}>
@@ -325,14 +325,17 @@ const DetailClient: NextLayout | any = ({
 												borderRadius={'10px'}
 												h={'300px'}
 											>
-												{projectStatic?.data && projectStatic.data.length > 0 ? (
+												{projectStatic?.data &&
+												projectStatic.data.length > 0 ? (
 													<Donut
 														labels={projectStatic.titles}
 														colors={projectStatic.colors}
 														data={projectStatic.data}
 														height={280}
 													/>
-												): <Empty height='220px'/>}
+												) : (
+													<Empty height="220px" />
+												)}
 											</Box>
 										</VStack>
 									</GridItem>
@@ -380,27 +383,34 @@ const DetailClient: NextLayout | any = ({
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-	const res: authMutationResponse = await fetch(
-		`${process.env.NEXT_PUBLIC_API_URL}/api/auth/refresh_token`,
-		{
-			headers: context.req.headers as HeadersInit,
+	//Get access token
+	const getAccessToken: { accessToken: string; code: number; message: string; success: boolean } =
+		await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/refresh_token`, {
+			method: 'GET',
+			headers: {
+				cookie: context.req.headers.cookie,
+			} as HeadersInit,
+		}).then((e) => e.json())
+
+	//Redirect login page when error
+	if (getAccessToken.code !== 200) {
+		return {
+			redirect: {
+				destination: '/login',
+				permanent: false,
+			},
 		}
-	).then((result) => result.json())
+	}
 
-	console.log('hoang', res)
-
-	//get detail client
 	const queryClient: clientMutationResponse = await fetch(
 		`${process.env.NEXT_PUBLIC_API_URL}/api/clients/${context.query.clientId}`,
 		{
 			headers: {
-				Authorization: `bearer ${res.accessToken}`,
+				Authorization: `bearer ${getAccessToken.accessToken}`,
 				...(context.req.headers as HeadersInit),
 			},
 		}
 	).then((result) => result.json())
-
-	console.log('hoang', queryClient)
 
 	if (!queryClient.client) {
 		return {
@@ -411,6 +421,34 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 	return {
 		props: { dataDetailClientServer: queryClient }, // will be passed to the page component as props
 	}
+
+	// const res: authMutationResponse = await fetch(
+	// 	`${process.env.NEXT_PUBLIC_API_URL}/api/auth/refresh_token`,
+	// 	{
+	// 		headers: context.req.headers as HeadersInit,
+	// 	}
+	// ).then((result) => result.json())
+
+	// // get detail client
+	// const queryClient: clientMutationResponse = await fetch(
+	// 	`${process.env.NEXT_PUBLIC_API_URL}/api/clients/${context.query.clientId}`,
+	// 	{
+	// 		headers: {
+	// 			Authorization: `bearer ${res.accessToken}`,
+	// 			...(context.req.headers as HeadersInit),
+	// 		},
+	// 	}
+	// ).then((result) => result.json())
+
+	// if (!queryClient.client) {
+	// 	return {
+	// 		notFound: true,
+	// 	}
+	// }
+
+	// return {
+	// 	props: { dataDetailClientServer: queryClient }, // will be passed to the page component as props
+	// }
 }
 
 DetailClient.getLayout = ClientLayout

@@ -5,33 +5,29 @@ import {
 	GridItem,
 	HStack,
 	Stack,
-	Text,
-	VStack,
-	useDisclosure,
+	Text, useDisclosure, VStack
 } from '@chakra-ui/react'
+import { ArcElement, Chart as ChartJS, Legend, Tooltip } from 'chart.js'
+import { Donut } from 'components/charts'
+import { AlertDialog, Empty, Head, Static, Table } from 'components/common'
+import { Drawer } from 'components/Drawer'
+import { ClientLayout } from 'components/layouts'
 import { AuthContext } from 'contexts/AuthContext'
+import { deleteProjectMutation } from 'mutations'
 import { GetServerSideProps } from 'next'
 import { useRouter } from 'next/router'
 import {
-	clientCountProjectStatusQuery,
-	allProjectsByCurrentUserQuery,
-	clientTotalEarningQuery,
+	allProjectsByCurrentUserQuery, clientCountProjectStatusQuery, clientTotalEarningQuery,
 	clientTotalProjectsQuery,
-	detailClientQuery,
+	detailClientQuery
 } from 'queries'
 import { useContext, useEffect, useState } from 'react'
 import { AiOutlineProject } from 'react-icons/ai'
-import { SWRConfig } from 'swr'
-import { authMutationResponse, clientMutationResponse } from 'type/mutationResponses'
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js'
-import { NextLayout } from 'type/element/layout'
-import { ClientLayout } from 'components/layouts'
-import { Donut } from 'components/charts'
-import { TColumn } from 'type/tableTypes'
-import { AlertDialog, Empty, Head, Static, Table } from 'components/common'
-import { deleteProjectMutation } from 'mutations'
-import { Drawer } from 'components/Drawer'
 import UpdateProject from 'src/pages/projects/update-projects'
+import { SWRConfig } from 'swr'
+import { NextLayout } from 'type/element/layout'
+import { clientMutationResponse } from 'type/mutationResponses'
+import { TColumn } from 'type/tableTypes'
 import { clientProjectsColumn } from 'utils/columns'
 
 ChartJS.register(ArcElement, Tooltip, Legend)

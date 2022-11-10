@@ -387,6 +387,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 		}
 	).then((result) => result.json())
 
+	console.log('hoang', res)
+
 	//get detail client
 	const queryClient: clientMutationResponse = await fetch(
 		`${process.env.NEXT_PUBLIC_API_URL}/api/clients/${context.query.clientId}`,
@@ -397,6 +399,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 			},
 		}
 	).then((result) => result.json())
+
+	console.log('hoang', queryClient)
 
 	if (!queryClient.client) {
 		return {

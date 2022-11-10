@@ -378,74 +378,86 @@ const DetailClient: NextLayout | any = ({
 	)
 }
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-	//Get access token
-	const getAccessToken: { accessToken: string; code: number; message: string; success: boolean } =
-		await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/refresh_token`, {
-			method: 'GET',
-			headers: {
-				cookie: context.req.headers.cookie,
-			} as HeadersInit,
-		}).then((e) => e.json())
+// export const getServerSideProps: GetServerSideProps = async (context) => {
+// 	// //Get access token
+// 	// const getAccessToken: { accessToken: string; code: number; message: string; success: boolean } =
+// 	// 	await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/refresh_token`, {
+// 	// 		method: 'GET',
+// 	// 		headers: {
+// 	// 			cookie: context.req.headers.cookie,
+// 	// 		} as HeadersInit,
+// 	// 	}).then((e) => e.json())
+// 	// console.log(getAccessToken)
+// 	// //Redirect login page when error
+// 	// if (getAccessToken.code !== 200) {
+// 	// 	return {
+// 	// 		redirect: {
+// 	// 			destination: '/login',
+// 	// 			permanent: false,
+// 	// 		},
+// 	// 	}
+// 	// }
 
-	//Redirect login page when error
-	if (getAccessToken.code !== 200) {
-		return {
-			redirect: {
-				destination: '/login',
-				permanent: false,
-			},
-		}
-	}
+// 	// const queryClient: clientMutationResponse = await fetch(
+// 	// 	`${process.env.NEXT_PUBLIC_API_URL}/api/clients/${context.query.clientId}`,
+// 	// 	{
+// 	// 		headers: {
+// 	// 			Authorization: `bearer ${getAccessToken.accessToken}`,
+// 	// 			...(context.req.headers as HeadersInit),
+// 	// 		},
+// 	// 	}
+// 	// ).then((result) => result.json())
 
-	const queryClient: clientMutationResponse = await fetch(
-		`${process.env.NEXT_PUBLIC_API_URL}/api/clients/${context.query.clientId}`,
-		{
-			headers: {
-				Authorization: `bearer ${getAccessToken.accessToken}`,
-				...(context.req.headers as HeadersInit),
-			},
-		}
-	).then((result) => result.json())
+// 	// if (!queryClient.client) {
+// 	// 	return {
+// 	// 		notFound: true,
+// 	// 	}
+// 	// }
 
-	if (!queryClient.client) {
-		return {
-			notFound: true,
-		}
-	}
+// 	// return {
+// 	// 	props: { dataDetailClientServer: queryClient }, // will be passed to the page component as props
+// 	// }
 
-	return {
-		props: { dataDetailClientServer: queryClient }, // will be passed to the page component as props
-	}
 
-	// const res: authMutationResponse = await fetch(
-	// 	`${process.env.NEXT_PUBLIC_API_URL}/api/auth/refresh_token`,
-	// 	{
-	// 		headers: context.req.headers as HeadersInit,
-	// 	}
-	// ).then((result) => result.json())
 
-	// // get detail client
-	// const queryClient: clientMutationResponse = await fetch(
-	// 	`${process.env.NEXT_PUBLIC_API_URL}/api/clients/${context.query.clientId}`,
-	// 	{
-	// 		headers: {
-	// 			Authorization: `bearer ${res.accessToken}`,
-	// 			...(context.req.headers as HeadersInit),
-	// 		},
-	// 	}
-	// ).then((result) => result.json())
 
-	// if (!queryClient.client) {
-	// 	return {
-	// 		notFound: true,
-	// 	}
-	// }
 
-	// return {
-	// 	props: { dataDetailClientServer: queryClient }, // will be passed to the page component as props
-	// }
-}
+
+
+
+
+
+
+
+
+// 	// const res: authMutationResponse = await fetch(
+// 	// 	`${process.env.NEXT_PUBLIC_API_URL}/api/auth/refresh_token`,
+// 	// 	{
+// 	// 		headers: context.req.headers as HeadersInit,
+// 	// 	}
+// 	// ).then((result) => result.json())
+
+// 	// // get detail client
+// 	// const queryClient: clientMutationResponse = await fetch(
+// 	// 	`${process.env.NEXT_PUBLIC_API_URL}/api/clients/${context.query.clientId}`,
+// 	// 	{
+// 	// 		headers: {
+// 	// 			Authorization: `bearer ${res.accessToken}`,
+// 	// 			...(context.req.headers as HeadersInit),
+// 	// 		},
+// 	// 	}
+// 	// ).then((result) => result.json())
+
+// 	// if (!queryClient.client) {
+// 	// 	return {
+// 	// 		notFound: true,
+// 	// 	}
+// 	// }
+
+// 	// return {
+// 	// 	props: { dataDetailClientServer: queryClient }, // will be passed to the page component as props
+// 	// }
+// }
 
 DetailClient.getLayout = ClientLayout
 

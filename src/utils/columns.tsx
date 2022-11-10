@@ -83,7 +83,7 @@ export const clientColumn = ({ currentUser, onDelete, onUpdate }: IOptionColumn)
 									src={row.original.avatar?.url}
 								/>
 								<VStack w={'70%'} alignItems={'start'}>
-									<Link href={`/api/clients/${row.values['id']}`} passHref>
+									<Link href={`/clients/${row.values['id']}`} passHref>
 										<Text
 											_hover={{
 												textDecoration: 'underline',
@@ -284,7 +284,7 @@ export const employeeColumn = ({
 									src={row.original.avatar?.url}
 								/>
 								<VStack w={'70%'} alignItems={'start'}>
-									<Link href={`/api/employees/${row.values['id']}/detail`} passHref>
+									<Link href={`/employees/${row.values['id']}/detail`} passHref>
 										<Text
 											_hover={{
 												textDecoration: 'underline',

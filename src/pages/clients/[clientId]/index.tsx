@@ -5,7 +5,7 @@ import {
 	GridItem,
 	HStack,
 	Stack,
-	Text, useDisclosure, VStack
+	Text, useColorMode, useDisclosure, VStack
 } from '@chakra-ui/react'
 import { ArcElement, Chart as ChartJS, Legend, Tooltip } from 'chart.js'
 import { Donut } from 'components/charts'
@@ -38,6 +38,7 @@ const DetailClient: NextLayout | any = ({
 	dataDetailClientServer?: clientMutationResponse
 	clientIdProp?: string | number
 }) => {
+	const {colorMode} = useColorMode()
 	const { isAuthenticated, handleLoading, currentUser, setToast } = useContext(AuthContext)
 	const router = useRouter()
 	const { clientId } = router.query
@@ -315,8 +316,7 @@ const DetailClient: NextLayout | any = ({
 												id={'hoang'}
 												w={'full'}
 												padding={'20px'}
-												border={'2px solid'}
-												borderColor={'hu-Green.normal'}
+												bg={colorMode == 'light'? '#fafafa': '#1e2636'}
 												borderRadius={'10px'}
 												h={'300px'}
 											>

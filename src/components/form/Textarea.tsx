@@ -17,6 +17,7 @@ export const Textarea = ({
 	placeholder,
 	required = false,
 	defaultValue,
+	height,
 }: ITextarea & { form: UseFormReturn<any, any> }) => {
 	const { colorMode } = useColorMode()
 	const errorColor = useColorModeValue('red.500', 'red.300')
@@ -36,13 +37,18 @@ export const Textarea = ({
 						<FormLabel color={'gray.400'} fontWeight={'normal'} htmlFor={name}>
 							{label}{' '}
 							{required && (
-								<Text ml={'1'} as="span" color={colorMode == 'dark' ? 'red.300': 'red.500'}>
+								<Text
+									ml={'1'}
+									as="span"
+									color={colorMode == 'dark' ? 'red.300' : 'red.500'}
+								>
 									*
 								</Text>
 							)}
 						</FormLabel>
 					)}
 					<TextareaChakra
+						h={height}
 						defaultValue={defaultValue ? defaultValue : undefined}
 						placeholder={placeholder}
 						id={name}

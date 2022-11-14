@@ -20,7 +20,7 @@ export default function LinkGroup({ title, icon, data, currentUser }: ILinkGroup
 	const [currentData, setCurrentData] = useState<ILinkItem[]>([])
 	const [links, setLinks] = useState<string[]>([])
 	const [paths, setPaths] = useState<string[]>([])
-
+	
 	const notViewPages = useMemo(() => {
 		return [
 			'Employees',
@@ -42,16 +42,18 @@ export default function LinkGroup({ title, icon, data, currentUser }: ILinkGroup
 	}, [currentData])
 
 	useEffect(() => {
+		console.log(currentUser)
 		if (currentUser?.role == 'Employee' || currentUser?.role == 'Client') {
-			const newData = currentData.filter((e) => {
+			const newData = data.filter((e) => {
 				if (currentUser?.role == 'Client' && e.title == 'Contracts') return true
 				return !notViewPages.includes(e.title)
 			})
+
 			setCurrentData(newData)
 		} else {
 			setCurrentData(data)
 		}
-	}, [data, currentUser])
+	}, [currentUser])
 
 	useEffect(() => {
 		if (pathname) {

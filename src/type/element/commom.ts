@@ -52,6 +52,7 @@ export interface ITextarea {
 	placeholder: string
 	required?: boolean
 	defaultValue? : string
+	height?: string
 }
 
 // components/form/ButtonIcon

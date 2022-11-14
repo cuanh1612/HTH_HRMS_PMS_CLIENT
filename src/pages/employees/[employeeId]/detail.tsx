@@ -1,4 +1,4 @@
-import { Avatar, Box, Grid, GridItem, HStack, Stack, Text, VStack } from '@chakra-ui/react'
+import { Avatar, Box, Grid, GridItem, HStack, Stack, Text, useColorMode, VStack } from '@chakra-ui/react'
 import { Donut } from 'components/charts'
 import { Empty, Head, Static } from 'components/common'
 import { EmployeeLayout } from 'components/layouts/Employee'
@@ -30,7 +30,7 @@ export const DetailEmployee: NextLayout | any = ({
 	dataDetailEmployee: employeeMutationResponse
 	employeeIdProp?: string | number
 }) => {
-	
+	const {colorMode} = useColorMode()
 	const { isAuthenticated, handleLoading } = useContext(AuthContext)
 	const router = useRouter()
 	const { employeeId } = router.query
@@ -261,8 +261,7 @@ export const DetailEmployee: NextLayout | any = ({
 												id={'hoang'}
 												w={'full'}
 												padding={'20px'}
-												border={'2px solid'}
-												borderColor={'hu-Green.normal'}
+												bg={colorMode == 'light'? '#fafafa': '#1e2636'}
 												borderRadius={'10px'}
 												h={'300px'}
 											>

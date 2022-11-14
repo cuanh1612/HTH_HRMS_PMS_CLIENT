@@ -1,6 +1,6 @@
 import { Box, HStack } from '@chakra-ui/react'
-import { TabsMenu } from 'components/common'
-import Navigation from 'components/navigation/Index'
+import { AnimateChangePage, TabsMenu } from 'components/common'
+import Navigation from 'components/sidebar/Index'
 import { Header } from 'components/partials'
 import { AuthContext } from 'contexts/AuthContext'
 import { useRouter } from 'next/router'
@@ -60,12 +60,14 @@ export const EmployeeLayout = ({ children }: { children: JSX.Element }) => {
 			overflow={'auto'}
 		>
 			<Navigation />
-			<Box w={['full', null, null, 'calc( 100% - 300px )']}>
+			<Box overflow={'hidden'} w={['full', null, null, 'calc( 100% - 300px )']}>
 				<Header />
-				<Box pt={'102px'}  w={'full'} h={'auto'} paddingInline={[5, null, null, 10]}>
-					<TabsMenu tabs={tabs} />
-					{children}
-				</Box>
+				<AnimateChangePage>
+					<Box pt={'102px'} w={'full'} h={'auto'} paddingInline={[5, null, null, 10]}>
+						<TabsMenu tabs={tabs} />
+						{children}
+					</Box>
+				</AnimateChangePage>
 			</Box>
 		</HStack>
 	)

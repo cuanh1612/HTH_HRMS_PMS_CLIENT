@@ -47,8 +47,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 			proxyRes.on('end',  function () {
 				console.log(process.env.NEXT_PUBLIC_API_URL)
 				try {
-					console.log('nguyen quang hoang',  JSON.parse(body))
-
 					const { code, success, message, user, accessToken, refreshToken } =
 						 JSON.parse(body)
 						

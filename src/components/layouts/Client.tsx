@@ -1,6 +1,6 @@
 import { Box, HStack } from '@chakra-ui/react'
 import { AnimateChangePage } from 'components/common'
-import Navigation from 'components/navigation/Index'
+import Navigation from 'components/sidebar/Index'
 import { Header } from 'components/partials'
 
 export const ClientLayout = ({ children }: { children: JSX.Element }) => {

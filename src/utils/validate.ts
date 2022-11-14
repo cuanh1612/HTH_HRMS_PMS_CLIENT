@@ -336,7 +336,14 @@ export const UpdateJobOfferValidate = yup.object({
 
 export const UpdateCompanyInfoValidate = yup.object({
 	name: yup.string().required('Please enter field name'),
-	email: yup.string().required('Please enter field email'),
+	email: yup.string().required('Please enter field email').email('Invalid email'),
 	phone: yup.string().required('Please enter field phone'),
 	website: yup.string().required('Please enter field website'),
+})
+
+export const SendMailValidate = yup.object({
+	email: yup.string().required('Please enter field email').email('Invalid email'),
+	subject: yup.string().required('Please enter field subject'),
+	content: yup.string().required('Please enter field content'),
+	
 })

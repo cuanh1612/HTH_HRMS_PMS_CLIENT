@@ -29,6 +29,7 @@ import {
 	IoAirplaneOutline,
 	IoDocumentTextOutline,
 	IoExitOutline,
+	IoInformationOutline,
 	IoVideocamOutline,
 } from 'react-icons/io5'
 import {
@@ -49,7 +50,6 @@ import { useRouter } from 'next/router'
 
 const LinkItems = () => {
 	const { currentUser } = useContext(AuthContext)
-
 	return (
 		<>
 			{currentUser?.role == 'Admin' && (
@@ -213,6 +213,7 @@ const LinkItems = () => {
 			{currentUser?.role != 'Client' && (
 				<LinkItem link="/rooms" title="Rooms" icon={<IoVideocamOutline fontSize={20} />} />
 			)}
+			<LinkItem link="/about" title="About" icon={<IoInformationOutline fontSize={20} />} />
 		</>
 	)
 }

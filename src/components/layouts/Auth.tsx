@@ -1,5 +1,4 @@
 import { Box, Center, Flex, HStack, Image, useColorModeValue, VStack } from '@chakra-ui/react'
-import { AnimateChangePage } from 'components/common'
 import { companyInfoQuery } from 'queries/companyInfo'
 
 export const AuthLayout = ({ children }: { children: JSX.Element }) => {

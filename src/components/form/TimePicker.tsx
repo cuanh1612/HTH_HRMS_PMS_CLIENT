@@ -1,19 +1,8 @@
 import {
-	HStack,
-	IconButton,
-	VStack,
-	Input,
-	Box,
-	FormControl,
-	FormLabel,
-	InputGroup,
-	InputLeftElement,
-	useColorModeValue,
-	FormHelperText,
-	useDisclosure,
-	Collapse,
-	Text,
-	useColorMode,
+	Box, Collapse, FormControl, FormHelperText, FormLabel, HStack,
+	IconButton, Input, InputGroup,
+	InputLeftElement, Text,
+	useColorMode, useColorModeValue, useDisclosure, VStack
 } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
 import { Controller, UseFormReturn } from 'react-hook-form'
@@ -99,7 +88,7 @@ export const TimePicker = ({
 		}
 	}, [timeInitCurrent])
 
-	const { onToggle, isOpen, onOpen, onClose } = useDisclosure()
+	const { isOpen, onOpen, onClose } = useDisclosure()
 
 	const getVlFutureHorM = (status: number, time: any) => {
 		if (status == 1) {

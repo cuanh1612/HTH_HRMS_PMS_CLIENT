@@ -451,7 +451,7 @@ const attendance: NextLayout = () => {
 					{/* open modal to add or update attendance */}
 					<Modal isOpen={isOpenInsert} onClose={onCloseInsert}>
 						<ModalOverlay />
-						<ModalContent>
+						<ModalContent marginInline={'20px'}>
 							<ModalHeader>
 								Check attendance{' '}
 								<Text as="span" fontWeight={'normal'}>

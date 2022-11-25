@@ -45,7 +45,7 @@ export const AuthLayout = ({ children }: { children: JSX.Element }) => {
 				/>
 			</VStack>
 			<Center minW={['max-content', null, null, '600px']} flex={1}>
-				<AnimateChangePage>{children}</AnimateChangePage>
+				{children}
 			</Center>
 		</Flex>
 	)

@@ -818,3 +818,9 @@ export type createJobApplicationFileForm = {
 	}[]
 	jobApplication: number
 }
+
+export type sendMailContactForm = {
+	email: string
+	content: string 
+	subject: string
+}

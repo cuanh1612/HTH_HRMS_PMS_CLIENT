@@ -1,12 +1,14 @@
 import { Button, HStack, Text } from '@chakra-ui/react'
+import { AuthContext } from 'contexts/AuthContext'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { ILinkItem } from 'type/element/commom'
 
 export default function LinkItem({ title, icon, link }: ILinkItem) {
 	const [paths, setPaths] = useState<string[]>()
 	const { pathname } = useRouter()
+	const {onCloseMenu} = useContext(AuthContext)
 
 	useEffect(() => {
 		if (pathname) {
@@ -18,6 +20,7 @@ export default function LinkItem({ title, icon, link }: ILinkItem) {
 	return (
 		<Link passHref href={link}>
 			<Button
+				onClick={onCloseMenu}
 				color={!paths?.includes(link) ? 'gray.400' : 'hu-Green.normal'}
 				bg={paths?.includes(link) ? 'gray.100' : 'transparent'}
 				justifyContent={'start'}

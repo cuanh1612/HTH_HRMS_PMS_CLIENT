@@ -99,7 +99,7 @@ export const TimePicker = ({
 		}
 	}, [timeInitCurrent])
 
-	const { onToggle, isOpen } = useDisclosure()
+	const { onToggle, isOpen, onOpen, onClose } = useDisclosure()
 
 	const getVlFutureHorM = (status: number, time: any) => {
 		if (status == 1) {
@@ -148,25 +148,26 @@ export const TimePicker = ({
 						</FormLabel>
 					)}
 
-					<InputGroup onClick={onToggle}>
+					<InputGroup onFocus={onOpen} onBlur={onClose}>
 						<InputLeftElement
 							pointerEvents="none"
 							color="gray.300"
 							fontSize="1.2em"
 							children={<BiTimeFive fontSize={'20px'} color="gray" opacity={0.6} />}
 						/>
-						<Input id={name} value={time} />
+						<Input bg={colorMode == 'dark' ? '#3a4453' : undefined} id={name} value={time} />
 					</InputGroup>
 					<Collapse in={isOpen} animateOpacity={false}>
 						<HStack
+							
 							top={'20'}
 							pos={'absolute'}
 							paddingInline={5}
 							zIndex={5}
-							borderRadius={6}
-							bg={'white'}
+							borderRadius={8}
+							bg={colorMode == 'dark' ? '#1e2636': 'white'}
 							border={'1px solid'}
-							borderColor={'gray.200'}
+							borderColor={colorMode == 'dark' ? 'gray.600' : 'gray.200'}
 							overflow={'hidden'}
 							paddingBlock={3}
 							alignItems={'center'}
@@ -178,6 +179,8 @@ export const TimePicker = ({
 									onClick={() => {
 										const value = getVlFutureHorM(1, hours)
 										setHoursHandle(value)
+										onOpen()
+									
 									}}
 									disabled={hours.value == hours.max}
 									aria-label="tang"

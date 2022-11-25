@@ -37,7 +37,7 @@ export default function DetailAttendance({
 	return (
 		<Modal isOpen={isOpenDetail} onClose={onCloseDetail}>
 			<ModalOverlay />
-			<ModalContent maxW={'350px'}>
+			<ModalContent maxW={'350px'} marginInline={'20px'}>
 				<ModalHeader>
 					<HStack spacing={5}>
 						<Text as="span">

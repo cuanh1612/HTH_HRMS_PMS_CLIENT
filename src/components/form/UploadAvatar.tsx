@@ -137,7 +137,7 @@ export const UploadAvatar = ({ setInfoImg, oldImg }: { setInfoImg: HandleImg, ol
 				onClose={onClose}
 			>
 				<ModalOverlay />
-				<ModalContent>
+				<ModalContent marginInline={'20px'}>
 					<ModalHeader>Crop image</ModalHeader>
 					<ModalCloseButton
 						onClick={() => {

@@ -52,7 +52,7 @@ const zoom: NextLayout = () => {
 	const { isOpen: isOpenFilter, onOpen: onOpenFilter, onClose: onCloseFilter } = useDisclosure()
 
 	// query
-	const { data: dataRooms, mutate: refetchAllRooms } = allRoomsQuery({
+	const {data: dataRooms, mutate: refetchAllRooms} = allRoomsQuery({
 		isAuthenticated,
 		role: currentUser?.role,
 		id: currentUser?.id,
@@ -158,7 +158,7 @@ const zoom: NextLayout = () => {
 	return (
 		<VStack justifyContent={'start'} pb={8} alignItems={'start'} w={'full'} spacing={5}>
 			<Head title={'Rooms'} />
-			<Box className="function">
+		
 				<FuncCollapse>
 					<Func
 						icon={<IoAdd />}
@@ -181,7 +181,7 @@ const zoom: NextLayout = () => {
 						}}
 					/>
 				</FuncCollapse>
-			</Box>
+			
 
 			<VStack w={'full'} spacing={5}>
 				<Text w={'full'} fontWeight={'bold'} fontSize={'xl'}>

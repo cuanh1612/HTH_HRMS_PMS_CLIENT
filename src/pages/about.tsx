@@ -14,6 +14,7 @@ import { Developer, Project } from 'components/common'
 import { Input, Textarea } from 'components/form'
 import { ClientLayout } from 'components/layouts'
 import { AuthContext } from 'contexts/AuthContext'
+import { SendMailContactMutation } from 'mutations/contact'
 import { useRouter } from 'next/router'
 import { useContext, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
@@ -29,8 +30,9 @@ interface SendMail {
 
 const about = () => {
 	const { colorMode } = useColorMode()
-	const { isAuthenticated, handleLoading } = useContext(AuthContext)
+	const { isAuthenticated, handleLoading, setToast } = useContext(AuthContext)
 	const router = useRouter()
+	const [mutate, { status, data }] = SendMailContactMutation(setToast)
 
 	// send button
 	const sendBtn = useColorModeValue('hu-Green.normal', 'hu-Green.dark')
@@ -45,8 +47,7 @@ const about = () => {
 
 	//Handle send email
 	const onSubmit = async (values: SendMail) => {
-		console.log(values)
-		// await mutateCreJob(values)
+		await mutate(values)
 	}
 
 	//Handle check logged in
@@ -59,6 +60,22 @@ const about = () => {
 			}
 		}
 	}, [isAuthenticated])
+
+	useEffect(() => {
+		if (status === 'success') {
+			setToast({
+				type: status,
+				msg: data?.message || '',
+			})
+
+			//Reset data form
+			formSetting.reset({
+				email: '',
+				content: '',
+				subject: '',
+			})
+		}
+	}, [status])
 
 	return (
 		<Stack flexDir={['column', null, null, null, 'row']} w={'full'} h="calc(100vh - 130px)">

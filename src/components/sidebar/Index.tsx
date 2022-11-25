@@ -272,14 +272,14 @@ const SideLeft = () => {
 	)
 }
 
-const SideLeftInDrawer = ({ onClose, isOpen }: { isOpen: boolean; onClose: any }) => {
-	const { currentUser } = useContext(AuthContext)
+const SideLeftInDrawer = () => {
+	const { currentUser, onCloseMenu, isOpenMenu  } = useContext(AuthContext)
 	const { push } = useRouter()
 	//Get info company
 	const { data: dataCompanyInfo } = companyInfoQuery()
 	const { colorMode } = useColorMode()
 	return (
-		<Drawer isOpen={isOpen} placement="left" onClose={onClose}>
+		<Drawer isOpen={isOpenMenu} placement="left" onClose={onCloseMenu}>
 			<DrawerOverlay />
 			<DrawerContent
 				bg={colorMode == 'dark' ? '#181c24' : '#fafafa'}
@@ -320,7 +320,7 @@ const SideLeftInDrawer = ({ onClose, isOpen }: { isOpen: boolean; onClose: any }
 							>
 								{dataCompanyInfo?.companyInfo.name}
 							</Text>
-							<CloseButton onClick={onClose} />
+							<CloseButton onClick={onCloseMenu} />
 						</HStack>
 					</HStack>
 
@@ -340,7 +340,6 @@ const SideLeftInDrawer = ({ onClose, isOpen }: { isOpen: boolean; onClose: any }
 
 export default function Navigation() {
 	const [isLarge, setIsLarge] = useState(true)
-	const { onCloseMenu, isOpenMenu } = useContext(AuthContext)
 	const breakpoint = useBreakpoint()
 	useEffect(() => {
 		if (breakpoint == 'md' || breakpoint == 'sm' || breakpoint == 'base') {
@@ -354,7 +353,7 @@ export default function Navigation() {
 			{isLarge ? (
 				<SideLeft />
 			) : (
-				<SideLeftInDrawer isOpen={isOpenMenu} onClose={onCloseMenu} />
+				<SideLeftInDrawer />
 			)}
 		</>
 	)

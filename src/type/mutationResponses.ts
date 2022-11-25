@@ -377,3 +377,6 @@ export interface jobApplicationFileMutationResponse extends commonResponse {
 export interface projectActivityMutationResponse extends commonResponse {
 	projectActivity?: projectActivityType[]
 }
+
+export interface SendEmailContactResponse extends commonResponse {
+}

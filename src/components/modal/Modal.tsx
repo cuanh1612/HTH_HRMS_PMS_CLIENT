@@ -38,7 +38,7 @@ export default function Modal({
 		<>
 			<CModal size={size} isOpen={isOpen} onClose={onClose}>
 				<ModalOverlay />
-				<ModalContent borderRadius={10}>
+				<ModalContent borderRadius={10} marginInline={'20px'}>
 					<ModalHeader>{title}</ModalHeader>
 					<ModalCloseButton />
 

@@ -133,7 +133,7 @@ const Login: NextLayout = () => {
 
 	// check authenticate to redirect to home page
 	useEffect(() => {
-		if (isAuthenticated && currentUser) {
+		if (isAuthenticated && currentUser && !data && !dataLoginG) {
 			router.push(redirectPage(currentUser))
 		} else {
 			if (isAuthenticated == false) {

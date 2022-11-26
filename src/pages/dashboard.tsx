@@ -10,6 +10,7 @@ import {
 	MenuButton,
 	MenuItem,
 	MenuList,
+	Stack,
 	StackDivider,
 	Table,
 	TableContainer,
@@ -74,6 +75,7 @@ import { GrDocumentText } from 'react-icons/gr'
 import { clientType } from 'type/basicTypes'
 import { IFilter } from 'type/tableTypes'
 import { Select } from 'components/filter'
+import monthData from 'utils/month.json'
 
 const dashboard: NextLayout = () => {
 	const [date, setDate] = useState(new Date())
@@ -153,95 +155,6 @@ const dashboard: NextLayout = () => {
 
 	return (
 		<Box w={'100%'} pb={8} pos={'relative'}>
-			<Select
-				options={[
-					{
-						label: 'January',
-						value: 1,
-					},
-					{
-						label: 'February',
-						value: 2,
-					},
-					{
-						label: 'March',
-						value: 3,
-					},
-					{
-						label: 'April',
-						value: 4,
-					},
-					{
-						label: 'May',
-						value: 5,
-					},
-					{
-						label: 'June',
-						value: 6,
-					},
-					{
-						label: 'July',
-						value: 7,
-					},
-					{
-						label: 'August',
-						value: 8,
-					},
-					{
-						label: 'September',
-						value: 9,
-					},
-					{
-						label: 'October',
-						value: 10,
-					},
-					{
-						label: 'November',
-						value: 11,
-					},
-					{
-						label: 'December',
-						value: 12,
-					},
-				]}
-				handleSearch={(data: IFilter) => {
-					setDate((state) => new Date(state.setMonth(data.filterValue - 1)))
-				}}
-				columnId={'day'}
-				label="Month"
-				placeholder="Select month"
-			/>
-
-			<Select
-				options={[
-					{
-						label: `${new Date().getFullYear()}`,
-						value: `${new Date().getFullYear()}`,
-					},
-					{
-						label: `${new Date().getFullYear() - 1}`,
-						value: `${new Date().getFullYear() - 1}`,
-					},
-					{
-						label: `${new Date().getFullYear() - 2}`,
-						value: `${new Date().getFullYear() - 2}`,
-					},
-					{
-						label: `${new Date().getFullYear() - 3}`,
-						value: `${new Date().getFullYear() - 3}`,
-					},
-					{
-						label: `${new Date().getFullYear() - 4}`,
-						value: `${new Date().getFullYear() - 4}`,
-					},
-				]}
-				handleSearch={(data: IFilter) => {
-					setDate((state) => new Date(state.setFullYear(data.filterValue)))
-				}}
-				columnId={'holiday_date'}
-				label="Year"
-				placeholder="Select year"
-			/>
 			<Head title="Dashboards" />
 			<HStack
 				className="card-demo"
@@ -345,6 +258,51 @@ const dashboard: NextLayout = () => {
 					/>
 				</Grid>
 			</Collapse>
+			<VStack mb={6} w={'full'}>
+				<Text fontWeight={'semibold'} w={'full'} color={'gray.500'}>Filter</Text>
+				<Stack spacing={6} w={'full'} direction={'row'}>
+					<Select
+						options={monthData}
+						handleSearch={(data: IFilter) => {
+							setDate((state) => new Date(state.setMonth(data.filterValue - 1)))
+						}}
+						columnId={'day'}
+						label="Month"
+						placeholder="Select month"
+					/>
+
+					<Select
+						options={[
+							{
+								label: `${new Date().getFullYear()}`,
+								value: `${new Date().getFullYear()}`,
+							},
+							{
+								label: `${new Date().getFullYear() - 1}`,
+								value: `${new Date().getFullYear() - 1}`,
+							},
+							{
+								label: `${new Date().getFullYear() - 2}`,
+								value: `${new Date().getFullYear() - 2}`,
+							},
+							{
+								label: `${new Date().getFullYear() - 3}`,
+								value: `${new Date().getFullYear() - 3}`,
+							},
+							{
+								label: `${new Date().getFullYear() - 4}`,
+								value: `${new Date().getFullYear() - 4}`,
+							},
+						]}
+						handleSearch={(data: IFilter) => {
+							setDate((state) => new Date(state.setFullYear(data.filterValue)))
+						}}
+						columnId={'holiday_date'}
+						label="Year"
+						placeholder="Select year"
+					/>
+				</Stack>
+			</VStack>
 			<Grid
 				w={'full'}
 				templateColumns={['repeat(1, 1fr)', null, null, 'repeat(2, 1fr)']}

@@ -46,7 +46,7 @@ export const AuthLayout = ({ children }: { children: JSX.Element }) => {
 					h={'83%'}
 				/>
 			</VStack>
-			<Center minW={['max-content', null, null, '600px']} flex={1}>
+			<Center paddingInline={'20px'}  flex={1}>
 				{children}
 			</Center>
 		</Flex>

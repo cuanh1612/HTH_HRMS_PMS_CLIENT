@@ -68,7 +68,7 @@ const resetPass: NextLayout = () => {
 
 
 	return (
-		<VStack spacing={8} minW={'380px'} maxW={'380px'}>
+		<VStack spacing={8} w={'full'} maxW={'380px'}>
 			<Head title='Reset password'/>
 			<VStack w={'full'} spacing={3} alignItems={'start'}>
 				<Box pos={'relative'} as="div">

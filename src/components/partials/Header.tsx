@@ -271,7 +271,7 @@ export const Header = () => {
 						Save
 					</Button>
 				}
-				size="xs"
+				size="md"
 				title="Config System"
 				onClose={onCloseConfigPage}
 				isOpen={isOpenConfigPage}

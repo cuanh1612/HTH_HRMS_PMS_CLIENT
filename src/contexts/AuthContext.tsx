@@ -129,8 +129,18 @@ const AuthContextProvider = ({ children }: { children: ReactNode }) => {
 	//Set data current user
 	useEffect(() => {
 		if (dataCurrentUser && dataCurrentUser.user) {
+			console.log("Nguyen Quang Huy");
+			console.log("Nguyen Quang Huy");
+			console.log("Nguyen Quang Huy");
+			console.log(dataCurrentUser.user);
+
+			
 			setCurrentUser(dataCurrentUser.user)
 		} else {
+			console.log("Nguyen Quang Huy k co");
+			console.log("Nguyen Quang Huy k co");
+			console.log("Nguyen Quang Huy k co");
+
 			setCurrentUser(null)
 		}
 	}, [dataCurrentUser])

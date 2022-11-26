@@ -35,7 +35,7 @@ import { LoginValidate } from 'utils/validate'
 
 const Login: NextLayout = () => {
 	// set authenticated when login success, set toast
-	const { setIsAuthenticated, setToast, isAuthenticated, handleLoading, currentUser } =
+	const { setIsAuthenticated, setCurrentUser, setToast, isAuthenticated, handleLoading, currentUser } =
 		useContext(AuthContext)
 	const router = useRouter()
 
@@ -134,6 +134,7 @@ const Login: NextLayout = () => {
 	// check authenticate to redirect to home page
 	useEffect(() => {
 		if (isAuthenticated && currentUser && !data && !dataLoginG) {
+			console.log(currentUser)
 			router.push(redirectPage(currentUser))
 		} else {
 			if (isAuthenticated == false) {

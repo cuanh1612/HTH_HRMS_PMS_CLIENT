@@ -35,7 +35,7 @@ import { LoginValidate } from 'utils/validate'
 
 const Login: NextLayout = () => {
 	// set authenticated when login success, set toast
-	const { setIsAuthenticated, setCurrentUser, setToast, isAuthenticated, handleLoading, currentUser } =
+	const { setIsAuthenticated, setToast, isAuthenticated, handleLoading, currentUser } =
 		useContext(AuthContext)
 	const router = useRouter()
 

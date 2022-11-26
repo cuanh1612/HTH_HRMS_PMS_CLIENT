@@ -5,7 +5,7 @@ export function middleware(req: NextRequest) {
 	const paths = String(req.page.name).split('/')
 
 	const redirect403 = () => {
-		return NextResponse.redirect('http://localhost:3000/403')
+		return NextResponse.redirect('/403')
 	}
 	//Get current url and refresh cookie
 	const token = req.cookies['jwt-auth-cookie']

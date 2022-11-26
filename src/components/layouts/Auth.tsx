@@ -7,7 +7,7 @@ export const AuthLayout = ({ children }: { children: JSX.Element }) => {
 	const { data: infoSystem } = companyInfoQuery()
 
 	return (
-		<Flex minHeight={'100vh'} background="hu-Pink" flexDir={'row'}>
+		<Flex h={'100vh'} overflow={'hidden'} background="hu-Pink" flexDir={'row'}>
 			<VStack
 				display={['none', null, null, 'flex']}
 				alignItems="center"
@@ -37,10 +37,13 @@ export const AuthLayout = ({ children }: { children: JSX.Element }) => {
 				</Box>
 				<Image
 					width={'full'}
-					fit={'cover'}
-					height={'full'}
-					src="https://bit.ly/dan-abramov"
+					fit={'contain'}
+					style={{
+						transform: 'translateX(-20px)'
+					}}
+					src="/assets/bg.svg"
 					alt="image"
+					h={'83%'}
 				/>
 			</VStack>
 			<Center minW={['max-content', null, null, '600px']} flex={1}>

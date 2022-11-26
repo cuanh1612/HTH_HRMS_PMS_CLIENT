@@ -120,6 +120,7 @@ const Login: NextLayout = () => {
 				})
 				JWTManager.setToken(dataLoginG?.accessToken as string)
 				setIsAuthenticated(true)
+				console.log(dataLoginG)
 				if(dataLoginG?.user) {
 					router.push(redirectPage(dataLoginG.user))
 				}

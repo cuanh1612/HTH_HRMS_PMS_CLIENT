@@ -60,7 +60,7 @@ export async function detailClientRequest(url: string) {
 //Function handle get count project status by client
 export async function countProjectStatusRequest(url: string) {
 	const resultFetch = await getData<clientProjectStatusMutationResponse>({
-		url: `http://localhost:4000/api/${url}`,
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/${url}`,
 	})
 
 	return resultFetch

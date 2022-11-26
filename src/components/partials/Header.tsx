@@ -244,7 +244,7 @@ export const Header = () => {
 			{currentUser && (
 				<Drawer
 					size="xl"
-					title="Update client"
+					title={`Update ${currentUser.role === 'Client' ? 'client': 'employee'}`}
 					onClose={onCloseUpdateProfile}
 					isOpen={isOpenUpdateProfile}
 				>

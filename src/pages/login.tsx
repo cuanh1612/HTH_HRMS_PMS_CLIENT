@@ -100,6 +100,9 @@ const Login: NextLayout = () => {
 			})
 			JWTManager.setToken(data?.accessToken as string)
 			setIsAuthenticated(true)
+			if(data?.user) {
+				router.push(redirectPage(data.user))
+			}
 		}
 	}, [status])
 
@@ -117,6 +120,9 @@ const Login: NextLayout = () => {
 				})
 				JWTManager.setToken(dataLoginG?.accessToken as string)
 				setIsAuthenticated(true)
+				if(dataLoginG?.user) {
+					router.push(redirectPage(dataLoginG.user))
+				}
 				break
 			}
 

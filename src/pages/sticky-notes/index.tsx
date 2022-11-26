@@ -69,7 +69,7 @@ export default function StickysNote() {
 	}, [isAuthenticated])
 
 	return (
-		<Box p={10} bgColor={colorMode == 'dark' ? undefined : '#f2f4f7'} minHeight={'100vh'}>
+		<Box p={10} bgColor={colorMode == 'dark' ? undefined : '#f2f4f7'} minHeight={'calc( 100vh - 70px )'}>
 			<VStack spacing={6} align={'start'}>
 				<Button
 					colorScheme="blue"

@@ -80,7 +80,7 @@ const TimeLog: NextLayout = () => {
 	// delete many
 	const [deleteMany, { data: dataDlMany, status: statusDlMany }] =
 		deleteTimeLogsMutation(setToast)
-
+		
 	// query
 	// get all time log by project
 	const { data: allTimeLogs, mutate: refetchTimeLogs } = timeLogsByEmployeeQuery(

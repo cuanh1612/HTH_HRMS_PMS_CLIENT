@@ -10,8 +10,7 @@ import { useRouter } from 'next/router'
 import {
 	allProjectsNormalQuery,
 	detailEmployeeQuery,
-	timeLogsByEmployeeQuery,
-	timeLogsCurrentUserQuery,
+	timeLogsByEmployeeQuery
 } from 'queries'
 import { useContext, useEffect, useState } from 'react'
 import { AiOutlineDelete, AiOutlineSearch } from 'react-icons/ai'

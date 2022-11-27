@@ -115,8 +115,6 @@ const attendance: NextLayout = () => {
 		currentUser?.role === 'Admin' ? employeeSl : currentUser?.id
 	)
 
-	console.log(allAttendances)
-
 	// get all employees
 	const { data: allEmployees } = allEmployeesNormalQuery(isAuthenticated)
 
@@ -161,6 +159,8 @@ const attendance: NextLayout = () => {
 				msg: 'Clock-out time cannot be less than clock-in time',
 			})
 		}
+
+		console.log('huy', values)
 
 		const data: AttendanceForm = {
 			...values,

@@ -46,6 +46,7 @@ export default function CheckAttendance({
 	return (
 		<>
 			{dates.map((date) => {
+				
 				const checkAttendance = attendances?.find((attendance) => {
 					return (
 						new Date(attendance.date).toLocaleDateString() ==
@@ -126,6 +127,11 @@ export default function CheckAttendance({
 						<IconButton
 							onClick={() => {
 								if (isChange) {
+									console.log('gfgfgf', new Date().setFullYear(
+										dateFilter.getFullYear(),
+										dateFilter.getMonth(),
+										date
+									))
 									checkAttendance.handle(
 										new Date().setFullYear(
 											dateFilter.getFullYear(),
@@ -156,6 +162,11 @@ export default function CheckAttendance({
 							key={date}
 							onClick={() => {
 								if (isChange) {
+									console.log('gfgfgf', new Date().setFullYear(
+										dateFilter.getFullYear(),
+										dateFilter.getMonth(),
+										date
+									))
 									createHandle(
 										new Date().setFullYear(
 											dateFilter.getFullYear(),
@@ -187,12 +198,17 @@ export default function CheckAttendance({
 							key={date}
 							onClick={() => {
 								if (isChange) {
+									console.log('gfgfgf', new Date(new Date().setFullYear(
+										dateFilter.getFullYear(),
+										dateFilter.getMonth(),
+										date
+									)))
 									createHandle(
-										new Date().setFullYear(
+										new Date(new Date().setFullYear(
 											dateFilter.getFullYear(),
 											dateFilter.getMonth(),
 											date
-										)
+										))
 									)
 								}
 							}}

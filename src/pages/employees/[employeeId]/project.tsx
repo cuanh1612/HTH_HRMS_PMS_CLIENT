@@ -1,37 +1,31 @@
 import {
-	Avatar,
-	Button,
+	Avatar, Box, Button,
 	HStack,
-	Text,
-	useDisclosure,
-	VStack,
-	useColorMode,
-	Box,
+	Text, useColorMode, useDisclosure,
+	VStack
 } from '@chakra-ui/react'
 import { AlertDialog, Func, FuncCollapse, Head, Table } from 'components/common'
 import { Drawer } from 'components/Drawer'
 import { Input, Select, SelectCustom } from 'components/filter'
+import { EmployeeLayout } from 'components/layouts/Employee'
 import { AuthContext } from 'contexts/AuthContext'
 import { deleteProjectMutation, deleteProjectsMutation } from 'mutations'
 import { useRouter } from 'next/router'
 import {
 	allClientsQuery,
 	allEmployeesNormalQuery,
-	allProjectCategoriesQuery,
-	allProjectsByCurrentUserQuery,
-	allProjectsNormalByEmployeeQuery,
-	detailEmployeeQuery,
+	allProjectCategoriesQuery, allProjectsNormalByEmployeeQuery,
+	detailEmployeeQuery
 } from 'queries'
 import { useContext, useEffect, useState } from 'react'
 import { AiOutlineDelete, AiOutlineSearch } from 'react-icons/ai'
+import { VscFilter } from 'react-icons/vsc'
+import UpdateProject from 'src/pages/projects/update-projects'
 import { IOption } from 'type/basicTypes'
 import { NextLayout } from 'type/element/layout'
 import { IFilter, TColumn } from 'type/tableTypes'
-import { VscFilter } from 'react-icons/vsc'
-import UpdateProject from 'src/pages/projects/update-projects'
-import { EmployeeLayout } from 'components/layouts/Employee'
-import { employeeProjectColumn } from 'utils/columns'
 import { dataProjectStatus } from 'utils/basicData'
+import { employeeProjectColumn } from 'utils/columns'
 
 const Projects: NextLayout = () => {
 	const { isAuthenticated, handleLoading, setToast, currentUser } = useContext(AuthContext)

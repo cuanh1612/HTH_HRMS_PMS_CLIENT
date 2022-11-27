@@ -8,7 +8,7 @@ import {
 	Text,
 	useColorMode,
 	useDisclosure,
-	VStack,
+	VStack
 } from '@chakra-ui/react'
 import { ArcElement, Chart as ChartJS, Legend, Tooltip } from 'chart.js'
 import { Donut } from 'components/charts'
@@ -19,12 +19,11 @@ import { AuthContext } from 'contexts/AuthContext'
 import { deleteProjectMutation } from 'mutations'
 import { useRouter } from 'next/router'
 import {
-	allProjectsByCurrentUserQuery,
 	allProjectsNormalByClientQuery,
 	clientCountProjectStatusQuery,
 	clientTotalEarningQuery,
 	clientTotalProjectsQuery,
-	detailClientQuery,
+	detailClientQuery
 } from 'queries'
 import { useContext, useEffect, useState } from 'react'
 import { AiOutlineProject } from 'react-icons/ai'

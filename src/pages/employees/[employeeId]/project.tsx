@@ -19,6 +19,7 @@ import {
 	allEmployeesNormalQuery,
 	allProjectCategoriesQuery,
 	allProjectsByCurrentUserQuery,
+	allProjectsNormalByEmployeeQuery,
 	detailEmployeeQuery,
 } from 'queries'
 import { useContext, useEffect, useState } from 'react'
@@ -84,7 +85,7 @@ const Projects: NextLayout = () => {
 
 	// query and mutation
 	const { data: allProjects, mutate: refetchAllProjects } =
-		allProjectsByCurrentUserQuery(isAuthenticated)
+		allProjectsNormalByEmployeeQuery(isAuthenticated, employeeId as string)
 
 	const { data: dataEmployee } = detailEmployeeQuery(isAuthenticated, employeeId as string)
 

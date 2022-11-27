@@ -30,6 +30,20 @@ export const allContractsQuery = (
 	)
 }
 
+export const allContractsByClientQuery = (
+	isAuthenticated: boolean | null,
+	clientId?: string | null
+) => {
+	return useSWR<contractMutationResponse, AxiosError>(
+		isAuthenticated && clientId ? `contracts/client/${clientId}` : null,
+		allContractsRequest,
+		{
+			errorRetryCount: 2,
+			revalidateOnFocus: false,
+		}
+	)
+}
+
 export const publicContractQuery = (token: string) => {
 	return useSWR<contractMutationResponse, AxiosError>(
 		token,

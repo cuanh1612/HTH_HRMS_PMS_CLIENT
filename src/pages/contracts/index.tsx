@@ -22,7 +22,12 @@ import {
 } from 'mutations'
 
 import { useRouter } from 'next/router'
-import { allClientsQuery, allContractsQuery, allContractTypesQuery } from 'queries'
+import {
+	allClientsQuery,
+	allContractsByClientQuery,
+	allContractsQuery,
+	allContractTypesQuery,
+} from 'queries'
 import { useContext, useEffect, useState } from 'react'
 import { CSVLink } from 'react-csv'
 import { AiOutlineDelete, AiOutlineSearch } from 'react-icons/ai'
@@ -73,6 +78,10 @@ const Contracts: NextLayout = () => {
 	// query and mutation -=------------------------------------------------------
 	// get all contracts
 	const { data: allContracts, mutate: refetchAllContracts } = allContractsQuery(isAuthenticated)
+	const { data: allContractsByClient } = allContractsByClientQuery(
+		isAuthenticated,
+		String(currentUser?.id)
+	)
 
 	const { data: allContractTypes } = allContractTypesQuery()
 
@@ -461,18 +470,23 @@ const Contracts: NextLayout = () => {
 					/>
 				</FuncCollapse>
 			</Box>
-
-			<Table
-				data={allContracts?.contracts || []}
-				columns={columns}
-				isLoading={isLoading}
-				isSelect={currentUser?.role == 'Admin' ? true : false}
-				selectByColumn="id"
-				setSelect={(data: Array<number>) => setDataSl(data)}
-				filter={filter}
-				isResetFilter={isResetFilter}
-				disableColumns={['contract_type']}
-			/>
+			{currentUser && (
+				<Table
+					data={
+						(currentUser?.role == 'Admin'
+							? allContracts?.contracts
+							: allContractsByClient?.contracts) || []
+					}
+					columns={columns}
+					isLoading={isLoading}
+					isSelect={currentUser?.role == 'Admin' ? true : false}
+					selectByColumn="id"
+					setSelect={(data: Array<number>) => setDataSl(data)}
+					filter={filter}
+					isResetFilter={isResetFilter}
+					disableColumns={['contract_type']}
+				/>
+			)}
 
 			<Drawer size="xl" title="Add Contract" onClose={onCloseAdd} isOpen={isOpenAdd}>
 				<AddContract onCloseDrawer={onCloseAdd} />
@@ -561,7 +575,7 @@ const Contracts: NextLayout = () => {
 					/>
 					{clientsFilter && (
 						<SelectCustom
-							placeholder='Select client'
+							placeholder="Select client"
 							handleSearch={(field: any) => {
 								setFilter({
 									columnId: 'client',

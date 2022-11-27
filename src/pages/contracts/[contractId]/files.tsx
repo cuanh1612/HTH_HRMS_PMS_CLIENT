@@ -346,7 +346,7 @@ export const getStaticProps: GetStaticProps = async () => {
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-	const res: contractMutationResponse = await fetch('http://localhost:4000/api/contracts')
+	const res: contractMutationResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/contracts`)
 		.then((result) => result.json())
 		.catch(() => undefined)
 

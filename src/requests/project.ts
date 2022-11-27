@@ -112,6 +112,13 @@ export const allProjectsByEmployeeNormalRequest = async (url: string) => {
 	})
 }
 
+// get all project normal by client
+export const allProjectsByClientNormalRequest = async (url: string) => {
+	return await getData<projectMutationResponse>({
+		url: `${process.env.NEXT_PUBLIC_API_URL}/api/${url}`,
+	})
+}
+
 // get all project by employee
 export const allProjectsByEmployeeRequest = async (url: string) => {
 	return await getData<projectMutationResponse>({

@@ -1,6 +1,7 @@
 import { AxiosError } from 'axios'
 import {
 	allEmployeesInProjectRequest,
+	allProjectsByClientNormalRequest,
 	allProjectsByEmployeeNormalRequest,
 	allProjectsByEmployeeRequest,
 	allProjectsRequest,
@@ -95,6 +96,18 @@ export const allProjectsNormalByEmployeeQuery = (isAuthenticated?: boolean | nul
 	return useSWR<projectMutationResponse, AxiosError>(
 		isAuthenticated && employeeId ? `projects/normal/employee/${employeeId}` : null,
 		allProjectsByEmployeeNormalRequest,
+		{
+			errorRetryCount: 2,
+			revalidateOnFocus: false,
+		}
+	)
+}
+
+// get all projects normal by client
+export const allProjectsNormalByClientQuery = (isAuthenticated?: boolean | null, clientId?: string | number) => {
+	return useSWR<projectMutationResponse, AxiosError>(
+		isAuthenticated && clientId ? `projects/normal/client/${clientId}` : null,
+		allProjectsByClientNormalRequest,
 		{
 			errorRetryCount: 2,
 			revalidateOnFocus: false,

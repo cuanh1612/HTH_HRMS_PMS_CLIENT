@@ -5,7 +5,10 @@ import {
 	GridItem,
 	HStack,
 	Stack,
-	Text, useColorMode, useDisclosure, VStack
+	Text,
+	useColorMode,
+	useDisclosure,
+	VStack,
 } from '@chakra-ui/react'
 import { ArcElement, Chart as ChartJS, Legend, Tooltip } from 'chart.js'
 import { Donut } from 'components/charts'
@@ -16,9 +19,12 @@ import { AuthContext } from 'contexts/AuthContext'
 import { deleteProjectMutation } from 'mutations'
 import { useRouter } from 'next/router'
 import {
-	allProjectsByCurrentUserQuery, clientCountProjectStatusQuery, clientTotalEarningQuery,
+	allProjectsByCurrentUserQuery,
+	allProjectsNormalByClientQuery,
+	clientCountProjectStatusQuery,
+	clientTotalEarningQuery,
 	clientTotalProjectsQuery,
-	detailClientQuery
+	detailClientQuery,
 } from 'queries'
 import { useContext, useEffect, useState } from 'react'
 import { AiOutlineProject } from 'react-icons/ai'
@@ -38,7 +44,7 @@ const DetailClient: NextLayout | any = ({
 	dataDetailClientServer?: clientMutationResponse
 	clientIdProp?: string | number
 }) => {
-	const {colorMode} = useColorMode()
+	const { colorMode } = useColorMode()
 	const { isAuthenticated, handleLoading, currentUser, setToast } = useContext(AuthContext)
 	const router = useRouter()
 	const { clientId } = router.query
@@ -66,7 +72,7 @@ const DetailClient: NextLayout | any = ({
 		(clientId as string) || clientIdProp
 	)
 	const { data: allProjects, mutate: refetchAllProjects } =
-		allProjectsByCurrentUserQuery(isAuthenticated)
+		allProjectsNormalByClientQuery(isAuthenticated, clientId as string)
 
 	// mutation ----------------------------
 	// delete project
@@ -316,7 +322,7 @@ const DetailClient: NextLayout | any = ({
 												id={'hoang'}
 												w={'full'}
 												padding={'20px'}
-												bg={colorMode == 'light'? '#fafafa': '#1e2636'}
+												bg={colorMode == 'light' ? '#fafafa' : '#1e2636'}
 												borderRadius={'10px'}
 												h={'300px'}
 											>

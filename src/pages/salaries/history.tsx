@@ -17,7 +17,7 @@ import { Loading } from 'components/common'
 import { AuthContext } from 'contexts/AuthContext'
 import { deleteSalaryMutation } from 'mutations'
 import { useRouter } from 'next/router'
-import { historySalaryQuery } from 'queries'
+import { allSalariesQuery, historySalaryQuery } from 'queries'
 import { useContext, useEffect } from 'react'
 import { BsTrash } from 'react-icons/bs'
 
@@ -38,6 +38,7 @@ export default function HistorySalary({ employeeId = 6 }: IHistorySalaryProps) {
 		isAuthenticated,
 		employeeId
 	)
+	const { mutate: refetchSalaries } = allSalariesQuery(isAuthenticated)
 	
 	//UseEffect ---------------------------------------------------------
 	//Handle check logged in
@@ -55,13 +56,14 @@ export default function HistorySalary({ employeeId = 6 }: IHistorySalaryProps) {
 	useEffect(() => {
 		switch (statusDeleSalary) {
 			case 'success':
-				refetchHistorySalary()
 				if (dataDeleSalary) {
 					setToast({
 						type: 'success',
 						msg: dataDeleSalary?.message,
 					})
 				}
+				refetchHistorySalary()
+				refetchSalaries()
 				break
 
 			default:

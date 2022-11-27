@@ -173,7 +173,7 @@ const DetailContract: NextLayout = () => {
 						<HStack justify="space-between" wrap={'wrap'} w={'full'}>
 							<Image
 								boxSize={'50px'}
-								src="https://bit.ly/dan-abramov"
+								src={`${dataCompanyInfo.companyInfo.logo_url}`}
 								alt="Avatar"
 								borderRadius={5}
 							/>

@@ -111,7 +111,9 @@ export default function UpdateSalary({ employeeId = 6 }: IUpdateSalaryProps) {
 								<VStack align={'start'}>
 									<Text>{dataHistorySalary.historySalary.name}</Text>
 
-									<Text color={'gray.400'}>{dataHistorySalary.historySalary.role}</Text>
+									<Text color={'gray.400'}>
+										{dataHistorySalary.historySalary.role}
+									</Text>
 								</VStack>
 							</HStack>
 						</GridItem>

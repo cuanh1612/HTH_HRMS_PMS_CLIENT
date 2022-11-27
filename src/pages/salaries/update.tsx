@@ -30,6 +30,7 @@ export default function UpdateSalary({ employeeId = 6 }: IUpdateSalaryProps) {
 		isAuthenticated,
 		employeeId
 	)
+	console.log(dataHistorySalary)
 	const { mutate: refetchSSalaries } = allSalariesQuery(isAuthenticated)
 
 	// setForm and submit update salary ---------------------------------
@@ -109,11 +110,8 @@ export default function UpdateSalary({ employeeId = 6 }: IUpdateSalaryProps) {
 								/>
 								<VStack align={'start'}>
 									<Text>{dataHistorySalary.historySalary.name}</Text>
-									{dataHistorySalary.historySalary.designation ? (
-										<Text>{dataHistorySalary.historySalary.designation}</Text>
-									) : (
-										<Text color={'red'}>None role</Text>
-									)}
+
+									<Text color={'gray.400'}>{dataHistorySalary.historySalary.role}</Text>
 								</VStack>
 							</HStack>
 						</GridItem>

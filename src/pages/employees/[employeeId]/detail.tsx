@@ -96,15 +96,15 @@ export const DetailEmployee: NextLayout | any = ({
 					<VStack spacing={5} alignItems={'start'} w={'full'}>
 						<HStack spacing={5} h={'full'} w={'full'}>
 							<Avatar
-								name={dataDetailEmployee?.employee?.name}
-								src={dataDetailEmployee?.employee?.avatar?.url}
+								name={dataEmployee?.employee?.name}
+								src={dataEmployee?.employee?.avatar?.url}
 								size={'lg'}
 							/>
 							<VStack spacing={'1px'} align={'start'} height={'full'}>
 								<Text fontSize={'20px'} fontWeight={'semibold'}>
-									{dataDetailEmployee?.employee?.name}
+									{dataEmployee?.employee?.name}
 								</Text>
-								<Text color={'gray.400'}>{dataDetailEmployee?.employee?.role}</Text>
+								<Text color={'gray.400'}>{dataEmployee?.employee?.role}</Text>
 							</VStack>
 						</HStack>
 
@@ -220,33 +220,33 @@ export const DetailEmployee: NextLayout | any = ({
 										<Static
 											title={'Open tasks'}
 											text={openTasksEmployee?.countOpentasks}
-											icon={<VscTasklist fontSize={20} />}
+											icon={<VscTasklist color={colorMode == 'dark' ? 'black': undefined} fontSize={20} />}
 											color={'Green'}
 										/>
 
 										<Static
 											title={'Projects'}
 											text={countProjectsEmployee?.countProjects}
-											icon={<AiOutlineProject fontSize={20} />}
+											icon={<AiOutlineProject color={colorMode == 'dark' ? 'black': undefined} fontSize={20} />}
 											color={'Pink'}
 										/>
 										<Static
 											title={'Hours Logged'}
-											text={`${hoursLoggedEmployee?.hoursLogged} Hrs`}
-											icon={<BiTime fontSize={20} />}
+											text={`${hoursLoggedEmployee?.hoursLogged || 0} Hrs`}
+											icon={<BiTime color={colorMode == 'dark' ? 'black': undefined} fontSize={20} />}
 											color={'Lam'}
 										/>
 										<Static
 											title={'Late Attendance'}
 											text={countLateAttendancesEmployee?.lateAttendance}
-											icon={<BsCheck2 fontSize={20} />}
+											icon={<BsCheck2 color={colorMode == 'dark' ? 'black': undefined} fontSize={20} />}
 											color={'Green'}
 										/>
 
 										<Static
 											title={'Leave taken'}
 											text={countLeavesTakenEmployee?.countLeavesTaken}
-											icon={<AiOutlineProject fontSize={20} />}
+											icon={<AiOutlineProject color={colorMode == 'dark' ? 'black': undefined} fontSize={20} />}
 											color={'Pink'}
 										/>
 									</Grid>

@@ -7,7 +7,12 @@ import { AuthContext } from 'contexts/AuthContext'
 import { deleteTimeLogMutation, deleteTimeLogsMutation } from 'mutations'
 
 import { useRouter } from 'next/router'
-import { allProjectsNormalQuery, detailEmployeeQuery, timeLogsCurrentUserQuery } from 'queries'
+import {
+	allProjectsNormalQuery,
+	detailEmployeeQuery,
+	timeLogsByEmployeeQuery,
+	timeLogsCurrentUserQuery,
+} from 'queries'
 import { useContext, useEffect, useState } from 'react'
 import { AiOutlineDelete, AiOutlineSearch } from 'react-icons/ai'
 import { VscFilter } from 'react-icons/vsc'
@@ -79,7 +84,10 @@ const TimeLog: NextLayout = () => {
 
 	// query
 	// get all time log by project
-	const { data: allTimeLogs, mutate: refetchTimeLogs } = timeLogsCurrentUserQuery(isAuthenticated)
+	const { data: allTimeLogs, mutate: refetchTimeLogs } = timeLogsByEmployeeQuery(
+		isAuthenticated,
+		employeeId as string
+	)
 	const { data: dataEmployee } = detailEmployeeQuery(isAuthenticated, employeeId as string)
 
 	// get all project to filter

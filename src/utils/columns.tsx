@@ -3053,7 +3053,7 @@ export const employeeTimeLogsColumn = ({
 					minWidth: 150,
 					Cell: ({ value }) => {
 						return (
-							<Text isTruncated>
+							<Text isTruncated color={'red.500'}>
 								{Intl.NumberFormat('en-US', {
 									style: 'currency',
 									currency: 'USD',

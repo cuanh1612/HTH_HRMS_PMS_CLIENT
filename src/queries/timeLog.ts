@@ -56,6 +56,20 @@ export const timeLogsCurrentUserQuery = (
 	)
 }
 
+export const timeLogsByEmployeeQuery = (
+	isAuthenticated: boolean | null,
+	employeeId: string | null
+) => {
+	return useSWR<TimeLogMutationResponse, AxiosError>(
+		isAuthenticated && employeeId ? `time-logs/employee/${employeeId}` : null,
+		allTimeLogByProjectRequest,
+		{
+			errorRetryCount: 2,
+			revalidateOnFocus: false,
+		}
+	)
+}
+
 export const timeLogsCalendarQuery = ({
 	isAuthenticated,
 	employee,

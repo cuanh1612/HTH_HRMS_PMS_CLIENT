@@ -15,6 +15,7 @@ import { Input, Textarea } from 'components/form'
 import { ClientLayout } from 'components/layouts'
 import { AuthContext } from 'contexts/AuthContext'
 import { SendMailContactMutation } from 'mutations/contact'
+import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useContext, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
@@ -79,6 +80,9 @@ const about = () => {
 
 	return (
 		<Stack flexDir={['column', null, null, null, 'row']} w={'full'} h="calc(100vh - 130px)">
+			<Head>
+				<title>About</title>
+			</Head>
 			<Box
 				flex={1}
 				pr={['0px', null, null, null, '40px']}

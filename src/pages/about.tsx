@@ -117,10 +117,10 @@ const about = () => {
 						</VStack>
 
 						<Text fontSize={['md', null, null, 'xl']}>
-							chung toi la lap trinh vien phat trien len he thong website nay, giup
-							cac doanh nghiep quanr ly nguwoi dung vafnhan vien de dang vaf nhanh
-							chong bao gom cac tinh nanh pho bien vaf hay hop. neu co chuyen gi quan
-							trong thi hay lien he chung toi:
+							We are talented programmers, we are the developers of this website
+							system, helping businesses and companies to manage users and manage
+							projects on the same system. Please contact us to build your own website
+							system.
 						</Text>
 					</VStack>
 
@@ -199,10 +199,7 @@ const about = () => {
 							uri="/assets/developers/hoang.jpg"
 							name="Nguyen Quang Hoang"
 							title="Developer 1"
-							description="chung toi la lap trinh vien phat trien len he thong website nay, giup
-							cac doanh nghiep quanr ly nguwoi dung vafnhan vien de dang vaf nhanh
-							chong bao gom cac tinh nanh pho bien vaf hay hop. neu co chuyen gi quan
-							trong thi hay lien he chung toi:"
+							description="I am very passionate about programming, especially web development. I have been trying to develop myself to fulfill my dream. Currently, I am focusing on javascript language mainly and have had many good projects. My dream in the future is to know more about mobile application programming and better understand C# to become a more multi-talented programmer."
 							email="hoangdev161201@gmail.com"
 							linkBio="https://bio.link/hoangngucp"
 							color="#D5ECC2"
@@ -220,7 +217,7 @@ const about = () => {
 							uri="/assets/developers/huy.jpg"
 							name="Nguyen Quang Huy"
 							title="Developer 2"
-							description="huy an cut"
+							description="I am a full-stack developer with knowledge in developing small and medium websites and software. Looking forward to using my skills and knowledge in large and real projects. I strive to develop myself every day and learn new knowledge. If you need help from me don't hesitate to contact me."
 							email="huydev1612@gmail.com"
 							linkBio="http://youtube.com"
 							color="#FFAAA7"
@@ -238,7 +235,7 @@ const about = () => {
 							uri="/assets/developers/trong.jpg"
 							name="Nguyen Tien Trong"
 							title="Developer 3"
-							description="huy an cut"
+							description="I am a Backend developer with the knowledge and ability to develop websites and applications. I am in my final year of university and want to find a job to bring practical experience as well as gain more experience and new knowledge to develop myself. I am always here willing to wait for your interesting jobs and requests.s and knowledge in large and real projects. I strive to develop myself every day and learn new knowledge. If you need help from me don't hesitate to contact me 😊😊😊."
 							email="huydev1612@gmail.com"
 							linkBio="http://youtube.com"
 							color="#98DDCA"

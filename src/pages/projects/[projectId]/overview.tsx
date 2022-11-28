@@ -106,8 +106,7 @@ const Overview: NextLayout = () => {
 								id={'hoang'}
 								w={'full'}
 								padding={'20px'}
-								border={'2px solid'}
-								borderColor={'hu-Green.normal'}
+								bg={colorMode == 'light'? '#fafafa': '#1e2636'}
 								borderRadius={'10px'}
 								h={'300px'}
 							>
@@ -146,8 +145,7 @@ const Overview: NextLayout = () => {
 							<VStack
 								w={'full'}
 								padding={'20px'}
-								border={'2px solid'}
-								borderColor={'hu-Green.normal'}
+								bg={colorMode == 'light'? '#fafafa': '#1e2636'}
 								borderRadius={'10px'}
 								h={'300px'}
 								alignItems={'start'}
@@ -263,8 +261,7 @@ const Overview: NextLayout = () => {
 								id={'hoang'}
 								w={'full'}
 								padding={'20px'}
-								border={'2px solid'}
-								borderColor={'hu-Green.normal'}
+								bg={colorMode == 'light'? '#fafafa': '#1e2636'}
 								borderRadius={'10px'}
 								h={'300px'}
 								pos={'relative'}
@@ -297,8 +294,7 @@ const Overview: NextLayout = () => {
 								id={'hoang'}
 								w={'full'}
 								padding={'20px'}
-								border={'2px solid'}
-								borderColor={'hu-Green.normal'}
+								bg={colorMode == 'light'? '#fafafa': '#1e2636'}
 								borderRadius={'10px'}
 								h={'300px'}
 								pos={'relative'}

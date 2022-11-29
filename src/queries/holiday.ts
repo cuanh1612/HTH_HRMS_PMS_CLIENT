@@ -1,5 +1,5 @@
 import { AxiosError } from 'axios'
-import { detailHolidayRequest } from 'requests/holiday'
+import { allHolidaysRequest, detailHolidayRequest } from 'requests/holiday'
 import useSWR from 'swr'
 import { holidayMutationResponse } from 'type/mutationResponses'
 
@@ -30,7 +30,7 @@ export const allHolidaysQuery = (input: { month?: number| string, year?: number|
 
 	return useSWR<holidayMutationResponse, AxiosError>(
 		url,
-		detailHolidayRequest,
+		allHolidaysRequest,
 		{
 			errorRetryCount: 2,
 			revalidateOnFocus: false,

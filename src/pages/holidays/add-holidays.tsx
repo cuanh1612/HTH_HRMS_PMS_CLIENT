@@ -83,7 +83,7 @@ export default function AddHoliday({ onCloseDrawer }: IAddHolidayProps) {
 
 		if (holidays.length !== 0) {
 			mutateCreHolidays({
-				holidays,
+				holidays
 			})
 		}
 	}

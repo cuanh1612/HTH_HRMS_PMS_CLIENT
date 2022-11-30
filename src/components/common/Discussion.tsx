@@ -15,8 +15,6 @@ import moment from 'moment'
 
 import { useEffect, useState } from 'react'
 import { BsThreeDotsVertical } from 'react-icons/bs'
-import 'react-quill/dist/quill.bubble.css'
-import 'react-quill/dist/quill.snow.css'
 import { discussionType, employeeType } from 'type/basicTypes'
 import { updateDiscussionForm } from 'type/form/basicFormType'
 import { Editor } from './Editor'

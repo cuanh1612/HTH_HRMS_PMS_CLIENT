@@ -25,6 +25,7 @@ export interface IAddDiscussionProps {
 	onCloseModal?: () => void
 }
 
+
 export default function AddDiscussion({onCloseModal}: IAddDiscussionProps) {
 	const { isAuthenticated, handleLoading, setToast, socket } = useContext(AuthContext)
 	const router = useRouter()

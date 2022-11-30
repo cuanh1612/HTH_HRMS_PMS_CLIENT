@@ -114,6 +114,8 @@ const zoom: NextLayout = () => {
 		}
 	}, [statusDl])
 
+	console.log('f', dataRooms)
+
 	useEffect(() => {
 		if (dataRooms) {
 			if (dataRooms.rooms) {

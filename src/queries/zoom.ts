@@ -18,6 +18,7 @@ export const allRoomsQuery = (input: {
 	if (input.role && input.id) {
 		switch (input.role) {
 			case 'Employee':
+			case 'Admin':
 				fieldUrl.push(`employee=${input.id}`)
               
 				break

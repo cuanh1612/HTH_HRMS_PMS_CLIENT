@@ -7,10 +7,7 @@ import {
 	NumberIncrementStepper,
 	NumberInput,
 	NumberInputField,
-	NumberInputStepper,
-	Text,
-	useColorMode,
-	VStack,
+	NumberInputStepper, useColorMode
 } from '@chakra-ui/react'
 
 // react
@@ -18,29 +15,21 @@ import { forwardRef, memo, useEffect, useRef, useState } from 'react'
 
 // hooks and funcs of react-table
 import {
-	Row,
-	Cell,
-	useTable,
-	useSortBy,
-	useFilters,
-	useRowSelect,
-	useFlexLayout,
+	Cell, Row, useFilters, useFlexLayout,
 	usePagination,
-	useResizeColumns,
+	useResizeColumns, useRowSelect, useSortBy, useTable
 } from 'react-table'
 
 // icons
-import {
-	MdOutlineNavigateNext,
-	MdOutlineNavigateBefore,
-	MdOutlineArrowBack,
-	MdOutlineArrowForward,
-} from 'react-icons/md'
 import { FaSort, FaSortDown, FaSortUp } from 'react-icons/fa'
+import {
+	MdOutlineArrowBack,
+	MdOutlineArrowForward, MdOutlineNavigateBefore, MdOutlineNavigateNext
+} from 'react-icons/md'
 
 // button icon
-import { ButtonIcon } from './ButtonIcon'
 import { ITable, TUseTable } from 'type/tableTypes'
+import { ButtonIcon } from './ButtonIcon'
 import { Loading } from './Loading'
 import { NoData } from './NoData'
 

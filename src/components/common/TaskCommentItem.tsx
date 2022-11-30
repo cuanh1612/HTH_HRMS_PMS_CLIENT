@@ -9,11 +9,10 @@ import {
 	Text,
 	useColorMode,
 	useDisclosure,
-	VStack,
+	VStack
 } from '@chakra-ui/react'
 import Modal from 'components/modal/Modal'
 import moment from 'moment'
-import dynamic from 'next/dynamic'
 import { useEffect, useState } from 'react'
 import { BsThreeDotsVertical } from 'react-icons/bs'
 import 'react-quill/dist/quill.bubble.css'
@@ -21,8 +20,6 @@ import 'react-quill/dist/quill.snow.css'
 import { employeeType, taskCommentType } from 'type/basicTypes'
 import { updateTaskCommentForm } from 'type/form/basicFormType'
 import { Editor } from './Editor'
-
-const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
 
 export interface ITaskComment {
 	taskComment: taskCommentType

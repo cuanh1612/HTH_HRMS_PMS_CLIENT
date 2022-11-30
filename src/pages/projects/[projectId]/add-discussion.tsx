@@ -1,11 +1,10 @@
 import { Box, Button, Grid, GridItem, Text, VStack } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { Editor, Loading } from 'components/common'
 import { Input, Select } from 'components/form'
-import {Editor, Loading }from 'components/common'
 import { AuthContext } from 'contexts/AuthContext'
 import { createProjectDiscussionRoomMutation } from 'mutations'
 import { GetServerSideProps } from 'next'
-import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 import { allProjectDiscussionCategoryQuery, allProjectDiscussionRoomsQuery } from 'queries'
 import { useContext, useEffect, useState } from 'react'
@@ -21,8 +20,6 @@ import {
 } from 'type/form/basicFormType'
 import { projectMutationResponse } from 'type/mutationResponses'
 import { CreateProjectDiscussionRoomValidate } from 'utils/validate'
-
-const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
 
 export interface IAddDiscussionProps {
 	onCloseModal?: () => void

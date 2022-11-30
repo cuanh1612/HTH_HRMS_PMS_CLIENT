@@ -8,20 +8,18 @@ import {
 	MenuList,
 	Text,
 	useDisclosure,
-	VStack,
+	VStack
 } from '@chakra-ui/react'
-import dynamic from 'next/dynamic'
+import Modal from 'components/modal/Modal'
+import moment from 'moment'
+
 import { useEffect, useState } from 'react'
 import { BsThreeDotsVertical } from 'react-icons/bs'
 import 'react-quill/dist/quill.bubble.css'
 import 'react-quill/dist/quill.snow.css'
 import { discussionType, employeeType } from 'type/basicTypes'
 import { updateDiscussionForm } from 'type/form/basicFormType'
-import moment from 'moment'
-import Modal from 'components/modal/Modal'
 import { Editor } from './Editor'
-
-const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
 
 export interface IDiscussionProps {
 	discussion: discussionType

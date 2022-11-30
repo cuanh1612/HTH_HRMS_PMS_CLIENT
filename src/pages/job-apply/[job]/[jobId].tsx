@@ -8,7 +8,7 @@ import {
 	GridItem,
 	HStack,
 	Text,
-	VStack,
+	VStack
 } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Head, Loading } from 'components/common'
@@ -17,7 +17,6 @@ import { RecruitLayout } from 'components/layouts'
 import { AuthContext } from 'contexts/AuthContext'
 import { createJobApplicationMutation } from 'mutations/jobApplication'
 import { useRouter } from 'next/router'
-import { companyInfoQuery } from 'queries/companyInfo'
 import { allLocationsQuery } from 'queries/location'
 import { useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -63,8 +62,6 @@ const Apply: NextLayout = () => {
 		handleLoading(false)
 	}, [])
 
-	//Query -------------------------------------------------------------------
-	const { data: dataCompanyInfo } = companyInfoQuery()
 
 	//mutation ----------------------------------------------------------------
 	const [

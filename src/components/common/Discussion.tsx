@@ -19,6 +19,7 @@ import { discussionType, employeeType } from 'type/basicTypes'
 import { updateDiscussionForm } from 'type/form/basicFormType'
 import moment from 'moment'
 import Modal from 'components/modal/Modal'
+import { Editor } from './Editor'
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
 
@@ -34,7 +35,7 @@ export const Discussion = ({
 	currentUser,
 	onDeleteDiscussion,
 	onUpdateDiscussion,
-}: IDiscussionProps)=> {
+}: IDiscussionProps) => {
 	const { isOpen: isOpenEdit, onOpen: onOpenEdit, onClose: onCloseEdit } = useDisclosure()
 	const [content, setContent] = useState<string>(discussion.content ? discussion.content : '')
 
@@ -57,8 +58,14 @@ export const Discussion = ({
 	}
 
 	return (
-		<HStack key={discussion.id} w={'full'} align={'start'} justify={'space-between'}>
-			<HStack align={'start'}>
+		<HStack
+			color={'black'}
+			key={discussion.id}
+			w={'full'}
+			align={'start'}
+			justify={'space-between'}
+		>
+			<HStack spacing={4} align={'start'}>
 				<Avatar
 					name={discussion.employee?.name || discussion.client?.name}
 					src={discussion.client?.avatar?.url || discussion.employee?.avatar?.url}
@@ -82,7 +89,7 @@ export const Discussion = ({
 						<MenuButton>
 							<BsThreeDotsVertical />
 						</MenuButton>
-						<MenuList>
+						<MenuList color={'white'}>
 							<MenuItem onClick={onOpenEdit}>Edit</MenuItem>
 							<MenuItem onClick={() => onDeleteDiscussion(discussion.id.toString())}>
 								Delete
@@ -101,35 +108,7 @@ export const Discussion = ({
 				onOk={handleUpdate}
 			>
 				<Box p={6}>
-					<ReactQuill
-						style={{
-							width: '100%',
-						}}
-						placeholder="Enter you text"
-						modules={{
-							toolbar: [
-								['bold', 'italic', 'underline', 'strike'], // toggled buttons
-								['blockquote', 'code-block'],
-
-								[{ header: 1 }, { header: 2 }], // custom button values
-								[{ list: 'ordered' }, { list: 'bullet' }],
-								[{ script: 'sub' }, { script: 'super' }], // superscript/subscript
-								[{ indent: '-1' }, { indent: '+1' }], // outdent/indent
-								[{ direction: 'rtl' }], // text direction
-
-								[{ size: ['small', false, 'large', 'huge'] }], // custom dropdown
-								[{ header: [1, 2, 3, 4, 5, 6, false] }],
-
-								[{ color: [] }, { background: [] }], // dropdown with defaults from theme
-								[{ font: [] }],
-								[{ align: [] }],
-
-								['clean'], // remove formatting button
-							],
-						}}
-						value={content}
-						onChange={onChangeContent}
-					/>
+					<Editor note={content} onChangeNote={onChangeContent} />
 				</Box>
 			</Modal>
 		</HStack>

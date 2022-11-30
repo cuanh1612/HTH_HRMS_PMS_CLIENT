@@ -1,5 +1,5 @@
-import { Button, Grid, GridItem, Skeleton, Text, useDisclosure, VStack } from '@chakra-ui/react'
-import { AlertDialog, Func, FuncCollapse, Head } from 'components/common'
+import { Button, Grid, Text, useDisclosure, VStack } from '@chakra-ui/react'
+import { AlertDialog, Func, FuncCollapse, Head, LoadRoom, NoData } from 'components/common'
 import { Drawer } from 'components/Drawer'
 import { DateRange, Input } from 'components/filter'
 import { ClientLayout } from 'components/layouts'
@@ -52,7 +52,7 @@ const zoom: NextLayout = () => {
 	const { isOpen: isOpenFilter, onOpen: onOpenFilter, onClose: onCloseFilter } = useDisclosure()
 
 	// query
-	const {data: dataRooms, mutate: refetchAllRooms} = allRoomsQuery({
+	const { data: dataRooms, mutate: refetchAllRooms } = allRoomsQuery({
 		isAuthenticated,
 		role: currentUser?.role,
 		id: currentUser?.id,
@@ -114,8 +114,6 @@ const zoom: NextLayout = () => {
 		}
 	}, [statusDl])
 
-	console.log('f', dataRooms)
-
 	useEffect(() => {
 		if (dataRooms) {
 			if (dataRooms.rooms) {
@@ -160,37 +158,38 @@ const zoom: NextLayout = () => {
 	return (
 		<VStack justifyContent={'start'} pb={8} alignItems={'start'} w={'full'} spacing={5}>
 			<Head title={'Rooms'} />
-		
-				<FuncCollapse>
-					<Func
-						icon={<IoAdd />}
-						description={'Add new meeting by form'}
-						title={'Add new'}
-						action={onOpenCreRoom}
-					/>
-					<Func
-						icon={<VscFilter />}
-						description={'Open draw to filter'}
-						title={'filter'}
-						action={onOpenFilter}
-					/>
-					<Func
-						icon={<MdOutlineEvent />}
-						title={'Calendar'}
-						description={'show holidays as calendar'}
-						action={() => {
-							router.push('/rooms/calendar')
-						}}
-					/>
-				</FuncCollapse>
-			
+
+			<FuncCollapse>
+				<Func
+					icon={<IoAdd />}
+					description={'Add new meeting by form'}
+					title={'Add new'}
+					action={onOpenCreRoom}
+				/>
+				<Func
+					icon={<VscFilter />}
+					description={'Open draw to filter'}
+					title={'filter'}
+					action={onOpenFilter}
+				/>
+				<Func
+					icon={<MdOutlineEvent />}
+					title={'Calendar'}
+					description={'show holidays as calendar'}
+					action={() => {
+						router.push('/rooms/calendar')
+					}}
+				/>
+			</FuncCollapse>
 
 			<VStack w={'full'} spacing={5}>
 				<Text w={'full'} fontWeight={'bold'} fontSize={'xl'}>
 					Your rooms:
 				</Text>
 
-				{yourRooms && yourRooms.length > 0 ? (
+				{!yourRooms ? (
+					<LoadRoom />
+				) : yourRooms.length > 0 ? (
 					<Grid
 						w={'full'}
 						templateColumns={[
@@ -210,27 +209,7 @@ const zoom: NextLayout = () => {
 						/>
 					</Grid>
 				) : (
-					<Grid
-						w={'full'}
-						templateColumns={[
-							'repeat(1, 1fr)',
-							'repeat(2, 1fr)',
-							null,
-							null,
-							'repeat(3, 1fr)',
-						]}
-						gap={6}
-					>
-						<GridItem borderRadius={10} overflow={'hidden'} height={'250px'}>
-							<Skeleton height="100%" w={'full'} />
-						</GridItem>
-						<GridItem borderRadius={10} overflow={'hidden'} height={'250px'}>
-							<Skeleton height="100%" w={'full'} />
-						</GridItem>
-						<GridItem borderRadius={10} overflow={'hidden'} height={'250px'}>
-							<Skeleton height="100%" w={'full'} />
-						</GridItem>
-					</Grid>
+					<NoData />
 				)}
 			</VStack>
 
@@ -238,7 +217,9 @@ const zoom: NextLayout = () => {
 				<Text w={'full'} fontWeight={'bold'} fontSize={'xl'}>
 					Other rooms:
 				</Text>
-				{otherRooms && otherRooms.length > 0 ? (
+				{!otherRooms ? (
+					<LoadRoom />
+				) : otherRooms.length > 0 ? (
 					<Grid
 						w={'full'}
 						templateColumns={[
@@ -253,27 +234,7 @@ const zoom: NextLayout = () => {
 						<Cards isEdit={false} data={otherRooms} />
 					</Grid>
 				) : (
-					<Grid
-						w={'full'}
-						templateColumns={[
-							'repeat(1, 1fr)',
-							'repeat(2, 1fr)',
-							null,
-							null,
-							'repeat(3, 1fr)',
-						]}
-						gap={6}
-					>
-						<GridItem borderRadius={10} overflow={'hidden'} height={'250px'}>
-							<Skeleton height="100%" w={'full'} />
-						</GridItem>
-						<GridItem borderRadius={10} overflow={'hidden'} height={'250px'}>
-							<Skeleton height="100%" w={'full'} />
-						</GridItem>
-						<GridItem borderRadius={10} overflow={'hidden'} height={'250px'}>
-							<Skeleton height="100%" w={'full'} />
-						</GridItem>
-					</Grid>
+					<NoData />
 				)}
 			</VStack>
 

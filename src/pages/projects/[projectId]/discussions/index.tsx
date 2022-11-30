@@ -155,6 +155,8 @@ const Discussions: NextLayout = () => {
 								currentUser.email ===
 									dataDetailProject.project.project_Admin.email)) && (
 							<Button
+								bg={'gray.300'}
+								color={'black'}
 								leftIcon={<AiOutlineEdit />}
 								onClick={onOpenAddDiscussionCategory}
 							>

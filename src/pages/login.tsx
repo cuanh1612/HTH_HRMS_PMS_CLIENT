@@ -120,7 +120,6 @@ const Login: NextLayout = () => {
 				})
 				JWTManager.setToken(dataLoginG?.accessToken as string)
 				setIsAuthenticated(true)
-				console.log(dataLoginG)
 				if(dataLoginG?.user) {
 					router.push(redirectPage(dataLoginG.user))
 				}
@@ -135,7 +134,6 @@ const Login: NextLayout = () => {
 	// check authenticate to redirect to home page
 	useEffect(() => {
 		if (isAuthenticated && currentUser && !data && !dataLoginG) {
-			console.log(currentUser)
 			router.push(redirectPage(currentUser))
 		} else {
 			if (isAuthenticated == false) {

@@ -7,6 +7,7 @@ import {
 	MenuItem,
 	MenuList,
 	Text,
+	useColorMode,
 	VStack,
 } from '@chakra-ui/react'
 import { AiOutlineComment } from 'react-icons/ai'
@@ -30,8 +31,10 @@ export default function ProjectDiscussionItem({
 	onDelete,
 	isOnChange = true,
 }: IProjectDiscussionItemProps) {
+	const {colorMode} = useColorMode()
 	return (
 		<HStack
+			color={'black'}
 			w={'100%'}
 			border={'1px'}
 			borderColor={'gray.300'}
@@ -78,6 +81,7 @@ export default function ProjectDiscussionItem({
 						</MenuButton>
 						<MenuList>
 							<MenuItem
+								color={colorMode != 'dark' ? 'black': 'white'}
 								onClick={() =>
 									onDelete({ ProjectDiscussionRoomId: discussionRoom.id })
 								}

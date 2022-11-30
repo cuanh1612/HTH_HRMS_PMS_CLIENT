@@ -45,7 +45,6 @@ export const TabsMenu = ({ tabs }: { tabs: ITab[] }) => {
 	}, [tabMenus, pathname])
 
 	useEffect(() => {
-		console.log(breakpoint)
 		switch (breakpoint) {
 			case '2xl':
 				setTabProjects(tabs.slice(0, 7))

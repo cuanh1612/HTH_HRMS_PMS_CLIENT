@@ -45,7 +45,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 			})
 
 			proxyRes.on('end',  function () {
-				console.log(process.env.NEXT_PUBLIC_API_URL)
 				try {
 					const { code, success, message, user, accessToken, refreshToken } =
 						 JSON.parse(body)
@@ -69,7 +68,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 						resolve(true)
 					}
 				} catch (error) {
-					console.log(error)
 					;(res as NextApiResponse).status(500).json({
 						message: 'Something went wrong.',
 						code: 500,

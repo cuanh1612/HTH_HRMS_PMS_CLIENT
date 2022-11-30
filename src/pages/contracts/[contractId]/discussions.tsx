@@ -1,4 +1,4 @@
-import { Avatar, Box, Button, HStack, Text, useDisclosure, VStack } from '@chakra-ui/react'
+import { Avatar, Box, Button, HStack, Text, useColorMode, useDisclosure, VStack } from '@chakra-ui/react'
 import { Loading, Discussion as CDiscussion, Head, Editor } from 'components/common'
 import { AuthContext } from 'contexts/AuthContext'
 import {
@@ -19,6 +19,7 @@ import { ContractLayout } from 'components/layouts/Contract'
 const Discussion: NextLayout = () => {
 	const { isAuthenticated, handleLoading, setToast, currentUser, socket } =
 		useContext(AuthContext)
+	const {colorMode} = useColorMode()
 	const router = useRouter()
 	const { contractId } = router.query
 
@@ -184,18 +185,18 @@ const Discussion: NextLayout = () => {
 	}
 
 	return (
-		<Box p={10} bgColor={'#f2f4f7'}>
+		<Box p={10} bg={colorMode == 'light'? '#fafafa': '#1e2636'}>
 			<Head title={`Contract number #${contractId}`} />
 
 			<VStack align={'start'} w="full" bgColor={'white'} p={5} borderRadius={5} spacing={5}>
-				<Text fontSize={18} fontWeight={'semibold'}>
+				<Text  color={'black'} fontSize={18} fontWeight={'semibold'}>
 					Discussion
 				</Text>
 
 				<Box position={'relative'} p={2} w={'full'}>
 					{isOpenAdd ? (
 						<VStack w={'full'} spacing={5} position={'relative'}>
-							<HStack w={'full'} align={'start'}>
+							<HStack spacing={4} w={'full'} align={'start'}>
 								{currentUser && (
 									<Avatar name={currentUser.name} src={currentUser.avatar?.url} />
 								)}

@@ -72,7 +72,6 @@ const DetailClient: NextLayout | any = ({
 	)
 	const { data: allProjects, mutate: refetchAllProjects } =
 		allProjectsNormalByClientQuery(isAuthenticated, clientId as string)
-		console.log(allProjects)
 
 	// mutation ----------------------------
 	// delete project

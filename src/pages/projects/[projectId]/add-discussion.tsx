@@ -1,7 +1,7 @@
 import { Box, Button, Grid, GridItem, Text, VStack } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Input, Select } from 'components/form'
-import {Loading }from 'components/common'
+import {Editor, Loading }from 'components/common'
 import { AuthContext } from 'contexts/AuthContext'
 import { createProjectDiscussionRoomMutation } from 'mutations'
 import { GetServerSideProps } from 'next'
@@ -176,32 +176,7 @@ export default function AddDiscussion({onCloseModal}: IAddDiscussionProps) {
 								<Text fontWeight={'normal'} color={'gray.400'}>
 									Description <span style={{ color: 'red' }}>*</span>
 								</Text>
-								<ReactQuill
-									placeholder="Enter you text"
-									modules={{
-										toolbar: [
-											['bold', 'italic', 'underline', 'strike'], // toggled buttons
-											['blockquote', 'code-block'],
-
-											[{ header: 1 }, { header: 2 }], // custom button values
-											[{ list: 'ordered' }, { list: 'bullet' }],
-											[{ script: 'sub' }, { script: 'super' }], // superscript/subscript
-											[{ indent: '-1' }, { indent: '+1' }], // outdent/indent
-											[{ direction: 'rtl' }], // text direction
-
-											[{ size: ['small', false, 'large', 'huge'] }], // custom dropdown
-											[{ header: [1, 2, 3, 4, 5, 6, false] }],
-
-											[{ color: [] }, { background: [] }], // dropdown with defaults from theme
-											[{ font: [] }],
-											[{ align: [] }],
-
-											['clean'], // remove formatting button
-										],
-									}}
-									value={description}
-									onChange={onChangeDescription}
-								/>
+								<Editor note={description} onChangeNote={onChangeDescription}/>
 							</VStack>
 						</GridItem>
 					</Grid>

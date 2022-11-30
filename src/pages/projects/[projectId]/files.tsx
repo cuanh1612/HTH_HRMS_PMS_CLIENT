@@ -6,6 +6,7 @@ import {
 	HStack,
 	Img,
 	Text,
+	useColorMode,
 	useDisclosure,
 	VStack,
 } from '@chakra-ui/react'
@@ -31,6 +32,7 @@ import { uploadFile } from 'utils/uploadFile'
 const Files: NextLayout = () => {
 	const { isAuthenticated, handleLoading, setToast, socket, currentUser } =
 		useContext(AuthContext)
+	const {colorMode} = useColorMode()
 	const router = useRouter()
 	const { projectId } = router.query
 
@@ -218,11 +220,11 @@ const Files: NextLayout = () => {
 	}
 
 	return (
-		<Box p={10} bgColor={'#f2f4f7'} minHeight={'100vh'}>
+		<Box p={10} bg={colorMode == 'light'? '#fafafa': '#1e2636'}>
 			<Head title={dataDetailProject?.project?.name} />
 
 			<VStack align={'start'} w="full" bgColor={'white'} p={5} borderRadius={5} spacing={5}>
-				<Text fontSize={18} fontWeight={'semibold'}>
+				<Text color={'black'} fontSize={18} fontWeight={'semibold'}>
 					Files
 				</Text>
 

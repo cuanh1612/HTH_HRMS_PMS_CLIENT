@@ -31,7 +31,6 @@ export const Task = ({
 	index: number
 	isDragDisabled?: boolean
 }) => {
-	console.log(data)
 	const { colorMode } = useColorMode()
 	const { currentUser } = useContext(AuthContext)
 

@@ -193,18 +193,22 @@ export default function DetailTask({ taskIdProp, onOpenDl, onOpenUpdate }: IDeta
 			>
 				<TaskCategory />
 			</Modal>
-			{((onOpenDl && currentUser?.role === 'Admin') ||
-				dataDetailTask?.task?.assignBy.id === currentUser?.id) && (
-				<>
-					<Button onClick={onOpenDl}>delete</Button>
-				</>
-			)}
 
-			{((onOpenUpdate && currentUser?.role === 'Admin') ||
-				dataDetailTask?.task?.assignBy.id === currentUser?.id) && (
-				<>
-					<Button onClick={onOpenDl}>delete</Button>
-				</>
+			{onOpenDl && currentUser?.role === 'Admin' ? (
+				<Button onClick={onOpenDl}>delete</Button>
+			) : onOpenDl && onOpenDl && dataDetailTask?.task?.assignBy.id === currentUser?.id ? (
+				<Button onClick={onOpenDl}>delete</Button>
+			) : (
+				''
+			)}
+			{onOpenUpdate && currentUser?.role === 'Admin' ? (
+				<Button onClick={onOpenUpdate}>update</Button>
+			) : onOpenUpdate &&
+			  onOpenDl &&
+			  dataDetailTask?.task?.assignBy.id === currentUser?.id ? (
+				<Button onClick={onOpenUpdate}>update</Button>
+			) : (
+				''
 			)}
 		</Box>
 	)

@@ -7,12 +7,13 @@ import {
 	SetStateAction,
 	useCallback,
 	useEffect,
-	useState
+	useState,
 } from 'react'
 import { employeeType, IContractUrls, TToast } from 'type/basicTypes'
 import JWTManager from 'utils/jwt'
 
 import io, { Socket } from 'socket.io-client'
+import { Loading } from 'components/common'
 
 interface DefaultEventsMap {
 	[event: string]: (...args: any[]) => void
@@ -129,18 +130,8 @@ const AuthContextProvider = ({ children }: { children: ReactNode }) => {
 	//Set data current user
 	useEffect(() => {
 		if (dataCurrentUser && dataCurrentUser.user) {
-			console.log("Nguyen Quang Huy");
-			console.log("Nguyen Quang Huy");
-			console.log("Nguyen Quang Huy");
-			console.log(dataCurrentUser.user);
-
-			
 			setCurrentUser(dataCurrentUser.user)
 		} else {
-			console.log("Nguyen Quang Huy k co");
-			console.log("Nguyen Quang Huy k co");
-			console.log("Nguyen Quang Huy k co");
-
 			setCurrentUser(null)
 		}
 	}, [dataCurrentUser])
@@ -192,6 +183,10 @@ const AuthContextProvider = ({ children }: { children: ReactNode }) => {
 					overflow={loadingPage ? 'hidden' : 'auto'}
 				>
 					{children}
+					{
+						loadingPage && <Loading/>
+					}
+		
 				</Box>
 			</AuthContext.Provider>
 		</>

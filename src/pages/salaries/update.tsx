@@ -30,7 +30,7 @@ export default function UpdateSalary({ employeeId = 6 }: IUpdateSalaryProps) {
 		isAuthenticated,
 		employeeId
 	)
-	console.log(dataHistorySalary)
+
 	const { mutate: refetchSSalaries } = allSalariesQuery(isAuthenticated)
 
 	// setForm and submit update salary ---------------------------------

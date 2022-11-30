@@ -160,8 +160,6 @@ const attendance: NextLayout = () => {
 			})
 		}
 
-		console.log('huy', values)
-
 		const data: AttendanceForm = {
 			...values,
 			date: user?.date,

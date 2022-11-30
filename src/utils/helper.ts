@@ -5,7 +5,6 @@ import { dataTypeFile } from './basicData'
 export const generateImgFile = (nameFile: string) => {
 	const nameSplit = nameFile.split('.')
 	let typeFile = nameSplit[nameSplit.length - 1]
-	console.log(typeFile)
 
 	if (!dataTypeFile.includes(typeFile)) {
 		typeFile = 'other'

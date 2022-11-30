@@ -65,7 +65,6 @@ const Apply: NextLayout = () => {
 
 	//Query -------------------------------------------------------------------
 	const { data: dataCompanyInfo } = companyInfoQuery()
-	console.log(dataCompanyInfo)
 
 	//mutation ----------------------------------------------------------------
 	const [

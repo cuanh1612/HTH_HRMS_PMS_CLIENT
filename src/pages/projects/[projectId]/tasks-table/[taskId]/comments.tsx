@@ -191,7 +191,7 @@ export default function TaskComments({ taskIdProp }: ITaskCommentsProps) {
 			<Box position={'relative'} p={2} w={'full'}>
 				{isOpenAdd ? (
 					<VStack w={'full'} spacing={5} position={'relative'}>
-						<HStack w={'full'} align={'start'}>
+						<HStack spacing={4} w={'full'} align={'start'}>
 							{currentUser && (
 								<Avatar name={currentUser.name} src={currentUser.avatar?.url} />
 							)}

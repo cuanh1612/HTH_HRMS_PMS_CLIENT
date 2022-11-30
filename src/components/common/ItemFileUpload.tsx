@@ -1,4 +1,4 @@
-import { HStack, Img } from '@chakra-ui/react'
+import { HStack, Img, Text } from '@chakra-ui/react'
 import * as React from 'react'
 import { AiOutlineCloseCircle } from 'react-icons/ai'
 
@@ -34,7 +34,7 @@ export const ItemFileUpload = ({
 						</a>
 					</div>
 				) : (
-					<div>{fileName}</div>
+					<Text color={'black'}>{fileName}</Text>
 				)}
 			</HStack>
 			{onRemoveFile && (

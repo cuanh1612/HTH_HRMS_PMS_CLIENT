@@ -1,4 +1,4 @@
-import { Avatar, Box, Grid, GridItem, HStack, Text, useDisclosure, VStack } from '@chakra-ui/react'
+import { Avatar, Box, Grid, GridItem, HStack, Text, useColorMode, useDisclosure, VStack } from '@chakra-ui/react'
 import Modal from 'components/modal/Modal'
 import { AuthContext } from 'contexts/AuthContext'
 import moment from 'moment'
@@ -18,6 +18,7 @@ export interface IDetailDiscussionProps {
 export default function DetailDiscussion({ discussionIdProp }: IDetailDiscussionProps) {
 	const { isAuthenticated, handleLoading, currentUser, socket } = useContext(AuthContext)
 	const router = useRouter()
+	const {colorMode} = useColorMode()
 	const { discussionId: discussionIdRouter, projectId } = router.query
 
 	//State ---------------------------------------------------------------------
@@ -126,10 +127,7 @@ export default function DetailDiscussion({ discussionIdProp }: IDetailDiscussion
 										borderRadius={5}
 										justify={'space-between'}
 										align={'start'}
-										bgColor={'#f7faff'}
-										_hover={{
-											bgColor: '#f2f4f7',
-										}}
+										bg={colorMode == 'light'? '#fafafa': '#1e2636'}
 									>
 										<HStack>
 											<Avatar
@@ -162,8 +160,7 @@ export default function DetailDiscussion({ discussionIdProp }: IDetailDiscussion
 													color={'gray.400'}
 													cursor={'pointer'}
 													_hover={{
-														color: 'green',
-														textDecor: 'underline',
+														color: 'green.400',
 														fontWeight: 'semibold',
 													}}
 													onClick={() => {
@@ -179,8 +176,7 @@ export default function DetailDiscussion({ discussionIdProp }: IDetailDiscussion
 												color={'gray.400'}
 												cursor={'pointer'}
 												_hover={{
-													color: 'green',
-													textDecor: 'underline',
+													color: 'green.400',
 													fontWeight: 'semibold',
 												}}
 												onClick={onOpenAddReply}

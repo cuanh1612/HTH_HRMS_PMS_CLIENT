@@ -42,6 +42,7 @@ import { FaSort, FaSortDown, FaSortUp } from 'react-icons/fa'
 import { ButtonIcon } from './ButtonIcon'
 import { ITable, TUseTable } from 'type/tableTypes'
 import { Loading } from './Loading'
+import { NoData } from './NoData'
 
 // create timeout variable to await client stop click to set data select
 let selectTimeOut: NodeJS.Timeout
@@ -397,24 +398,7 @@ export const Table = memo(
 							</HStack>
 						</>
 					) : (
-						<Box>
-							<iframe
-								src="/assets/illustrators/empty.svg"
-								style={{
-									width: '100%',
-									height: '300px',
-									opacity: 0.5,
-								}}
-							></iframe>
-							<VStack spacing={1} mt={'-40px'}>
-								<Text fontWeight={'bold'} fontSize={'28px'} textAlign={'center'}>
-									There's no any information
-								</Text>
-								<Text color={'gray'} textAlign={'center'}>
-									Please, add new item or reload this page!
-								</Text>
-							</VStack>
-						</Box>
+						<NoData/>
 					)}
 				</Box>
 				{isLoading && <Loading />}

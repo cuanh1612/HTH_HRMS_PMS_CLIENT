@@ -6,6 +6,7 @@ import {
 	HStack,
 	Img,
 	Text,
+	useColorMode,
 	useDisclosure,
 	VStack,
 } from '@chakra-ui/react'
@@ -28,6 +29,7 @@ import { uploadFile } from 'utils/uploadFile'
 const Files: NextLayout = () => {
 	const { isAuthenticated, handleLoading, setToast, socket, currentUser } =
 		useContext(AuthContext)
+	const {colorMode} = useColorMode()
 	const router = useRouter()
 	const { contractId } = router.query
 
@@ -212,11 +214,11 @@ const Files: NextLayout = () => {
 	}
 
 	return (
-		<Box p={10} bgColor={'#f2f4f7'}>
+		<Box p={10} bg={colorMode == 'light'? '#fafafa': '#1e2636'}>
 			<Head title={`Contract number #${contractId}`} />
 
 			<VStack align={'start'} w="full" bgColor={'white'} p={5} borderRadius={5} spacing={5}>
-				<Text fontSize={18} fontWeight={'semibold'}>
+				<Text fontSize={18} color={'black'} fontWeight={'semibold'}>
 					Files
 				</Text>
 
@@ -262,7 +264,11 @@ const Files: NextLayout = () => {
 									</VStack>
 
 									<HStack w={'full'} justify={'end'}>
-										<Button onClick={handleCancel} variant={'ghost'}>
+										<Button
+											color={'black'}
+											onClick={handleCancel}
+											variant={'ghost'}
+										>
 											Cancel
 										</Button>
 										<Button
@@ -346,7 +352,9 @@ export const getStaticProps: GetStaticProps = async () => {
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-	const res: contractMutationResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/contracts`)
+	const res: contractMutationResponse = await fetch(
+		`${process.env.NEXT_PUBLIC_API_URL}/api/contracts`
+	)
 		.then((result) => result.json())
 		.catch(() => undefined)
 

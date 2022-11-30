@@ -20,6 +20,7 @@ import {
 	Th,
 	Thead,
 	Tr,
+	useColorMode,
 	VStack,
 } from '@chakra-ui/react'
 import { Head } from 'components/common'
@@ -42,6 +43,7 @@ import { getDataBlob } from 'utils/uploadFile'
 const DetailContract: NextLayout = () => {
 	const { isAuthenticated, handleLoading, setToast, setContractUrls } = useContext(AuthContext)
 	const router = useRouter()
+	const {colorMode} = useColorMode()
 	const { contractId } = router.query
 
 	//Query ------------------------------------------------------------
@@ -167,7 +169,7 @@ const DetailContract: NextLayout = () => {
 			}}
 		>
 			<Head title={`Contract number #${contractId}`}/>
-			<Box bgColor={'#f2f4f7'} p={10}>
+			<Box bg={colorMode == 'light'? '#fafafa': '#1e2636'} p={10}>
 				<Container maxW="container.xl" bg="white" color="#262626" borderRadius={5} p={5}>
 					<VStack spacing={4} align="start">
 						<HStack justify="space-between" wrap={'wrap'} w={'full'}>

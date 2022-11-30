@@ -46,7 +46,6 @@ export const arrayFilter = (columns: string[], fieldColumn: string) => {
 		return rows.filter((row) => {
 			const data = getData(columns, row)
 			return data.every((field: any) => {
-				console.log(field[fieldColumn], filterValue)
 				return field[fieldColumn] == filterValue
 			})
 		})

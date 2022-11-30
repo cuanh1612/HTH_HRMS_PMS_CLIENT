@@ -5,6 +5,7 @@ import 'react-quill/dist/quill.bubble.css'
 import 'react-quill/dist/quill.snow.css'
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
 
+
 interface IEditor {
     note: string,
     onChangeNote: any

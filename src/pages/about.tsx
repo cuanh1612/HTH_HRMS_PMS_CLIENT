@@ -258,11 +258,11 @@ const about = () => {
 								/>
 								<Project
 									title={'ATN shop'}
-									url={'https://atnshop2.herokuapp.com'}
+									url={'https://atn-shop.onrender.com'}
 								/>
 								<Project
 									title={'Tools'}
-									url={'https://clienttool.herokuapp.com/post'}
+									url={'https://inspiring-heliotrope-a16e91.netlify.app/post'}
 								/>
 								<Project
 									title={'Chat realtime by firebase'}

@@ -71,6 +71,7 @@ const Job: NextLayout = () => {
 	//Setup download csv --------------------------------------------------------
 	const headersCSV = [
 		{ label: 'id', key: 'id' },
+		{ label: 'title', key: 'title' },
 		{ label: 'starts on date', key: 'starts_on_date' },
 		{ label: 'ends on date', key: 'ends_on_date' },
 		{ label: 'status', key: 'status' },
@@ -96,6 +97,7 @@ const Job: NextLayout = () => {
 				//Set data csv
 				const dataCSV: any[] = dataAllJobs.jobs.map((job) => ({
 					id: job.id,
+					title: job.title,
 					starts_on_date: job.starts_on_date,
 					ends_on_date: job.ends_on_date,
 					status: job.status ? 'Open' : 'Close',

@@ -1,11 +1,10 @@
 import {
 	Avatar,
 	AvatarGroup,
-	Box,
-	Button,
-	Grid,
+	Box, Grid,
 	GridItem,
 	HStack,
+	IconButton,
 	Tab,
 	TabList,
 	TabPanel,
@@ -13,13 +12,15 @@ import {
 	Tabs,
 	Text,
 	Tooltip,
-	useDisclosure,
+	useDisclosure
 } from '@chakra-ui/react'
 import Modal from 'components/modal/Modal'
 import { AuthContext } from 'contexts/AuthContext'
 import { useRouter } from 'next/router'
 import { detailTaskQuery } from 'queries'
 import { useContext, useEffect } from 'react'
+import { FiTrash2 } from 'react-icons/fi'
+import { RiPencilLine } from 'react-icons/ri'
 import TaskCategory from 'src/pages/task-categories'
 import TaskComments from './comments'
 import TaskFiles from './files'
@@ -194,22 +195,42 @@ export default function DetailTask({ taskIdProp, onOpenDl, onOpenUpdate }: IDeta
 				<TaskCategory />
 			</Modal>
 
-			{onOpenDl && currentUser?.role === 'Admin' ? (
-				<Button onClick={onOpenDl}>delete</Button>
-			) : onOpenDl && onOpenDl && dataDetailTask?.task?.assignBy.id === currentUser?.id ? (
-				<Button onClick={onOpenDl}>delete</Button>
-			) : (
-				''
-			)}
-			{onOpenUpdate && currentUser?.role === 'Admin' ? (
-				<Button onClick={onOpenUpdate}>update</Button>
-			) : onOpenUpdate &&
-			  onOpenDl &&
-			  dataDetailTask?.task?.assignBy.id === currentUser?.id ? (
-				<Button onClick={onOpenUpdate}>update</Button>
-			) : (
-				''
-			)}
+			<HStack spacing={4} paddingTop={6}>
+				{onOpenUpdate && currentUser?.role === 'Admin' ? (
+					<IconButton
+						aria-label="Update database"
+						icon={<RiPencilLine />}
+						onClick={onOpenUpdate}
+					/>
+				) : onOpenUpdate &&
+				  onOpenDl &&
+				  dataDetailTask?.task?.assignBy.id === currentUser?.id ? (
+					<IconButton
+						aria-label="Update database"
+						icon={<RiPencilLine />}
+						onClick={onOpenUpdate}
+					/>
+				) : (
+					''
+				)}
+				{onOpenDl && currentUser?.role === 'Admin' ? (
+					<IconButton
+						aria-label="Delete database"
+						icon={<FiTrash2 />}
+						onClick={onOpenDl}
+					/>
+				) : onOpenDl &&
+				  onOpenDl &&
+				  dataDetailTask?.task?.assignBy.id === currentUser?.id ? (
+					<IconButton
+						aria-label="Delete database"
+						icon={<FiTrash2 />}
+						onClick={onOpenDl}
+					/>
+				) : (
+					''
+				)}
+			</HStack>
 		</Box>
 	)
 }

@@ -4,8 +4,8 @@ import { GetStaticPaths, GetStaticProps } from 'next'
 import { useRouter } from 'next/router'
 import { detailLeaveQuery } from 'queries'
 import { useContext, useEffect } from 'react'
-import { AiFillDelete } from 'react-icons/ai'
-import { GrDocumentUpdate } from 'react-icons/gr'
+import { FiTrash2 } from 'react-icons/fi'
+import { RiPencilLine } from 'react-icons/ri'
 import { leaveMutationResponse } from 'type/mutationResponses'
 
 export interface IDetailLeaveProps {
@@ -55,7 +55,7 @@ export default function DetailLeave({
 					</GridItem>
 
 					<GridItem w="100%" colSpan={[6, 4]}>
-						<HStack>
+						<HStack spacing={4}>
 							<Avatar
 								name={dataDetailLeave?.leave?.employee.name}
 								src={dataDetailLeave?.leave?.employee.avatar?.url}
@@ -84,7 +84,8 @@ export default function DetailLeave({
 					</GridItem>
 
 					<GridItem w="100%" colSpan={[6, 4]}>
-						<Badge colorScheme={dataDetailLeave?.leave?.leave_type.color_code}>
+						
+						<Badge fontSize={'16px'} color={dataDetailLeave?.leave?.leave_type.color_code}>
 							{dataDetailLeave?.leave?.leave_type.name}
 						</Badge>
 					</GridItem>
@@ -121,12 +122,12 @@ export default function DetailLeave({
 						</HStack>
 					</GridItem>
 				</Grid>
-				<HStack paddingTop={6}>
+				<HStack spacing={4} paddingTop={6}>
 					{onOpenUpdate && currentUser?.role == 'Admin' && (
-						<IconButton aria-label='Update database' icon={<GrDocumentUpdate />} onClick={onOpenUpdate}/>
+						<IconButton aria-label='Update database' icon={<RiPencilLine />} onClick={onOpenUpdate}/>
 					)}{' '}
 					{onOpenDl && dataDetailLeave?.leave?.status == 'Pending' && (
-						<IconButton color={'tomato'} aria-label='Delete database' icon={<AiFillDelete />} onClick={onOpenDl}/>
+						<IconButton  aria-label='Delete database' icon={<FiTrash2 />} onClick={onOpenDl}/>
 					)}
 				</HStack>
 			</VStack>

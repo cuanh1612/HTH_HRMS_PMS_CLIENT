@@ -1,17 +1,19 @@
 import {
 	Avatar,
-	Box,
-	Button,
-	Grid,
+	Box, Grid,
 	GridItem,
+	HStack,
+	IconButton,
 	Tooltip,
 	Wrap,
-	WrapItem,
+	WrapItem
 } from '@chakra-ui/react'
 import { AuthContext } from 'contexts/AuthContext'
 import { useRouter } from 'next/router'
 import { detailEventQuery } from 'queries'
 import { useContext, useEffect } from 'react'
+import { FiTrash2 } from 'react-icons/fi'
+import { RiPencilLine } from 'react-icons/ri'
 import 'react-quill/dist/quill.bubble.css'
 import 'react-quill/dist/quill.snow.css'
 
@@ -98,13 +100,23 @@ export default function DetailEvent({ EventIdProp, onOpenDl, onOpenUpdate }: IDe
 						{`${detailEvent?.event?.ends_on_date} ${detailEvent?.event?.ends_on_time}`}
 					</GridItem>
 				</Grid>
-				{currentUser?.role === 'Admin' && onOpenDl && (
-					<Button onClick={onOpenDl}>delete</Button>
-				)}
-
-				{currentUser?.role === 'Admin' && onOpenUpdate && (
-					<Button onClick={onOpenUpdate}>update</Button>
-				)}
+				<HStack spacing={4} paddingTop={6}>
+					{currentUser?.role === 'Admin' && onOpenUpdate && (
+						<IconButton
+							aria-label="Update database"
+							icon={<RiPencilLine />}
+							onClick={onOpenUpdate}
+						/>
+					)}{' '}
+					{currentUser?.role === 'Admin' && onOpenDl && (
+						<IconButton
+							aria-label="Delete database"
+							icon={<FiTrash2 />}
+							onClick={onOpenDl}
+						/>
+					)}
+				</HStack>
+				
 			</Box>
 		</>
 	)

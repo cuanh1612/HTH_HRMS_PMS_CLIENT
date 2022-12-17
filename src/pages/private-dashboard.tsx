@@ -513,13 +513,6 @@ const TaskCategory: NextLayout = () => {
 							<Button
 								color={'white'}
 								bg={'hu-Green.normal'}
-								onClick={() => calendar?.changeView('listWeek')}
-							>
-								listWeek
-							</Button>
-							<Button
-								color={'white'}
-								bg={'hu-Green.normal'}
 								onClick={() => calendar?.changeView('dayGridMonth')}
 							>
 								Month

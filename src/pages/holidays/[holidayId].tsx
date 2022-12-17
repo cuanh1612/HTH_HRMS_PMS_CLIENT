@@ -1,9 +1,11 @@
-import { Box, Button, Grid, GridItem } from '@chakra-ui/react'
+import { Box, Grid, GridItem, HStack, IconButton } from '@chakra-ui/react'
 import { AuthContext } from 'contexts/AuthContext'
 import { GetStaticPaths, GetStaticProps } from 'next'
 import { useRouter } from 'next/router'
 import { detailHolidayQuery } from 'queries'
 import { useContext, useEffect } from 'react'
+import { FiTrash2 } from 'react-icons/fi'
+import { RiPencilLine } from 'react-icons/ri'
 import { holidayMutationResponse } from 'type/mutationResponses'
 
 export interface IDetailHolidayProps {
@@ -55,12 +57,15 @@ export default function DetailHoliday({ holidayIdProp, onOpenUpdate, onOpenDl}: 
 						{dataDetailHoliday?.holiday?.occasion}
 					</GridItem>
 				</Grid>
-				{
-					onOpenUpdate && currentUser?.role == 'Admin' && <Button onClick={onOpenUpdate}>Update</Button>
-				}
-								{
-					onOpenDl && currentUser?.role == 'Admin' && <Button onClick={onOpenDl}>delete</Button>
-				}
+
+				<HStack spacing={4} paddingTop={6}>
+					{onOpenUpdate && currentUser?.role == 'Admin' && (
+						<IconButton aria-label='Update database' icon={<RiPencilLine />} onClick={onOpenUpdate}/>
+					)}{' '}
+					{onOpenDl && currentUser?.role == 'Admin' && (
+						<IconButton  aria-label='Delete database' icon={<FiTrash2 />} onClick={onOpenDl}/>
+					)}
+				</HStack>
 			</Box>
 		</>
 	)

@@ -82,17 +82,15 @@ const DetailJob: NextLayout | any = ({ jobIdProp, onOpenDl, onOpenUpdate }: IDet
 							</GridItem>
 							<GridItem w="100%" colSpan={[2, 1]}>
 								{detailJob?.job?.status ? (
-									<>
-										<HStack>
-											<Box
-												width={5}
-												height={5}
-												bgColor={'green'}
-												borderRadius={'100%'}
-											></Box>
-											<Text>Open</Text>
-										</HStack>
-									</>
+									<HStack>
+										<Box
+											width={3}
+											height={3}
+											bgColor={'green'}
+											borderRadius={'100%'}
+										></Box>
+										<Text>Open</Text>
+									</HStack>
 								) : (
 									<>
 										<HStack>

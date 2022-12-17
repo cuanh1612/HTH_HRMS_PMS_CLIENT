@@ -7,18 +7,20 @@ import {
 	Grid,
 	GridItem,
 	HStack,
+	Img,
 	Text,
-	VStack
+	VStack,
 } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { Head, Loading } from 'components/common'
+import { Head, ItemFileUpload, Loading } from 'components/common'
 import { Input, Select, Textarea, UploadAvatar } from 'components/form'
 import { RecruitLayout } from 'components/layouts'
 import { AuthContext } from 'contexts/AuthContext'
 import { createJobApplicationMutation } from 'mutations/jobApplication'
 import { useRouter } from 'next/router'
 import { allLocationsQuery } from 'queries/location'
-import { useContext, useEffect, useState } from 'react'
+import { useCallback, useContext, useEffect, useState } from 'react'
+import { useDropzone } from 'react-dropzone'
 import { useForm } from 'react-hook-form'
 import { AiOutlineCheck, AiOutlineMail, AiOutlineMobile } from 'react-icons/ai'
 import { MdDriveFileRenameOutline } from 'react-icons/md'
@@ -27,6 +29,7 @@ import { NextLayout } from 'type/element/layout'
 import { ICloudinaryImg, IImg } from 'type/fileType'
 import { createJobApplicationForm } from 'type/form/basicFormType'
 import { dataApplicationSource, dataJobApplicationStatus } from 'utils/basicData'
+import { generateImgFile } from 'utils/helper'
 import { uploadFile } from 'utils/uploadFile'
 import { CreateJobApplicationValidate } from 'utils/validate'
 
@@ -42,6 +45,61 @@ const Apply: NextLayout = () => {
 	const [infoImg, setInfoImg] = useState<IImg>() // state data image upload
 	const [loadingImg, setLoadingImg] = useState<boolean>(false) // state loading when image upload
 
+	//Setting files uploads -----------------------------------------------------
+	//handle ondrop file
+	const onDrop = useCallback((acceptedFiles: File[]) => {
+		//Check size
+		let isValidSize = true
+		acceptedFiles.forEach((file) => {
+			if (file.size >= 10485760) {
+				isValidSize = false
+			}
+		})
+
+		if (isValidSize) {
+			setFilesUpload(acceptedFiles)
+		} else {
+			setToast({
+				msg: 'Each file should be less than 10MB in size.',
+				type: 'warning',
+			})
+		}
+	}, [])
+
+	const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop })
+
+	//Setup for upload files
+	const [filesUpload, setFilesUpload] = useState<File[]>([])
+	const [isLoadUpFiles, setIsLoadUpFiles] = useState<boolean>(false)
+
+	//Remove file upload
+	const onRemoveFile = (index: number) => {
+		const newFilesUpload = filesUpload.filter((_, indexFile) => indexFile !== index)
+		setFilesUpload(newFilesUpload)
+	}
+
+	//Handle upload files
+	const handleUploadFiles = async () => {
+		if (filesUpload.length > 0) {
+			//Set is load upload file
+			setIsLoadUpFiles(true)
+
+			const dataUploadFiles: Array<ICloudinaryImg> = await uploadFile({
+				files: filesUpload,
+				tags: ['cv'],
+				raw: true,
+				upload_preset: 'job-applications',
+			})
+
+			//Set is load upload file
+			setIsLoadUpFiles(false)
+
+			return dataUploadFiles
+		}
+
+		return null
+	}
+
 	// setForm and submit form create new application job -----------------
 	const formSetting = useForm<createJobApplicationForm>({
 		defaultValues: {
@@ -53,6 +111,7 @@ const Apply: NextLayout = () => {
 			source: undefined,
 			jobs: (jobId as string) || undefined,
 			location: undefined,
+			files: undefined,
 		},
 		resolver: yupResolver(CreateJobApplicationValidate),
 	})
@@ -61,7 +120,6 @@ const Apply: NextLayout = () => {
 	useEffect(() => {
 		handleLoading(false)
 	}, [])
-
 
 	//mutation ----------------------------------------------------------------
 	const [
@@ -108,6 +166,15 @@ const Apply: NextLayout = () => {
 					public_id: dataUploadAvatar.public_id,
 				}
 
+				//Upload job application files
+				const dataUploadFiles: ICloudinaryImg[] | null = await handleUploadFiles()
+
+				//Check upload files success
+				if (dataUploadFiles && dataUploadFiles?.length > 0) {
+					// add file to value
+					values.files = dataUploadFiles
+				}
+
 				//create new job application
 				mutateCreJobApplication(values)
 			} else {
@@ -146,7 +213,11 @@ const Apply: NextLayout = () => {
 				source: undefined,
 				...(jobId ? { jobs: jobId as string } : { jobs: undefined }),
 				location: undefined,
+				files: undefined,
 			})
+
+			//Set file upload for job apply
+			setFilesUpload([])
 		}
 	}, [statusCreJobApplication])
 
@@ -299,6 +370,70 @@ const Apply: NextLayout = () => {
 							</GridItem>
 
 							<GridItem w="100%" colSpan={[2]}>
+								<VStack
+									align={'start'}
+									w="full"
+									bgColor={'white'}
+									borderRadius={5}
+									spacing={5}
+								>
+									<Box position={'relative'} p={2} w={'full'}>
+										<VStack w={'full'} spacing={5} position={'relative'}>
+											<VStack
+												align={'center'}
+												w={'full'}
+												border={'4px dotted #009F9D30'}
+												p={10}
+												spacing={10}
+												borderRadius={20}
+												{...getRootProps()}
+											>
+												<Img
+													width={150}
+													height={100}
+													alt="upload_file"
+													src="/assets/uploadFiles.svg"
+												/>
+												<input {...getInputProps()} />
+												{isDragActive ? (
+													<Text
+														fontSize={16}
+														fontWeight={'semibold'}
+														color={'gray'}
+													>
+														Drop the files here ...
+													</Text>
+												) : (
+													<Text
+														fontSize={16}
+														fontWeight={'semibold'}
+														color={'gray'}
+													>
+														Drag your CV, documents, photos, or videos relative job apply here
+														to start uploading
+													</Text>
+												)}
+											</VStack>
+										</VStack>
+									</Box>
+
+									{filesUpload.length > 0 && (
+										<VStack w={'full'} px={2}>
+											{filesUpload.map((file, index) => (
+												<ItemFileUpload
+													key={index}
+													src={generateImgFile(file.name)}
+													fileName={file.name}
+													index={index}
+													onRemoveFile={onRemoveFile}
+												/>
+											))}
+										</VStack>
+									)}
+								</VStack>
+							</GridItem>
+
+							<GridItem w="100%" colSpan={[2]}>
 								<Text fontSize={20} fontWeight={'semibold'}>
 									Terms And Condition
 								</Text>
@@ -366,7 +501,9 @@ const Apply: NextLayout = () => {
 						>
 							Save
 						</Button>
-						{(statusCreJobApplication === 'running' || loadingImg) && <Loading />}
+						{(statusCreJobApplication === 'running' || loadingImg || isLoadUpFiles) && (
+							<Loading />
+						)}
 					</Box>
 				</VStack>
 			</Container>

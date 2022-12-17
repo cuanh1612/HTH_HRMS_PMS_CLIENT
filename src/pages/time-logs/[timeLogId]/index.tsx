@@ -1,8 +1,20 @@
-import { Avatar, Box, Button, Grid, GridItem, HStack, Text, VStack } from '@chakra-ui/react'
+import {
+	Avatar,
+	Box,
+	Grid,
+	GridItem,
+	HStack,
+	IconButton,
+	Text,
+	useColorMode,
+	VStack,
+} from '@chakra-ui/react'
 import { AuthContext } from 'contexts/AuthContext'
 import { useRouter } from 'next/router'
 import { detailTimeLogQuery } from 'queries/timeLog'
 import { useContext, useEffect } from 'react'
+import { FiTrash2 } from 'react-icons/fi'
+import { RiPencilLine } from 'react-icons/ri'
 import 'react-quill/dist/quill.bubble.css'
 import 'react-quill/dist/quill.snow.css'
 
@@ -20,6 +32,7 @@ export default function DetailTimeLog({
 	const { isAuthenticated, handleLoading, currentUser } = useContext(AuthContext)
 	const router = useRouter()
 	const { timeLogId: timeLogIdRouter } = router.query
+	const { colorMode } = useColorMode()
 
 	//Query -------------------------------------------------------------
 	const { data: detailTimeLog } = detailTimeLogQuery(
@@ -67,11 +80,13 @@ export default function DetailTimeLog({
 						Earnings:
 					</GridItem>
 					<GridItem w="100%" colSpan={[2, 1]}>
-						{Intl.NumberFormat('en-US', {
-							style: 'currency',
-							currency: 'USD',
-							useGrouping: false,
-						}).format(Number(detailTimeLog?.timeLog?.earnings || 0))}
+						<Text color={colorMode == 'dark'? 'red.300': 'red.500'}>
+							{Intl.NumberFormat('en-US', {
+								style: 'currency',
+								currency: 'USD',
+								useGrouping: false,
+							}).format(Number(detailTimeLog?.timeLog?.earnings || 0))}
+						</Text>
 					</GridItem>
 					<GridItem w="100%" colSpan={[2, 1]} color={'gray.400'}>
 						Memo:
@@ -95,7 +110,7 @@ export default function DetailTimeLog({
 						Employee:
 					</GridItem>
 					<GridItem w="100%" colSpan={[2, 1]}>
-						<HStack>
+						<HStack spacing={4}>
 							<Avatar
 								size={'sm'}
 								src={detailTimeLog?.timeLog?.employee?.avatar?.url}
@@ -111,13 +126,22 @@ export default function DetailTimeLog({
 						</HStack>
 					</GridItem>
 				</Grid>
-				{currentUser?.role === 'Admin' && onOpenDl && (
-					<Button onClick={onOpenDl}>delete</Button>
-				)}
-
-				{currentUser?.role === 'Admin' && onOpenUpdate && (
-					<Button onClick={onOpenUpdate}>update</Button>
-				)}
+				<HStack spacing={4} paddingTop={6}>
+					{currentUser?.role === 'Admin' && onOpenUpdate && (
+						<IconButton
+							aria-label="Update database"
+							icon={<RiPencilLine />}
+							onClick={onOpenUpdate}
+						/>
+					)}{' '}
+					{currentUser?.role === 'Admin' && onOpenDl && (
+						<IconButton
+							aria-label="Delete database"
+							icon={<FiTrash2 />}
+							onClick={onOpenDl}
+						/>
+					)}
+				</HStack>
 			</Box>
 		</>
 	)

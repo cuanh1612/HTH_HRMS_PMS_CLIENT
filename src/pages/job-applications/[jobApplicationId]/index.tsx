@@ -192,8 +192,8 @@ export default function DetailJobApplication({
 					<GridItem w="100%" colSpan={[4, 3]}>
 						<HStack>
 							<Box
-								width={5}
-								height={5}
+								width={3}
+								height={3}
 								bgColor={
 									dataDetailJobApplication?.jobApplication?.status
 										? dataDetailJobApplication.jobApplication.status ===

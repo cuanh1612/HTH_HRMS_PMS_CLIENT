@@ -7,7 +7,7 @@ import {
 	Text,
 	useColorMode,
 	useColorModeValue,
-	VStack,
+	VStack
 } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Developer, Head, Project } from 'components/common'
@@ -262,7 +262,7 @@ const about = () => {
 								/>
 								<Project
 									title={'Tools'}
-									url={'https://inspiring-heliotrope-a16e91.netlify.app/post'}
+									url={'https://inspiring-heliotrope-a16e91.netlify.app'}
 								/>
 								<Project
 									title={'Chat realtime by firebase'}

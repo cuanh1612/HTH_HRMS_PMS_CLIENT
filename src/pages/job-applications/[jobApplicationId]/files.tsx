@@ -180,9 +180,9 @@ export default function JobApplicationFile({ jobApplicationIdProp }: IJobApplica
 
 			const dataUploadFiles: Array<ICloudinaryImg> = await uploadFile({
 				files: filesUpload,
-				tags: ['projectFile'],
+				tags: ['cv'],
 				raw: true,
-				upload_preset: 'project-file',
+				upload_preset: 'job-applications',
 			})
 
 			//Set is load upload file

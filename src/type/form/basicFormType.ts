@@ -1,3 +1,5 @@
+import { ICloudinaryImg } from "type/fileType"
+
 export type loginForm = {
 	email: string
 	password: string
@@ -721,6 +723,7 @@ export interface createJobApplicationForm {
 		public_id: string
 		url: string
 	}
+	files?: ICloudinaryImg[]
 }
 
 export interface updateJobApplicationForm {

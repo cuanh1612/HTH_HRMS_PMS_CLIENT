@@ -370,7 +370,7 @@ const TaskCategory: NextLayout = () => {
 
 				<ItemDashboard
 					isFull={breakpoint ? !['2xl', 'xl', 'lg'].includes(breakpoint) : false}
-					title="Pending Milestone"
+					title="Tasks"
 					overflow={'auto'}
 				>
 					<TableContainer w={'full'}>

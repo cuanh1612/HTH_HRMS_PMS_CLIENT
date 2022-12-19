@@ -237,7 +237,7 @@ const Skill: NextLayout = () => {
 						}}
 						columnId={'name'}
 						label="Name"
-						placeholder="Enter notice"
+						placeholder="Enter title"
 						icon={<AiOutlineSearch fontSize={'20px'} color="gray" opacity={0.6} />}
 						type={'text'}
 					/>

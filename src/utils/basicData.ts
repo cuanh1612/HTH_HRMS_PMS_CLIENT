@@ -158,6 +158,10 @@ export const dataProjectStatus: IOption[] = [
 
 export const dataSalaryType: IOption[] = [
 	{
+		value: '',
+		label: 'Select',
+	},
+	{
 		value: 'Increment',
 		label: 'Increment',
 	},

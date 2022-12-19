@@ -197,7 +197,7 @@ export default function AddJob({ onCloseDrawer }: IAddJobProps) {
 				})
 			})
 
-			setOptionJobTypes(newOptionJobTypes)
+			setOptionJobTypes([{label: 'Select', value: ''}, ...newOptionJobTypes])
 		}
 	}, [allJobType])
 

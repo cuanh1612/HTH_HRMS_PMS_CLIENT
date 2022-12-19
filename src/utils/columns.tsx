@@ -3327,7 +3327,7 @@ export const SkillsColumn = ({ onDelete, onUpdate, currentUser }: IOptionColumn)
 				{
 					Header: 'Name',
 					accessor: 'name',
-					filter: textFilter(['heading']),
+					filter: textFilter(['name']),
 					minWidth: 500,
 					Cell: ({ value }) => {
 						return <Text isTruncated>{value}</Text>

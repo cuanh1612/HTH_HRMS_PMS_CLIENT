@@ -303,7 +303,7 @@ export default function AddJobApplication({
 
 					<GridItem w="100%" colSpan={[2]}>
 						<Textarea
-							name="cover_Leter"
+							name="cover_leter"
 							label="Application Cover Letter"
 							form={formSetting}
 							placeholder="Application Source"

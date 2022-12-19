@@ -469,7 +469,7 @@ const taskBoard: NextLayout = () => {
 									isDragDisabled={
 										currentUser?.role === 'Admin' ||
 										currentUser?.email ===
-											dataDetailProject?.project?.project_Admin.email
+											dataDetailProject?.project?.project_Admin?.email
 											? false
 											: true
 									}

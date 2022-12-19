@@ -363,7 +363,7 @@ const Apply: NextLayout = () => {
 							<GridItem w="100%" colSpan={[2]}>
 								<Textarea
 									name="cover_Letter"
-									label="Application Cover Leeter"
+									label="Application Cover Letter"
 									form={formSetting}
 									placeholder="Application Source"
 								/>

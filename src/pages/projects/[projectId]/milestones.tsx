@@ -224,7 +224,7 @@ const milestones: NextLayout = () => {
 			<Head title={dataDetailProject?.project?.name} />
 			{currentUser &&
 				(currentUser.role === 'Admin' ||
-					currentUser.email === dataDetailProject?.project?.project_Admin.email) && (
+					currentUser.email === dataDetailProject?.project?.project_Admin?.email) && (
 					<FuncCollapse>
 						<Func
 							icon={<IoAdd />}

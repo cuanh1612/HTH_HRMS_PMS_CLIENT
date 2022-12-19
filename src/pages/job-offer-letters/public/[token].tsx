@@ -293,14 +293,14 @@ export default function PublicContract({
 				},
 			}}
 		>
-			<Head title={'Public offer letter'}/>
+			<Head title={'Public offer letter'} />
 			<Box bgColor={'#f2f4f7'} minHeight={'100vh'} p={10}>
 				<Container maxW="container.xl" bg="white" color="#262626" borderRadius={5} p={5}>
 					<VStack spacing={4} align="start">
 						<HStack justify="space-between" wrap={'wrap'} w={'full'}>
 							<Image
 								boxSize={'50px'}
-								src="https://bit.ly/dan-abramov"
+								src={dataCompanyInfo?.companyInfo.logo_url || '/assets/logo1.svg'}
 								alt="Avatar"
 								borderRadius={5}
 							/>

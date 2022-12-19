@@ -21,7 +21,7 @@ import {
 	Thead,
 	Tr,
 	useDisclosure,
-	VStack
+	VStack,
 } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Head, Loading } from 'components/common'
@@ -34,6 +34,7 @@ import { createSignContractMutation } from 'mutations'
 import { GetServerSideProps } from 'next'
 import Link from 'next/link'
 import { publicContractQuery } from 'queries'
+import { companyInfoQuery } from 'queries/companyInfo'
 import { useContext, useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { AiOutlineCheck, AiOutlineDownload, AiOutlineMail } from 'react-icons/ai'
@@ -74,6 +75,7 @@ export default function PublicContract({
 
 	//Query ------------------------------------------------------------
 	const { data: dataDetailContract, mutate: refetchDetailContract } = publicContractQuery(token)
+	const { data: dataCompanyInfo } = companyInfoQuery()
 
 	// setForm and submit form create new sign -------------------------
 	const formSetting = useForm<createSignatureForm>({
@@ -159,9 +161,32 @@ export default function PublicContract({
 
 			doc.text(`Contract #${result.contract?.id}`, 20, 20)
 			doc.setFontSize(12)
-			doc.text('HUPROM', 20, 60)
-			doc.text('xx Nguyen Xi Street - Gia Lai - Viet Nam', 20, 80)
-			doc.text('+84 833876372', 20, 100)
+			doc.text(
+				dataCompanyInfo?.companyInfo.name ? dataCompanyInfo.companyInfo.name : 'HUPROM',
+				20,
+				60
+			)
+			doc.text(
+				dataCompanyInfo?.companyInfo.website
+					? dataCompanyInfo.companyInfo.website
+					: 'huprom.com',
+				20,
+				80
+			)
+			doc.text(
+				dataCompanyInfo?.companyInfo.phone
+					? dataCompanyInfo.companyInfo.phone
+					: '+84 833876372',
+				20,
+				100
+			)
+			doc.text(
+				dataCompanyInfo?.companyInfo.email
+					? dataCompanyInfo.companyInfo.email
+					: 'huynqdev1612@gmail.com',
+				20,
+				120
+			)
 			doc.setFontSize(14)
 			doc.text('Main Contract', 20, 140)
 			doc.setFontSize(12)
@@ -228,15 +253,15 @@ export default function PublicContract({
 				},
 			}}
 		>
-			<Head title={'Public contract'}/>
+			<Head title={'Public contract'} />
 			<Box bgColor={'#f2f4f7'} minHeight={'100vh'} p={10}>
 				<Container maxW="container.xl" bg="white" color="#262626" borderRadius={5} p={5}>
 					<VStack spacing={4} align="start">
 						<HStack justify="space-between" wrap={'wrap'} w={'full'}>
 							<Image
 								boxSize={'50px'}
-								src="https://bit.ly/dan-abramov"
-								alt="Dan Abramov"
+								src={dataCompanyInfo?.companyInfo.logo_url || '/assets/logo1.svg'}
+								alt="Avatar"
 								borderRadius={5}
 							/>
 							<Text fontSize={20} fontWeight={'bold'}>
@@ -245,9 +270,26 @@ export default function PublicContract({
 						</HStack>
 						<Grid templateColumns="repeat(2, 1fr)" gap={6} w={'full'}>
 							<GridItem w="100%" colSpan={[2, 1]}>
-								<Text>HUPROM</Text>
-								<Text>xx Nguyen Xi Street - Gia Lai - Viet Nam</Text>
-								<Text>+84 833876372</Text>
+								<Text>
+									{dataCompanyInfo?.companyInfo.name
+										? dataCompanyInfo.companyInfo.name
+										: 'HUPROM'}
+								</Text>
+								<Text>
+									{dataCompanyInfo?.companyInfo.website
+										? dataCompanyInfo.companyInfo.website
+										: 'huprom.com'}
+								</Text>
+								<Text>
+									{dataCompanyInfo?.companyInfo.phone
+										? dataCompanyInfo.companyInfo.phone
+										: '+84 833876372'}
+								</Text>
+								<Text>
+									{dataCompanyInfo?.companyInfo.email
+										? dataCompanyInfo.companyInfo.email
+										: 'huynqdev1612@gmail.com'}
+								</Text>
 							</GridItem>
 
 							<GridItem w="100%" colSpan={[2, 1]}>
